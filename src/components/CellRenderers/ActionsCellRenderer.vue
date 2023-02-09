@@ -1,0 +1,73 @@
+<template>
+  <div :style="{ width: `${width}px` }">
+    <NConfigProvider
+      :theme="params.theme.value"
+      :theme-overrides="params.themeOverrides.value ?? null"
+    >
+      <div :style="{ width: `${width}px` }" class="flex">
+        <div class="flex gap-2 items-center">
+          <template v-if="rowActions?.length">
+            <NTooltip
+              v-for="({ icon, tooltip, link, action }, key) in rowActions"
+              :key="key"
+            >
+              <template #trigger>
+                <component
+                  :is="link ? 'router-link' : 'div'"
+                  v-bind="{
+                    ...(link ? { to: link } : {}),
+                  }"
+                  v-on="{
+                    click: () => action?.(),
+                  }"
+                >
+                  <NIcon size="18" class="mt-4">
+                    <NEl
+                      tag="span"
+                      class="iconify cursor-pointer hover:text-[var(--primary-color)] transition-all ease-in-out duration-150"
+                      :data-icon="icon"
+                    />
+                  </NIcon>
+                </component>
+              </template>
+              {{ tooltip }}
+            </NTooltip>
+          </template>
+          <template v-else>N/A</template>
+        </div>
+      </div>
+    </NConfigProvider>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { CellRendererParams, TableRowAction } from "@/types/table";
+import { NTooltip, NEl, NConfigProvider, NIcon, NButton } from "naive-ui";
+import { GenericObject } from "@/types/utils";
+import { useElementSize } from "@vueuse/core";
+import { computed, ref } from "vue";
+
+interface ActionsCellProps extends CellRendererParams {
+  _rowActions: TableRowAction<GenericObject>;
+}
+
+const props = defineProps<{ params: ActionsCellProps }>();
+const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
+const { width } = useElementSize(cellContainerRef);
+const rowActions = computed(() =>
+  props.params
+    ._rowActions({
+      ...props.params,
+      tableApi: props.params.tableApi?.value ?? props.params.tableApi,
+    })
+    .filter(Boolean)
+    .map((action) => ({
+      ...action,
+      _enable: ref(true), // usePermission(...(action?.permissions ?? [])),
+      _render: computed(
+        () => !!(action?.condition?.(props.params.data) ?? true)
+      ),
+    }))
+    .filter((action) => action._enable.value && action._render.value)
+);
+</script>

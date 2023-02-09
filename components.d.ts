@@ -7,6 +7,22 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    ActionsCellRenderer: typeof import('./src/components/CellRenderers/ActionsCellRenderer.vue')['default']
+    ComponentCellRenderer: typeof import('./src/components/CellRenderers/ComponentCellRenderer.vue')['default']
+    DataTable: typeof import('./src/components/DataTable.vue')['default']
+    FilterPanel: typeof import('./src/components/FilterPanel.vue')['default']
+    'I:la:search': typeof import('~icons/la/search')['default']
+    'I:mdiChevronDown': typeof import('~icons/mdi/chevron-down')['default']
+    'I:mdiFilter': typeof import('~icons/mdi/filter')['default']
+    'I:mdiFilterVariant': typeof import('~icons/mdi/filter-variant')['default']
+    'I:mdiRefresh': typeof import('~icons/mdi/refresh')['default']
+    'I:systemUicons:reset': typeof import('~icons/system-uicons/reset')['default']
+    JsxCellRenderer: typeof import('./src/components/CellRenderers/JsxCellRenderer.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
+    SearchQueryInput: typeof import('./src/components/SearchQueryInput.vue')['default']
+    SelectionHeaderRenderer: typeof import('./src/components/CellRenderers/SelectionHeaderRenderer.vue')['default']
+    TableFooter: typeof import('./src/components/TableFooter.vue')['default']
+    TableHeader: typeof import('./src/components/TableHeader.vue')['default']
   }
 }
