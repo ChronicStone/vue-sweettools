@@ -3,10 +3,12 @@ import {
   TableActionParams,
   TableRowAction,
   FetchParams,
+  TableAction,
+  Column,
+  DataTableSchema,
+  StaticFilter,
+  TableFilter,
 } from "@/types/table";
-import { TableAction } from "@/types/table";
-import { Column } from "@/types/table";
-import type { DataTableSchema, StaticFilter, TableFilter } from "./types/table";
 import { DefineComponent } from "vue";
 
 declare module "@chronicstone/vue-sweettools" {
