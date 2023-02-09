@@ -30,7 +30,7 @@ export function useQueryState(
       : selected.value.length
   );
 
-  const topViewportRowIndex = !persistency
+  const topViewportOffset = !persistency
     ? ref<number>(0)
     : useStorage<number>(
         `${tableKey}__${route?.name?.toString?.() ?? ""}__#viewportTopRow`,
@@ -111,7 +111,7 @@ export function useQueryState(
     paginationState,
     filterState,
     fetchParams,
-    topViewportRowIndex,
+    topViewportOffset,
     initializeFilterState,
   };
 }

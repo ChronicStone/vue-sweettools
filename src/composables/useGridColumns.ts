@@ -1,5 +1,4 @@
-import { ComputedRef, Ref, computed, ref } from "vue";
-import { GridApi, ColumnApi } from "ag-grid-community";
+import { ComputedRef, Ref, computed } from "vue";
 import { Column, TableApi, TableRowAction } from "@/types/table";
 
 import SelectionHeaderRenderer from "@/components/DataTable/CellRenderers/SelectionHeaderRenderer.vue";

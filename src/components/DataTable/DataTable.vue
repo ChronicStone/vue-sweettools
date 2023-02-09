@@ -18,7 +18,7 @@ import {
 } from "ag-grid-community";
 import { NSpin, NCard, NDialogProvider } from "naive-ui";
 import { AgGridVue } from "ag-grid-vue3";
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 const props = withDefaults(defineProps<DataTableProps>(), {
   tableKey: () => Date.now().toString(),
@@ -64,7 +64,7 @@ const {
   paginationState,
   filterState,
   fetchParams,
-  topViewportRowIndex,
+  topViewportOffset,
   initializeFilterState,
 } = useQueryState(
   props.tableKey,
@@ -141,7 +141,7 @@ function handleGridSelection({ api }: SelectionChangedEvent) {
 }
 
 function handleGridScrollEnd({ api }: BodyScrollEvent) {
-  // topViewportRowIndex.value = api.getFirstDisplayedRow() + 18;
+  topViewportOffset.value = api.getVerticalPixelRange().top;
 }
 
 function handleGridInitialization(params: GridReadyEvent) {
@@ -152,8 +152,11 @@ function handleGridInitialization(params: GridReadyEvent) {
   params.api.setAlwaysShowVerticalScroll(true);
   params.api.setAlwaysShowHorizontalScroll(true);
   if (props.columnFitMode === "fit") params.columnApi.autoSizeAllColumns();
-  // if (topViewportRowIndex.value)
-  //   params.api.ensureIndexVisible(topViewportRowIndex.value);
+
+  if (topViewportOffset.value)
+    document
+      .querySelector(".ag-body-viewport")
+      ?.scrollBy(0, topViewportOffset.value);
 
   if (sortState.value.colId)
     columnApi.value?.applyColumnState({
