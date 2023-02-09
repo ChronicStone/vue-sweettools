@@ -1,13 +1,25 @@
 {
-  "name": "vue3-advanced-datatable",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@chronicstone/vue-sweettools",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/vue-sweettools.umd.js",
+  "module": "./dist/vue-sweettools.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-sweettools.es.js",
+      "require": "./dist/vue-sweettools.umd.js"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
+  "types": "./dist/types.d.ts",
   "peerDependencies": {
     "@chronicstone/vue-sweetforms": "^0.7.1",
     "@vueuse/core": "^9.12.0",

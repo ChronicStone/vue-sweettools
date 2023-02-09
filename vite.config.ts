@@ -38,11 +38,16 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "VueSweetTables",
-      fileName: (format) => `vue-sweet-tables.${format}.js`,
+      name: "VueSweetTools",
+      fileName: (format) => `vue-sweettools.${format}.js`,
     },
     rollupOptions: {
-      external: ["vue"],
+      external: [
+        "vue",
+        "@vueuse/core",
+        "@chronicstone/vue-sweetforms",
+        "naive-ui",
+      ],
       output: {
         globals: {
           vue: "Vue",
