@@ -43,3 +43,7 @@ export type TypeFromPath<T extends GenericObject, Path extends string> = {
       : never
     : never;
 }[Path];
+
+export type DeepRequired<T> = Required<{
+  [P in keyof T]-?: DeepRequired<T[P]>;
+}>;

@@ -20,6 +20,12 @@ type User = {
   progress: number;
   createdAt: string;
   updatedAt: string;
+  someProp?: {
+    data: string;
+    otherProp?: {
+      value?: Array<{ test: string }>;
+    };
+  };
 };
 
 function generateRandomDate(): Date {

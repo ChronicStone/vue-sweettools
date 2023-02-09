@@ -1,6 +1,11 @@
 import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 import { ComputedRef, Ref, VNodeChild, WritableComputedRef } from "vue";
-import { GenericObject, NestedPaths, TypeFromPath } from "@/types/utils";
+import {
+  DeepRequired,
+  GenericObject,
+  NestedPaths,
+  TypeFromPath,
+} from "@/types/utils";
 import { RouteLocationRaw } from "vue-router";
 
 export type FilterMatchMode =
@@ -83,7 +88,7 @@ export interface FilterState {
 
 export interface Column<T extends GenericObject = GenericObject> {
   label: string;
-  key: NestedPaths<T>;
+  key: NestedPaths<DeepRequired<T>>;
   hide?: boolean;
   filter?: TableFilter;
   width?: number | string;
