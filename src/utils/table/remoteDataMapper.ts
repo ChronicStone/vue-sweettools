@@ -1,6 +1,6 @@
-import { GenericObject } from "./../types/utils";
+import { GenericObject } from "@/types/utils";
 import { FetchParams } from "@/types/table";
-import { resolveFromStringPath } from "./resolveFromStringPath";
+import { resolveFromStringPath } from "@/utils/resolveFromStringPath";
 
 export async function remoteDataMapper(
   data: Array<GenericObject>,

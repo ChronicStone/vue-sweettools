@@ -1,4 +1,3 @@
-import { StaticFilter } from './../types/table';
 import { FilterType, TableFilter } from "@/types/table";
 import { GenericObject } from "@/types/utils";
 
@@ -25,8 +24,4 @@ export function mapFilterInitialState(
         ));
   });
   return state;
-};
-
-export function mapStaticFilterInitialState(filters: StaticFilter) {
-  
 }

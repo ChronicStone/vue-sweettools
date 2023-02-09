@@ -1,14 +1,15 @@
 <script setup lang="tsx">
 import { DataTableSchema } from "./types/table";
 import { generateUUID } from "./utils/generateUUID";
-import DataTable from "./components/DataTable.vue";
-import { ref } from "vue";
+import DataTable from "./components/DataTable/DataTable.vue";
+import { ref, render } from "vue";
 import {
   GlobalThemeOverrides,
   NCheckbox,
   NConfigProvider,
   NButton,
   darkTheme,
+  NProgress,
 } from "naive-ui";
 
 type User = {
@@ -16,6 +17,7 @@ type User = {
   firstName: string;
   lastName: string;
   email: string;
+  progress: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -32,6 +34,10 @@ function generateRandomDate(): Date {
   return new Date(randomTimestamp);
 }
 
+function generateRandomNumber(): number {
+  return Math.floor(Math.random() * 100) + 1;
+}
+
 const schema: DataTableSchema<User> = {
   remote: false,
   tableKey: "test",
@@ -43,6 +49,11 @@ const schema: DataTableSchema<User> = {
       key: "firstName",
     },
     { label: "Last name", key: "lastName" },
+    {
+      key: "progress",
+      label: "Progress",
+      render: (value: number) => <NProgress percentage={value} />,
+    },
     { label: "Email", key: "email" },
     { label: "Created at", key: "createdAt" },
     { label: "Updated at", key: "updatedAt" },
@@ -53,6 +64,7 @@ const schema: DataTableSchema<User> = {
       type: "text",
       key: "firstName",
       matchMode: "contains",
+      size: "8 md:4",
     },
     {
       label: "Last name",
@@ -60,6 +72,7 @@ const schema: DataTableSchema<User> = {
       key: "lastName",
       options: [{ label: "Lastname name 2", value: "Lastname name 2" }],
       matchMode: "arrayContains",
+      size: "8 md:4",
     },
     {
       key: "createdAt",
@@ -75,6 +88,18 @@ const schema: DataTableSchema<User> = {
       matchMode: "between",
       params: { dateMode: true },
     },
+    {
+      key: "progress",
+      matchMode: "between",
+      type: "slider",
+      label: "Progress",
+      fieldParams: {
+        range: true,
+        min: 0,
+        max: 100,
+      },
+      default: [0, 100],
+    },
   ],
   datasource: async () => {
     return Array.from({ length: 4000 }, (_, index) => ({
@@ -84,6 +109,7 @@ const schema: DataTableSchema<User> = {
       email: `user${index}@mail.com`,
       createdAt: generateRandomDate().toISOString(),
       updatedAt: generateRandomDate().toISOString(),
+      progress: generateRandomNumber(),
     }));
   },
   actions: [

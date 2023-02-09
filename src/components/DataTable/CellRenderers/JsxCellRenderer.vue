@@ -1,5 +1,8 @@
 <template>
-  <div :style="{ width: `${width}px` }">
+  <div
+    :style="{ width: `${width}px`, height: `${height}px` }"
+    class="flex items-center"
+  >
     <NConfigProvider
       :theme="params.theme.value"
       :theme-overrides="params.themeOverrides.value ?? null"
@@ -25,7 +28,7 @@ interface JsxCellRendererProps extends CellRendererParams {
 const props = defineProps<{ params: JsxCellRendererProps }>();
 
 const cellContainerRef = ref(props.params.eGridCell);
-const { width } = useElementSize(cellContainerRef);
+const { width, height } = useElementSize(cellContainerRef);
 
 const RenderedCell = renderVNode(
   props.params?._cellRenderer,

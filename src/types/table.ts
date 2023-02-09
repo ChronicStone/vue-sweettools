@@ -15,6 +15,7 @@ export type FilterMatchMode =
 export type FilterType =
   | "text"
   | "select"
+  | "slider"
   | "cascader"
   | "tree-select"
   | "checkbox"
@@ -48,6 +49,7 @@ export interface TableFilter {
   dependencies?: (string | string[])[];
   fields?: Omit<TableFilter, "type">[];
   format?: "list" | "tabs" | "table";
+  size?: number | string;
   fieldParams?: GenericObject;
   preformat?: (value: any) => any;
   transform?: (value: any) => any;

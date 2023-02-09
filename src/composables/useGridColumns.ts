@@ -2,10 +2,10 @@ import { ComputedRef, Ref, computed, ref } from "vue";
 import { GridApi, ColumnApi } from "ag-grid-community";
 import { Column, TableApi, TableRowAction } from "@/types/table";
 
-import SelectionHeaderRenderer from "@/components/CellRenderers/SelectionHeaderRenderer.vue";
-import ActionsCellRenderer from "@/components/CellRenderers/ActionsCellRenderer.vue";
-import JsxCellRenderer from "@/components/CellRenderers/JsxCellRenderer.vue";
-import ComponentCellRenderer from "@/components/CellRenderers/ComponentCellRenderer.vue";
+import SelectionHeaderRenderer from "@/components/DataTable/CellRenderers/SelectionHeaderRenderer.vue";
+import ActionsCellRenderer from "@/components/DataTable/CellRenderers/ActionsCellRenderer.vue";
+import JsxCellRenderer from "@/components/DataTable/CellRenderers/JsxCellRenderer.vue";
+import ComponentCellRenderer from "@/components/DataTable/CellRenderers/ComponentCellRenderer.vue";
 import { GenericObject } from "@/types/utils";
 import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 

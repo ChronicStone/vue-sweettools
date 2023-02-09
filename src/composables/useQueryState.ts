@@ -1,5 +1,5 @@
-import { mapFilterInitialState } from "./../utils/mapFilterInitialState";
-import { mapQueryFetchParams } from "@/utils/mapQueryFetchParams";
+import { mapFilterInitialState } from "@/utils/table/mapFilterInitialState";
+import { mapQueryFetchParams } from "@/utils/table/mapQueryFetchParams";
 import {
   GridControls,
   OptimizedQueryField,

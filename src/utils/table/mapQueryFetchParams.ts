@@ -1,5 +1,5 @@
 import { GenericObject } from "@/types/utils";
-import { pipeMergeObject } from "./pipeMergeObject";
+import { pipeMergeObject } from "../pipeMergeObject";
 import { StaticFilter, TableFilter } from "@/types/table";
 import { GridControls, MappedFilters } from "@/types/table";
 

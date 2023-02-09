@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useWindowSize } from "@vueuse/core";
+import { onKeyPressed, useWindowSize } from "@vueuse/core";
 import { NTooltip, NButton, NDrawer, NDrawerContent, NIcon } from "naive-ui";
 import { Form, FormRefInstance } from "@chronicstone/vue-sweetforms";
 import { computed, ref } from "vue";
 import { TableFilter } from "@/types/table";
 import { GenericObject } from "@/types/utils";
-import { mapFiltersToFormSchema } from "@/utils/mapFiltersToFormSchema";
+import { mapFiltersToFormSchema } from "@/utils/table/mapFiltersToFormSchema.js";
 
 const emit = defineEmits<{
   (e: "update:filters", value: GenericObject): void;
@@ -50,6 +50,8 @@ function resetFilters() {
   formRef.value?.$clear();
   applyFilters();
 }
+
+onKeyPressed("Enter", () => applyFilters());
 </script>
 
 <template>
@@ -88,11 +90,7 @@ function resetFilters() {
           </div>
         </template>
 
-        <div
-          id="filtersContainer"
-          class="filtersContainer"
-          style="z-index: 3000 !important"
-        >
+        <div style="z-index: 3000 !important">
           <Form
             ref="formRef"
             :form-options="filtersSchema"

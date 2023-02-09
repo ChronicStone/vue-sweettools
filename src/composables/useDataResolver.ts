@@ -1,7 +1,7 @@
 import { DataSource, FetchParams, GridControls } from "@/types/table";
 import { GenericObject } from "@/types/utils";
 import { obsoletableFn } from "@/utils/obsoletableFn";
-import { remoteDataMapper } from "@/utils/remoteDataMapper";
+import { remoteDataMapper } from "@/utils/table/remoteDataMapper";
 import { RemovableRef } from "@vueuse/core";
 import { GridApi } from "ag-grid-community";
 import { ComputedRef, Ref, nextTick, ref, watch } from "vue";
