@@ -22,7 +22,7 @@ type AgGridConfigParams = {
   columns: ComputedRef<Column[]>;
   enableSelection: ComputedRef<boolean>;
   rowActions: ComputedRef<TableRowAction<GenericObject>>;
-  setGlobalSelection: () => void;
+  setGlobalSelection: (value: boolean) => void;
   selectAll: Ref<boolean>;
   selected: Ref<Array<Record<string, any>>>;
   nbSelected: ComputedRef<number>;

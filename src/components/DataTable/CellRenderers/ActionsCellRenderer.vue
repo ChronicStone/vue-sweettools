@@ -54,6 +54,7 @@ interface ActionsCellProps extends CellRendererParams {
 const props = defineProps<{ params: ActionsCellProps }>();
 const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
 const { width } = useElementSize(cellContainerRef);
+
 const rowActions = computed(() =>
   props.params
     ._rowActions({

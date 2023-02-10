@@ -8,6 +8,11 @@ import Plugin from "./index";
 createApp(App)
   .use(Plugin, {
     isDark: true,
-    themeOverrides: {},
+    themeOverrides: {
+      common: {
+        primaryColor: "#f7382a",
+        infoColor: "#f7382a",
+      },
+    },
   })
   .mount("#app");

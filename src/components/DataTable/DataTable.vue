@@ -56,15 +56,15 @@ const isGridMounted = ref<boolean>(false);
 const gridOptions = ref<GridOptions>();
 
 const {
-  isLoading,
   data,
+  isLoading,
   selectAll,
   selected,
   nbSelected,
   sortState,
-  paginationState,
   filterState,
   fetchParams,
+  paginationState,
   topViewportOffset,
   initializeFilterState,
 } = useQueryState(
@@ -121,8 +121,8 @@ tableApi.value = {
   setPageSize: (size: number) => (paginationState.value.pageSize = size),
 };
 
-function setGlobalSelection() {
-  selectAll.value = true;
+function setGlobalSelection(value: boolean) {
+  selectAll.value = value;
 }
 
 function handleGridSort({ columnApi }: SortChangedEvent) {
@@ -176,8 +176,11 @@ function handleGridInitialization(params: GridReadyEvent) {
 
 watch(
   () => selectAll.value,
-  (value: boolean) =>
-    value ? gridApi.value?.selectAll() : gridApi.value?.deselectAll()
+  (value: boolean) => {
+    console.log("selectAll change", value);
+
+    value ? gridApi.value?.selectAll() : gridApi.value?.deselectAll();
+  }
 );
 </script>
 

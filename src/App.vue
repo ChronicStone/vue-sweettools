@@ -45,7 +45,7 @@ function generateRandomNumber(): number {
 }
 
 const schema: DataTableSchema<User> = {
-  remote: false,
+  remote: true,
   tableKey: "test",
   searchQuery: ["firstName", "lastName", "email"],
   columns: [
@@ -108,7 +108,7 @@ const schema: DataTableSchema<User> = {
     },
   ],
   datasource: async () => {
-    return Array.from({ length: 4000 }, (_, index) => ({
+    const docs = Array.from({ length: 500 }, (_, index) => ({
       _id: generateUUID(),
       firstName: `First name ${index}`,
       lastName: `Lastname name ${index}`,
@@ -117,6 +117,12 @@ const schema: DataTableSchema<User> = {
       updatedAt: generateRandomDate().toISOString(),
       progress: generateRandomNumber(),
     }));
+
+    return {
+      docs,
+      totalDocs: 5000,
+      totalPages: 10,
+    };
   },
   actions: [
     {
@@ -149,7 +155,7 @@ const schema: DataTableSchema<User> = {
   ],
 };
 
-const dark = ref<boolean>(false);
+const dark = ref<boolean>(true);
 const themeOverrides: GlobalThemeOverrides = {
   common: {
     borderRadius: "6px",
@@ -182,7 +188,9 @@ const themeOverrides: GlobalThemeOverrides = {
   >
     <div class="p-0 lg:p-10">
       <NCheckbox v-model:checked="dark">Dark ?</NCheckbox>
-      <DataTable v-bind="schema"> Test table </DataTable>
+      <DataTable v-bind="schema" :persistency="'localStorage'">
+        Test table test
+      </DataTable>
     </div>
   </NConfigProvider>
 </template>
