@@ -18,7 +18,8 @@ import {
 } from "ag-grid-community";
 import { NSpin, NCard, NDialogProvider } from "naive-ui";
 import { AgGridVue } from "ag-grid-vue3";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
+import { useGlobalConfig } from "@/composables/useGlobalConfig";
 
 const props = withDefaults(defineProps<DataTableProps>(), {
   tableKey: () => Date.now().toString(),
@@ -31,12 +32,12 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   borderless: false,
   rowActions: () => [],
   actions: () => [],
-  dark: false,
   persistency: "sessionStorage",
 });
 
-const _isDark = computed(() => props.dark);
-const _themeOverrides = computed(() => props.themeOverrides);
+const { isDark, themeOverrides } = useGlobalConfig();
+const _isDark = computed(() => isDark.value);
+const _themeOverrides = computed(() => themeOverrides.value);
 const { borderColor, themeVars, selectedCellColor, hoverCellColor, theme } =
   useGridStyle(_isDark);
 
@@ -99,6 +100,10 @@ const { columnDefs, defaultColumnDef } = useGridColumns(
     enableSelection: _enableSelection,
     rowActions: _rowActions,
     setGlobalSelection,
+    selectAll,
+    selected,
+    nbSelected,
+    fetchParams,
   },
   tableApi,
   theme,

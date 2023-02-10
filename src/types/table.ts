@@ -40,6 +40,8 @@ export interface OptimizedQueryField {
   externalDocument?: boolean;
 }
 
+export type FilterFactory = (key: string, ...args: any[]) => TableFilter;
+
 export interface TableFilter {
   label?: string | ((dependencies?: GenericObject) => string | VNodeChild);
   key: string;
@@ -97,6 +99,7 @@ export interface Column<T extends GenericObject = GenericObject> {
   render?: (value: any, row: T, params: GenericObject) => VNodeChild | string;
   cellComponent?: GenericObject;
   cellComponentParams?: GenericObject;
+  condition?: (params: TableActionParams) => boolean;
 }
 
 interface MappedColumn {
@@ -152,6 +155,12 @@ export interface ActionParams {
   selected?: any[];
   fetchParams?: FetchParams;
 }
+
+export type RemoteTableData<T extends GenericObject> = {
+  docs: T[];
+  totalDocs: number;
+  totalPages: number;
+};
 
 export type DataSource<T, Y extends "remote" | "local" | null = null> = (
   params: FetchParams
@@ -261,7 +270,7 @@ export interface DataTableSchema<T extends GenericObject = GenericObject> {
   tableKey?: string;
   staticFilters?: StaticFilter[];
   filters?: TableFilter[];
-  searchQuery?: string[];
+  searchQuery?: Array<NestedPaths<DeepRequired<T>>>;
   enableSelection?: boolean;
   actions?: TableAction[];
   rowActions?: TableRowAction<T>;

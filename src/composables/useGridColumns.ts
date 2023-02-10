@@ -1,5 +1,5 @@
 import { ComputedRef, Ref, computed } from "vue";
-import { Column, TableApi, TableRowAction } from "@/types/table";
+import { Column, FetchParams, TableApi, TableRowAction } from "@/types/table";
 
 import SelectionHeaderRenderer from "@/components/DataTable/CellRenderers/SelectionHeaderRenderer.vue";
 import ActionsCellRenderer from "@/components/DataTable/CellRenderers/ActionsCellRenderer.vue";
@@ -23,6 +23,10 @@ type AgGridConfigParams = {
   enableSelection: ComputedRef<boolean>;
   rowActions: ComputedRef<TableRowAction<GenericObject>>;
   setGlobalSelection: () => void;
+  selectAll: Ref<boolean>;
+  selected: Ref<Array<Record<string, any>>>;
+  nbSelected: ComputedRef<number>;
+  fetchParams: ComputedRef<FetchParams>;
 };
 
 export function useGridColumns(
@@ -65,33 +69,46 @@ export function useGridColumns(
           },
         ]
       : []),
-    ...(params.columns.value ?? []).filter(Boolean).map((column) => ({
-      headerName: column.label,
-      field: column.key,
-      width: column.width,
-      hide: column.hide ?? false,
-      resizable: column.resizable ?? true,
-      sortable: column.sortable ?? true,
-      ...(column.render && {
-        cellRendererFramework: JsxCellRenderer,
-        cellRendererParams: {
-          _cellRenderer: column.render,
-          tableApi,
-          theme,
-          themeOverrides,
-        },
-      }),
-      ...(column.cellComponent && {
-        cellRendererFramework: ComponentCellRenderer,
-        cellRendererParams: {
-          _cellRenderer: column.cellComponent,
-          ...(column.cellComponentParams && column.cellComponentParams),
-          tableApi,
-          theme,
-          themeOverrides,
-        },
-      }),
-    })),
+    ...(params.columns.value ?? [])
+      .filter(Boolean)
+      .filter(
+        (column) =>
+          !column.condition ||
+          column.condition({
+            tableApi: tableApi.value as TableApi,
+            nbSelected: params.nbSelected.value,
+            selectAll: params.selectAll.value,
+            selected: params.selected.value,
+            fetchParams: params.fetchParams.value,
+          })
+      )
+      .map((column) => ({
+        headerName: column.label,
+        field: column.key,
+        width: column.width,
+        hide: column.hide ?? false,
+        resizable: column.resizable ?? true,
+        sortable: column.sortable ?? true,
+        ...(column.render && {
+          cellRendererFramework: JsxCellRenderer,
+          cellRendererParams: {
+            _cellRenderer: column.render,
+            tableApi,
+            theme,
+            themeOverrides,
+          },
+        }),
+        ...(column.cellComponent && {
+          cellRendererFramework: ComponentCellRenderer,
+          cellRendererParams: {
+            _cellRenderer: column.cellComponent,
+            ...(column.cellComponentParams && column.cellComponentParams),
+            tableApi,
+            theme,
+            themeOverrides,
+          },
+        }),
+      })),
   ]);
 
   return {

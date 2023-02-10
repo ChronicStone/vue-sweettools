@@ -1,3 +1,4 @@
+import { SweettoolsPluginConfig } from "./types/lib";
 import {
   DataTableProps,
   TableActionParams,
@@ -8,8 +9,9 @@ import {
   DataTableSchema,
   StaticFilter,
   TableFilter,
-} from "@/types/table";
-import { DefineComponent } from "vue";
+  RemoteTableData,
+} from "./types/table";
+import { App, DefineComponent } from "vue";
 
 declare module "@chronicstone/vue-sweettools" {
   export type {
@@ -21,6 +23,7 @@ declare module "@chronicstone/vue-sweettools" {
     TableRowAction,
     TableActionParams,
     FetchParams,
+    RemoteTableData,
   };
 
   export const DataTable: DefineComponent<
@@ -28,4 +31,10 @@ declare module "@chronicstone/vue-sweettools" {
     unknown,
     Record<string, unknown>
   >;
+
+  const plugin: {
+    install(app: App, config: SweettoolsPluginConfig): void;
+  };
+
+  export default plugin;
 }

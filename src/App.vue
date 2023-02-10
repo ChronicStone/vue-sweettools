@@ -2,15 +2,15 @@
 import { DataTableSchema } from "./types/table";
 import { generateUUID } from "./utils/generateUUID";
 import DataTable from "./components/DataTable/DataTable.vue";
-import { ref, render } from "vue";
+import { ref } from "vue";
 import {
   GlobalThemeOverrides,
   NCheckbox,
   NConfigProvider,
-  NButton,
   darkTheme,
   NProgress,
 } from "naive-ui";
+import { GenericObject } from "./types/utils";
 
 type User = {
   _id: string;
@@ -182,14 +182,7 @@ const themeOverrides: GlobalThemeOverrides = {
   >
     <div class="p-0 lg:p-10">
       <NCheckbox v-model:checked="dark">Dark ?</NCheckbox>
-      <DataTable
-        v-bind="schema"
-        :dark="dark"
-        :theme-overrides="themeOverrides"
-        :persistency="'localStorage'"
-      >
-        Test table
-      </DataTable>
+      <DataTable v-bind="schema"> Test table </DataTable>
     </div>
   </NConfigProvider>
 </template>
