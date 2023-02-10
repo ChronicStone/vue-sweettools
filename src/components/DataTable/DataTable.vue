@@ -177,8 +177,6 @@ function handleGridInitialization(params: GridReadyEvent) {
 watch(
   () => selectAll.value,
   (value: boolean) => {
-    console.log("selectAll change", value);
-
     value ? gridApi.value?.selectAll() : gridApi.value?.deselectAll();
   }
 );

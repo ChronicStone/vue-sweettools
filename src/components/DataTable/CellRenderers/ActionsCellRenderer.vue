@@ -59,8 +59,6 @@ const props = defineProps<{ params: ActionsCellProps }>();
 const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
 const { width } = useElementSize(cellContainerRef);
 
-console.log(props.params);
-
 const rowActions = computed(() =>
   props.params._rowActions.filter(
     (action) =>

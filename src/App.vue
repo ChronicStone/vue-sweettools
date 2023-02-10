@@ -135,8 +135,12 @@ const schema: DataTableSchema<User> = {
     {
       tooltip: "Hello",
       icon: "mdi:trash",
-      action: () => console.log("trigger"),
-      condition: ({ rowData }) => rowData.firstName.includes("1"),
+      action: (params) =>
+        console.log(
+          "trigger",
+          params.rowData.firstName,
+          params.rowData.lastName
+        ),
     },
     {
       tooltip: "Hello",
