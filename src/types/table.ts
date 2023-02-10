@@ -210,10 +210,13 @@ export interface TableApi {
 }
 
 export type TableRowAction<T> = {
-  icon: string;
-  tooltip: string;
+  icon: string | ((params: { rowData: T }) => string);
+  tooltip: string | ((params: { rowData: T }) => string);
   action?: (params: { rowData: T; tableApi: TableApi }) => void;
-  link?: string | RouteLocationRaw;
+  link?:
+    | string
+    | RouteLocationRaw
+    | ((params: { rowData: T }) => string | RouteLocationRaw);
   permissions?: (string | string[])[];
   condition?: (params: { rowData: T; tableApi: TableApi }) => boolean;
 };

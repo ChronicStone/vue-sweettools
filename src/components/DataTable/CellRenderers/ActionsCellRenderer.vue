@@ -60,12 +60,30 @@ const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
 const { width } = useElementSize(cellContainerRef);
 
 const rowActions = computed(() =>
-  props.params._rowActions.filter(
-    (action) =>
-      action?.condition?.({
-        rowData: props.params.data,
-        tableApi: props.params.tableApi.value,
-      }) ?? true
-  )
+  props.params._rowActions
+    .map((action) => ({
+      ...action,
+      icon:
+        typeof action.icon === "function"
+          ? action.icon({ rowData: props.params.data })
+          : action.icon,
+      tooltip:
+        typeof action.tooltip === "function"
+          ? action.tooltip({ rowData: props.params.data })
+          : action.tooltip,
+      ...(action.link && {
+        link:
+          typeof action.link === "function"
+            ? action.link({ rowData: props.params.data })
+            : action.link,
+      }),
+    }))
+    .filter(
+      (action) =>
+        action?.condition?.({
+          rowData: props.params.data,
+          tableApi: props.params.tableApi.value,
+        }) ?? true
+    )
 );
 </script>
