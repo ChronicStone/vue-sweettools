@@ -21,7 +21,7 @@ type AgGridConfigParams = {
   isRemote: ComputedRef<boolean>;
   columns: ComputedRef<Column[]>;
   enableSelection: ComputedRef<boolean>;
-  rowActions: ComputedRef<TableRowAction<GenericObject>>;
+  rowActions: ComputedRef<TableRowAction<GenericObject>[]>;
   setGlobalSelection: (value: boolean) => void;
   selectAll: Ref<boolean>;
   selected: Ref<Array<Record<string, any>>>;
@@ -65,7 +65,7 @@ export function useGridColumns(
               theme,
               themeOverrides,
             },
-            width: 80 + params.rowActions.value.length * 65,
+            width: 80 + params.rowActions.value.length * 20,
           },
         ]
       : []),
@@ -73,14 +73,13 @@ export function useGridColumns(
       .filter(Boolean)
       .filter(
         (column) =>
-          !column.condition ||
-          column.condition({
+          column?.condition?.({
             tableApi: tableApi.value as TableApi,
             nbSelected: params.nbSelected.value,
             selectAll: params.selectAll.value,
             selected: params.selected.value,
             fetchParams: params.fetchParams.value,
-          })
+          }) ?? true
       )
       .map((column) => ({
         headerName: column.label,

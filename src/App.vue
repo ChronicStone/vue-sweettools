@@ -131,11 +131,12 @@ const schema: DataTableSchema<User> = {
       action: ({ tableApi }) => tableApi.refreshData(),
     },
   ],
-  rowActions: ({ data }) => [
+  rowActions: [
     {
       tooltip: "Hello",
       icon: "mdi:trash",
       action: () => console.log("trigger"),
+      condition: ({ rowData }) => rowData.firstName.includes("1"),
     },
     {
       tooltip: "Hello",

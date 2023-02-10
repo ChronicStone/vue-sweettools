@@ -43,6 +43,7 @@ export interface OptimizedQueryField {
 export type FilterFactory = (key: string, ...args: any[]) => TableFilter;
 
 export interface TableFilter {
+  condition?: (params: TableActionParams) => boolean;
   label?: string | ((dependencies?: GenericObject) => string | VNodeChild);
   key: string;
   type: FilterType;
@@ -190,12 +191,13 @@ export interface TableActionParams {
   tableApi: TableApi;
 }
 
-export interface TableAction {
+export interface TableAction<T = GenericObject> {
   label: string;
   icon: string;
   action?: (actionParams: TableActionParams) => void;
   link?: string | RouteLocationRaw;
   permissions?: (string | string[])[];
+  condition?: (data: T[], params: TableActionParams) => boolean;
 }
 
 export interface TableApi {
@@ -207,18 +209,14 @@ export interface TableApi {
   setPageSize: (size: number) => void;
 }
 
-export type TableRowAction<T> = (params: {
-  value: any;
-  data: T;
-  tableApi: TableApi;
-}) => {
+export type TableRowAction<T> = {
   icon: string;
   tooltip: string;
-  action?: () => void;
+  action?: (params: { rowData: T; tableApi: TableApi }) => void;
   link?: string | RouteLocationRaw;
   permissions?: (string | string[])[];
-  condition?: (data: T) => any;
-}[];
+  condition?: (params: { rowData: T; tableApi: TableApi }) => boolean;
+};
 
 export type CellRendererParams = {
   value: any;
@@ -273,7 +271,7 @@ export interface DataTableSchema<T extends GenericObject = GenericObject> {
   searchQuery?: Array<NestedPaths<DeepRequired<T>>>;
   enableSelection?: boolean;
   actions?: TableAction[];
-  rowActions?: TableRowAction<T>;
+  rowActions?: TableRowAction<T>[];
   columnFitMode?: "fit" | "fill";
   persistency?: false | "localStorage" | "sessionStorage";
 }

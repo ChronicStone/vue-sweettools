@@ -18,7 +18,11 @@
                     ...(link ? { to: link } : {}),
                   }"
                   v-on="{
-                    click: () => action?.(),
+                    click: () =>
+                      action?.({
+                        rowData: params.data,
+                        tableApi: params.tableApi.value,
+                      }),
                   }"
                 >
                   <NIcon size="18" class="mt-4">
@@ -48,27 +52,22 @@ import { useElementSize } from "@vueuse/core";
 import { computed, ref } from "vue";
 
 interface ActionsCellProps extends CellRendererParams {
-  _rowActions: TableRowAction<GenericObject>;
+  _rowActions: TableRowAction<GenericObject>[];
 }
 
 const props = defineProps<{ params: ActionsCellProps }>();
 const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
 const { width } = useElementSize(cellContainerRef);
 
+console.log(props.params);
+
 const rowActions = computed(() =>
-  props.params
-    ._rowActions({
-      ...props.params,
-      tableApi: props.params.tableApi?.value ?? props.params.tableApi,
-    })
-    .filter(Boolean)
-    .map((action) => ({
-      ...action,
-      _enable: ref(true), // usePermission(...(action?.permissions ?? [])),
-      _render: computed(
-        () => !!(action?.condition?.(props.params.data) ?? true)
-      ),
-    }))
-    .filter((action) => action._enable.value && action._render.value)
+  props.params._rowActions.filter(
+    (action) =>
+      action?.condition?.({
+        rowData: props.params.data,
+        tableApi: props.params.tableApi.value,
+      }) ?? true
+  )
 );
 </script>
