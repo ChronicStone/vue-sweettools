@@ -10,6 +10,7 @@ import {
 import "virtual:windi.css";
 import { PLUGIN_CONF_INJECTION_KEY } from "./config/injectionKeys";
 import { SweettoolsPluginConfig } from "./types/lib";
+import { useSweetform } from "./composables/useSweetform";
 
 export default {
   install: (app: App, config: SweettoolsPluginConfig) => {
@@ -25,4 +26,5 @@ export {
   booleanExistFilter,
   timeRangeFilter,
   booleanFilter,
+  useSweetform,
 };

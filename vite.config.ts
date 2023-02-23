@@ -8,22 +8,44 @@ import Components from "unplugin-vue-components/vite";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import PurgeIcons from "vite-plugin-purge-icons";
 import VueTypeImports from "vite-plugin-vue-type-imports";
+import Pages from "vite-plugin-pages";
 import dts from "vite-plugin-dts";
-
+import AutoImports from "unplugin-auto-import/vite";
+import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     VueTypeImports(),
     WindiCSS(),
+    AutoImports({
+      imports: [
+        "vue",
+        "vue-router",
+        "vue-i18n",
+        "@vueuse/head",
+        "@vueuse/core",
+      ],
+      dts: "src/auto-imports.d.ts",
+      dirs: [
+        "src/composables",
+        "src/composables/**",
+        "src/libs",
+        "src/utils",
+        "src/config",
+      ],
+      vueTemplate: true,
+    }),
     Components({
       dts: true,
-      resolvers: [IconsResolver()],
+      resolvers: [IconsResolver({ componentPrefix: "" }), NaiveUiResolver()],
+      dirs: ["src/components"],
     }),
     PurgeIcons(),
     Icons({ autoInstall: true }),
     vueJsx(),
     dts(),
+    Pages(),
   ],
   resolve: {
     alias: {

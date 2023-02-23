@@ -1,5 +1,5 @@
-import { SweettoolsPluginConfig } from "./types/lib";
-import {
+import type { SweettoolsPluginConfig } from "./types/lib";
+import type {
   DataTableProps,
   TableActionParams,
   TableRowAction,
@@ -11,7 +11,8 @@ import {
   TableFilter,
   RemoteTableData,
 } from "./types/table";
-import { App, DefineComponent } from "vue";
+import type { App, DefineComponent } from "vue";
+import type { FormApi } from "./types/form/instance";
 
 declare module "@chronicstone/vue-sweettools" {
   export type {
@@ -31,6 +32,8 @@ declare module "@chronicstone/vue-sweettools" {
     unknown,
     Record<string, unknown>
   >;
+
+  export function useSweetform(): FormApi;
 
   const plugin: {
     install(app: App, config: SweettoolsPluginConfig): void;

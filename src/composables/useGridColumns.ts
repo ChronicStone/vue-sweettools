@@ -19,7 +19,7 @@ const DEFAULT_COL_DEF = {
 
 type AgGridConfigParams = {
   isRemote: ComputedRef<boolean>;
-  columns: ComputedRef<Column[]>;
+  columns: ComputedRef<Column<any, any>[]>;
   enableSelection: ComputedRef<boolean>;
   rowActions: ComputedRef<TableRowAction<GenericObject>[]>;
   setGlobalSelection: (value: boolean) => void;

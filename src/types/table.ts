@@ -4,6 +4,7 @@ import {
   DeepRequired,
   GenericObject,
   NestedPaths,
+  Primitive,
   TypeFromPath,
 } from "@/types/utils";
 import { RouteLocationRaw } from "vue-router";
@@ -89,9 +90,12 @@ export interface FilterState {
   [key: string]: string | number | boolean | any[] | object;
 }
 
-export interface Column<T extends GenericObject = GenericObject> {
+export interface Column<
+  T extends GenericObject = GenericObject,
+  Key = NestedPaths<DeepRequired<T>>
+> {
   label: string;
-  key: NestedPaths<DeepRequired<T>>;
+  key: Key;
   hide?: boolean;
   filter?: TableFilter;
   width?: number | string;
@@ -103,32 +107,26 @@ export interface Column<T extends GenericObject = GenericObject> {
   condition?: (params: TableActionParams) => boolean;
 }
 
-interface MappedColumn {
-  headerName?: string;
-  chechboxSelection?: boolean;
-  headerComponentFramework?: any;
-  headerComponentParams?: {
-    SetGlobalSelection?: (selection: boolean) => void;
-  };
-  width?: number;
-  resizable?: boolean;
-  sortable?: boolean;
-  hide?: boolean;
-  filter: boolean;
-  floatingFilterComponentFramework: any;
-  floatingFilterComponentParams?: {
-    filterConfig: TableFilter;
-    suppressFilterButton: true;
-  };
-  cellRendererFramework?: any;
-  cellRendererParams?: {
-    _cellRenderer: (
-      value: any,
-      row: GenericObject,
-      params: GenericObject
-    ) => VNodeChild | string | number;
-  };
-}
+// type PickTypeFromPath<
+//   T extends Record<Primitive, Narrowable>,
+//   Path extends NestedPaths<DeepRequired<T>>
+// > = Path extends keyof T
+//   ? T[Path]
+//   : Path extends `${infer P}.${infer K}`
+//   ? PickTypeFromPath<{ [Key in keyof T[keyof T]]: T[keyof T][Key] }, K>
+//   : never;
+
+// type User = {
+//   test: {
+//     firstName: string | number;
+//     somePerson: Array<{ firstName: string; index: 1}>
+//   };
+// };
+
+// const column: Column<User> = {
+//   key: 'test.somePerson',
+//   render: (value) => value.
+// }
 
 export interface MappedFilters {
   value: any;

@@ -5,8 +5,19 @@ import "@chronicstone/vue-sweetforms/dist/style.css";
 
 import Plugin from "./index";
 
-createApp(App)
-  .use(Plugin, {
+import { createRouter, createWebHistory } from "vue-router";
+import routes from "~pages";
+
+const router = createRouter({
+  routes,
+  history: createWebHistory(),
+});
+
+async function bootstrap() {
+  const app = createApp(App);
+
+  app.use(router);
+  app.use(Plugin, {
     isDark: true,
     themeOverrides: {
       common: {
@@ -14,5 +25,10 @@ createApp(App)
         infoColor: "#f7382a",
       },
     },
-  })
-  .mount("#app");
+  });
+
+  await router.isReady();
+  app.mount("#app");
+}
+
+bootstrap();
