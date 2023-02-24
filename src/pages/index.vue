@@ -8,7 +8,9 @@ import { NButton } from "naive-ui";
       <NButton type="primary" @click="$router.push('/datatable')">
         DATA-TABLE SANDBOX
       </NButton>
-      <NButton type="primary">FORM SANDBOX</NButton>
+      <NButton type="primary" @click="$router.push('/form')"
+        >FORM SANDBOX</NButton
+      >
       <NButton type="primary" @click="$router.push('/datagrid')"
         >DATAGRID SANDBOX</NButton
       >

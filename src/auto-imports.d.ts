@@ -2,9 +2,11 @@
 export {}
 declare global {
   const BREAKPOINTS_INJECTION_KEY: typeof import('./config/injectionKeys')['BREAKPOINTS_INJECTION_KEY']
+  const DEFAULT_STYLES: typeof import('./composables/form/useFormStyles')['DEFAULT_STYLES']
   const DESCRIPT_POPUP_INJECTION_KEY: typeof import('./config/injectionKeys')['DESCRIPT_POPUP_INJECTION_KEY']
   const EffectScope: typeof import('vue')['EffectScope']
   const FORM_INJECTION_KEY: typeof import('./config/injectionKeys')['FORM_INJECTION_KEY']
+  const FORM_STYLES_INJECTION_KEY: typeof import('./config/injectionKeys')['FORM_STYLES_INJECTION_KEY']
   const MODAL_OVERLAY_INJECTION_KEY: typeof import('./config/injectionKeys')['MODAL_OVERLAY_INJECTION_KEY']
   const PLUGIN_CONF_INJECTION_KEY: typeof import('./config/injectionKeys')['PLUGIN_CONF_INJECTION_KEY']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
@@ -171,11 +173,19 @@ declare global {
   const useEyeDropper: typeof import('@vueuse/core')['useEyeDropper']
   const useFavicon: typeof import('@vueuse/core')['useFavicon']
   const useFetch: typeof import('@vueuse/core')['useFetch']
+  const useFieldContext: typeof import('./composables/form/useFieldContext')['useFieldContext']
+  const useFieldManager: typeof import('./composables/form/useFieldManagerr')['useFieldManager']
+  const useFieldRules: typeof import('./composables/form/useFieldRules')['useFieldRules']
   const useFileDialog: typeof import('@vueuse/core')['useFileDialog']
   const useFileSystemAccess: typeof import('@vueuse/core')['useFileSystemAccess']
   const useFocus: typeof import('@vueuse/core')['useFocus']
   const useFocusWithin: typeof import('@vueuse/core')['useFocusWithin']
+  const useForm: typeof import('./composables/form/useForm')['useForm']
   const useFormController: typeof import('./composables/useFormController')['useFormController']
+  const useFormFields: typeof import('./composables/form/useFormFields')['useFormFields']
+  const useFormLayout: typeof import('./composables/form/useFormLayout')['useFormLayout']
+  const useFormState: typeof import('./composables/form/useFormState')['useFormState']
+  const useFormStyles: typeof import('./composables/form/useFormStyles')['useFormStyles']
   const useFps: typeof import('@vueuse/core')['useFps']
   const useFullscreen: typeof import('@vueuse/core')['useFullscreen']
   const useGamepad: typeof import('@vueuse/core')['useGamepad']
@@ -225,6 +235,10 @@ declare global {
   const usePreferredLanguages: typeof import('@vueuse/core')['usePreferredLanguages']
   const usePreferredReducedMotion: typeof import('@vueuse/core')['usePreferredReducedMotion']
   const usePrevious: typeof import('@vueuse/core')['usePrevious']
+  const useProvideFormState: typeof import('./composables/form/useFormState')['useProvideFormState']
+  const useProvideFormStyles: typeof import('./composables/form/useFormStyles')['useProvideFormStyles']
+  const useProvideValidationScope: typeof import('./composables/form/useVuelidateScope')['useProvideValidationScope']
+  const useProviderFieldManager: typeof import('./composables/form/useFieldManagerr')['useProviderFieldManager']
   const useQueryState: typeof import('./composables/useQueryState')['useQueryState']
   const useRafFn: typeof import('@vueuse/core')['useRafFn']
   const useRefHistory: typeof import('@vueuse/core')['useRefHistory']
@@ -270,6 +284,7 @@ declare global {
   const useUserMedia: typeof import('@vueuse/core')['useUserMedia']
   const useVModel: typeof import('@vueuse/core')['useVModel']
   const useVModels: typeof import('@vueuse/core')['useVModels']
+  const useValidationScope: typeof import('./composables/form/useVuelidateScope')['useValidationScope']
   const useVibrate: typeof import('@vueuse/core')['useVibrate']
   const useVirtualList: typeof import('@vueuse/core')['useVirtualList']
   const useWakeLock: typeof import('@vueuse/core')['useWakeLock']
@@ -300,9 +315,11 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface ComponentCustomProperties {
     readonly BREAKPOINTS_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['BREAKPOINTS_INJECTION_KEY']>
+    readonly DEFAULT_STYLES: UnwrapRef<typeof import('./composables/form/useFormStyles')['DEFAULT_STYLES']>
     readonly DESCRIPT_POPUP_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['DESCRIPT_POPUP_INJECTION_KEY']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
     readonly FORM_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['FORM_INJECTION_KEY']>
+    readonly FORM_STYLES_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['FORM_STYLES_INJECTION_KEY']>
     readonly MODAL_OVERLAY_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['MODAL_OVERLAY_INJECTION_KEY']>
     readonly PLUGIN_CONF_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['PLUGIN_CONF_INJECTION_KEY']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
@@ -469,11 +486,19 @@ declare module 'vue' {
     readonly useEyeDropper: UnwrapRef<typeof import('@vueuse/core')['useEyeDropper']>
     readonly useFavicon: UnwrapRef<typeof import('@vueuse/core')['useFavicon']>
     readonly useFetch: UnwrapRef<typeof import('@vueuse/core')['useFetch']>
+    readonly useFieldContext: UnwrapRef<typeof import('./composables/form/useFieldContext')['useFieldContext']>
+    readonly useFieldManager: UnwrapRef<typeof import('./composables/form/useFieldManagerr')['useFieldManager']>
+    readonly useFieldRules: UnwrapRef<typeof import('./composables/form/useFieldRules')['useFieldRules']>
     readonly useFileDialog: UnwrapRef<typeof import('@vueuse/core')['useFileDialog']>
     readonly useFileSystemAccess: UnwrapRef<typeof import('@vueuse/core')['useFileSystemAccess']>
     readonly useFocus: UnwrapRef<typeof import('@vueuse/core')['useFocus']>
     readonly useFocusWithin: UnwrapRef<typeof import('@vueuse/core')['useFocusWithin']>
+    readonly useForm: UnwrapRef<typeof import('./composables/form/useForm')['useForm']>
     readonly useFormController: UnwrapRef<typeof import('./composables/useFormController')['useFormController']>
+    readonly useFormFields: UnwrapRef<typeof import('./composables/form/useFormFields')['useFormFields']>
+    readonly useFormLayout: UnwrapRef<typeof import('./composables/form/useFormLayout')['useFormLayout']>
+    readonly useFormState: UnwrapRef<typeof import('./composables/form/useFormState')['useFormState']>
+    readonly useFormStyles: UnwrapRef<typeof import('./composables/form/useFormStyles')['useFormStyles']>
     readonly useFps: UnwrapRef<typeof import('@vueuse/core')['useFps']>
     readonly useFullscreen: UnwrapRef<typeof import('@vueuse/core')['useFullscreen']>
     readonly useGamepad: UnwrapRef<typeof import('@vueuse/core')['useGamepad']>
@@ -523,6 +548,10 @@ declare module 'vue' {
     readonly usePreferredLanguages: UnwrapRef<typeof import('@vueuse/core')['usePreferredLanguages']>
     readonly usePreferredReducedMotion: UnwrapRef<typeof import('@vueuse/core')['usePreferredReducedMotion']>
     readonly usePrevious: UnwrapRef<typeof import('@vueuse/core')['usePrevious']>
+    readonly useProvideFormState: UnwrapRef<typeof import('./composables/form/useFormState')['useProvideFormState']>
+    readonly useProvideFormStyles: UnwrapRef<typeof import('./composables/form/useFormStyles')['useProvideFormStyles']>
+    readonly useProvideValidationScope: UnwrapRef<typeof import('./composables/form/useVuelidateScope')['useProvideValidationScope']>
+    readonly useProviderFieldManager: UnwrapRef<typeof import('./composables/form/useFieldManagerr')['useProviderFieldManager']>
     readonly useQueryState: UnwrapRef<typeof import('./composables/useQueryState')['useQueryState']>
     readonly useRafFn: UnwrapRef<typeof import('@vueuse/core')['useRafFn']>
     readonly useRefHistory: UnwrapRef<typeof import('@vueuse/core')['useRefHistory']>
@@ -568,6 +597,7 @@ declare module 'vue' {
     readonly useUserMedia: UnwrapRef<typeof import('@vueuse/core')['useUserMedia']>
     readonly useVModel: UnwrapRef<typeof import('@vueuse/core')['useVModel']>
     readonly useVModels: UnwrapRef<typeof import('@vueuse/core')['useVModels']>
+    readonly useValidationScope: UnwrapRef<typeof import('./composables/form/useVuelidateScope')['useValidationScope']>
     readonly useVibrate: UnwrapRef<typeof import('@vueuse/core')['useVibrate']>
     readonly useVirtualList: UnwrapRef<typeof import('@vueuse/core')['useVirtualList']>
     readonly useWakeLock: UnwrapRef<typeof import('@vueuse/core')['useWakeLock']>

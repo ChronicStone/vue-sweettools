@@ -20,11 +20,11 @@ export interface FormStep<StepKey, FieldKey> {
   fields: FormField<FieldKey>[];
 }
 
-export type SimpleFormSchema<FieldKey> = BaseFormSchema & {
+export type SimpleFormSchema<FieldKey = string> = BaseFormSchema & {
   fields: FormField<FieldKey>[];
 };
 
-export type SteppedFormSchema<StepKey, FieldKey> = BaseFormSchema & {
+export type SteppedFormSchema<StepKey = "", FieldKey = ""> = BaseFormSchema & {
   showPreviousButton?: boolean;
   previousButtonText?: string;
   nextButtonText?: string;
@@ -89,7 +89,7 @@ export type Narrowable =
   | void
   | null;
 
-export type FormSchema<StepKey, FieldKey> =
+export type FormSchema<StepKey = string, FieldKey = string> =
   | SimpleFormSchema<FieldKey>
   | SteppedFormSchema<StepKey, FieldKey>;
 

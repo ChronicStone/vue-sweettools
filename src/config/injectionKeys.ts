@@ -20,3 +20,7 @@ export const MODAL_OVERLAY_INJECTION_KEY: InjectionKey<{
 export const BREAKPOINTS_INJECTION_KEY: InjectionKey<any> = Symbol(
   "SweetformsBreakpoints"
 );
+
+export const FORM_STYLES_INJECTION_KEY: InjectionKey<
+  ReturnType<typeof useFormStyles>
+> = Symbol("FormStyles");

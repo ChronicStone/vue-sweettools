@@ -343,7 +343,8 @@ export type FormField<N = any> = {
   fields?: FormField<N>[];
   conditionEffect?: "disable" | "hide";
   labelPosition?: "left" | "top";
-  description: string | (() => VNodeChild) | FieldDescription;
+  description?: string | (() => VNodeChild) | FieldDescription;
+  fieldParams?: Record<string, unknown>;
   condition?: (dependencies?: Dependencies) => boolean;
   preformat?: (value: any) => any;
   transform?: (value: any) => any;

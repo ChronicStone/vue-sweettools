@@ -1,12 +1,13 @@
 <script setup lang="tsx">
-import { ref, defineProps, inject, watch, VNodeChild, PropType } from "vue";
+import { VNodeChild } from "vue";
 import { NModal, NCard, NScrollbar } from "naive-ui";
-import { MODAL_OVERLAY_INJECTION_KEY } from "@/config/injectionKeys";
 import { renderVNode } from "@/utils/renderVNode";
+import { FieldDescription } from "@/types/form/fields";
+import { GenericObject } from "@/types/utils";
 
 const props = defineProps<{
-  fieldLabel?: string;
-  description: string | (() => VNodeChild) | { title: string; content: string };
+  fieldLabel?: string | ((dependencies: GenericObject) => VNodeChild);
+  description: string | (() => VNodeChild) | FieldDescription;
 }>();
 
 const showDescription = ref<boolean>(false);
@@ -16,7 +17,7 @@ const PreRenderStringContent = (content: string | VNodeChild) =>
   typeof content === "string" ? () => <div v-html={content}></div> : content;
 
 function renderLabel(
-  fieldLabel: string | undefined,
+  fieldLabel: typeof props.fieldLabel,
   description: typeof props.description
 ) {
   return renderVNode(

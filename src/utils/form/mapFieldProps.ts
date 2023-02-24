@@ -1,8 +1,8 @@
-import { FormField } from "./../../types/form/fields";
+import { FormField, TFieldTypes } from "@/types/form/fields";
 import { FieldTypes } from "@/types/form/fields";
 
 export function mapFieldProps(
-  fieldType: FieldTypes,
+  fieldType: TFieldTypes,
   fieldProps: Record<string, any> = {}
 ) {
   switch (fieldType) {

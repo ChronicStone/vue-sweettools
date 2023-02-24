@@ -20,11 +20,7 @@ module.exports = {
     "prettier/prettier": ["error", {}, { usePrettierrc: true }],
     "no-unref": "off",
     "no-undef": "off",
-    "vue/multi-word-component-names": [
-      "warn",
-      {
-        ignores: ["[...all]", "index", "exam"],
-      },
-    ],
+    "vue/multi-word-component-names": "off",
+    "vue/no-setup-props-destructure": "off",
   },
 };

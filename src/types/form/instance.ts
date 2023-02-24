@@ -11,6 +11,7 @@ import {
   SteppedFormSchema,
 } from "./form";
 import { SelectOption } from "naive-ui";
+import { GenericObject } from "../utils";
 
 export interface FormInstance {
   _id: string;
@@ -70,4 +71,10 @@ export type FieldInstance = Omit<FormField<any>, "fields"> & {
   _items?: Ref<any[]>;
   _watcherItems?: WatchStopHandle;
   fields?: FieldInstance[];
+};
+
+export type FormRefInstance = {
+  $reset(): void;
+  $validate(): Promise<boolean>;
+  $data: ComputedRef<{ [key: string]: any }>;
 };

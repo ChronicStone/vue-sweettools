@@ -20,7 +20,7 @@ function computeStyleModifier(value: string, type: string) {
 }
 
 export const useBreakpointStyle = (
-  styleString: string | number,
+  styleString: string | number | boolean,
   transformKey?:
     | "boolean"
     | "grid-cols"
