@@ -2,8 +2,7 @@ import { FetchParams, TableAction, TableApi } from "@/types/table";
 import { GenericObject } from "@/types/utils";
 import { generateUUID } from "@/utils/generateUUID";
 import { renderIcon } from "@/utils/renderIcon";
-import { GlobalThemeOverrides } from "naive-ui";
-import { ComputedRef, Ref, computed, ref } from "vue";
+import { ComputedRef, Ref } from "vue";
 import { RouteLocationRaw, RouterLink } from "vue-router";
 
 export function useDropdownActions(

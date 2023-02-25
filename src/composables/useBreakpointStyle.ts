@@ -1,11 +1,5 @@
 import { useBreakpoints } from "./useBreakpoints";
 import { breakpointsTailwind } from "@vueuse/core";
-import { computed } from "vue";
-
-interface BreakpointArrayItem {
-  key: string;
-  value: any;
-}
 
 function computeStyleModifier(value: string, type: string) {
   if (type === "grid-cols")

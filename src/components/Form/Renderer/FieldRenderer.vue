@@ -69,7 +69,6 @@ const errorMessage = computed(() => {
       (err) => err.$validator != "$each"
     )[0]?.$message;
   else {
-    console.log("validator inst", $validator.value.$errors[0]);
     if ($validator.value.$errors[0]?.$property !== _field.value.key)
       return _field.value.type === "array"
         ? `The field ${props.field.label

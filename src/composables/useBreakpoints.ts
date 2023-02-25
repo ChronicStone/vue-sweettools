@@ -1,4 +1,3 @@
-import { computed } from "vue";
 import { useBreakpoints as useSourceBreakpoints } from "@vueuse/core";
 interface Breakpoints {
   [key: string]: number;

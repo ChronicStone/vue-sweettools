@@ -30,6 +30,13 @@ export function useFieldRules(
       ? {}
       : {
           [field.key]: {
+            // CUSTOM VALIDATION RULES
+            ...(typeof field?.validators === "function" && {
+              ...field.validators(fieldContext.dependencies.value),
+            }),
+            ...(typeof field.validators === "object" && {
+              ...field.validators,
+            }),
             // REQUIRED FIELD HANDLER
             ...(fieldContext.required.value && {
               required: helpers.withMessage(
@@ -45,12 +52,6 @@ export function useFieldRules(
                     ) as string),
                 required
               ),
-            }),
-            ...(typeof field?.validators === "function" && {
-              ...field.validators(fieldContext.dependencies.value),
-            }),
-            ...(typeof field.validators === "object" && {
-              ...field.validators,
             }),
           },
         }

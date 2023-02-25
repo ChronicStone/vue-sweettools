@@ -4,7 +4,7 @@ import { obsoletableFn } from "@/utils/obsoletableFn";
 import { remoteDataMapper } from "@/utils/table/remoteDataMapper";
 import { RemovableRef } from "@vueuse/core";
 import { GridApi } from "ag-grid-community";
-import { ComputedRef, Ref, nextTick, ref, watch } from "vue";
+import { ComputedRef, Ref } from "vue";
 
 export function useDataResolver(
   remote: ComputedRef<boolean>,
