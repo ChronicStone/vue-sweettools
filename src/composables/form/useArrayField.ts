@@ -54,6 +54,9 @@ export function useArrayField(
         fieldValue.value?.[index],
       ];
     }
+    if (activeTab)
+      activeTab.value = direction === "left" ? index - 1 : index + 1;
+    if (tabsRef) tabsRef.value?.syncBarPosition();
   }
 
   return {

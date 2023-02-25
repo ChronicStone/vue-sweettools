@@ -49,21 +49,21 @@ function buildItemControls(
       key: "delete",
       label: "Delete item",
       icon: renderIcon("mdi:trash"),
-      onClick: () => removeItem(index),
+      props: { onClick: () => removeItem(index) },
     },
     {
       key: "moveLeft",
       label: "Move item left",
       icon: renderIcon("mdi:arrow-left"),
       disabled: index - 1 < 0,
-      onClick: () => moveItem(index, "left"),
+      props: { onClick: () => moveItem(index, "left") },
     },
     {
       key: "moveRight",
       label: "Move item right",
       icon: renderIcon("mdi:arrow-right"),
       disabled: index + 1 >= itemsLength,
-      onClick: () => moveItem(index, "right"),
+      props: { onClick: () => moveItem(index, "right") },
     },
   ];
 }
