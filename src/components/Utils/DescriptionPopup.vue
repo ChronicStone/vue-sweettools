@@ -45,7 +45,7 @@ watch(
     class="h-5 w-5 cursor-pointer grid place-items-center"
     @click="showDescription = true"
   >
-    <i-mdi-information class="h-3.5 w-3.5" />
+    <mdi-information class="h-3.5 w-3.5" />
   </div>
   <NModal v-model:show="showDescription" to="#sweetforms__modalContainer">
     <NCard

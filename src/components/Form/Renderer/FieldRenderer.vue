@@ -11,17 +11,19 @@ const props = withDefaults(
     field: FormField & { _stepIndex?: number };
     modelValue: unknown;
     parentKey?: string[];
-    parentId?: string;
+    itemIndex?: number | null;
     parentDisabled?: boolean;
     multiStep?: boolean;
     stepIndex?: number;
+    showError?: boolean;
   }>(),
   {
     parentKey: () => [],
-    parentId: undefined,
+    itemIndex: null,
     parentDisabled: false,
     multiStep: false,
     stepIndex: undefined,
+    showError: true,
   }
 );
 
@@ -49,22 +51,33 @@ const { scopeKey } = useValidationScope();
 const fieldRules = useFieldRules(
   props.field,
   fieldContext,
+  fieldValue,
   _parentKey,
   _multiStep,
   _stepIndex
 );
 const $validator = useVuelidate(fieldRules, parentContextState, {
   $scope: scopeKey,
+  ...(props.itemIndex !== null && {
+    $registerAs: `${props.parentKey.join(".")}.${props.itemIndex}`,
+  }),
 });
 
 const errorMessage = computed(() => {
-  if (props.field.type != "array")
+  if (!["array", "object"].includes(props.field.type))
     return $validator.value.$errors.filter(
       (err) => err.$validator != "$each"
     )[0]?.$message;
   else {
-    if ($validator.value.$errors[0]?.$validator === "$each")
-      return `The field ${props.field.label} has items with invalid properties`;
+    console.log("validator inst", $validator.value.$errors[0]);
+    if ($validator.value.$errors[0]?.$property !== _field.value.key)
+      return _field.value.type === "array"
+        ? `The field ${props.field.label
+            ?.toString()
+            ?.toLocaleLowerCase()} has items with invalid properties`
+        : `The field ${props.field.label
+            ?.toString()
+            ?.toLocaleLowerCase()} has invalid properties`;
     else return $validator.value.$errors[0]?.$message;
   }
 });
@@ -101,10 +114,11 @@ const FieldComponent = useFieldComponent(_field);
         :validator="$validator"
         :parent-disabled="parentDisabled"
         :collapsed="collapsed"
+        :parent-key="parentKey"
       />
 
       <div
-        v-if="$validator?.$errors?.length"
+        v-if="$validator?.$errors?.length && showError"
         class="flex items-center gap-2 transition-all ease-in-out duration-300 transform"
       >
         <span class="text-red-500">{{ errorMessage }}</span>

@@ -3,6 +3,7 @@ import {
   FieldComponentEmits,
   FieldComponentProps,
   ObjectField,
+  _BaseField,
 } from "@/types/form/fields";
 import { NCard, NCollapseTransition } from "naive-ui";
 import FieldRenderer from "@/components/Form/Renderer/FieldRenderer.vue";
@@ -10,7 +11,7 @@ import FieldRenderer from "@/components/Form/Renderer/FieldRenderer.vue";
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
-const _field = computed(() => props.field as ObjectField);
+const _field = computed(() => props.field as _BaseField & ObjectField);
 
 const fieldValue = computed({
   get: () => props.modelValue,
@@ -33,6 +34,7 @@ const gridSize = useBreakpointStyle(props.field.gridSize ?? "", "grid-cols");
           :key="index"
           v-model="fieldValue[subfield.key]"
           :field="subfield"
+          :parent-key="[...parentKey, _field.key]"
         />
       </div>
     </component>

@@ -1,5 +1,5 @@
 import { GenericObject } from "@/types/utils";
-import { Validation, ValidatorFn } from "@vuelidate/core";
+import { Validation, ValidationArgs, ValidatorFn } from "@vuelidate/core";
 import {
   CascaderOption,
   SelectGroupOption,
@@ -337,7 +337,7 @@ export type FieldDescription = {
   content: string | (() => VNodeChild);
 };
 
-export type FormField<N = any> = {
+export type _BaseField<N = any> = {
   label?: string | ((dependencies: Dependencies) => VNodeChild | string);
   key: N;
   placeholder?: string;
@@ -355,8 +355,8 @@ export type FormField<N = any> = {
   preformat?: (value: any) => any;
   transform?: (value: any) => any;
   validators?:
-    | ((dependencies?: Dependencies) => Record<string, any>)
-    | Record<string, any>;
+    | ((dependencies?: Dependencies) => ValidationArgs)
+    | ValidationArgs;
   watch?: (
     value: any,
     params: {
@@ -364,27 +364,30 @@ export type FormField<N = any> = {
       getValue: (key: string) => void;
     }
   ) => void;
-} & (
-  | TextField
-  | TextAreaField
-  | PasswordField
-  | SelectField
-  | NumberField
-  | SliderField
-  | SwitchField
-  | RadioField
-  | CheckboxField
-  | CheckboxGroupField
-  | TimeField
-  | DateField
-  | ObjectField<N>
-  | ArrayField<N>
-  | InfoField
-  | CustomComponent
-  | TreeSelectField
-  | CascaderField
-  | RatingField
-);
+};
+
+export type FormField<N = any> = _BaseField<N> &
+  (
+    | TextField
+    | TextAreaField
+    | PasswordField
+    | SelectField
+    | NumberField
+    | SliderField
+    | SwitchField
+    | RadioField
+    | CheckboxField
+    | CheckboxGroupField
+    | TimeField
+    | DateField
+    | ObjectField<N>
+    | ArrayField<N>
+    | InfoField
+    | CustomComponent
+    | TreeSelectField
+    | CascaderField
+    | RatingField
+  );
 
 export type FieldContext = ReturnType<typeof useFieldContext>;
 
@@ -396,6 +399,7 @@ export type FieldComponentProps = {
   validator: Validation;
   collapsed: boolean;
   indent?: number;
+  parentKey: string[];
 };
 
 export type FieldComponentEmits = {

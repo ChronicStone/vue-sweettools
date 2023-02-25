@@ -2,6 +2,7 @@
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
 import { FormSchema } from "@/types/form/form";
 import { FormRefInstance } from "@/types/form/instance";
+import { helpers, sameAs } from "@vuelidate/validators";
 import { NButton } from "naive-ui";
 
 const schema: FormSchema = {
@@ -19,6 +20,13 @@ const schema: FormSchema = {
       type: "text",
       required: true,
       size: "8 md:4",
+      dependencies: ["field1"],
+      validators: (dependencies) => ({
+        sameAs: helpers.withMessage(
+          "Isn't the same as field 1",
+          sameAs(dependencies?.field1)
+        ),
+      }),
     },
     {
       label: "Select",
@@ -53,7 +61,7 @@ const schema: FormSchema = {
     {
       label: "Array test",
       type: "array",
-      key: "objectTest",
+      key: "arrayTest",
       size: 8,
       fields: [
         {
@@ -116,14 +124,13 @@ const data = {
 </script>
 
 <template>
-  <div class="p-32 flex flex-col gap-4">
-    <FormRenderer ref="formRef" :schema="schema" :data="data"> </FormRenderer>
-    <NButton type="primary" @click="validate">SUBMIT</NButton>
-
-    <div>
-      <pre>
-        {{ formData }}
-      </pre>
-    </div>
-  </div>
+  <NEl class="p-16 bg-[var(--primary-color)] min-w-screen min-h-screen h-full">
+    <NCard class="p-4">
+      <div class="flex flex-col gap-4">
+        <FormRenderer ref="formRef" :schema="schema" :data="data">
+        </FormRenderer>
+        <NButton type="primary" @click="validate">SUBMIT</NButton>
+      </div>
+    </NCard>
+  </NEl>
 </template>

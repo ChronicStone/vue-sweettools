@@ -27,12 +27,8 @@ export function useForm<
       >
     : never;
 } {
-  onMounted(() => {
-    console.log({ formRef: formRef.value });
-  });
   return {
     validate: async () => {
-      console.log("validating", formRef.value);
       return (await formRef.value?.$validate()) ?? false;
     },
     formData: computed(() => formRef.value?.$data ?? {}) as any,

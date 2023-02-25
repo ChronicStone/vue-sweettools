@@ -3,6 +3,7 @@ import {
   ArrayField,
   FieldComponentEmits,
   FieldComponentProps,
+  _BaseField,
 } from "@/types/form/fields";
 import {
   NCard,
@@ -20,7 +21,7 @@ import { renderIcon } from "@/utils/renderIcon";
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
-const _field = computed(() => props.field as ArrayField);
+const _field = computed(() => props.field as _BaseField & ArrayField);
 
 const fieldValue = computed({
   get: () => props.modelValue,
@@ -73,7 +74,7 @@ function buildItemControls(
     <NCard content-style="padding: 0;">
       <div v-if="!fieldValue?.length" class="w-full p-4">
         <NButton dashed type="primary" class="w-full" @click="addItem">
-          <template #icon><i-mdi-plus /></template>
+          <template #icon><mdi-plus /></template>
           Create item
         </NButton>
       </div>
@@ -105,7 +106,10 @@ function buildItemControls(
           <template #tab>
             <div class="flex gap-4 justify-between items-center">
               <div
-                :class="{ 'text-red-500': validator?.[index]?.$errors?.length }"
+                :class="{
+                  'text-red-500':
+                    validator?.[`${_field.key}.${index}`]?.$errors?.length,
+                }"
               >
                 <span
                   v-if="_field.headerTemplate"
@@ -137,14 +141,24 @@ function buildItemControls(
           <component
             :is="'div'"
             v-if="fieldValue?.[activeTab]"
-            :key="activeTab"
             class="grid gap-4"
             :style="field.gridSize ? gridSize : formStyle?.gridSize"
           >
-            <FieldRenderer
-              v-model="fieldValue[activeTab]"
-              :field="{ ..._field, type: 'object', key: activeTab }"
-            />
+            <template v-for="(item, index) in fieldValue" :key="index">
+              <FieldRenderer
+                v-show="index === activeTab"
+                v-model="fieldValue[index]"
+                :field="{
+                  ..._field,
+                  type: 'object',
+                  key: index,
+                  fieldParams: { frameless: true },
+                }"
+                :parent-key="[...parentKey, _field.key]"
+                :item-index="index"
+                :show-error="false"
+              />
+            </template>
           </component>
           <NEmpty v-else />
         </transition>
