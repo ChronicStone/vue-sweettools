@@ -6,11 +6,14 @@ export function getPropertyFromPath(
   key = ""
 ) {
   const offset = getPathOffset(key);
-  const properties = (Array.isArray(path) ? path : path.split("."))
-    .map((pathKey, index, array) =>
-      index < array.length - offset ? pathKey : null
-    )
-    .filter((pathKey) => pathKey != null);
+  const properties = [
+    ...(Array.isArray(path) ? path : path.split("."))
+      .map((pathKey, index, array) =>
+        index < array.length - offset ? pathKey : null
+      )
+      .filter((pathKey) => pathKey != null),
+    ...key.split(".").slice(1),
+  ];
 
   return properties.reduce(
     (prev, curr) => prev && prev[curr as string],
