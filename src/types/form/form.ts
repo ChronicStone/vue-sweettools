@@ -10,8 +10,13 @@ interface BaseFormSchema {
   showCancelButton?: boolean | string;
   cancelButtonText?: string;
   submitButtonText?: string;
-  closeOnClickOutside?: boolean | string;
   showCloseButton?: boolean;
+  allowOutsideClick?: boolean;
+  showPrevButton?: boolean;
+  prevButtonText?: string;
+  nextButtonText?: string;
+  showStepper?: boolean;
+  requiredMessage?: string | ((label: string) => string);
 }
 
 export interface FormStep<StepKey, FieldKey> {

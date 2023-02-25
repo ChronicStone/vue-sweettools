@@ -14,23 +14,27 @@ export function useForm<
   TFormSchema extends FormSchema<StepKey, FieldKey>,
   StepKey extends Narrowable,
   FieldKey extends Narrowable
->(formRef: Ref<FormRefInstance | undefined>, schema: TFormSchema) {
+>(
+  formRef: Ref<FormRefInstance | undefined>,
+  schema: TFormSchema
+): {
+  validate(): Promise<boolean> | (() => boolean);
+  formData: TFormSchema extends SimpleFormSchema<FieldKey>
+    ? ExpandRecursively<FormInfoReturnType<TFormSchema["fields"][number]>>
+    : TFormSchema extends SteppedFormSchema<StepKey, FieldKey>
+    ? ExpandRecursively<
+        ExtractFieldsFromSteps<StepKey, FieldKey, TFormSchema["steps"][number]>
+      >
+    : never;
+} {
+  onMounted(() => {
+    console.log({ formRef: formRef.value });
+  });
   return {
-    validate: formRef.value?.$validate,
-    formData: computed(
-      () =>
-        (formRef.value?.$data ??
-          {}) as TFormSchema extends SimpleFormSchema<FieldKey>
-          ? ExpandRecursively<FormInfoReturnType<TFormSchema["fields"][number]>>
-          : TFormSchema extends SteppedFormSchema<StepKey, FieldKey>
-          ? ExpandRecursively<
-              ExtractFieldsFromSteps<
-                StepKey,
-                FieldKey,
-                TFormSchema["steps"][number]
-              >
-            >
-          : never
-    ),
+    validate: async () => {
+      console.log("validating", formRef.value);
+      return (await formRef.value?.$validate()) ?? false;
+    },
+    formData: computed(() => formRef.value?.$data ?? {}) as any,
   };
 }

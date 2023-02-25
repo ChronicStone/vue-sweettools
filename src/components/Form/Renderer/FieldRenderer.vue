@@ -13,18 +13,25 @@ const props = withDefaults(
     parentKey?: string[];
     parentId?: string;
     parentDisabled?: boolean;
+    multiStep?: boolean;
+    stepIndex?: number;
   }>(),
   {
     parentKey: () => [],
     parentId: undefined,
     parentDisabled: false,
+    multiStep: false,
+    stepIndex: undefined,
   }
 );
 
 const _field = computed(() => props.field);
 const _parentKey = computed(() => props.parentKey);
+const _multiStep = computed(() => props.multiStep);
+const _stepIndex = computed(() => props.stepIndex);
 
-const fieldRules = useFieldRules(props.field);
+const formStyle = useFormStyles();
+const fieldSize = useBreakpointStyle(props.field?.size ?? "", "col");
 const fieldValue = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
@@ -37,6 +44,13 @@ const parentContextState = computed(() =>
 );
 
 const { scopeKey } = useValidationScope();
+const fieldRules = useFieldRules(
+  props.field,
+  fieldContext,
+  _parentKey,
+  _multiStep,
+  _stepIndex
+);
 const $validator = useVuelidate(fieldRules, parentContextState, {
   $scope: scopeKey,
 });
@@ -55,41 +69,50 @@ const errorMessage = computed(() => {
 </script>
 
 <template>
-  <div
-    v-show="
+  <template
+    v-if="
       fieldContext.condition.value ||
       fieldContext.conditionEffect.value === 'disable'
     "
   >
-    <LabelRenderer
-      :field="field"
-      :dependencies="fieldContext.dependencies.value"
-      :required="fieldContext.required.value"
-    />
-
-    <NInput
-      v-if="['text', 'textarea', 'password'].includes(field.type)"
-      v-model:value="fieldValue"
-      :class="{ fieldError: $validator?.$errors?.length }"
-      :type="field.type"
-      v-bind="fieldContext.inputProps.value"
-      :placeholder="field.placeholder"
-      :disabled="
-        (fieldContext.condition.value == false &&
-          fieldContext.conditionEffect.value == 'disable') ||
-        parentDisabled
-      "
-      :status="$validator?.$errors?.length ? 'error' : 'success'"
-      @blur="$validator.$touch"
-    />
-
     <div
-      v-if="$validator?.$errors?.length"
-      class="flex items-center gap-2 transition-all ease-in-out duration-300 transform"
+      class="flex flex-col gap-2"
+      :class="{
+        'flex-col': (field?.labelPosition ?? 'top') === 'top',
+        'flex-row items-center': (field?.labelPosition ?? 'top') === 'left',
+      }"
+      :style="formStyle?.fieldSize.value"
     >
-      <span class="text-red-500">{{ errorMessage }}</span>
+      <LabelRenderer
+        :field="field"
+        :dependencies="fieldContext.dependencies.value"
+        :required="fieldContext.required.value"
+      />
+
+      <NInput
+        v-if="['text', 'textarea', 'password'].includes(field.type)"
+        v-model:value="fieldValue"
+        :class="{ fieldError: $validator?.$errors?.length }"
+        :type="field.type"
+        v-bind="fieldContext.inputProps.value"
+        :placeholder="field.placeholder"
+        :disabled="
+          (fieldContext.condition.value == false &&
+            fieldContext.conditionEffect.value == 'disable') ||
+          parentDisabled
+        "
+        :status="$validator?.$errors?.length ? 'error' : 'success'"
+        @blur="$validator.$touch"
+      />
+
+      <div
+        v-if="$validator?.$errors?.length"
+        class="flex items-center gap-2 transition-all ease-in-out duration-300 transform"
+      >
+        <span class="text-red-500">{{ errorMessage }}</span>
+      </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <script lang="ts">

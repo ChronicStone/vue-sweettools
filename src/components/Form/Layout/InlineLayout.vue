@@ -7,7 +7,7 @@ const formStyles = useFormStyles();
     <slot name="header" />
     <form
       class="h-full grid gap-4 overflow-y-hidden scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full text-left"
-      :style="`${formStyles?.gridSize}`"
+      :style="`${formStyles?.gridSize.value}`"
       :class="{
         'max-h-10/12': $slots.header && $slots.footer,
         'max-h-11/12':
