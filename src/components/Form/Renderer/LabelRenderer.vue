@@ -4,13 +4,19 @@ import DescriptionPopup from "@/components/Utils/DescriptionPopup.vue";
 import { ArrayField, FormField } from "@/types/form/fields";
 import { GenericObject } from "@/types/utils";
 
+const emit = defineEmits<{ (e: "update:collapsed", value: boolean): void }>();
 const props = defineProps<{
   field: FormField;
   dependencies: GenericObject;
   required: boolean;
+  collapsed: boolean;
 }>();
 
-const collapsed = ref<boolean>((props.field as ArrayField)?.collapsed ?? false);
+const collapsed = computed({
+  get: () => props.collapsed,
+  set: (value: boolean) => emit("update:collapsed", value),
+});
+
 const collapsible = computed<boolean>(
   () => (props.field as ArrayField)?.collapsible ?? true
 );

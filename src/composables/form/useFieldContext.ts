@@ -109,7 +109,9 @@ export function useFieldContext(
   async function resolveFieldOptions(deps: GenericObject) {
     _evalOptions.value = true;
     try {
-      options.value = await (field.value.condition as (...args: any[]) => any)({
+      options.value = await (
+        (field.value as SelectField).options as (...args: any[]) => any
+      )({
         ...deps,
       });
     } catch (err) {

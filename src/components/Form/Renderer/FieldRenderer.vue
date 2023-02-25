@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FormField } from "@/types/form/fields";
+import { ArrayField, FormField } from "@/types/form/fields";
 import useVuelidate from "@vuelidate/core";
 import LabelRenderer from "./LabelRenderer.vue";
 import { NInput } from "naive-ui";
@@ -31,7 +31,9 @@ const _multiStep = computed(() => props.multiStep);
 const _stepIndex = computed(() => props.stepIndex);
 
 const formStyle = useFormStyles();
+const collapsed = ref<boolean>((props.field as ArrayField)?.collapsed ?? false);
 const fieldSize = useBreakpointStyle(props.field?.size ?? "", "col");
+
 const fieldValue = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
@@ -66,6 +68,8 @@ const errorMessage = computed(() => {
     else return $validator.value.$errors[0]?.$message;
   }
 });
+
+const FieldComponent = useFieldComponent(_field);
 </script>
 
 <template>
@@ -84,42 +88,19 @@ const errorMessage = computed(() => {
       :style="field.size ? fieldSize : formStyle?.fieldSize.value"
     >
       <LabelRenderer
+        v-model:collapsed="collapsed"
         :field="field"
         :dependencies="fieldContext.dependencies.value"
         :required="fieldContext.required.value"
       />
 
-      <NInput
-        v-if="['text', 'textarea', 'password'].includes(field.type)"
-        v-model:value="fieldValue"
-        :class="{ fieldError: $validator?.$errors?.length }"
-        :type="field.type"
-        v-bind="fieldContext.inputProps.value"
-        :placeholder="field.placeholder"
-        :disabled="
-          (fieldContext.condition.value == false &&
-            fieldContext.conditionEffect.value == 'disable') ||
-          parentDisabled
-        "
-        :status="$validator?.$errors?.length ? 'error' : 'success'"
-        @blur="$validator.$touch"
-      />
-
-      <NSelect
-        v-if="field.type === 'select'"
-        v-model:value="fieldValue"
-        :placeholder="field.placeholder"
-        :options="fieldContext.options.value ?? field.options"
-        v-bind="fieldContext.inputProps.value"
-        :loading="fieldContext._evalOptions.value"
-        filterable
-        :disabled="
-          (fieldContext.condition.value == false &&
-            fieldContext.conditionEffect.value == 'disable') ||
-          parentDisabled
-        "
-        :status="$validator?.$errors?.length ? 'error' : 'success'"
-        @blur="$validator.$touch"
+      <FieldComponent
+        v-model="fieldValue"
+        :field="field"
+        :context="fieldContext"
+        :validator="$validator"
+        :parent-disabled="parentDisabled"
+        :collapsed="collapsed"
       />
 
       <div

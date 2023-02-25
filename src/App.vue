@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { NDialogProvider } from "naive-ui";
 import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <router-view />
+  <NDialogProvider>
+    <router-view />
+  </NDialogProvider>
 </template>

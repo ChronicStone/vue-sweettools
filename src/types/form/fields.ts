@@ -1,3 +1,5 @@
+import { GenericObject } from "@/types/utils";
+import { Validation, ValidatorFn } from "@vuelidate/core";
 import {
   CascaderOption,
   SelectGroupOption,
@@ -294,7 +296,7 @@ export interface DateField {
   };
 }
 
-export interface ObjectField<N> {
+export interface ObjectField<N = any> {
   type: "object";
   extraProperties?: boolean;
   gridSize?: number | string;
@@ -311,6 +313,10 @@ export interface ArrayField<N = any> {
   fields: FormField<N>[];
   collapsible?: boolean;
   collapsed?: boolean;
+  headerTemplate?: (
+    item: Record<string, GenericObject>,
+    index: number
+  ) => string;
 }
 
 export interface InfoField {
@@ -379,3 +385,19 @@ export type FormField<N = any> = {
   | CascaderField
   | RatingField
 );
+
+export type FieldContext = ReturnType<typeof useFieldContext>;
+
+export type FieldComponentProps = {
+  modelValue: any;
+  field: FormField;
+  context: FieldContext;
+  parentDisabled: boolean;
+  validator: Validation;
+  collapsed: boolean;
+  indent?: number;
+};
+
+export type FieldComponentEmits = {
+  (e: "update:modelValue", value: any): void;
+};

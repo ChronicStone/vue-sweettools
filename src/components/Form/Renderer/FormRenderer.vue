@@ -60,7 +60,6 @@ defineExpose<FormRefInstance>({
       />
     </template>
   </LayoutContainer>
-  {{ formState }}
 </template>
 
 <style>
