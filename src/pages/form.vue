@@ -20,6 +20,14 @@ const schema: FormSchema = {
       required: true,
       size: "8 md:4",
     },
+    {
+      label: "Select",
+      key: "selectTest",
+      type: "select",
+      options: [{ label: "hello", value: "hello" }],
+      required: true,
+      size: 8,
+    },
   ],
 };
 

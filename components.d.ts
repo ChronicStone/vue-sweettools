@@ -26,6 +26,7 @@ declare module '@vue/runtime-core' {
     JsxCellRenderer: typeof import('./src/components/DataTable/CellRenderers/JsxCellRenderer.vue')['default']
     LabelRenderer: typeof import('./src/components/Form/Renderer/LabelRenderer.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
+    NSelect: typeof import('naive-ui')['NSelect']
     NumberField: typeof import('./src/components/Form/Field/NumberField.vue')['default']
     ObjectField: typeof import('./src/components/Form/Field/ObjectField.vue')['default']
     PasswordField: typeof import('./src/components/Form/Field/PasswordField.vue')['default']

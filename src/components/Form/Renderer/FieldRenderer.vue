@@ -81,7 +81,7 @@ const errorMessage = computed(() => {
         'flex-col': (field?.labelPosition ?? 'top') === 'top',
         'flex-row items-center': (field?.labelPosition ?? 'top') === 'left',
       }"
-      :style="formStyle?.fieldSize.value"
+      :style="field.size ? fieldSize : formStyle?.fieldSize.value"
     >
       <LabelRenderer
         :field="field"
@@ -96,6 +96,23 @@ const errorMessage = computed(() => {
         :type="field.type"
         v-bind="fieldContext.inputProps.value"
         :placeholder="field.placeholder"
+        :disabled="
+          (fieldContext.condition.value == false &&
+            fieldContext.conditionEffect.value == 'disable') ||
+          parentDisabled
+        "
+        :status="$validator?.$errors?.length ? 'error' : 'success'"
+        @blur="$validator.$touch"
+      />
+
+      <NSelect
+        v-if="field.type === 'select'"
+        v-model:value="fieldValue"
+        :placeholder="field.placeholder"
+        :options="fieldContext.options.value ?? field.options"
+        v-bind="fieldContext.inputProps.value"
+        :loading="fieldContext._evalOptions.value"
+        filterable
         :disabled="
           (fieldContext.condition.value == false &&
             fieldContext.conditionEffect.value == 'disable') ||

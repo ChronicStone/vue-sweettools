@@ -36,7 +36,11 @@ export function useFieldContext(
   );
 
   const _evalOptions = ref<boolean>(false);
-  const options = ref([]);
+  const options = ref(
+    Array.isArray((field.value as SelectField).options)
+      ? ((field.value as SelectField).options as unknown as SelectOption[])
+      : []
+  );
 
   const dependencies = computed(() =>
     mapFieldDependencies(
