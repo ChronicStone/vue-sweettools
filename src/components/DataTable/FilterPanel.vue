@@ -81,7 +81,7 @@ onKeyPressed("Enter", () => applyFilters());
         <template #header>
           <div class="flex items-center justify-start py-2">
             <NIcon class="mr-2">
-              <i:mdi-filter-variant />
+              <mdi:filter-variant />
             </NIcon>
             <span>
               Filters

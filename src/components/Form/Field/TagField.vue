@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FieldComponentEmits, FieldComponentProps } from "@/types/form/fields";
-import { NTimePicker } from "naive-ui";
+import { NDynamicTags } from "naive-ui";
 
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
@@ -12,13 +12,10 @@ const fieldValue = computed({
 </script>
 
 <template>
-  <NTimePicker
-    v-if="field.type === 'time'"
+  <NDynamicTags
     v-model:value="fieldValue"
-    :placeholder="field.placeholder"
     v-bind="context.inputProps.value"
     :disabled="disabled"
-    :status="validator?.$errors?.length ? 'error' : 'success'"
     @blur="validator.$touch"
   />
 </template>

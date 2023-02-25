@@ -90,7 +90,7 @@ const _panelFilters = computed({
           <NButton secondary type="primary" @click="resolveGridData">
             <template #icon>
               <NIcon>
-                <i:mdi-refresh />
+                <mdi-refresh />
               </NIcon>
             </template>
           </NButton>

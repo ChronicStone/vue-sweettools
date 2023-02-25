@@ -4,7 +4,7 @@ import { GenericObject } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 import { mapFieldDependencies } from "@/utils/form/mapFieldDependencies";
 import { mapFieldProps } from "@/utils/form/mapFieldProps";
-import { SelectOption } from "naive-ui";
+import { CascaderOption, SelectOption, TreeSelectOption } from "naive-ui";
 import { Ref, ComputedRef, WritableComputedRef } from "vue";
 
 export function useFieldContext(
@@ -38,7 +38,11 @@ export function useFieldContext(
   const _evalOptions = ref<boolean>(false);
   const options = ref(
     Array.isArray((field.value as SelectField).options)
-      ? ((field.value as SelectField).options as unknown as SelectOption[])
+      ? ((field.value as SelectField).options as unknown as (
+          | SelectOption
+          | TreeSelectOption
+          | CascaderOption
+        )[])
       : []
   );
 

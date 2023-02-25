@@ -1,3 +1,4 @@
+import { Primitive } from "./../utils";
 import { GenericObject } from "@/types/utils";
 import { Validation, ValidationArgs, ValidatorFn } from "@vuelidate/core";
 import {
@@ -5,6 +6,7 @@ import {
   SelectGroupOption,
   SelectOption,
   TreeSelectOption,
+  InputProps,
 } from "naive-ui";
 import { SelectBaseOption } from "naive-ui/es/select/src/interface";
 import { Component, VNode, VNodeChild } from "vue";
@@ -149,6 +151,25 @@ export interface TextAreaField {
   fieldParams?: TextField["fieldParams"] & {
     autosize?: boolean | { minRows?: number; maxRows?: number };
     showCount?: boolean;
+  };
+}
+
+export interface TagField {
+  type: "tag";
+  fieldParams?: {
+    deletable?: boolean;
+    type?: "default" | "primary" | "info" | "success" | "warning" | "error";
+    size?: "small" | "medium" | "large";
+    tagStyle?: string | Record<string, Primitive>;
+    onCreate?:
+      | ((label: string) => string)
+      | ((label: string) => { label: string; value: string });
+    rounded?: boolean;
+    max?: number;
+    inputProps?: InputProps;
+    renderTag?:
+      | ((tag: string, index: number) => VNodeChild)
+      | ((tag: { label: string; value: string }, index: number) => VNodeChild);
   };
 }
 
@@ -324,7 +345,7 @@ export interface InfoField {
   content: (dependencies: { [key: string]: any }) => VNodeChild | string;
 }
 
-export interface CustomComponent {
+export interface CustomField {
   type: "custom-component";
   component: Component;
   fieldParams?: { [key: string]: any };
@@ -383,10 +404,11 @@ export type FormField<N = any> = _BaseField<N> &
     | ObjectField<N>
     | ArrayField<N>
     | InfoField
-    | CustomComponent
+    | CustomField
     | TreeSelectField
     | CascaderField
     | RatingField
+    | TagField
   );
 
 export type FieldContext = ReturnType<typeof useFieldContext>;
@@ -400,6 +422,7 @@ export type FieldComponentProps = {
   collapsed: boolean;
   indent?: number;
   parentKey: string[];
+  disabled: boolean;
 };
 
 export type FieldComponentEmits = {

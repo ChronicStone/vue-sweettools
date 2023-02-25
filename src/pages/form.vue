@@ -75,6 +75,16 @@ const schema: FormSchema = {
           type: "text",
           key: "test2",
         },
+        {
+          label: "test 2",
+          type: "text",
+          key: "test3",
+          dependencies: [["$parent.test2", "test2"]],
+          condition: (dependencies) => {
+            console.log({ dependencies });
+            return dependencies?.test2 === "hehe";
+          },
+        },
       ],
     },
   ],

@@ -100,6 +100,13 @@ const FieldComponent = useFieldComponent(_field);
       :style="field.size ? fieldSize : formStyle?.fieldSize.value"
     >
       <LabelRenderer
+        v-if="
+          (!field?.label && field.type === 'info') ||
+          field.type === 'checkbox' ||
+          (field.type === 'object' && field?.fieldParams?.frameless)
+            ? false
+            : true
+        "
         v-model:collapsed="collapsed"
         :field="field"
         :dependencies="fieldContext.dependencies.value"
@@ -111,6 +118,11 @@ const FieldComponent = useFieldComponent(_field);
         :field="field"
         :context="fieldContext"
         :validator="$validator"
+        :disabled="
+          (fieldContext.condition.value == false &&
+            fieldContext.conditionEffect.value == 'disable') ||
+          parentDisabled
+        "
         :parent-disabled="parentDisabled"
         :collapsed="collapsed"
         :parent-key="parentKey"

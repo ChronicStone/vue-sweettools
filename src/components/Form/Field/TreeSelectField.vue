@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FieldComponentEmits, FieldComponentProps } from "@/types/form/fields";
-import { NTimePicker } from "naive-ui";
+import { NTreeSelect, TreeSelectOption } from "naive-ui";
 
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
@@ -10,15 +10,16 @@ const fieldValue = computed({
   set: (value) => emit("update:modelValue", value),
 });
 </script>
-
 <template>
-  <NTimePicker
-    v-if="field.type === 'time'"
+  <NTreeSelect
     v-model:value="fieldValue"
-    :placeholder="field.placeholder"
     v-bind="context.inputProps.value"
+    :placeholder="field.placeholder"
+    :options="(context.options.value as TreeSelectOption[])"
+    :loading="context._evalOptions.value"
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
+    filterable
     @blur="validator.$touch"
   />
 </template>

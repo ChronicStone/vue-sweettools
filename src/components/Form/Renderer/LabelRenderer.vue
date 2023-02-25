@@ -9,7 +9,7 @@ const props = defineProps<{
   field: FormField;
   dependencies: GenericObject;
   required: boolean;
-  collapsed: boolean;
+  collapsed?: boolean;
 }>();
 
 const collapsed = computed({
@@ -23,16 +23,7 @@ const collapsible = computed<boolean>(
 </script>
 
 <template>
-  <div
-    v-if="
-      (!field?.label && field.type === 'info') ||
-      field.type === 'checkbox' ||
-      (field.type === 'object' && field?.fieldParams?.frameless)
-        ? false
-        : true
-    "
-    class="flex gap-2 items-center justify-left"
-  >
+  <div class="flex gap-2 items-center justify-left">
     <span
       v-if="field?.label"
       class="m-0 flex gap-2 justify-start items-center group cursor-pointer"
