@@ -12,7 +12,6 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
     formState: Ref<GenericObject>
   ) => {
     const libConfig = useGlobalConfig();
-
     function mapFormFules(
       fields: typeof formFields.value,
       state: GenericObject,

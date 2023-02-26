@@ -18,6 +18,7 @@ export function useForm<
   formRef: Ref<FormRefInstance | undefined>,
   schema: TFormSchema
 ): {
+  schema: TFormSchema;
   validate(): Promise<boolean> | (() => boolean);
   formData: TFormSchema extends SimpleFormSchema<FieldKey>
     ? ExpandRecursively<FormInfoReturnType<TFormSchema["fields"][number]>>
@@ -28,9 +29,22 @@ export function useForm<
     : never;
 } {
   return {
+    schema,
     validate: async () => {
       return (await formRef.value?.$validate()) ?? false;
     },
-    formData: computed(() => formRef.value?.$data ?? {}) as any,
+    formData: computed(
+      () => formRef.value?.$data ?? {}
+    ) as TFormSchema extends SimpleFormSchema<FieldKey>
+      ? ExpandRecursively<FormInfoReturnType<TFormSchema["fields"][number]>>
+      : TFormSchema extends SteppedFormSchema<StepKey, FieldKey>
+      ? ExpandRecursively<
+          ExtractFieldsFromSteps<
+            StepKey,
+            FieldKey,
+            TFormSchema["steps"][number]
+          >
+        >
+      : never,
   };
 }

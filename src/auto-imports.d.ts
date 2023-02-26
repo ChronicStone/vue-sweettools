@@ -176,8 +176,6 @@ declare global {
   const useFetch: typeof import('@vueuse/core')['useFetch']
   const useFieldComponent: typeof import('./composables/form/useFieldComponent')['useFieldComponent']
   const useFieldContext: typeof import('./composables/form/useFieldContext')['useFieldContext']
-  const useFieldManager: typeof import('./composables/form/useFieldManagerr')['useFieldManager']
-  const useFieldRules: typeof import('./composables/form/useFieldRules')['useFieldRules']
   const useFileDialog: typeof import('@vueuse/core')['useFileDialog']
   const useFileSystemAccess: typeof import('@vueuse/core')['useFileSystemAccess']
   const useFocus: typeof import('@vueuse/core')['useFocus']
@@ -240,8 +238,6 @@ declare global {
   const useProvideFormState: typeof import('./composables/form/useFormState')['useProvideFormState']
   const useProvideFormStyles: typeof import('./composables/form/useFormStyles')['useProvideFormStyles']
   const useProvideFormValidation: typeof import('./composables/form/useFormValidation')['useProvideFormValidation']
-  const useProvideValidationScope: typeof import('./composables/form/useVuelidateScope')['useProvideValidationScope']
-  const useProviderFieldManager: typeof import('./composables/form/useFieldManagerr')['useProviderFieldManager']
   const useQueryState: typeof import('./composables/useQueryState')['useQueryState']
   const useRafFn: typeof import('@vueuse/core')['useRafFn']
   const useRefHistory: typeof import('@vueuse/core')['useRefHistory']
@@ -287,7 +283,6 @@ declare global {
   const useUserMedia: typeof import('@vueuse/core')['useUserMedia']
   const useVModel: typeof import('@vueuse/core')['useVModel']
   const useVModels: typeof import('@vueuse/core')['useVModels']
-  const useValidationScope: typeof import('./composables/form/useVuelidateScope')['useValidationScope']
   const useVibrate: typeof import('@vueuse/core')['useVibrate']
   const useVirtualList: typeof import('@vueuse/core')['useVirtualList']
   const useWakeLock: typeof import('@vueuse/core')['useWakeLock']
@@ -492,8 +487,6 @@ declare module 'vue' {
     readonly useFetch: UnwrapRef<typeof import('@vueuse/core')['useFetch']>
     readonly useFieldComponent: UnwrapRef<typeof import('./composables/form/useFieldComponent')['useFieldComponent']>
     readonly useFieldContext: UnwrapRef<typeof import('./composables/form/useFieldContext')['useFieldContext']>
-    readonly useFieldManager: UnwrapRef<typeof import('./composables/form/useFieldManagerr')['useFieldManager']>
-    readonly useFieldRules: UnwrapRef<typeof import('./composables/form/useFieldRules')['useFieldRules']>
     readonly useFileDialog: UnwrapRef<typeof import('@vueuse/core')['useFileDialog']>
     readonly useFileSystemAccess: UnwrapRef<typeof import('@vueuse/core')['useFileSystemAccess']>
     readonly useFocus: UnwrapRef<typeof import('@vueuse/core')['useFocus']>
@@ -556,8 +549,6 @@ declare module 'vue' {
     readonly useProvideFormState: UnwrapRef<typeof import('./composables/form/useFormState')['useProvideFormState']>
     readonly useProvideFormStyles: UnwrapRef<typeof import('./composables/form/useFormStyles')['useProvideFormStyles']>
     readonly useProvideFormValidation: UnwrapRef<typeof import('./composables/form/useFormValidation')['useProvideFormValidation']>
-    readonly useProvideValidationScope: UnwrapRef<typeof import('./composables/form/useVuelidateScope')['useProvideValidationScope']>
-    readonly useProviderFieldManager: UnwrapRef<typeof import('./composables/form/useFieldManagerr')['useProviderFieldManager']>
     readonly useQueryState: UnwrapRef<typeof import('./composables/useQueryState')['useQueryState']>
     readonly useRafFn: UnwrapRef<typeof import('@vueuse/core')['useRafFn']>
     readonly useRefHistory: UnwrapRef<typeof import('@vueuse/core')['useRefHistory']>
@@ -603,7 +594,6 @@ declare module 'vue' {
     readonly useUserMedia: UnwrapRef<typeof import('@vueuse/core')['useUserMedia']>
     readonly useVModel: UnwrapRef<typeof import('@vueuse/core')['useVModel']>
     readonly useVModels: UnwrapRef<typeof import('@vueuse/core')['useVModels']>
-    readonly useValidationScope: UnwrapRef<typeof import('./composables/form/useVuelidateScope')['useValidationScope']>
     readonly useVibrate: UnwrapRef<typeof import('@vueuse/core')['useVibrate']>
     readonly useVirtualList: UnwrapRef<typeof import('@vueuse/core')['useVirtualList']>
     readonly useWakeLock: UnwrapRef<typeof import('@vueuse/core')['useWakeLock']>
