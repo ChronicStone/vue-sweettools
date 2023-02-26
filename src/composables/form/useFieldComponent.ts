@@ -1,7 +1,6 @@
 import {
   FieldTypes,
   FormField,
-  ArrayField as TArrayField,
   FieldComponentProps,
   FieldComponentEmits,
 } from "@/types/form/fields";
@@ -62,11 +61,9 @@ export function useFieldComponent(field: ComputedRef<FormField>) {
         return InfoField;
       case FieldTypes.OBJECT:
         return ObjectField;
-      case FieldTypes.ARRAY:
-        if ((field.value as TArrayField).format === "tabs")
-          return ArrayTabField;
-        if ((field.value as TArrayField).format === "list")
-          return ArrayListField;
+      case FieldTypes.ARRAY_LIST:
+        return ArrayListField;
+      case FieldTypes.ARRAY_TABS:
         return ArrayTabField;
       case FieldTypes.CUSTOM_COMPONENT:
         return CustomField;

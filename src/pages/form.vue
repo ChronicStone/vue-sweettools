@@ -60,8 +60,10 @@ const schema: FormSchema = {
     },
     {
       label: "Array test",
-      type: "array",
+      type: "array-list",
       key: "arrayTest",
+      listGridSize: "2",
+      listItemSize: "2 md:1",
       size: 8,
       fields: [
         {
@@ -130,7 +132,15 @@ const data = {
   objectTest: {
     test2: "4231231",
   },
+  arrayTest: Array.from({ length: 5 }, (_, index) => ({
+    test2: `haha${index}`,
+  })),
 };
+
+async function submit() {
+  const isValid = await validate();
+  console.log({ isValid });
+}
 </script>
 
 <template>
@@ -139,7 +149,7 @@ const data = {
       <div class="flex flex-col gap-4">
         <FormRenderer ref="formRef" :schema="schema" :data="data">
         </FormRenderer>
-        <NButton type="primary" @click="validate">SUBMIT</NButton>
+        <NButton type="primary" @click="submit">SUBMIT</NButton>
       </div>
     </NCard>
   </NEl>

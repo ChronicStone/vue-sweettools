@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { NCollapseTransition } from "naive-ui";
 import {
   CustomField,
   FieldComponentEmits,
   FieldComponentProps,
 } from "@/types/form/fields";
-import { NCollapseTransition } from "naive-ui";
 
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
@@ -18,9 +18,10 @@ const fieldValue = computed({
 </script>
 
 <template>
-  <NCollapseTransition :show="!collapsed">
+  <NCollapseTransition>
     <component
       :is="_field.component"
+      v-show="!collapsed"
       v-model="fieldValue"
       v-bind="{
         ..._field.fieldParams,

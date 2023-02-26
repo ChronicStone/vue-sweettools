@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ArrayField, FormField } from "@/types/form/fields";
-import useVuelidate from "@vuelidate/core";
+import { ObjectField, FormField } from "@/types/form/fields";
+import useVuelidate, { Validation } from "@vuelidate/core";
 import LabelRenderer from "./LabelRenderer.vue";
 import { NInput } from "naive-ui";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
@@ -33,7 +33,9 @@ const _multiStep = computed(() => props.multiStep);
 const _stepIndex = computed(() => props.stepIndex);
 
 const formStyle = useFormStyles();
-const collapsed = ref<boolean>((props.field as ArrayField)?.collapsed ?? false);
+const collapsed = ref<boolean>(
+  (props.field as ObjectField)?.collapsed ?? false
+);
 const fieldSize = useBreakpointStyle(props.field?.size ?? "", "col");
 
 const fieldValue = computed({
@@ -47,30 +49,23 @@ const parentContextState = computed(() =>
   getPropertyFromPath(_parentKey.value, formState.value)
 );
 
-const { scopeKey } = useValidationScope();
-const fieldRules = useFieldRules(
-  props.field,
-  fieldContext,
-  fieldValue,
-  _parentKey,
-  _multiStep,
-  _stepIndex
+const $globalValidation = useFormValidation();
+const $validator = computed(
+  () =>
+    getPropertyFromPath(
+      [...props.parentKey, _field.value.key],
+      $globalValidation.$validator.value
+    ) as Validation
 );
-const $validator = useVuelidate(fieldRules, parentContextState, {
-  $scope: scopeKey,
-  ...(props.itemIndex !== null && {
-    $registerAs: `${props.parentKey.join(".")}.${props.itemIndex}`,
-  }),
-});
 
 const errorMessage = computed(() => {
-  if (!["array", "object"].includes(props.field.type))
+  if (!["array-list", "array-tabs", "object"].includes(props.field.type))
     return $validator.value.$errors.filter(
       (err) => err.$validator != "$each"
     )[0]?.$message;
   else {
     if ($validator.value.$errors[0]?.$property !== _field.value.key)
-      return _field.value.type === "array"
+      return ["array-tabs", "array-list"].includes(_field.value.type)
         ? `The field ${props.field.label
             ?.toString()
             ?.toLocaleLowerCase()} has items with invalid properties`
@@ -85,57 +80,54 @@ const FieldComponent = useFieldComponent(_field);
 </script>
 
 <template>
-  <template
+  <div
     v-if="
       fieldContext.condition.value ||
       fieldContext.conditionEffect.value === 'disable'
     "
+    class="flex flex-col gap-2"
+    :class="{
+      'flex-col': (field?.labelPosition ?? 'top') === 'top',
+      'flex-row items-center': (field?.labelPosition ?? 'top') === 'left',
+    }"
+    :style="field.size ? fieldSize : formStyle?.fieldSize.value"
   >
+    <LabelRenderer
+      v-if="
+        (!field?.label && field.type === 'info') ||
+        field.type === 'checkbox' ||
+        (field.type === 'object' && field?.fieldParams?.frameless)
+          ? false
+          : true
+      "
+      v-model:collapsed="collapsed"
+      :field="field"
+      :dependencies="fieldContext.dependencies.value"
+      :required="fieldContext.required.value"
+    />
+
+    <FieldComponent
+      v-model="fieldValue"
+      :field="field"
+      :context="fieldContext"
+      :validator="$validator"
+      :disabled="
+        (fieldContext.condition.value == false &&
+          fieldContext.conditionEffect.value == 'disable') ||
+        parentDisabled
+      "
+      :parent-disabled="parentDisabled"
+      :collapsed="collapsed"
+      :parent-key="parentKey"
+    />
+
     <div
-      class="flex flex-col gap-2"
-      :class="{
-        'flex-col': (field?.labelPosition ?? 'top') === 'top',
-        'flex-row items-center': (field?.labelPosition ?? 'top') === 'left',
-      }"
-      :style="field.size ? fieldSize : formStyle?.fieldSize.value"
+      v-if="$validator?.$errors?.length && showError"
+      class="flex items-center gap-2 transition-all ease-in-out duration-300 transform"
     >
-      <LabelRenderer
-        v-if="
-          (!field?.label && field.type === 'info') ||
-          field.type === 'checkbox' ||
-          (field.type === 'object' && field?.fieldParams?.frameless)
-            ? false
-            : true
-        "
-        v-model:collapsed="collapsed"
-        :field="field"
-        :dependencies="fieldContext.dependencies.value"
-        :required="fieldContext.required.value"
-      />
-
-      <FieldComponent
-        v-model="fieldValue"
-        :field="field"
-        :context="fieldContext"
-        :validator="$validator"
-        :disabled="
-          (fieldContext.condition.value == false &&
-            fieldContext.conditionEffect.value == 'disable') ||
-          parentDisabled
-        "
-        :parent-disabled="parentDisabled"
-        :collapsed="collapsed"
-        :parent-key="parentKey"
-      />
-
-      <div
-        v-if="$validator?.$errors?.length && showError"
-        class="flex items-center gap-2 transition-all ease-in-out duration-300 transform"
-      >
-        <span class="text-red-500">{{ errorMessage }}</span>
-      </div>
+      <span class="text-red-500">{{ errorMessage }}</span>
     </div>
-  </template>
+  </div>
 </template>
 
 <script lang="ts">

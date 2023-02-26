@@ -1,10 +1,10 @@
-import { ArrayField } from "@/types/form/fields";
+import { ArrayListField, ArrayTabsField } from "@/types/form/fields";
 import { mapFieldsInitialState } from "@/utils/form/mapFieldsInitialState";
 import { TabsInst, useDialog } from "naive-ui";
 import { ComputedRef, Ref, WritableComputedRef } from "vue";
 
 export function useArrayField(
-  field: ComputedRef<ArrayField>,
+  field: ComputedRef<ArrayListField | ArrayTabsField>,
   fieldValue: WritableComputedRef<Array<Record<string, any>>>,
   activeTab?: Ref<number>,
   tabsRef?: Ref<TabsInst | undefined>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CollapseButton from "@/components/Utils/CollapseButton.vue";
 import DescriptionPopup from "@/components/Utils/DescriptionPopup.vue";
-import { ArrayField, FormField } from "@/types/form/fields";
+import { ObjectField, FormField } from "@/types/form/fields";
 import { GenericObject } from "@/types/utils";
 
 const emit = defineEmits<{ (e: "update:collapsed", value: boolean): void }>();
@@ -18,7 +18,7 @@ const collapsed = computed({
 });
 
 const collapsible = computed<boolean>(
-  () => (props.field as ArrayField)?.collapsible ?? true
+  () => (props.field as ObjectField)?.collapsible ?? true
 );
 </script>
 
@@ -29,15 +29,20 @@ const collapsible = computed<boolean>(
       class="m-0 flex gap-2 justify-start items-center group cursor-pointer"
       style="cursor: pointer !important"
       @click="
-        ['object', 'array', 'custom-component'].includes(field.type)
+        ['object', 'array-list', 'array-tabs', 'custom-component'].includes(
+          field.type
+        )
           ? (collapsed = !collapsed)
           : null
       "
     >
       <CollapseButton
         v-if="
-          ['object', 'array', 'custom-component'].includes(field.type) &&
-          (collapsible ?? ['object', 'array'].includes(field.type)
+          ['object', 'array-list', 'array-tabs', 'custom-component'].includes(
+            field.type
+          ) &&
+          (collapsible ??
+          ['object', 'array-list', 'array-tabs'].includes(field.type)
             ? true
             : false)
         "
@@ -46,7 +51,9 @@ const collapsible = computed<boolean>(
       <label
         class="flex items-center transition-all ease-in-out duration-150"
         :class="{
-          'cursor-pointer': ['object', 'array'].includes(field.type),
+          'cursor-pointer': ['object', 'array-list', 'array-tabs'].includes(
+            field.type
+          ),
         }"
         :for="field.key"
       >

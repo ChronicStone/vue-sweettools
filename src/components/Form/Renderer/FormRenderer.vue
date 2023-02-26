@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { FormSchema } from "@/types/form/form";
 import FieldRenderer from "./FieldRenderer.vue";
-import useVuelidate from "@vuelidate/core";
+import useVuelidate, { ValidationArgs, ValidationRule } from "@vuelidate/core";
 import { FormRefInstance } from "@/types/form/instance";
+import { required, helpers, minLength } from "@vuelidate/validators";
+import { GenericObject } from "@/types/utils";
+import { resolveFieldDependencies } from "@/utils/form/resolveFieldDependencies";
+import { ObjectField } from "@/types/form/fields";
+import { _BaseField } from "@/types/form/fields";
+import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 
 const emit = defineEmits<{ (e: "test"): void }>();
 const props = defineProps<{
@@ -15,19 +21,18 @@ const props = defineProps<{
 const _formSchema = computed<FormSchema>(() => props.schema);
 const _modalMode = computed<boolean>(() => props.modalMode);
 
+const libConfig = useGlobalConfig();
 const formFields = useFormFields(_formSchema);
 const { formState, outputFormState, reset } = useProvideFormState(
   formFields,
   props.data
 );
 
-const formStyleApi = useProvideFormStyles(props.schema);
-const LayoutContainer = useFormLayout(_formSchema);
+const layoutConf = useProvideFormStyles(props.schema);
+const LayoutContainer = useFormLayout(_modalMode, layoutConf);
 
 const validationScope = useProvideValidationScope();
-const $validator = useVuelidate({}, formState.value, {
-  $scope: validationScope.scopeKey,
-});
+const { $validator } = useProvideFormValidation(formFields, formState);
 
 function updateRootFieldValue(
   field: ReturnType<typeof useFormFields>["value"][number],

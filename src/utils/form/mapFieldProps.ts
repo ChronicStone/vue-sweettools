@@ -226,17 +226,9 @@ export function mapFieldProps(
         ...(fieldProps.renderTag && { "input-props": fieldProps.renderTag }),
       };
     case "object":
-    case "array":
+    case "array-list":
+    case "array-tabs":
     default:
-      return {
-        ...(fieldProps.max && { max: fieldProps.max }),
-        ...(fieldProps.closable && { closable: fieldProps.closable }),
-        ...(fieldProps.tagStyle && { "tag-style": fieldProps.tagStyle }),
-        ...(fieldProps.type && { type: fieldProps.type }),
-        ...(fieldProps.renderTag && { "render-tag": fieldProps.renderTag }),
-        ...(fieldProps.color && { color: fieldProps.color }),
-        ...(fieldProps.formatTag && { "format-tag": fieldProps.formatTag }),
-        ...(fieldProps.round && { round: fieldProps.round }),
-      };
+      return {};
   }
 }

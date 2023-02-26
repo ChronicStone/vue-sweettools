@@ -1,3 +1,4 @@
+import { ComputedRef } from "vue";
 import { useBreakpoints } from "./useBreakpoints";
 import { breakpointsTailwind } from "@vueuse/core";
 
@@ -13,18 +14,20 @@ function computeStyleModifier(value: string, type: string) {
   if (type === "boolean") return value === "true";
 }
 
-export const useBreakpointStyle = (
+type TransformKey =
+  | "boolean"
+  | "grid-cols"
+  | "grid-rows"
+  | "col"
+  | "row"
+  | "maxWidth"
+  | "maxHeight"
+  | "value";
+
+export function useBreakpointStyle<TKey extends TransformKey>(
   styleString: string | number | boolean,
-  transformKey?:
-    | "boolean"
-    | "grid-cols"
-    | "grid-rows"
-    | "col"
-    | "row"
-    | "maxWidth"
-    | "maxHeight"
-    | "value"
-) => {
+  transformKey?: TKey
+): ComputedRef<TKey extends "boolean" ? boolean : string> {
   const { reactiveBreakpoints, breakpointsKeys } =
     useBreakpoints(breakpointsTailwind);
   const mappedStyles = styleString
@@ -67,4 +70,4 @@ export const useBreakpointStyle = (
   });
 
   return currentBreakpointVal;
-};
+}

@@ -51,7 +51,7 @@ type ResolveFormType<K extends FormField<any>> = K["transform"] extends (
   ? K["fieldParams"] extends { multiple: true }
     ? string[]
     : string
-  : K["type"] extends "array"
+  : K["type"] extends "array-list" | "array-tabs"
   ? K["fields"] extends infer U extends FormField<any>[]
     ? FormInfoReturnType<U[number]>[]
     : never

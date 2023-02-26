@@ -1,6 +1,6 @@
 import { Primitive } from "./../utils";
 import { GenericObject } from "@/types/utils";
-import { Validation, ValidationArgs, ValidatorFn } from "@vuelidate/core";
+import { Validation, ValidationArgs } from "@vuelidate/core";
 import {
   CascaderOption,
   SelectGroupOption,
@@ -31,7 +31,8 @@ export enum FieldTypes {
   TIME = "time",
   CUSTOM_COMPONENT = "custom-component",
   OBJECT = "object",
-  ARRAY = "array",
+  ARRAY_LIST = "array-list",
+  ARRAY_TABS = "array-tabs",
   INFO = "info",
   TREE_SELECT = "tree-select",
   RATING = "rating",
@@ -326,9 +327,7 @@ export interface ObjectField<N = any> {
   collapsed?: boolean;
 }
 
-export interface ArrayField<N = any> {
-  type: "array";
-  format?: "table" | "list" | "tabs";
+export interface _ArrayField<N = any> {
   extraProperties?: boolean;
   gridSize?: number | string;
   fields: FormField<N>[];
@@ -338,6 +337,16 @@ export interface ArrayField<N = any> {
     item: Record<string, GenericObject>,
     index: number
   ) => string;
+}
+
+export interface ArrayListField<N = any> extends _ArrayField<N> {
+  type: "array-list";
+  listGridSize?: number | string;
+  listItemSize?: number | string;
+}
+
+export interface ArrayTabsField<N = any> extends _ArrayField<N> {
+  type: "array-tabs";
 }
 
 export interface InfoField {
@@ -402,7 +411,8 @@ export type FormField<N = any> = _BaseField<N> &
     | TimeField
     | DateField
     | ObjectField<N>
-    | ArrayField<N>
+    | ArrayListField<N>
+    | ArrayTabsField<N>
     | InfoField
     | CustomField
     | TreeSelectField

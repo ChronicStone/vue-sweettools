@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import {
-  ArrayField,
+  ArrayTabsField,
   FieldComponentEmits,
   FieldComponentProps,
   _BaseField,
 } from "@/types/form/fields";
 import {
   NCard,
-  NCollapseTransition,
   TabsInst,
   NButton,
   NTabs,
   NTabPane,
   NDropdown,
   DropdownOption,
+  NCollapseTransition,
 } from "naive-ui";
 import FieldRenderer from "@/components/Form/Renderer/FieldRenderer.vue";
 import { renderIcon } from "@/utils/renderIcon";
@@ -21,7 +21,7 @@ import { renderIcon } from "@/utils/renderIcon";
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
-const _field = computed(() => props.field as _BaseField & ArrayField);
+const _field = computed(() => props.field as _BaseField & ArrayTabsField);
 
 const fieldValue = computed({
   get: () => props.modelValue,
@@ -107,8 +107,7 @@ function buildItemControls(
             <div class="flex gap-4 justify-between items-center">
               <div
                 :class="{
-                  'text-red-500':
-                    validator?.[`${_field.key}.${index}`]?.$errors?.length,
+                  'text-red-500': validator?.[index]?.$errors?.length,
                 }"
               >
                 <span
@@ -146,7 +145,7 @@ function buildItemControls(
           >
             <template v-for="(item, index) in fieldValue" :key="index">
               <FieldRenderer
-                v-show="index === activeTab"
+                v-if="index === activeTab"
                 v-model="fieldValue[index]"
                 :field="{
                   ..._field,
@@ -166,3 +165,19 @@ function buildItemControls(
     </NCard>
   </NCollapseTransition>
 </template>
+
+<style>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: opacity 0.35s, transform 0.4s;
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateX(-30%);
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(30%);
+}
+</style>

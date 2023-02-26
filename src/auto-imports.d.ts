@@ -183,11 +183,11 @@ declare global {
   const useFocus: typeof import('@vueuse/core')['useFocus']
   const useFocusWithin: typeof import('@vueuse/core')['useFocusWithin']
   const useForm: typeof import('./composables/form/useForm')['useForm']
-  const useFormController: typeof import('./composables/useFormController')['useFormController']
   const useFormFields: typeof import('./composables/form/useFormFields')['useFormFields']
   const useFormLayout: typeof import('./composables/form/useFormLayout')['useFormLayout']
   const useFormState: typeof import('./composables/form/useFormState')['useFormState']
   const useFormStyles: typeof import('./composables/form/useFormStyles')['useFormStyles']
+  const useFormValidation: typeof import('./composables/form/useFormValidation')['useFormValidation']
   const useFps: typeof import('@vueuse/core')['useFps']
   const useFullscreen: typeof import('@vueuse/core')['useFullscreen']
   const useGamepad: typeof import('@vueuse/core')['useGamepad']
@@ -239,6 +239,7 @@ declare global {
   const usePrevious: typeof import('@vueuse/core')['usePrevious']
   const useProvideFormState: typeof import('./composables/form/useFormState')['useProvideFormState']
   const useProvideFormStyles: typeof import('./composables/form/useFormStyles')['useProvideFormStyles']
+  const useProvideFormValidation: typeof import('./composables/form/useFormValidation')['useProvideFormValidation']
   const useProvideValidationScope: typeof import('./composables/form/useVuelidateScope')['useProvideValidationScope']
   const useProviderFieldManager: typeof import('./composables/form/useFieldManagerr')['useProviderFieldManager']
   const useQueryState: typeof import('./composables/useQueryState')['useQueryState']
@@ -498,11 +499,11 @@ declare module 'vue' {
     readonly useFocus: UnwrapRef<typeof import('@vueuse/core')['useFocus']>
     readonly useFocusWithin: UnwrapRef<typeof import('@vueuse/core')['useFocusWithin']>
     readonly useForm: UnwrapRef<typeof import('./composables/form/useForm')['useForm']>
-    readonly useFormController: UnwrapRef<typeof import('./composables/useFormController')['useFormController']>
     readonly useFormFields: UnwrapRef<typeof import('./composables/form/useFormFields')['useFormFields']>
     readonly useFormLayout: UnwrapRef<typeof import('./composables/form/useFormLayout')['useFormLayout']>
     readonly useFormState: UnwrapRef<typeof import('./composables/form/useFormState')['useFormState']>
     readonly useFormStyles: UnwrapRef<typeof import('./composables/form/useFormStyles')['useFormStyles']>
+    readonly useFormValidation: UnwrapRef<typeof import('./composables/form/useFormValidation')['useFormValidation']>
     readonly useFps: UnwrapRef<typeof import('@vueuse/core')['useFps']>
     readonly useFullscreen: UnwrapRef<typeof import('@vueuse/core')['useFullscreen']>
     readonly useGamepad: UnwrapRef<typeof import('@vueuse/core')['useGamepad']>
@@ -554,6 +555,7 @@ declare module 'vue' {
     readonly usePrevious: UnwrapRef<typeof import('@vueuse/core')['usePrevious']>
     readonly useProvideFormState: UnwrapRef<typeof import('./composables/form/useFormState')['useProvideFormState']>
     readonly useProvideFormStyles: UnwrapRef<typeof import('./composables/form/useFormStyles')['useProvideFormStyles']>
+    readonly useProvideFormValidation: UnwrapRef<typeof import('./composables/form/useFormValidation')['useProvideFormValidation']>
     readonly useProvideValidationScope: UnwrapRef<typeof import('./composables/form/useVuelidateScope')['useProvideValidationScope']>
     readonly useProviderFieldManager: UnwrapRef<typeof import('./composables/form/useFieldManagerr')['useProviderFieldManager']>
     readonly useQueryState: UnwrapRef<typeof import('./composables/useQueryState')['useQueryState']>

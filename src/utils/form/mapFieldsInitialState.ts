@@ -9,7 +9,7 @@ export function mapFieldsInitialState(
   fields.forEach((field) => {
     if (field.type === "info") return;
     const GetFieldState = () => {
-      if (!["array", "object"].includes(field.type))
+      if (!["array-list", "array-tabs", "object"].includes(field.type))
         return inputFormData?.[field.key]
           ? field?.preformat && typeof field?.preformat === "function"
             ? field.preformat(inputFormData?.[field.key])
@@ -21,7 +21,7 @@ export function mapFieldsInitialState(
           : field.type === "number"
           ? 0
           : null;
-      else if (field.type === "array")
+      else if (["array-list", "array-tabs"].includes(field.type))
         return field?.preformat && typeof field?.preformat === "function"
           ? field.preformat(inputFormData[field.key] ?? field?.default ?? [])
           : inputFormData[field.key] ?? field?.default ?? [];
