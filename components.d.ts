@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ActionsCellRenderer: typeof import('./src/components/DataTable/CellRenderers/ActionsCellRenderer.vue')['default']
+    ActionsRenderer: typeof import('./src/components/Form/Renderer/ActionsRenderer.vue')['default']
     ArrayField: typeof import('./src/components/Form/Field/ArrayField.vue')['default']
     ArrayListField: typeof import('./src/components/Form/Field/ArrayListField.vue')['default']
     ArrayTabField: typeof import('./src/components/Form/Field/ArrayTabField.vue')['default']
@@ -29,6 +30,7 @@ declare module '@vue/runtime-core' {
     FormInlineContainer: typeof import('./src/components/Form/Layout/FormInlineContainer.vue')['default']
     FormRenderer: typeof import('./src/components/Form/Renderer/FormRenderer.vue')['default']
     FullScreenLayout: typeof import('./src/components/Form/Layout/FullScreenLayout.vue')['default']
+    HeaderRenderer: typeof import('./src/components/Form/Renderer/HeaderRenderer.vue')['default']
     InfoField: typeof import('./src/components/Form/Field/InfoField.vue')['default']
     InlineLayout: typeof import('./src/components/Form/Layout/InlineLayout.vue')['default']
     JsxCellRenderer: typeof import('./src/components/DataTable/CellRenderers/JsxCellRenderer.vue')['default']
@@ -78,6 +80,7 @@ declare module '@vue/runtime-core' {
     TextareaField: typeof import('./src/components/Form/Field/TextareaField.vue')['default']
     TextField: typeof import('./src/components/Form/Field/TextField.vue')['default']
     TimeField: typeof import('./src/components/Form/Field/TimeField.vue')['default']
+    TitleRenderer: typeof import('./src/components/Form/Renderer/TitleRenderer.vue')['default']
     TreeSelectField: typeof import('./src/components/Form/Field/TreeSelectField.vue')['default']
   }
 }
