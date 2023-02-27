@@ -4,8 +4,7 @@ import {
   SimpleFormSchema,
   SteppedFormSchema,
 } from "@/types/form/form";
-import { FormField } from "@/types/form/fields";
-import { FieldInstance, FormInstanceSteps } from "@/types/form/instance";
+import { FieldInstance, StepInstance } from "@/types/form/instance";
 
 export function useFormFields(formSchema: ComputedRef<FormSchema>) {
   const formFields = computed<FieldInstance[]>(
@@ -32,7 +31,7 @@ export function useFormFields(formSchema: ComputedRef<FormSchema>) {
 
   const isMultiStep = computed(() => formSteps.value.length > 1);
   const currentStep = ref<number>(0);
-  const formSteps = ref<FormInstanceSteps[]>(
+  const formSteps = ref<StepInstance[]>(
     (formSchema.value as SteppedFormSchema).steps.length
       ? (formSchema.value as SteppedFormSchema).steps.map(
           ({ fields, ...step }: any, stepIndex: number) => ({

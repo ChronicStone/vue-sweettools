@@ -35,6 +35,7 @@ export type SteppedFormSchema<StepKey = "", FieldKey = ""> = BaseFormSchema & {
   nextButtonText?: string;
   steps: FormStep<StepKey, FieldKey>[];
   showStepper?: boolean;
+  stepperLayout?: "full" | "compact" | string;
 };
 
 type ResolveFormType<K extends FormField<any>> = K["transform"] extends (

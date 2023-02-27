@@ -1,3 +1,4 @@
+import { SteppedFormSchema } from "@/types/form/form";
 import { FormSchema } from "@/types/form/form";
 
 export const DEFAULT_STYLES = {
@@ -31,6 +32,10 @@ const [useProvideFormStyles, useFormStyles] = createInjectionState(
       fieldSize: useBreakpointStyle(
         "8 md:4", //formSchema?.fieldSize ?? DEFAULT_STYLES.fieldSize,
         "col"
+      ),
+      stepperLayout: useBreakpointStyle(
+        (formSchema as SteppedFormSchema<any, any>)?.stepperLayout ?? "full",
+        "value"
       ),
     };
 

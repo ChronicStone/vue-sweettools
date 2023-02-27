@@ -70,6 +70,7 @@ declare module '@vue/runtime-core' {
     SelectField: typeof import('./src/components/Form/Field/SelectField.vue')['default']
     SelectionHeaderRenderer: typeof import('./src/components/DataTable/CellRenderers/SelectionHeaderRenderer.vue')['default']
     SliderField: typeof import('./src/components/Form/Field/SliderField.vue')['default']
+    StepsRenderer: typeof import('./src/components/Form/Renderer/StepsRenderer.vue')['default']
     SwitchField: typeof import('./src/components/Form/Field/SwitchField.vue')['default']
     TableFooter: typeof import('./src/components/DataTable/TableFooter.vue')['default']
     TableHeader: typeof import('./src/components/DataTable/TableHeader.vue')['default']

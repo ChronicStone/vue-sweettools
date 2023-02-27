@@ -53,8 +53,7 @@ export enum StepStatus {
   COMPLETED,
   INVALID,
 }
-export interface FormInstanceSteps
-  extends Omit<FormStep<string, string>, "fields"> {
+export interface StepInstance extends Omit<FormStep<string, string>, "fields"> {
   _status: StepStatus;
   _index: number;
 }
