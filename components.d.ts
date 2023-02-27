@@ -77,6 +77,7 @@ declare module '@vue/runtime-core' {
     TableFooter: typeof import('./src/components/DataTable/TableFooter.vue')['default']
     TableHeader: typeof import('./src/components/DataTable/TableHeader.vue')['default']
     TagField: typeof import('./src/components/Form/Field/TagField.vue')['default']
+    TestInput: typeof import('./src/components/Utils/TestInput.vue')['default']
     TextareaField: typeof import('./src/components/Form/Field/TextareaField.vue')['default']
     TextField: typeof import('./src/components/Form/Field/TextField.vue')['default']
     TimeField: typeof import('./src/components/Form/Field/TimeField.vue')['default']

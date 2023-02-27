@@ -7,7 +7,6 @@ import {
 } from "@/types/form/fields";
 import { NCard, NTooltip, NButton, NCollapseTransition } from "naive-ui";
 import FieldRenderer from "@/components/Form/Renderer/FieldRenderer.vue";
-import CollapseTransition from "@/components/Utils/CollapseTransition.vue";
 
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
@@ -109,7 +108,9 @@ const { addItem, removeItem, moveItem } = useArrayField(_field, fieldValue);
         icon-placement="right"
         @click="addItem"
       >
-        <template #icon><mdi:plus /></template>
+        <template #icon>
+          <mdi:plus />
+        </template>
         ADD ITEM
       </NButton>
     </div>
@@ -117,7 +118,7 @@ const { addItem, removeItem, moveItem } = useArrayField(_field, fieldValue);
 </template>
 
 <style>
-.list-move, /* apply transition to moving elements */
+.list-move,
 .list-enter-active,
 .list-leave-active {
   transition: all 0.5s ease;
@@ -129,8 +130,6 @@ const { addItem, removeItem, moveItem } = useArrayField(_field, fieldValue);
   transform: translateX(30px);
 }
 
-/* ensure leaving items are taken out of layout flow so that moving
-   animations can be calculated correctly. */
 .list-leave-active {
   position: absolute;
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
+import TestInput from "@/components/Utils/TestInput.vue";
 import { FormSchema } from "@/types/form/form";
 import { FormRefInstance } from "@/types/form/instance";
 import { helpers, sameAs } from "@vuelidate/validators";
@@ -38,6 +39,14 @@ const schema: FormSchema = {
       placeholder: "Hello test",
       required: true,
       size: 8,
+    },
+    {
+      label: "Component custom",
+      key: "custom",
+      type: "custom-component",
+      component: TestInput,
+      required: true,
+      description: "This is an extra descr",
     },
     {
       label: "Object",

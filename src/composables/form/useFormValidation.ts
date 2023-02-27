@@ -45,6 +45,19 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
             ? field.required(dependencies)
             : field?.required ?? false;
 
+        if (isRequired)
+          fieldRules.required = helpers.withMessage(
+            typeof libConfig.getProp("textOverrides.requiredMessage") ===
+              "function"
+              ? (
+                  libConfig.getProp("textOverrides.requiredMessage") as (
+                    label: string
+                  ) => string
+                )?.(field?.label ?? field.key)
+              : (libConfig.getProp("textOverrides.requiredMessage") as string),
+            required
+          );
+
         if (field.type === "object") {
           fieldRules = {
             ...fieldRules,
@@ -74,19 +87,6 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
           fieldRules = { ...fieldRules, ...field.validators(dependencies) };
         if (typeof field?.validators === "object")
           fieldRules = { ...fieldRules, ...field.validators };
-
-        if (isRequired)
-          fieldRules.required = helpers.withMessage(
-            typeof libConfig.getProp("textOverrides.requiredMessage") ===
-              "function"
-              ? (
-                  libConfig.getProp("textOverrides.requiredMessage") as (
-                    label: string
-                  ) => string
-                )?.(field?.label ?? field.key)
-              : (libConfig.getProp("textOverrides.requiredMessage") as string),
-            required
-          );
 
         rules[field.key] = fieldRules;
       }

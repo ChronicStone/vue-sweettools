@@ -23,11 +23,8 @@ const gridSize = useBreakpointStyle(props.field.gridSize ?? "", "grid-cols");
 </script>
 
 <template>
-  <NCollapseTransition>
-    <component
-      :is="field?.fieldParams?.frameless ? 'div' : NCard"
-      v-show="!collapsed"
-    >
+  <NCollapseTransition :show="!collapsed">
+    <component :is="field?.fieldParams?.frameless ? 'div' : NCard">
       <div
         class="grid gap-4"
         :style="field.gridSize ? gridSize : formStyle?.gridSize.value"

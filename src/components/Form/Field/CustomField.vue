@@ -18,10 +18,9 @@ const fieldValue = computed({
 </script>
 
 <template>
-  <NCollapseTransition>
+  <NCollapseTransition :show="!collapsed">
     <component
       :is="_field.component"
-      v-show="!collapsed"
       v-model="fieldValue"
       v-bind="{
         ..._field.fieldParams,
@@ -29,6 +28,7 @@ const fieldValue = computed({
         options: context.options,
         evalOptions: context._evalOptions.value,
         evalCondition: context._evalCondition.value,
+        validator: validator,
       }"
     />
   </NCollapseTransition>
