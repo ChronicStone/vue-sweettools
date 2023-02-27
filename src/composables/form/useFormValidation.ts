@@ -1,17 +1,24 @@
 import { ObjectField } from "@/types/form/fields";
+import { FieldInstance } from "@/types/form/instance";
 import { GenericObject } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 import { resolveFieldDependencies } from "@/utils/form/resolveFieldDependencies";
 import useVuelidate from "@vuelidate/core";
 import { helpers, required } from "@vuelidate/validators";
-import { Ref } from "vue";
+import { ComputedRef, Ref } from "vue";
 
 const [useProvideFormValidation, _useFormValidation] = createInjectionState(
   (
-    formFields: ReturnType<typeof useFormFields>,
+    formFields: ComputedRef<Array<FieldInstance>>,
     formState: Ref<GenericObject>
   ) => {
     const libConfig = useGlobalConfig();
+
+    const formRules = computed(() =>
+      mapFormFules(formFields.value, formState.value)
+    );
+    const $validator = useVuelidate(formRules, formState.value);
+
     function mapFormFules(
       fields: typeof formFields.value,
       state: GenericObject,
@@ -87,14 +94,6 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
       return rules;
     }
 
-    const formRules = computed(() =>
-      mapFormFules(formFields.value, formState.value)
-    );
-
-    const $validator = useVuelidate(formRules, formState.value, {
-      // $scope: validationScope.scopeKey,
-    });
-
     return { $validator };
   }
 );
@@ -108,13 +107,3 @@ function useFormValidation() {
 }
 
 export { useProvideFormValidation, useFormValidation };
-
-function arrayToObject<T extends any[]>(array: T) {
-  return array.reduce(
-    (acc, curr, index) => ({
-      ...acc,
-      [index]: curr,
-    }),
-    []
-  );
-}

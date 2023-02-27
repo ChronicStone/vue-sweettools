@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { FormSchema } from "@/types/form/form";
 import FieldRenderer from "./FieldRenderer.vue";
-import useVuelidate, { ValidationArgs, ValidationRule } from "@vuelidate/core";
-import { FormRefInstance } from "@/types/form/instance";
-import { required, helpers, minLength } from "@vuelidate/validators";
-import { GenericObject } from "@/types/utils";
-import { resolveFieldDependencies } from "@/utils/form/resolveFieldDependencies";
-import { ObjectField } from "@/types/form/fields";
+import { FieldInstance, FormRefInstance } from "@/types/form/instance";
 import { _BaseField } from "@/types/form/fields";
-import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 
 const emit = defineEmits<{ (e: "test"): void }>();
 const props = defineProps<{
@@ -21,8 +15,9 @@ const props = defineProps<{
 const _formSchema = computed<FormSchema>(() => props.schema);
 const _modalMode = computed<boolean>(() => props.modalMode);
 
-const libConfig = useGlobalConfig();
-const formFields = useFormFields(_formSchema);
+const { formFields, filteredFormFields, isMultiStep, formSteps } =
+  useFormFields(_formSchema);
+
 const { formState, outputFormState, reset } = useProvideFormState(
   formFields,
   props.data
@@ -31,13 +26,9 @@ const { formState, outputFormState, reset } = useProvideFormState(
 const layoutConf = useProvideFormStyles(props.schema);
 const LayoutContainer = useFormLayout(_modalMode, layoutConf);
 
-const validationScope = useProvideValidationScope();
-const { $validator } = useProvideFormValidation(formFields, formState);
+const { $validator } = useProvideFormValidation(filteredFormFields, formState);
 
-function updateRootFieldValue(
-  field: ReturnType<typeof useFormFields>["value"][number],
-  value: unknown
-) {
+function updateRootFieldValue(field: FieldInstance, value: unknown) {
   if (field._stepRoot) formState.value[field._stepRoot][field.key] = value;
   else formState.value[field.key] = value;
 }

@@ -5,19 +5,50 @@ import {
   SteppedFormSchema,
 } from "@/types/form/form";
 import { FormField } from "@/types/form/fields";
+import { FieldInstance, FormInstanceSteps } from "@/types/form/instance";
 
 export function useFormFields(formSchema: ComputedRef<FormSchema>) {
-  return computed(
+  const formFields = computed<FieldInstance[]>(
     () =>
-      ((formSchema.value as SimpleFormSchema)?.fields ??
-        (formSchema.value as SteppedFormSchema).steps
-          .map((step, _stepIndex) =>
-            step.fields.map((field: any) => ({
-              ...field,
-              _stepIndex,
-              ...(step.root ? { _stepRoot: step.root } : {}),
-            }))
-          )
-          .flat()) as Array<FormField & { _stepRoot?: string }>
+      (formSchema.value as SimpleFormSchema)?.fields ??
+      (formSchema.value as SteppedFormSchema).steps
+        .map((step, _stepIndex) =>
+          step.fields.map((field: any) => ({
+            ...field,
+            _stepIndex,
+            ...(step.root ? { _stepRoot: step.root } : {}),
+          }))
+        )
+        .flat()
   );
+
+  const filteredFormFields = computed(() =>
+    !isMultiStep.value
+      ? formFields.value
+      : formFields.value.filter(
+          (field) => field._stepIndex === currentStep.value
+        )
+  );
+
+  const isMultiStep = computed(() => formSteps.value.length > 1);
+  const currentStep = ref<number>(0);
+  const formSteps = ref<FormInstanceSteps[]>(
+    (formSchema.value as SteppedFormSchema).steps.length
+      ? (formSchema.value as SteppedFormSchema).steps.map(
+          ({ fields, ...step }: any, stepIndex: number) => ({
+            ...step,
+            _status: stepIndex === 0 ? "InProgress" : "Pending",
+            _index: stepIndex,
+          })
+        )
+      : []
+  );
+
+  return {
+    formFields,
+    filteredFormFields,
+    isMultiStep,
+    currentStep,
+    formSteps,
+  };
 }

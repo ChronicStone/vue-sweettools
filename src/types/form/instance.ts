@@ -47,30 +47,21 @@ export interface FormApi {
   }>;
 }
 
-export interface FormInstanceSteps extends Omit<FormStep<any, any>, "fields"> {
-  _status: "InProgress" | "Pending" | "Completed" | "Invalid";
+export enum StepStatus {
+  IN_PROGRESS,
+  PENDING,
+  COMPLETED,
+  INVALID,
+}
+export interface FormInstanceSteps
+  extends Omit<FormStep<string, string>, "fields"> {
+  _status: StepStatus;
   _index: number;
 }
 
-export type FieldInstance = Omit<FormField<any>, "fields"> & {
-  _uuid: string;
-  _dependencies: ComputedRef<{ [key: string]: any }>;
-  _evalOptions: Ref<boolean>;
-  _evalEnabled: Ref<boolean>;
-  _size: ComputedRef<number>;
-  _gridSize?: ComputedRef<string>;
-  _fieldSize?: ComputedRef<string>;
-  _required: ComputedRef<boolean>;
+export type FieldInstance = FormField & {
   _stepRoot?: string;
-  _enable: Ref<boolean | undefined>;
-  _options: Ref<SelectOption[]>;
-  _watcherOptions?: WatchStopHandle;
-  _setItemRef?: (index: number, uuid: string) => void;
-  _removeItemRef?: (uuid: string) => void;
-  _itemsRefs?: Ref<{ number: number; uuid: string }[]>;
-  _items?: Ref<any[]>;
-  _watcherItems?: WatchStopHandle;
-  fields?: FieldInstance[];
+  _stepIndex?: number;
 };
 
 export type FormRefInstance = {

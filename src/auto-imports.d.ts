@@ -9,6 +9,7 @@ declare global {
   const FORM_STYLES_INJECTION_KEY: typeof import('./config/injectionKeys')['FORM_STYLES_INJECTION_KEY']
   const MODAL_OVERLAY_INJECTION_KEY: typeof import('./config/injectionKeys')['MODAL_OVERLAY_INJECTION_KEY']
   const PLUGIN_CONF_INJECTION_KEY: typeof import('./config/injectionKeys')['PLUGIN_CONF_INJECTION_KEY']
+  const arrayToObject: typeof import('./utils/arrayToObject')['arrayToObject']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
   const changeRgbaOpacity: typeof import('./utils/manipulateColor')['changeRgbaOpacity']
@@ -320,6 +321,7 @@ declare module 'vue' {
     readonly FORM_STYLES_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['FORM_STYLES_INJECTION_KEY']>
     readonly MODAL_OVERLAY_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['MODAL_OVERLAY_INJECTION_KEY']>
     readonly PLUGIN_CONF_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['PLUGIN_CONF_INJECTION_KEY']>
+    readonly arrayToObject: UnwrapRef<typeof import('./utils/arrayToObject')['arrayToObject']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
     readonly changeRgbaOpacity: UnwrapRef<typeof import('./utils/manipulateColor')['changeRgbaOpacity']>
