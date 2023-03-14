@@ -45,9 +45,6 @@ const fieldValue = computed({
 
 const { formState } = useFormState();
 const fieldContext = useFieldContext(_field, fieldValue, formState, _parentKey);
-const parentContextState = computed(() =>
-  getPropertyFromPath(_parentKey.value, formState.value)
-);
 
 const $globalValidation = useFormValidation();
 const $validator = computed(

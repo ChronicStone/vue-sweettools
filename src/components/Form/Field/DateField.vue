@@ -20,6 +20,6 @@ const fieldValue = computed({
     update-value-on-close
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
-    @blur="validator.$touch"
+    @blur="validator?.$touch"
   />
 </template>

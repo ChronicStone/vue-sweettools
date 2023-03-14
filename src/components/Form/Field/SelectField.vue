@@ -25,6 +25,6 @@ const fieldValue = computed({
       parentDisabled
     "
     :status="validator?.$errors?.length ? 'error' : 'success'"
-    @blur="validator.$touch"
+    @blur="validator?.$touch"
   />
 </template>

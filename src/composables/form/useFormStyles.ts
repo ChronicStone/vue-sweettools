@@ -33,10 +33,7 @@ const [useProvideFormStyles, useFormStyles] = createInjectionState(
         "8 md:4", //formSchema?.fieldSize ?? DEFAULT_STYLES.fieldSize,
         "col"
       ),
-      stepperLayout: useBreakpointStyle(
-        (formSchema as SteppedFormSchema<any, any>)?.stepperLayout ?? "full",
-        "value"
-      ),
+      stepperLayout: useBreakpointStyle("full", "value"),
     };
 
     return formStyles;

@@ -51,9 +51,13 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
               "function"
               ? (
                   libConfig.getProp("textOverrides.requiredMessage") as (
-                    label: string
+                    label: string | (() => string)
                   ) => string
-                )?.(field?.label ?? field.key)
+                )?.(
+                  typeof field.label === "function"
+                    ? field.label({})?.toString()
+                    : field?.label ?? field.key
+                )
               : (libConfig.getProp("textOverrides.requiredMessage") as string),
             required
           );

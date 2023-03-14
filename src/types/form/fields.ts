@@ -45,8 +45,9 @@ export type TFieldTypes = `${FieldTypes}`;
 type Dependencies = Record<string, any>;
 
 export type _FieldOptions =
+  | (number | string)[]
   | SelectOption[]
-  | ((dependencies?: Dependencies) => SelectOption[]);
+  | ((dependencies?: Dependencies) => SelectOption[] | (number | string)[]);
 
 export interface TextField {
   type: "text";

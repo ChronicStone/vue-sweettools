@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { StepInstance, StepStatus } from "@/types/form/instance";
-import { NStep, NSteps, useThemeVars } from "naive-ui";
+import { NStep, NTag, NSteps, NProgress, useThemeVars } from "naive-ui";
+import { computeHslColor } from "@/utils/simulateHslColorOpacity";
 
 const props = defineProps<{
   steps: StepInstance[];
@@ -33,18 +34,57 @@ const progressColor = computed(() => {
     return themeVars.value.primaryColor;
   if (currentStep._status === StepStatus.INVALID)
     return themeVars.value.errorColor;
+
+  return themeVars.value.primaryColor;
+});
+
+const progressColorMode = computed(() => {
+  const currentStep = props.steps[props.currentStepIndex];
+  if (currentStep._status === StepStatus.PENDING) return "default";
+  if (currentStep._status === StepStatus.IN_PROGRESS) return "primary";
+  if (currentStep._status === StepStatus.COMPLETED) return "primary";
+  if (currentStep._status === StepStatus.INVALID) return "error";
 });
 </script>
 
 <template>
-  <div
+  <header
     v-if="formStyle?.stepperLayout.value === 'full'"
-    class="flex justify-center"
+    class="flex items-center relative w-full"
   >
-    <NSteps :current="currentStepIndex + 1" :status="currentStatus">
-      <NStep v-for="({ title }, index) in steps" :key="index" :title="title" />
-    </NSteps>
-  </div>
+    <template v-for="(step, index) in steps" :key="step._index">
+      <div
+        class="transition-all ease-in-out duration-200 flex items-center"
+        :class="{ 'flex-1': currentStepIndex === index }"
+      >
+        <NTag
+          :key="currentStepIndex"
+          class="relative tag-overlay z-10"
+          round
+          size="large"
+          :type="
+            currentStepIndex > index
+              ? 'primary'
+              : currentStepIndex === index
+              ? progressColorMode
+              : 'default'
+          "
+        >
+          {{
+            (index === currentStepIndex ? "Step " : "") + (index + 1).toString()
+          }}
+        </NTag>
+        <div
+          v-if="index === currentStepIndex"
+          class="opacity-25 h-[1px] w-full bg-black w-full"
+        ></div>
+      </div>
+      <div
+        v-if="index != currentStepIndex && index != steps.length - 1"
+        class="opacity-25 h-[1px] w-full bg-black w-4"
+      ></div>
+    </template>
+  </header>
 
   <div v-else class="flex items-center gap-4 h-auto w-auto">
     <NProgress

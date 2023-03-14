@@ -1,4 +1,13 @@
+import { Primitive } from "./../utils";
 import { FormField, SelectField } from "./fields";
+
+interface FormSharedStore {
+  dependencies?: (string | [string, string])[];
+  value:
+    | unknown
+    | ((dependencies?: Record<string, unknown>) => unknown)
+    | ((dependencies?: Record<string, unknown>) => Promise<unknown>);
+}
 
 interface BaseFormSchema {
   title?: string;
@@ -16,7 +25,8 @@ interface BaseFormSchema {
   prevButtonText?: string;
   nextButtonText?: string;
   showStepper?: boolean;
-  requiredMessage?: string | ((label: string) => string);
+  requiredMessage?: string | ((label: string | (() => string)) => string);
+  sharedStore?: Record<string, FormSharedStore>;
 }
 
 export interface FormStep<StepKey, FieldKey> {

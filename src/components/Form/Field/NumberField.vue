@@ -19,6 +19,6 @@ const fieldValue = computed({
     :placeholder="field.placeholder"
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
-    @blur="validator.$touch"
+    @blur="validator?.$touch"
   />
 </template>

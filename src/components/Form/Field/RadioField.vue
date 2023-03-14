@@ -17,7 +17,7 @@ const fieldValue = computed({
     v-model:value="fieldValue"
     :name="field.key"
     :disabled="disabled"
-    @blur="validator.$touch"
+    @blur="validator?.$touch"
   >
     <div class="gap-4 flex flex-wrap justify-start">
       <NRadio
@@ -31,7 +31,7 @@ const fieldValue = computed({
         "
         :value="value"
         v-bind="context.inputProps.value"
-        @blur="validator.$touch"
+        @blur="validator?.$touch"
       >
         {{ label }}
       </NRadio>

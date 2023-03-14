@@ -1,12 +1,62 @@
 <script setup lang="ts">
 const formStyles = useFormStyles();
+const { currentStep } = useFormFields();
+
+const formRef = ref<HTMLFormElement>();
+const disableOverflow = ref<boolean>(false);
+const tempHeight = ref<number | false>(0);
+
+watch(
+  () => currentStep.value,
+  (newStep, oldStep) => {
+    simulateSlideForm(newStep > oldStep ? "left" : "right");
+  }
+);
+
+const sleep = (d: number) => new Promise((r, rj) => setTimeout(() => r(d), d));
+
+async function simulateSlideForm(direction: "left" | "right") {
+  if (!formRef.value) return;
+
+  const form = formRef.value as HTMLElement;
+  const formBounding = formRef.value.getBoundingClientRect();
+
+  disableOverflow.value = true;
+  tempHeight.value = formBounding.height;
+
+  form.style.visibility = "hidden";
+  form.style.transform = `translateX(${
+    direction === "left" ? "-100%" : "100%"
+  })`;
+  form.style.transitionDuration = "0";
+
+  await sleep(50);
+  await nextTick();
+
+  form.style.opacity = "1";
+  form.style.transform = `translateX(${
+    direction === "left" ? "100%" : "-100%"
+  })`;
+  form.style.transitionDuration = "0.15s";
+
+  await sleep(50);
+  await nextTick();
+
+  form.style.visibility = "visible";
+  form.style.transform = "translateX(0)";
+}
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div
+    class="flex flex-col gap-4 relative"
+    :class="{ 'overflow-hidden': disableOverflow }"
+  >
     <slot name="header" />
+
     <form
-      class="h-full grid gap-4 overflow-visible text-left"
+      ref="formRef"
+      class="h-full grid gap-4 overflow-visible text-left transition-transform ease-in-out duration-150"
       :style="`${formStyles?.gridSize.value}`"
       :class="{
         'max-h-10/12': $slots.header && $slots.footer,
@@ -31,3 +81,33 @@ const formStyles = useFormStyles();
     </div>
   </div>
 </template>
+
+<style>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: opacity 0.15s, transform 0.1s;
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateX(-30%);
+}
+
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(30%);
+}
+
+.slide-fade-reverse-enter-active,
+.slide-fade-reverse-leave-active {
+  transition: opacity 0.15s, transform 0.2s;
+}
+.slide-fade-reverse-enter-from {
+  opacity: 0;
+  transform: translateX(30%);
+}
+
+.slide-fade-reverse-leave-to {
+  opacity: 0;
+  transform: translateX(-30%);
+}
+</style>

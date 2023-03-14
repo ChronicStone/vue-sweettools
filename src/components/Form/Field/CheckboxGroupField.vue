@@ -32,7 +32,7 @@ const gridSize = useBreakpointStyle(props.field.gridSize ?? "", "grid-cols");
         :value="(option.value as string)"
         :label="(option.label as string)"
         :disabled="disabled"
-        @blur="validator.$touch"
+        @blur="validator?.$touch"
       />
     </div>
   </NCheckboxGroup>

@@ -20,7 +20,7 @@ const fieldValue = computed({
       v-model:value="fieldValue"
       v-bind="context.inputProps.value"
       :disabled="disabled"
-      @blur="validator.$touch"
+      @blur="validator?.$touch"
     />
   </div>
 </template>

@@ -67,4 +67,6 @@ export type FormRefInstance = {
   $reset(): void;
   $validate(): Promise<boolean>;
   $data: ComputedRef<{ [key: string]: any }>;
+  nextStep?: () => Promise<boolean>;
+  previousStep?: () => void;
 };

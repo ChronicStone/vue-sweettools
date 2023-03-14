@@ -12,7 +12,9 @@ declare global {
   const arrayToObject: typeof import('./utils/arrayToObject')['arrayToObject']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
+  const buildFormSchema: typeof import('./composables/form/useFormController')['buildFormSchema']
   const changeRgbaOpacity: typeof import('./utils/manipulateColor')['changeRgbaOpacity']
+  const computeHslColor: typeof import('./utils/simulateHslColorOpacity')['computeHslColor']
   const computed: typeof import('vue')['computed']
   const computedAsync: typeof import('@vueuse/core')['computedAsync']
   const computedEager: typeof import('@vueuse/core')['computedEager']
@@ -181,7 +183,7 @@ declare global {
   const useFileSystemAccess: typeof import('@vueuse/core')['useFileSystemAccess']
   const useFocus: typeof import('@vueuse/core')['useFocus']
   const useFocusWithin: typeof import('@vueuse/core')['useFocusWithin']
-  const useForm: typeof import('./composables/form/useForm')['useForm']
+  const useFormController: typeof import('./composables/form/useFormController')['useFormController']
   const useFormFields: typeof import('./composables/form/useFormFields')['useFormFields']
   const useFormLayout: typeof import('./composables/form/useFormLayout')['useFormLayout']
   const useFormState: typeof import('./composables/form/useFormState')['useFormState']
@@ -236,6 +238,7 @@ declare global {
   const usePreferredLanguages: typeof import('@vueuse/core')['usePreferredLanguages']
   const usePreferredReducedMotion: typeof import('@vueuse/core')['usePreferredReducedMotion']
   const usePrevious: typeof import('@vueuse/core')['usePrevious']
+  const useProvideFormFields: typeof import('./composables/form/useFormFields')['useProvideFormFields']
   const useProvideFormState: typeof import('./composables/form/useFormState')['useProvideFormState']
   const useProvideFormStyles: typeof import('./composables/form/useFormStyles')['useProvideFormStyles']
   const useProvideFormValidation: typeof import('./composables/form/useFormValidation')['useProvideFormValidation']
@@ -324,7 +327,9 @@ declare module 'vue' {
     readonly arrayToObject: UnwrapRef<typeof import('./utils/arrayToObject')['arrayToObject']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
+    readonly buildFormSchema: UnwrapRef<typeof import('./composables/form/useFormController')['buildFormSchema']>
     readonly changeRgbaOpacity: UnwrapRef<typeof import('./utils/manipulateColor')['changeRgbaOpacity']>
+    readonly computeHslColor: UnwrapRef<typeof import('./utils/simulateHslColorOpacity')['computeHslColor']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly computedAsync: UnwrapRef<typeof import('@vueuse/core')['computedAsync']>
     readonly computedEager: UnwrapRef<typeof import('@vueuse/core')['computedEager']>
@@ -493,7 +498,7 @@ declare module 'vue' {
     readonly useFileSystemAccess: UnwrapRef<typeof import('@vueuse/core')['useFileSystemAccess']>
     readonly useFocus: UnwrapRef<typeof import('@vueuse/core')['useFocus']>
     readonly useFocusWithin: UnwrapRef<typeof import('@vueuse/core')['useFocusWithin']>
-    readonly useForm: UnwrapRef<typeof import('./composables/form/useForm')['useForm']>
+    readonly useFormController: UnwrapRef<typeof import('./composables/form/useFormController')['useFormController']>
     readonly useFormFields: UnwrapRef<typeof import('./composables/form/useFormFields')['useFormFields']>
     readonly useFormLayout: UnwrapRef<typeof import('./composables/form/useFormLayout')['useFormLayout']>
     readonly useFormState: UnwrapRef<typeof import('./composables/form/useFormState')['useFormState']>
@@ -548,6 +553,7 @@ declare module 'vue' {
     readonly usePreferredLanguages: UnwrapRef<typeof import('@vueuse/core')['usePreferredLanguages']>
     readonly usePreferredReducedMotion: UnwrapRef<typeof import('@vueuse/core')['usePreferredReducedMotion']>
     readonly usePrevious: UnwrapRef<typeof import('@vueuse/core')['usePrevious']>
+    readonly useProvideFormFields: UnwrapRef<typeof import('./composables/form/useFormFields')['useProvideFormFields']>
     readonly useProvideFormState: UnwrapRef<typeof import('./composables/form/useFormState')['useProvideFormState']>
     readonly useProvideFormStyles: UnwrapRef<typeof import('./composables/form/useFormStyles')['useProvideFormStyles']>
     readonly useProvideFormValidation: UnwrapRef<typeof import('./composables/form/useFormValidation')['useProvideFormValidation']>

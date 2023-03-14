@@ -2,7 +2,10 @@ import { SelectField } from "@/types/form/fields";
 import { FormField } from "@/types/form/fields";
 import { GenericObject } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
-import { mapFieldDependencies } from "@/utils/form/mapFieldDependencies";
+import {
+  mapFieldDependencies,
+  preformatFieldDependencies,
+} from "@/utils/form/mapFieldDependencies";
 import { mapFieldProps } from "@/utils/form/mapFieldProps";
 import { CascaderOption, SelectOption, TreeSelectOption } from "naive-ui";
 import { Ref, ComputedRef, WritableComputedRef } from "vue";
@@ -37,41 +40,24 @@ export function useFieldContext(
 
   const _evalOptions = ref<boolean>(false);
   const options = ref(
-    Array.isArray((field.value as SelectField).options)
-      ? ((field.value as SelectField).options as unknown as (
-          | SelectOption
-          | TreeSelectOption
-          | CascaderOption
-        )[])
-      : []
+    mapOptions(
+      Array.isArray((field.value as SelectField).options)
+        ? ((field.value as SelectField).options as unknown as (
+            | SelectOption
+            | TreeSelectOption
+            | CascaderOption
+          )[])
+        : []
+    )
   );
 
   const dependencies = computed(() =>
     mapFieldDependencies(
-      (field.value?.dependencies ?? [])
-        .map((dependency) =>
-          typeof dependency === "string"
-            ? { source: dependency, target: dependency }
-            : Array.isArray(dependency)
-            ? { source: dependency[0], target: dependency[1] }
-            : dependency
-        )
-        .map(({ source, target }) => ({
-          key: target,
-          value: null,
-          ...(source === "$root" && { value: state.value }),
-          ...(source.includes?.("$parent") && {
-            value: getPropertyFromPath(
-              [...(parentKey.value ?? [])],
-              state.value,
-              source
-            ),
-          }),
-          ...(!["$root"].includes(source) &&
-            !source.includes("$parent") && {
-              value: getPropertyFromPath(source, state.value),
-            }),
-        }))
+      preformatFieldDependencies(
+        field.value?.dependencies ?? [],
+        state.value,
+        parentKey.value
+      )
     )
   );
 
@@ -95,6 +81,9 @@ export function useFieldContext(
       } catch (err) {
         console.error(err);
       }
+    },
+    {
+      immediate: true,
     }
   );
 
@@ -113,11 +102,13 @@ export function useFieldContext(
   async function resolveFieldOptions(deps: GenericObject) {
     _evalOptions.value = true;
     try {
-      options.value = await (
-        (field.value as SelectField).options as (...args: any[]) => any
-      )({
-        ...deps,
-      });
+      options.value = mapOptions(
+        await ((field.value as SelectField).options as (...args: any[]) => any)(
+          {
+            ...deps,
+          }
+        )
+      );
     } catch (err) {
       console.error(`FIELD ${field.value.key} async options exec. failed`, err);
     } finally {
@@ -143,6 +134,7 @@ export function useFieldContext(
   watch(
     () => dependencies.value,
     (deps) => {
+      console.log("DEPS RESOLVING UPDATE");
       if (field.value.condition) resolveFieldCondition(deps);
       if (typeof (field.value as SelectField).options === "function")
         resolveFieldOptions(deps);
@@ -162,4 +154,15 @@ export function useFieldContext(
     dependencies,
     inputProps,
   };
+}
+
+function mapOptions(
+  options: unknown[]
+): (SelectOption | TreeSelectOption | CascaderOption)[] {
+  if (options.every((option) => ["number", "string"].includes(typeof option)))
+    return options.map((option) => ({
+      label: option,
+      value: option,
+    })) as (SelectOption | TreeSelectOption | CascaderOption)[];
+  else return options as (SelectOption | TreeSelectOption | CascaderOption)[];
 }

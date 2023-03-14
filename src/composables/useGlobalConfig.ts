@@ -8,8 +8,12 @@ import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 
 const DEFAULT_FORM_CONFIG = {
   textOverrides: {
-    requiredMessage: (label: string) =>
-      `The field ${label.toLocaleLowerCase()} can't be empty`,
+    requiredMessage: (label: string | (() => string)) =>
+      `The field ${
+        typeof label === "function"
+          ? label()?.toLocaleLowerCase()
+          : label.toLocaleLowerCase()
+      } can't be empty`,
     nextBtnMessage: "NEXT",
     prevBtnMessage: "PREVIOUS",
     submitBtnMessage: "SUBMIT",

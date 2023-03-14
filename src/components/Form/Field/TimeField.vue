@@ -19,6 +19,6 @@ const fieldValue = computed({
     v-bind="context.inputProps.value"
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
-    @blur="validator.$touch"
+    @blur="validator?.$touch"
   />
 </template>

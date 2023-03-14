@@ -8,6 +8,11 @@ const modelValue = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
 });
+
+watch(
+  () => modelValue.value,
+  () => props.validator?.$touch()
+);
 </script>
 
 <template>

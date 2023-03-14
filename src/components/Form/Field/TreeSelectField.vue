@@ -20,6 +20,6 @@ const fieldValue = computed({
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
     filterable
-    @blur="validator.$touch"
+    @blur="validator?.$touch"
   />
 </template>

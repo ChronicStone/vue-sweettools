@@ -12,6 +12,7 @@ function computeStyleModifier(value: string, type: string) {
   if (type === "maxWidth") return `max-width: ${value};`;
   if (type === "maxHeight") return `max-height: ${value};`;
   if (type === "boolean") return value === "true";
+  if (type === "value") return value;
 }
 
 type TransformKey =
