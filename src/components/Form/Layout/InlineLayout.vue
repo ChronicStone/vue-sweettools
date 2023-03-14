@@ -72,17 +72,6 @@ async function simulateSlideForm(direction: "left" | "right") {
     >
       <slot name="fields" />
     </form>
-
-    <div
-      v-if="$slots.actions"
-      class="h-1/12 flex w-full justify-center items-center gap-4 pt-6"
-    >
-      <slot name="actions" />
-    </div>
-
-    <div v-if="$slots.customActions">
-      <slot name="customActions" />
-    </div>
   </div>
 </template>
 

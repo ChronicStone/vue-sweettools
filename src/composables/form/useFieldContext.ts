@@ -134,7 +134,6 @@ export function useFieldContext(
   watch(
     () => dependencies.value,
     (deps) => {
-      console.log("DEPS RESOLVING UPDATE");
       if (field.value.condition) resolveFieldCondition(deps);
       if (typeof (field.value as SelectField).options === "function")
         resolveFieldOptions(deps);

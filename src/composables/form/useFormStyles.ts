@@ -10,7 +10,7 @@ export const DEFAULT_STYLES = {
   stepperLayout: "full",
 } as const;
 
-const [useProvideFormStyles, useFormStyles] = createInjectionState(
+const [useProvideFormStyles, _useFormStyles] = createInjectionState(
   (formSchema: FormSchema) => {
     const formStyles = {
       fullScreen: useBreakpointStyle(
@@ -19,11 +19,11 @@ const [useProvideFormStyles, useFormStyles] = createInjectionState(
       ),
       maxHeight: useBreakpointStyle(
         formSchema?.maxHeight ?? DEFAULT_STYLES.maxHeight,
-        "maxHeight"
+        "value"
       ),
       maxWidth: useBreakpointStyle(
         formSchema?.maxWidth ?? DEFAULT_STYLES.maxWidth,
-        "maxWidth"
+        "value"
       ),
       gridSize: useBreakpointStyle(
         8, // formSchema?.gridSize ?? DEFAULT_STYLES.gridSize,
@@ -39,5 +39,11 @@ const [useProvideFormStyles, useFormStyles] = createInjectionState(
     return formStyles;
   }
 );
+
+function useFormStyles() {
+  const stylesApi = _useFormStyles();
+  if (!stylesApi) throw new Error("No parent style provider found");
+  return stylesApi;
+}
 
 export { useProvideFormStyles, useFormStyles };

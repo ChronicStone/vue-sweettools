@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
 import { FormRefInstance } from "@/types/form/instance";
-import { NButton, NConfigProvider } from "naive-ui";
+import { NButton, NCard, NEl } from "naive-ui";
+
+const formApi = useFormApi();
 
 const schema = buildFormSchema({
   fields: [
@@ -156,6 +158,11 @@ async function submit() {
   const isValid = await validate();
   console.log({ isValid, data: formData.value });
 }
+
+async function createForm() {
+  const { formData, isCompleted } = await formApi.createForm(steppedSchema);
+  console.log(isCompleted, formData);
+}
 </script>
 
 <template>
@@ -176,6 +183,10 @@ async function submit() {
         <NButton type="primary" @click="nextStep">NEXT</NButton>
         {{ formData }}
       </div>
+    </NCard>
+
+    <NCard>
+      <NButton @click="createForm">OPEN FORM</NButton>
     </NCard>
   </NEl>
 </template>

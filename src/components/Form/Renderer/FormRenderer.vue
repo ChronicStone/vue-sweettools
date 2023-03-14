@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { NButton } from "naive-ui";
 import { FormSchema } from "@/types/form/form";
 import FieldRenderer from "./FieldRenderer.vue";
 import {
@@ -8,6 +9,7 @@ import {
 } from "@/types/form/instance";
 import { _BaseField } from "@/types/form/fields";
 import StepsRenderer from "./StepsRenderer.vue";
+import { MaybeRef } from "@vueuse/core";
 
 const emit = defineEmits<{ (e: "test"): void }>();
 const props = defineProps<{
@@ -22,6 +24,8 @@ const props = defineProps<{
 
 const _formSchema = computed<FormSchema>(() => props.schema);
 const _modalMode = computed<boolean>(() => props.modalMode);
+
+const libConfig = useGlobalConfig(props.schema);
 
 const { formFields, filteredFormFields, isMultiStep, formSteps, currentStep } =
   useProvideFormFields(_formSchema);
@@ -68,6 +72,21 @@ function previousStep() {
   currentStep.value = currentStep.value - 1;
 }
 
+function closeForm() {
+  props._resolve?.(false, unwrapReactivity(formState));
+}
+
+async function submitForm() {
+  const isValid = await $validator.value.$validate();
+  if (!isValid) return;
+
+  props?._resolve?.(true, unwrapReactivity(formState));
+}
+
+function unwrapReactivity(value: MaybeRef<Record<string, unknown>>) {
+  return JSON.parse(JSON.stringify(unref(value)));
+}
+
 defineExpose<FormRefInstance>({
   $data: outputFormState,
   $reset: reset,
@@ -81,8 +100,12 @@ defineExpose<FormRefInstance>({
 
 <template>
   <LayoutContainer>
-    <template v-if="isMultiStep" #header>
-      <StepsRenderer :steps="formSteps" :current-step-index="currentStep" />
+    <template v-if="isMultiStep || (schema.title && modalMode)" #header>
+      <StepsRenderer
+        v-if="isMultiStep"
+        :steps="formSteps"
+        :current-step-index="currentStep"
+      />
     </template>
     <template #fields>
       <FieldRenderer
@@ -96,6 +119,44 @@ defineExpose<FormRefInstance>({
         "
         @update:model-value="updateRootFieldValue(field, $event)"
       />
+    </template>
+
+    <template #actions>
+      <NButton
+        v-if="libConfig.getProp('uiConfig.showCancelButton')"
+        secondary
+        type="error"
+        @click="closeForm"
+      >
+        {{ libConfig.getProp("textOverrides.cancelBtnMessage") }}
+      </NButton>
+      <NButton
+        v-if="libConfig.getProp('uiConfig.showPrevButton') && isMultiStep"
+        secondary
+        :disabled="currentStep === 0"
+        type="primary"
+        @click="previousStep"
+      >
+        {{ libConfig.getProp("textOverrides.prevBtnMessage") }}
+      </NButton>
+      <NButton
+        secondary
+        type="primary"
+        @click="
+          currentStep === formSteps.length - 1 || !isMultiStep
+            ? submitForm()
+            : nextStep()
+        "
+        >{{
+          isMultiStep
+            ? `${
+                currentStep === formSteps.length - 1
+                  ? libConfig.getProp("textOverrides.submitBtnMessage")
+                  : libConfig.getProp("textOverrides.nextBtnMessage")
+              }`
+            : libConfig.getProp("textOverrides.submitBtnMessage")
+        }}
+      </NButton>
     </template>
   </LayoutContainer>
 </template>

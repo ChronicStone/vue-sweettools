@@ -72,13 +72,14 @@ function submitForm(
 <template>
   <NDialogProvider>
     <slot />
+
     <div
       v-if="formInstances.length"
       id="sweetforms__overlay"
       style="z-index: 1000"
-      class="fixed left-0 top-0 bg-black bg-opacity-50 grid place-items-center w-full h-screen"
+      class="fixed bg-black/25 left-0 top-0 grid place-items-center w-full h-screen"
     >
-      <transition-group name="scale" appear>
+      <TransitionGroup name="scale" appear>
         <FormRenderer
           v-for="formInstance in formInstances"
           :key="formInstance._id"
@@ -88,7 +89,7 @@ function submitForm(
           :modal-mode="true"
           @close-form="closeForm(formInstance._id)"
         />
-      </transition-group>
+      </TransitionGroup>
     </div>
     <div
       v-show="showModalOverlay"
@@ -102,6 +103,22 @@ function submitForm(
 </template>
 
 <style>
+.scale-move,
+.scale-enter-active,
+.scale-leave-active {
+  transition: all ease-in-out 0.15s;
+}
+
+.scale-leave-active {
+  position: absolute;
+}
+
+.scale-enter-from,
+.scale-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
 .pop-enter-active,
 .pop-leave-active {
   transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;

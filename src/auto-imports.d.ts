@@ -184,6 +184,7 @@ declare global {
   const useFileSystemAccess: typeof import('@vueuse/core')['useFileSystemAccess']
   const useFocus: typeof import('@vueuse/core')['useFocus']
   const useFocusWithin: typeof import('@vueuse/core')['useFocusWithin']
+  const useFormApi: typeof import('./composables/form/useFormApi')['useFormApi']
   const useFormController: typeof import('./composables/form/useFormController')['useFormController']
   const useFormFields: typeof import('./composables/form/useFormFields')['useFormFields']
   const useFormLayout: typeof import('./composables/form/useFormLayout')['useFormLayout']
@@ -500,6 +501,7 @@ declare module 'vue' {
     readonly useFileSystemAccess: UnwrapRef<typeof import('@vueuse/core')['useFileSystemAccess']>
     readonly useFocus: UnwrapRef<typeof import('@vueuse/core')['useFocus']>
     readonly useFocusWithin: UnwrapRef<typeof import('@vueuse/core')['useFocusWithin']>
+    readonly useFormApi: UnwrapRef<typeof import('./composables/form/useFormApi')['useFormApi']>
     readonly useFormController: UnwrapRef<typeof import('./composables/form/useFormController')['useFormController']>
     readonly useFormFields: UnwrapRef<typeof import('./composables/form/useFormFields')['useFormFields']>
     readonly useFormLayout: UnwrapRef<typeof import('./composables/form/useFormLayout')['useFormLayout']>
