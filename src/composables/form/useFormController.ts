@@ -1,12 +1,4 @@
-import {
-  ExpandRecursively,
-  ExtractFieldsFromSteps,
-  FormInfoReturnType,
-  FormSchema,
-  Narrowable,
-  SimpleFormSchema,
-  SteppedFormSchema,
-} from "@/types/form/form";
+import { FormInferredData, FormSchema, Narrowable } from "@/types/form/form";
 import { FormRefInstance } from "@/types/form/instance";
 import { ComputedRef, Ref } from "vue";
 
@@ -20,19 +12,7 @@ export function useFormController<
 ): {
   schema: TFormSchema;
   validate(): Promise<boolean> | (() => boolean);
-  formData: ComputedRef<
-    TFormSchema extends SimpleFormSchema<FieldKey>
-      ? ExpandRecursively<FormInfoReturnType<TFormSchema["fields"][number]>>
-      : TFormSchema extends SteppedFormSchema<StepKey, FieldKey>
-      ? ExpandRecursively<
-          ExtractFieldsFromSteps<
-            StepKey,
-            FieldKey,
-            TFormSchema["steps"][number]
-          >
-        >
-      : never
-  >;
+  formData: ComputedRef<FormInferredData<TFormSchema, StepKey, FieldKey>>;
   nextStep: () => Promise<boolean>;
   previousStep: () => void;
 } {
@@ -42,17 +22,7 @@ export function useFormController<
       return (await formRef.value?.$validate()) ?? false;
     },
     formData: computed(() => formRef.value?.$data ?? {}) as ComputedRef<
-      TFormSchema extends SimpleFormSchema<FieldKey>
-        ? ExpandRecursively<FormInfoReturnType<TFormSchema["fields"][number]>>
-        : TFormSchema extends SteppedFormSchema<StepKey, FieldKey>
-        ? ExpandRecursively<
-            ExtractFieldsFromSteps<
-              StepKey,
-              FieldKey,
-              TFormSchema["steps"][number]
-            >
-          >
-        : never
+      FormInferredData<TFormSchema, StepKey, FieldKey>
     >,
     nextStep: async () => {
       return (await formRef.value?.nextStep?.()) ?? false;

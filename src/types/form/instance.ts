@@ -1,15 +1,6 @@
-import { ComputedRef, Ref, WatchStopHandle } from "vue";
+import { ComputedRef } from "vue";
 import { FormField } from "./fields";
-import {
-  ExpandRecursively,
-  ExtractFieldsFromSteps,
-  FormInfoReturnType,
-  FormSchema,
-  FormStep,
-  Narrowable,
-  SimpleFormSchema,
-  SteppedFormSchema,
-} from "./form";
+import { FormInferredData, FormSchema, FormStep, Narrowable } from "./form";
 
 export type FormInstance = {
   _id: string;
@@ -30,17 +21,7 @@ export interface FormApi {
     inputData?: Record<string, unknown>
   ): Promise<{
     isCompleted: boolean;
-    formData: TFormSchema extends SimpleFormSchema<FieldKey>
-      ? ExpandRecursively<FormInfoReturnType<TFormSchema["fields"][number]>>
-      : TFormSchema extends SteppedFormSchema<StepKey, FieldKey>
-      ? ExpandRecursively<
-          ExtractFieldsFromSteps<
-            StepKey,
-            FieldKey,
-            TFormSchema["steps"][number]
-          >
-        >
-      : never;
+    formData: FormInferredData<TFormSchema, StepKey, FieldKey>;
   }>;
 }
 
