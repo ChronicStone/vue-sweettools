@@ -38,6 +38,7 @@ declare module '@vue/runtime-core' {
     LabelRenderer: typeof import('./src/components/Form/Renderer/LabelRenderer.vue')['default']
     'Mdi:arrowDown': typeof import('~icons/mdi/arrow-down')['default']
     'Mdi:arrowUp': typeof import('~icons/mdi/arrow-up')['default']
+    'Mdi:close': typeof import('~icons/mdi/close')['default']
     'Mdi:filterVariant': typeof import('~icons/mdi/filter-variant')['default']
     'Mdi:plus': typeof import('~icons/mdi/plus')['default']
     'Mdi:trash': typeof import('~icons/mdi/trash')['default']

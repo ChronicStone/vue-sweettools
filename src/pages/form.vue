@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
 import { FormRefInstance } from "@/types/form/instance";
 import { NButton, NCard, NEl } from "naive-ui";
@@ -84,6 +84,14 @@ const steppedSchema = buildFormSchema({
           type: "text",
           key: "text1",
           required: true,
+        },
+        {
+          key: "?",
+          label: "Button",
+          type: "info",
+          content: () => (
+            <NButton onClick={() => createForm()}>OPEN NESTED FORM</NButton>
+          ),
         },
       ],
     },

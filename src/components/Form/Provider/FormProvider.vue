@@ -77,19 +77,17 @@ function submitForm(
       v-if="formInstances.length"
       id="sweetforms__overlay"
       style="z-index: 1000"
-      class="fixed bg-black/25 left-0 top-0 grid place-items-center w-full h-screen"
+      class="fixed left-0 top-0 grid place-items-center w-full h-screen"
     >
-      <TransitionGroup name="scale" appear>
-        <FormRenderer
-          v-for="formInstance in formInstances"
-          :key="formInstance._id"
-          :schema="formInstance.formSchema"
-          :data="formInstance.formData"
-          :_resolve="formInstance._resolve"
-          :modal-mode="true"
-          @close-form="closeForm(formInstance._id)"
-        />
-      </TransitionGroup>
+      <FormRenderer
+        v-for="formInstance in formInstances"
+        :key="formInstance._id"
+        :schema="formInstance.formSchema"
+        :data="formInstance.formData"
+        :_resolve="formInstance._resolve"
+        :modal-mode="true"
+        @close-form="closeForm(formInstance._id)"
+      />
     </div>
     <div
       v-show="showModalOverlay"
@@ -103,20 +101,14 @@ function submitForm(
 </template>
 
 <style>
-.scale-move,
-.scale-enter-active,
-.scale-leave-active {
-  transition: all ease-in-out 0.15s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
 }
 
-.scale-leave-active {
-  position: absolute;
-}
-
-.scale-enter-from,
-.scale-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
-  transform: scale(0.5);
 }
 
 .pop-enter-active,

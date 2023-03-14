@@ -99,7 +99,7 @@ defineExpose<FormRefInstance>({
 </script>
 
 <template>
-  <LayoutContainer>
+  <LayoutContainer :schema="schema" @close="closeForm">
     <template v-if="isMultiStep || (schema.title && modalMode)" #header>
       <StepsRenderer
         v-if="isMultiStep"

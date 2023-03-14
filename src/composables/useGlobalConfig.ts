@@ -22,7 +22,7 @@ const DEFAULT_FORM_CONFIG = {
   uiConfig: {
     showStepper: true,
     showCloseButton: true,
-    showCancelButton: true,
+    showCancelButton: false,
     showPrevButton: true,
     allowOutsideClick: true,
   },
