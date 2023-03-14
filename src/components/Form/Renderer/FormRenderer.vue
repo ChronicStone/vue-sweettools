@@ -12,9 +12,12 @@ import StepsRenderer from "./StepsRenderer.vue";
 const emit = defineEmits<{ (e: "test"): void }>();
 const props = defineProps<{
   schema: FormSchema;
-  data?: any;
+  data?: Record<string, unknown>;
   modalMode?: boolean;
-  _resolve?: (() => void) | null;
+  // eslint-disable-next-line vue/prop-name-casing
+  _resolve?:
+    | ((isCompleted: boolean, formData: Record<string, unknown>) => void)
+    | null;
 }>();
 
 const _formSchema = computed<FormSchema>(() => props.schema);
@@ -47,8 +50,8 @@ async function nextStep() {
     return false;
   }
 
+  formSteps.value[currentStep.value]._status = StepStatus.COMPLETED;
   if (currentStep.value !== formSteps.value.length - 1) {
-    formSteps.value[currentStep.value]._status = StepStatus.COMPLETED;
     formSteps.value[currentStep.value + 1]._status =
       formSteps.value[currentStep.value + 1]._status === StepStatus.INVALID
         ? StepStatus.INVALID

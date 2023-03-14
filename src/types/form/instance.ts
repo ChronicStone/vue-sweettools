@@ -10,27 +10,24 @@ import {
   SimpleFormSchema,
   SteppedFormSchema,
 } from "./form";
-import { SelectOption } from "naive-ui";
-import { GenericObject } from "../utils";
 
-export interface FormInstance {
+export type FormInstance = {
   _id: string;
-  _resolve?: (data: {
-    isCompleted: boolean;
-    formData: { [key: string]: any };
-  }) => void;
-  formSchema: FormSchema<any, any>;
-  formData: { [key: string]: any };
-}
+  _resolve: (isCompleted: boolean, formData: Record<string, unknown>) => void;
+  formSchema: any;
+  formData: Record<string, unknown>;
+};
 
 export interface FormApi {
   formInstances: ComputedRef<FormInstance[]>;
+  destroyAll: () => void;
   createForm<
     TFormSchema extends FormSchema<StepKey, FieldKey>,
     StepKey extends Narrowable,
     FieldKey extends Narrowable
   >(
-    schema: TFormSchema
+    schema: TFormSchema,
+    inputData?: Record<string, unknown>
   ): Promise<{
     isCompleted: boolean;
     formData: TFormSchema extends SimpleFormSchema<FieldKey>

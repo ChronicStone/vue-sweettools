@@ -29,7 +29,7 @@ const progressColor = computed(() => {
   if (currentStep._status === StepStatus.PENDING)
     return themeVars.value.primaryColor;
   if (currentStep._status === StepStatus.IN_PROGRESS)
-    return themeVars.value.primaryColor;
+    return themeVars.value.infoColor;
   if (currentStep._status === StepStatus.COMPLETED)
     return themeVars.value.primaryColor;
   if (currentStep._status === StepStatus.INVALID)
@@ -41,7 +41,7 @@ const progressColor = computed(() => {
 const progressColorMode = computed(() => {
   const currentStep = props.steps[props.currentStepIndex];
   if (currentStep._status === StepStatus.PENDING) return "default";
-  if (currentStep._status === StepStatus.IN_PROGRESS) return "primary";
+  if (currentStep._status === StepStatus.IN_PROGRESS) return "info";
   if (currentStep._status === StepStatus.COMPLETED) return "primary";
   if (currentStep._status === StepStatus.INVALID) return "error";
 });
@@ -70,9 +70,12 @@ const progressColorMode = computed(() => {
               : 'default'
           "
         >
-          {{
-            (index === currentStepIndex ? "Step " : "") + (index + 1).toString()
-          }}
+          <template v-if="step.icon" #icon>
+            <span class="iconify" :data-icon="step.icon" />
+          </template>
+          <span v-if="currentStepIndex !== index">{{ index + 1 }}</span>
+          <span v-else-if="!step.title"> Step {{ index + 1 }} </span>
+          <span v-else>{{ step.title }}</span>
         </NTag>
         <div
           v-if="index === currentStepIndex"

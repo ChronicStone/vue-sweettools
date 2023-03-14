@@ -8,8 +8,10 @@ const tempHeight = ref<number | false>(0);
 
 watch(
   () => currentStep.value,
-  (newStep, oldStep) => {
-    simulateSlideForm(newStep > oldStep ? "left" : "right");
+  async (newStep, oldStep) => {
+    disableOverflow.value = true;
+    await simulateSlideForm(newStep > oldStep ? "left" : "right");
+    disableOverflow.value = false;
   }
 );
 
@@ -20,9 +22,10 @@ async function simulateSlideForm(direction: "left" | "right") {
 
   const form = formRef.value as HTMLElement;
   const formBounding = formRef.value.getBoundingClientRect();
-
-  disableOverflow.value = true;
   tempHeight.value = formBounding.height;
+
+  await nextTick();
+  await sleep(50);
 
   form.style.visibility = "hidden";
   form.style.transform = `translateX(${
@@ -48,6 +51,7 @@ async function simulateSlideForm(direction: "left" | "right") {
 </script>
 
 <template>
+  {{ disableOverflow }}
   <div
     class="flex flex-col gap-4 relative"
     :class="{ 'overflow-hidden': disableOverflow }"

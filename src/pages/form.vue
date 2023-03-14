@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
 import { FormRefInstance } from "@/types/form/instance";
-import { NButton } from "naive-ui";
+import { NButton, NConfigProvider } from "naive-ui";
 
 const schema = buildFormSchema({
   fields: [
@@ -74,7 +74,8 @@ const schema = buildFormSchema({
 const steppedSchema = buildFormSchema({
   steps: [
     {
-      label: "STEP 1",
+      icon: "mdi:user",
+      title: "STEP 1",
       fields: [
         {
           label: "Text 1",
@@ -85,7 +86,7 @@ const steppedSchema = buildFormSchema({
       ],
     },
     {
-      label: "STEP 2",
+      title: "STEP 2",
       fields: [
         {
           label: "Text 2",

@@ -31,6 +31,7 @@ interface BaseFormSchema {
 
 export interface FormStep<StepKey, FieldKey> {
   title?: string;
+  icon?: string;
   root?: StepKey;
   fields: FormField<FieldKey>[];
 }
@@ -120,3 +121,15 @@ export type ExtractFieldsFromSteps<
       >;
     }
   : ExpandRecursively<FormInfoReturnType<TStep["fields"][number]>>;
+
+export type FormInferredData<
+  TFormSchema extends FormSchema<StepKey, FieldKey>,
+  StepKey extends Narrowable,
+  FieldKey extends Narrowable
+> = TFormSchema extends SimpleFormSchema<FieldKey>
+  ? ExpandRecursively<FormInfoReturnType<TFormSchema["fields"][number]>>
+  : TFormSchema extends SteppedFormSchema<StepKey, FieldKey>
+  ? ExpandRecursively<
+      ExtractFieldsFromSteps<StepKey, FieldKey, TFormSchema["steps"][number]>
+    >
+  : never;

@@ -10,7 +10,7 @@ import {
 const [useProvideFormState, _useFormState] = createInjectionState(
   (
     fields: ComputedRef<Array<FormField & { _stepRoot?: string }>>,
-    formData: { [key: string]: any },
+    formData: Record<string, unknown> | undefined,
     storeConfig: FormSchema["sharedStore"]
   ) => {
     const formState = ref<{ [key: string]: any }>(
