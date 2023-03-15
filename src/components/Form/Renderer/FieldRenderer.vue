@@ -43,8 +43,14 @@ const fieldValue = computed({
   set: (value) => emit("update:modelValue", value),
 });
 
-const { formState } = useFormState();
-const fieldContext = useFieldContext(_field, fieldValue, formState, _parentKey);
+const { formState, virtualStore } = useFormState();
+const fieldContext = useFieldContext(
+  _field,
+  fieldValue,
+  formState,
+  virtualStore,
+  _parentKey
+);
 
 const $globalValidation = useFormValidation();
 const $validator = computed(

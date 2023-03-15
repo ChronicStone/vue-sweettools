@@ -26,11 +26,11 @@ const [useProvideFormStyles, _useFormStyles] = createInjectionState(
         "value"
       ),
       gridSize: useBreakpointStyle(
-        8, // formSchema?.gridSize ?? DEFAULT_STYLES.gridSize,
+        formSchema?.gridSize ?? DEFAULT_STYLES.gridSize,
         "grid-cols"
       ),
       fieldSize: useBreakpointStyle(
-        "8 md:4", //formSchema?.fieldSize ?? DEFAULT_STYLES.fieldSize,
+        formSchema?.fieldSize ?? DEFAULT_STYLES.fieldSize,
         "col"
       ),
       stepperLayout: useBreakpointStyle("full", "value"),

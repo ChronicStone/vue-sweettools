@@ -94,7 +94,7 @@ const steppedSchema = buildFormSchema({
           content: () => (
             <NButton onClick={() => createForm()}>OPEN NESTED FORM</NButton>
           ),
-          storeDependencies: [],
+          virtualDependencies: ["haha"],
         },
         {
           label: "Hello obj",
@@ -157,6 +157,38 @@ const steppedSchema = buildFormSchema({
   ],
 });
 
+const sharedDepsSchema = buildFormSchema({
+  sharedStore: {
+    fullName: {
+      dependencies: ["firstName", "lastName"],
+      value: (dependencies: Record<string, unknown>) =>
+        `${dependencies?.firstName} ${dependencies?.lastName}`,
+    },
+  },
+  fields: [
+    {
+      label: "First name",
+      type: "text",
+      required: true,
+      key: "firstName",
+    },
+    {
+      label: "Last name",
+      type: "text",
+      required: true,
+      key: "lastName",
+    },
+    {
+      label: "FullName",
+      key: "test",
+      type: "info",
+      size: 8,
+      virtualDependencies: ["fullName"],
+      content: (_, virtualDeps) => <div>{virtualDeps?.fullName}</div>,
+    },
+  ],
+});
+
 const formRef = ref<FormRefInstance>();
 const { formData, validate, nextStep, previousStep } = useFormController(
   formRef,
@@ -207,6 +239,13 @@ async function createForm() {
     <NCard class="p-4">
       <div class="flex flex-col gap-4">
         <FormRenderer ref="formRef" :schema="schema" />
+        <NButton type="primary" @click="submit">SUBMIT</NButton>
+      </div>
+    </NCard>
+
+    <NCard class="p-4">
+      <div class="flex flex-col gap-4">
+        <FormRenderer ref="formRef" :schema="sharedDepsSchema" />
         <NButton type="primary" @click="submit">SUBMIT</NButton>
       </div>
     </NCard>

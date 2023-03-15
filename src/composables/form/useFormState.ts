@@ -5,6 +5,10 @@ import {
   mapFieldsInitialState,
   mapFieldsOutputState,
 } from "@/utils/form/mapFieldsInitialState";
+import {
+  mapFieldDependencies,
+  preformatFieldDependencies,
+} from "@/utils/form/mapFieldDependencies";
 
 const [useProvideFormState, _useFormState] = createInjectionState(
   (
@@ -20,33 +24,36 @@ const [useProvideFormState, _useFormState] = createInjectionState(
     );
 
     function reset(clear = false) {
-      formState.value = {};
+      formState.value = mapFieldsInitialState(
+        clear ? {} : formData ?? {},
+        fields.value
+      );
     }
 
-    // const sharedDependenciesStore = asyncComputed(() => {
-    //   if (!Object.keys(storeConfig ?? {}).length) return false;
-    //   return Object.entries(storeConfig ?? {}).reduce(
-    //     async (acc, [key, item]) => {
-    //       return {
-    //         ...acc,
-    //         [key]:
-    //           typeof item.value === "function"
-    //             ? await item.value(
-    //                 mapFieldDependencies(
-    //                   preformatFieldDependencies(
-    //                     item?.dependencies ?? [],
-    //                     formState.value
-    //                   )
-    //                 )
-    //               )
-    //             : item.value,
-    //       };
-    //     },
-    //     {}
-    //   );
-    // });
+    const virtualStore = asyncComputed<Record<string, unknown>>(() => {
+      if (!Object.keys(storeConfig ?? {}).length) return false;
+      return Object.entries(storeConfig ?? {}).reduce(
+        async (acc, [key, item]) => {
+          return {
+            ...acc,
+            [key]:
+              typeof item.value === "function"
+                ? await item.value(
+                    mapFieldDependencies(
+                      preformatFieldDependencies(
+                        item?.dependencies ?? [],
+                        formState.value
+                      )
+                    )
+                  )
+                : item.value,
+          };
+        },
+        {}
+      );
+    }, {});
 
-    return { formState, outputFormState, reset };
+    return { formState, outputFormState, virtualStore, reset };
   }
 );
 

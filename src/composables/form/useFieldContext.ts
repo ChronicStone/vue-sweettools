@@ -14,6 +14,7 @@ export function useFieldContext(
   field: ComputedRef<FormField>,
   fieldState: WritableComputedRef<unknown>,
   state: Ref<GenericObject>,
+  virtualStore: Ref<Record<string, unknown>>,
   parentKey: ComputedRef<string[]>
 ) {
   const fieldId = generateUUID();
@@ -60,6 +61,15 @@ export function useFieldContext(
       )
     )
   );
+
+  const virtualDependencies = computed(() => {
+    return mapFieldDependencies(
+      preformatFieldDependencies(
+        field.value?.virtualDependencies ?? [],
+        virtualStore.value
+      )
+    );
+  });
 
   if ("options" in field.value) {
     watch(
@@ -155,6 +165,7 @@ export function useFieldContext(
     conditionEffect,
     options,
     dependencies,
+    virtualDependencies,
     inputProps,
   };
 }

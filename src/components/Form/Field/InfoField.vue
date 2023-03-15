@@ -15,14 +15,21 @@ const _field = computed(() => props.field as InfoField);
 
 function renderInfoContent(
   content: InfoField["content"],
-  dependencies: GenericObject
+  dependencies: GenericObject,
+  virtualDependencies: GenericObject
 ) {
-  return renderVNode(content ?? "", dependencies);
+  return renderVNode(content ?? "", dependencies, virtualDependencies);
 }
 </script>
 
 <template>
   <component
-    :is="renderInfoContent(_field.content, context.dependencies.value)"
+    :is="
+      renderInfoContent(
+        _field.content,
+        context.dependencies.value,
+        context.virtualDependencies.value
+      )
+    "
   />
 </template>

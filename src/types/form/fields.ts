@@ -48,7 +48,10 @@ type Dependencies = Record<string, unknown>;
 export type _FieldOptions =
   | (number | string)[]
   | SelectOption[]
-  | ((dependencies?: Dependencies) => SelectOption[] | (number | string)[]);
+  | ((
+      dependencies?: Dependencies,
+      virtualDependencies?: Dependencies
+    ) => SelectOption[] | (number | string)[]);
 
 export interface TextField {
   type: "text";
@@ -365,7 +368,10 @@ export interface ArrayTabsField<
 
 export interface InfoField {
   type: "info";
-  content: (dependencies: Record<string, unknown>) => VNodeChild | string;
+  content: (
+    dependencies?: Dependencies,
+    virtualDependencies?: Dependencies
+  ) => VNodeChild | string;
 }
 
 export interface CustomField {
@@ -385,12 +391,22 @@ export type _BaseField<
   FieldKey extends Narrowable = string,
   StoreKey extends string = string
 > = {
-  label?: string | ((dependencies: Dependencies) => VNodeChild | string);
+  label?:
+    | string
+    | ((
+        dependencies?: Dependencies,
+        virtualDependencies?: Dependencies
+      ) => VNodeChild | string);
   key: FieldKey;
   placeholder?: string;
   dependencies?: (string | [string, string])[];
-  storeDependencies?: (StoreKey | [StoreKey, string])[];
-  required?: boolean | ((dependencies?: Dependencies) => boolean);
+  virtualDependencies?: Array<StoreKey | [StoreKey, string]>;
+  required?:
+    | boolean
+    | ((
+        dependencies?: Dependencies,
+        virtualDependencies?: Dependencies
+      ) => boolean);
   size?: number | string;
   gridSize?: number | string;
   default?: any;
@@ -399,11 +415,17 @@ export type _BaseField<
   labelPosition?: "left" | "top";
   description?: string | (() => VNodeChild) | FieldDescription;
   fieldParams?: Record<string, unknown>;
-  condition?: (dependencies?: Dependencies) => boolean;
+  condition?: (
+    dependencies?: Dependencies,
+    virtualDependencies?: Dependencies
+  ) => boolean;
   preformat?: (value: unknown) => unknown;
   transform?: (value: unknown) => unknown;
   validators?:
-    | ((dependencies?: Dependencies) => ValidationArgs)
+    | ((
+        dependencies?: Dependencies,
+        virtualDependencies?: Dependencies
+      ) => ValidationArgs)
     | ValidationArgs;
   watch?: (
     value: unknown,
