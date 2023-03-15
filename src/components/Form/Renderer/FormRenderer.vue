@@ -100,13 +100,18 @@ defineExpose<FormRefInstance>({
 
 <template>
   <LayoutContainer :schema="schema" @close="closeForm">
-    <template v-if="isMultiStep || (schema.title && modalMode)" #header>
-      <StepsRenderer
-        v-if="isMultiStep"
-        :steps="formSteps"
-        :current-step-index="currentStep"
-      />
+    <template v-if="schema.title" #title>
+      <h1
+        v-if="typeof schema.title === 'string'"
+        class="text-center uppercase text-xl"
+      ></h1>
+      <component :is="renderVNode(schema.title)" v-else />
     </template>
+
+    <template v-if="isMultiStep" #stepper>
+      <StepsRenderer :steps="formSteps" :current-step-index="currentStep" />
+    </template>
+
     <template #fields>
       <FieldRenderer
         v-for="(field, index) in filteredFormFields"

@@ -28,8 +28,6 @@ function handleOverlayClick(event: MouseEvent) {
     >
       <Transition name="scale" appear>
         <NCard
-          id="sweetforms__form"
-          ref="formRef"
           :style="{ maxWidth: formStyles.maxWidth.value, width: '100%' }"
           class="transition-all opacity-100 fixed w-9/10 md:w-3/4 lg:w-1/2 rounded-lg h-auto"
           :content-style="{
@@ -44,7 +42,10 @@ function handleOverlayClick(event: MouseEvent) {
           }"
         >
           <template #header>
-            <slot name="header" />
+            <div class="flex flex-col gap-4">
+              <slot name="title" />
+              <slot name="stepper" />
+            </div>
           </template>
 
           <div

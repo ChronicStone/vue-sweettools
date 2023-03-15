@@ -18,7 +18,7 @@ const schema = buildFormSchema({
         checkStrategy: "child",
         showPath: false,
       },
-      watch: async (value: string) => {
+      watch: async (value) => {
         console.log("exam changed", value);
       },
     },
@@ -29,11 +29,9 @@ const schema = buildFormSchema({
       required: true,
       options: [],
       default: "general",
-      watch: (
-        value: string,
-        { setValue }: { setValue: (key: string, value: any) => void }
-      ) => {
-        if (["online", "onsite"].includes(value)) setValue("pause", false);
+      watch(value, { setValue }) {
+        if (["online", "onsite"].includes(value as string))
+          setValue("pause", false);
       },
     },
     {
@@ -44,7 +42,6 @@ const schema = buildFormSchema({
       required: true,
       dependencies: ["proctoringType", "quantity"],
       condition: (dependencies) => {
-        console.log({ dependencies });
         return (dependencies?.proctoringType ?? "") === "onsite";
       },
       size: "8",
@@ -74,10 +71,15 @@ const schema = buildFormSchema({
 });
 
 const steppedSchema = buildFormSchema({
+  sharedStore: {
+    someStoreProp: {
+      value: () => [],
+    },
+  },
   steps: [
     {
       icon: "mdi:user",
-      title: "STEP 1",
+      title: "A very long step title dkzqdkz qkdqz",
       fields: [
         {
           label: "Text 1",
@@ -92,6 +94,28 @@ const steppedSchema = buildFormSchema({
           content: () => (
             <NButton onClick={() => createForm()}>OPEN NESTED FORM</NButton>
           ),
+          storeDependencies: [],
+        },
+        {
+          type: "object",
+          key: "obj",
+          fields: [
+            {
+              label: "Text 1",
+              type: "text",
+              key: "text1",
+              required: true,
+              transform: (text) => (text as string)?.toLocaleUpperCase?.(),
+            },
+            {
+              key: "?",
+              label: "Button",
+              type: "info",
+              content: () => (
+                <NButton onClick={() => createForm()}>OPEN NESTED FORM</NButton>
+              ),
+            },
+          ],
         },
       ],
     },
@@ -107,7 +131,7 @@ const steppedSchema = buildFormSchema({
       ],
     },
     {
-      label: "STEP 3",
+      title: "STEP 3",
       fields: [
         {
           label: "Text 3",
@@ -118,7 +142,7 @@ const steppedSchema = buildFormSchema({
       ],
     },
     {
-      label: "STEP 4",
+      title: "STEP 4",
       fields: [
         {
           label: "Text 4",
@@ -168,7 +192,9 @@ async function submit() {
 }
 
 async function createForm() {
-  const { formData, isCompleted } = await formApi.createForm(steppedSchema);
+  const { formData, isCompleted } = await formApi.createForm(steppedSchema, {
+    obj: { text1: "HAHAHA" },
+  });
   console.log(isCompleted, formData);
 }
 </script>
@@ -189,7 +215,9 @@ async function createForm() {
         <FormRenderer ref="formRef" :schema="steppedSchema" />
         <NButton type="primary" @click="previousStep">PREV</NButton>
         <NButton type="primary" @click="nextStep">NEXT</NButton>
-        {{ formData }}
+        <pre>
+          {{ formData }}
+        </pre>
       </div>
     </NCard>
 

@@ -32,9 +32,10 @@ export function useFormController<
 }
 
 export function buildFormSchema<
-  TFormSchema extends FormSchema<StepKey, FieldKey>,
+  TFormSchema extends FormSchema<StepKey, FieldKey, StoreKey>,
   StepKey extends Narrowable,
-  FieldKey extends Narrowable
+  FieldKey extends Narrowable,
+  StoreKey extends string
 >(schema: TFormSchema): TFormSchema {
   return schema;
 }

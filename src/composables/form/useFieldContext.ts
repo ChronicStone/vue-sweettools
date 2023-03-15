@@ -61,31 +61,35 @@ export function useFieldContext(
     )
   );
 
-  watch(
-    () => options.value,
-    (fieldOptions: SelectOption[]) => {
-      try {
-        const optionValues = fieldOptions.map((option) => option.value) ?? [];
-        if (Array.isArray(fieldState.value))
-          setPropertyFromPath(
-            state.value,
-            [...(parentKey.value ?? []), field.value.key],
-            fieldState.value.filter((item: any) => optionValues.includes(item))
-          );
-        else if (!optionValues.includes(fieldState.value as string | number))
-          setPropertyFromPath(
-            state.value,
-            [...(parentKey.value ?? []), field.value.key],
-            null
-          );
-      } catch (err) {
-        console.error(err);
+  if ("options" in field.value) {
+    watch(
+      () => options.value,
+      (fieldOptions: SelectOption[]) => {
+        try {
+          const optionValues = fieldOptions.map((option) => option.value) ?? [];
+          if (Array.isArray(fieldState.value))
+            setPropertyFromPath(
+              state.value,
+              [...(parentKey.value ?? []), field.value.key],
+              fieldState.value.filter((item: any) =>
+                optionValues.includes(item)
+              )
+            );
+          else if (!optionValues.includes(fieldState.value as string | number))
+            setPropertyFromPath(
+              state.value,
+              [...(parentKey.value ?? []), field.value.key],
+              null
+            );
+        } catch (err) {
+          console.error(err);
+        }
+      },
+      {
+        immediate: true,
       }
-    },
-    {
-      immediate: true,
-    }
-  );
+    );
+  }
 
   if (typeof field.value?.watch === "function") {
     watch(

@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { StepInstance, StepStatus } from "@/types/form/instance";
-import { NStep, NTag, NSteps, NProgress, useThemeVars } from "naive-ui";
+import {
+  NStep,
+  NTag,
+  NSteps,
+  NProgress,
+  useThemeVars,
+  NEllipsis,
+} from "naive-ui";
 import { computeHslColor } from "@/utils/simulateHslColorOpacity";
 
 const props = defineProps<{
@@ -70,12 +77,14 @@ const progressColorMode = computed(() => {
               : 'default'
           "
         >
-          <template v-if="step.icon" #icon>
-            <span class="iconify" :data-icon="step.icon" />
-          </template>
-          <span v-if="currentStepIndex !== index">{{ index + 1 }}</span>
-          <span v-else-if="!step.title"> Step {{ index + 1 }} </span>
-          <span v-else>{{ step.title }}</span>
+          <NEllipsis>
+            <template v-if="step.icon" #icon>
+              <span class="iconify" :data-icon="step.icon" />
+            </template>
+            <span v-if="currentStepIndex !== index">{{ index + 1 }}</span>
+            <span v-else-if="!step.title"> Step {{ index + 1 }} </span>
+            <span v-else>{{ step.title }}</span>
+          </NEllipsis>
         </NTag>
         <div
           v-if="index === currentStepIndex"

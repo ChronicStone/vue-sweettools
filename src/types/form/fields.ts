@@ -10,6 +10,7 @@ import {
 } from "naive-ui";
 import { SelectBaseOption } from "naive-ui/es/select/src/interface";
 import { Component, VNode, VNodeChild } from "vue";
+import { Narrowable } from "./form";
 
 export enum FieldTypes {
   TEXT = "text",
@@ -42,7 +43,7 @@ export enum FieldTypes {
 
 export type TFieldTypes = `${FieldTypes}`;
 
-type Dependencies = Record<string, any>;
+type Dependencies = Record<string, unknown>;
 
 export type _FieldOptions =
   | (number | string)[]
@@ -143,7 +144,7 @@ export interface CascaderField {
       option: CascaderOption,
       path: CascaderOption[]
     ) => boolean;
-    filterMenuProps?: Record<string, any>;
+    filterMenuProps?: Record<string, unknown>;
   };
 }
 
@@ -319,19 +320,25 @@ export interface DateField {
   };
 }
 
-export interface ObjectField<N = any> {
+export interface ObjectField<
+  FieldKey extends Narrowable = string,
+  StoreKey extends string = string
+> {
   type: "object";
   extraProperties?: boolean;
   gridSize?: number | string;
-  fields: FormField<N>[];
+  fields: FormField<FieldKey, StoreKey>[];
   collapsible?: boolean;
   collapsed?: boolean;
 }
 
-export interface _ArrayField<N = any> {
+export interface _ArrayField<
+  FieldKey extends Narrowable = string,
+  StoreKey extends string = string
+> {
   extraProperties?: boolean;
   gridSize?: number | string;
-  fields: FormField<N>[];
+  fields: FormField<FieldKey, StoreKey>[];
   collapsible?: boolean;
   collapsed?: boolean;
   headerTemplate?: (
@@ -340,25 +347,31 @@ export interface _ArrayField<N = any> {
   ) => string;
 }
 
-export interface ArrayListField<N = any> extends _ArrayField<N> {
+export interface ArrayListField<
+  FieldKey extends Narrowable = string,
+  StoreKey extends string = string
+> extends _ArrayField<FieldKey, StoreKey> {
   type: "array-list";
   listGridSize?: number | string;
   listItemSize?: number | string;
 }
 
-export interface ArrayTabsField<N = any> extends _ArrayField<N> {
+export interface ArrayTabsField<
+  FieldKey extends Narrowable = string,
+  StoreKey extends string = string
+> extends _ArrayField<FieldKey, StoreKey> {
   type: "array-tabs";
 }
 
 export interface InfoField {
   type: "info";
-  content: (dependencies: { [key: string]: any }) => VNodeChild | string;
+  content: (dependencies: Record<string, unknown>) => VNodeChild | string;
 }
 
 export interface CustomField {
   type: "custom-component";
   component: Component;
-  fieldParams?: { [key: string]: any };
+  fieldParams?: Record<string, unknown>;
   collapsible?: boolean;
   collapsed?: boolean;
 }
@@ -368,36 +381,43 @@ export type FieldDescription = {
   content: string | (() => VNodeChild);
 };
 
-export type _BaseField<N = any> = {
+export type _BaseField<
+  FieldKey extends Narrowable = string,
+  StoreKey extends string = string
+> = {
   label?: string | ((dependencies: Dependencies) => VNodeChild | string);
-  key: N;
+  key: FieldKey;
   placeholder?: string;
   dependencies?: (string | [string, string])[];
+  storeDependencies?: (StoreKey | [StoreKey, string])[];
   required?: boolean | ((dependencies?: Dependencies) => boolean);
   size?: number | string;
   gridSize?: number | string;
   default?: any;
-  fields?: FormField<N>[];
+  fields?: FormField<FieldKey, StoreKey>[];
   conditionEffect?: "disable" | "hide";
   labelPosition?: "left" | "top";
   description?: string | (() => VNodeChild) | FieldDescription;
   fieldParams?: Record<string, unknown>;
   condition?: (dependencies?: Dependencies) => boolean;
-  preformat?: (value: any) => any;
-  transform?: (value: any) => any;
+  preformat?: (value: unknown) => unknown;
+  transform?: (value: unknown) => unknown;
   validators?:
     | ((dependencies?: Dependencies) => ValidationArgs)
     | ValidationArgs;
   watch?: (
-    value: any,
+    value: unknown,
     params: {
-      setValue: (key: string, value: any) => void;
+      setValue: (key: string, value: unknown) => void;
       getValue: (key: string) => void;
     }
   ) => void;
 };
 
-export type FormField<N = any> = _BaseField<N> &
+export type FormField<
+  FieldKey extends Narrowable = string,
+  StoreKey extends string = string
+> = _BaseField<FieldKey, StoreKey> &
   (
     | TextField
     | TextAreaField
@@ -411,9 +431,9 @@ export type FormField<N = any> = _BaseField<N> &
     | CheckboxGroupField
     | TimeField
     | DateField
-    | ObjectField<N>
-    | ArrayListField<N>
-    | ArrayTabsField<N>
+    | ObjectField<FieldKey, StoreKey>
+    | ArrayListField<FieldKey, StoreKey>
+    | ArrayTabsField<FieldKey, StoreKey>
     | InfoField
     | CustomField
     | TreeSelectField
@@ -425,7 +445,7 @@ export type FormField<N = any> = _BaseField<N> &
 export type FieldContext = ReturnType<typeof useFieldContext>;
 
 export type FieldComponentProps = {
-  modelValue: any;
+  modelValue: unknown;
   field: FormField;
   context: FieldContext;
   parentDisabled: boolean;
@@ -437,5 +457,5 @@ export type FieldComponentProps = {
 };
 
 export type FieldComponentEmits = {
-  (e: "update:modelValue", value: any): void;
+  (e: "update:modelValue", value: unknown): void;
 };

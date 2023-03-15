@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { FormSchema } from "@/types/form/form";
+
 const formStyles = useFormStyles();
 const { currentStep } = useFormFields();
 
 const formRef = ref<HTMLFormElement>();
 const disableOverflow = ref<boolean>(false);
 const tempHeight = ref<number | false>(0);
+
+const props = defineProps<{ schema: FormSchema }>();
+const emit = defineEmits<{ (e: "close"): void }>();
 
 watch(
   () => currentStep.value,
@@ -56,7 +61,7 @@ async function simulateSlideForm(direction: "left" | "right") {
     class="flex flex-col gap-4 relative"
     :class="{ 'overflow-hidden': disableOverflow }"
   >
-    <slot name="header" />
+    <slot name="stepper" />
 
     <form
       ref="formRef"

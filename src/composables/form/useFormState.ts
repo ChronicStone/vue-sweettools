@@ -1,11 +1,10 @@
 import { FormSchema } from "@/types/form/form";
 import { ComputedRef } from "vue";
 import { FormField } from "@/types/form/fields";
-import { mapFieldsInitialState } from "@/utils/form/mapFieldsInitialState";
 import {
-  mapFieldDependencies,
-  preformatFieldDependencies,
-} from "@/utils/form/mapFieldDependencies";
+  mapFieldsInitialState,
+  mapFieldsOutputState,
+} from "@/utils/form/mapFieldsInitialState";
 
 const [useProvideFormState, _useFormState] = createInjectionState(
   (
@@ -14,9 +13,11 @@ const [useProvideFormState, _useFormState] = createInjectionState(
     storeConfig: FormSchema["sharedStore"]
   ) => {
     const formState = ref<{ [key: string]: any }>(
-      mapFieldsInitialState(fields.value, formData)
+      mapFieldsInitialState(formData ?? {}, fields.value)
     );
-    const outputFormState = computed(() => formState.value);
+    const outputFormState = computed(() =>
+      mapFieldsOutputState({ ...formState.value }, fields.value)
+    );
 
     function reset(clear = false) {
       formState.value = {};
