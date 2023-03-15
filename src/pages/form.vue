@@ -96,29 +96,6 @@ const steppedSchema = buildFormSchema({
           ),
           virtualDependencies: ["haha"],
         },
-        {
-          label: "Hello obj",
-          type: "object",
-          key: "obj",
-          fields: [
-            {
-              label: "Text 1",
-              type: "text",
-              key: "text1",
-              required: true,
-              transform: (text) =>
-                (text as string)?.toLocaleUpperCase?.()?.split("") ?? [],
-            },
-            {
-              key: "?",
-              label: "Button",
-              type: "info",
-              content: () => (
-                <NButton onClick={() => createForm()}>OPEN NESTED FORM</NButton>
-              ),
-            },
-          ],
-        },
       ],
     },
     {
@@ -211,35 +188,39 @@ const sharedDepsSchema = buildFormSchema({
 });
 
 const formRef = ref<FormRefInstance>();
-const { formData, validate, nextStep, previousStep } = useFormController(
-  formRef,
-  {
-    steps: [
-      {
-        label: "STEP 1",
-        fields: [
-          {
-            label: "Text 1",
-            type: "text",
-            key: "text1",
-            required: true,
-          },
-        ],
-      },
-      {
-        label: "STEP 2",
-        fields: [
-          {
-            label: "Text 2",
-            type: "text",
-            key: "text2",
-            required: true,
-          },
-        ],
-      },
-    ],
-  }
-);
+const {
+  formData,
+  validate,
+  nextStep,
+  previousStep,
+  canTriggerNext,
+  canTriggerPrevious,
+} = useFormController(formRef, {
+  steps: [
+    {
+      label: "STEP 1",
+      fields: [
+        {
+          label: "Text 1",
+          type: "text",
+          key: "text1",
+          required: true,
+        },
+      ],
+    },
+    {
+      label: "STEP 2",
+      fields: [
+        {
+          label: "Text 2",
+          type: "text",
+          key: "text2",
+          required: true,
+        },
+      ],
+    },
+  ],
+});
 
 async function submit() {
   const isValid = await validate();
@@ -257,12 +238,12 @@ async function createForm() {
   <NEl
     class="p-16 bg-[var(--primary-color)] min-w-screen min-h-screen h-full flex flex-col gap-10"
   >
-    <!-- <NCard class="p-4">
+    <NCard class="p-4">
       <div class="flex flex-col gap-4">
         <FormRenderer ref="formRef" :schema="schema" />
         <NButton type="primary" @click="submit">SUBMIT</NButton>
       </div>
-    </NCard> -->
+    </NCard>
 
     <NCard class="p-4">
       <div class="flex flex-col gap-4">
@@ -274,8 +255,21 @@ async function createForm() {
     <NCard class="p-4">
       <div class="flex flex-col gap-4">
         <FormRenderer ref="formRef" :schema="steppedSchema" />
-        <NButton type="primary" @click="previousStep">PREV</NButton>
-        <NButton type="primary" @click="nextStep">NEXT</NButton>
+        <div class="flex items-center gap-4 w-full">
+          <NButton secondary type="primary" @click="previousStep">
+            <template #icon>
+              <mdi:chevron-left />
+            </template>
+            BACK
+          </NButton>
+          <NButton type="primary" icon-placement="right" @click="nextStep">
+            <template #icon>
+              <mdi:chevron-right />
+            </template>
+            NEXT
+          </NButton>
+        </div>
+        <NDivider class="!m-0 !my-2" />
         <pre>
           {{ formData }}
         </pre>

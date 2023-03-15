@@ -15,6 +15,9 @@ export function useFormController<
   formData: ComputedRef<FormInferredData<TFormSchema, StepKey, FieldKey>>;
   nextStep: () => Promise<boolean>;
   previousStep: () => void;
+  currentStep: ComputedRef<number>;
+  canTriggerNext: ComputedRef<boolean>;
+  canTriggerPrevious: ComputedRef<boolean>;
 } {
   return {
     schema,
@@ -28,6 +31,13 @@ export function useFormController<
       return (await formRef.value?.nextStep?.()) ?? false;
     },
     previousStep: () => formRef?.value?.previousStep?.(),
+    currentStep: computed(() => formRef.value?.currentStep?.value ?? 0),
+    canTriggerNext: computed(
+      () => formRef.value?.canTriggerNext?.value ?? false
+    ),
+    canTriggerPrevious: computed(
+      () => formRef.value?.canTriggerPrevious?.value ?? false
+    ),
   };
 }
 

@@ -47,4 +47,7 @@ export type FormRefInstance = {
   $data: ComputedRef<{ [key: string]: any }>;
   nextStep?: () => Promise<boolean>;
   previousStep?: () => void;
+  currentStep?: ComputedRef<number>;
+  canTriggerNext?: ComputedRef<boolean>;
+  canTriggerPrevious?: ComputedRef<boolean>;
 };

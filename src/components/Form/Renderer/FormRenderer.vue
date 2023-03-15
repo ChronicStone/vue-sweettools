@@ -95,9 +95,17 @@ defineExpose<FormRefInstance>({
   $data: outputFormState,
   $reset: reset,
   $validate: () => $validator.value.$validate(),
-  ...(isMultiStep && {
+  ...(isMultiStep.value && {
     nextStep,
     previousStep,
+    currentStep: computed(() => currentStep.value),
+    canTriggerNext: computed(
+      () =>
+        isMultiStep.value && currentStep.value !== formSteps.value.length - 1
+    ),
+    canTriggerPrevious: computed(
+      () => isMultiStep.value && currentStep.value >= 0
+    ),
   }),
 });
 </script>
