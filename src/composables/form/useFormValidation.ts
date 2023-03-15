@@ -26,6 +26,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
     ) {
       const rules: GenericObject = {};
       for (const field of fields) {
+        if (field.type === "info") continue;
         const fieldValue = getPropertyFromPath(
           [...parentKey, field.key],
           state
@@ -55,7 +56,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
                   ) => string
                 )?.(
                   typeof field.label === "function"
-                    ? field.label({})?.toString()
+                    ? field.label({})?.toString() ?? ""
                     : field?.label ?? field.key
                 )
               : (libConfig.getProp("textOverrides.requiredMessage") as string),
@@ -80,7 +81,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
                 ...mapFormFules(field.fields, state, [
                   ...parentKey,
                   field.key,
-                  index,
+                  index.toString(),
                 ]),
               }))
             ),

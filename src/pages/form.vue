@@ -105,7 +105,8 @@ const steppedSchema = buildFormSchema({
               type: "text",
               key: "text1",
               required: true,
-              transform: (text) => (text as string)?.toLocaleUpperCase?.(),
+              transform: (text) =>
+                (text as string)?.toLocaleUpperCase?.()?.split("") ?? [],
             },
             {
               key: "?",
@@ -195,7 +196,6 @@ async function createForm() {
   const { formData, isCompleted } = await formApi.createForm(steppedSchema, {
     obj: { text1: "HAHAHA" },
   });
-  console.log(isCompleted, formData);
 }
 </script>
 
