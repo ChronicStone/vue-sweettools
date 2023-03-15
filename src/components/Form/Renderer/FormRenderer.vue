@@ -142,17 +142,27 @@ defineExpose<FormRefInstance>({
         type="primary"
         @click="previousStep"
       >
+        <template v-if="isMultiStep" #icon>
+          <mdi:chevron-left />
+        </template>
         {{ libConfig.getProp("textOverrides.prevBtnMessage") }}
       </NButton>
       <NButton
-        secondary
         type="primary"
+        icon-placement="right"
         @click="
           currentStep === formSteps.length - 1 || !isMultiStep
             ? submitForm()
             : nextStep()
         "
-        >{{
+      >
+        <template
+          v-if="isMultiStep && currentStep !== formSteps.length - 1"
+          #icon
+        >
+          <mdi:chevron-right />
+        </template>
+        {{
           isMultiStep
             ? `${
                 currentStep === formSteps.length - 1

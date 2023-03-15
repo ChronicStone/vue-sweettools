@@ -15,7 +15,7 @@ const DEFAULT_FORM_CONFIG = {
           : label.toLocaleLowerCase()
       } can't be empty`,
     nextBtnMessage: "NEXT",
-    prevBtnMessage: "PREVIOUS",
+    prevBtnMessage: "BACK",
     submitBtnMessage: "SUBMIT",
     cancelBtnMessage: "CANCEL",
   },

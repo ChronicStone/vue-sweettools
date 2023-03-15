@@ -8,8 +8,23 @@ const emit = defineEmits<{ (e: "close"): void }>();
 const formStyles = useFormStyles();
 const formOverlay = ref<HTMLElement>();
 const formOverlayId = generateUUID();
+const disableOverflow = ref<boolean>(false);
 
+const { currentStep } = useFormFields();
 const globalConfig = useGlobalConfig(props.schema);
+
+const activeTransition = ref<"slide-fade-reverse" | "slide-fade">(
+  "slide-fade-reverse"
+);
+const _currentStep = ref<number>(currentStep.value);
+watch(
+  () => currentStep.value,
+  (newIndex) => {
+    activeTransition.value =
+      newIndex > _currentStep.value ? "slide-fade-reverse" : "slide-fade";
+    nextTick(() => (_currentStep.value = newIndex));
+  }
+);
 
 function handleOverlayClick(event: MouseEvent) {
   if (!globalConfig.getProp("uiConfig.allowOutsideClick")) return;
@@ -58,14 +73,22 @@ function handleOverlayClick(event: MouseEvent) {
 
           <NScrollbar
             style="max-height: 55vh; width: 100%"
-            class="max-h-55vh px-6 text-left"
+            class="max-h-55vh px-6 text-left overflow-visible"
           >
-            <div
-              class="w-full h-full pb-4 grid gap-4"
-              :style="`height:fit-content !important;${formStyles.gridSize.value}`"
+            <Transition
+              :name="activeTransition"
+              mode="out-in"
+              @before-enter="disableOverflow = true"
+              @after-appear="disableOverflow = false"
             >
-              <slot name="fields" />
-            </div>
+              <form
+                :key="currentStep"
+                class="w-full h-full pb-4 grid gap-4 overflow-visible"
+                :style="`height:fit-content !important;${formStyles.gridSize.value}`"
+              >
+                <slot name="fields" />
+              </form>
+            </Transition>
           </NScrollbar>
 
           <template #footer>

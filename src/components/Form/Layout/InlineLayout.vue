@@ -6,77 +6,52 @@ const { currentStep } = useFormFields();
 
 const formRef = ref<HTMLFormElement>();
 const disableOverflow = ref<boolean>(false);
-const tempHeight = ref<number | false>(0);
 
 const props = defineProps<{ schema: FormSchema }>();
 const emit = defineEmits<{ (e: "close"): void }>();
 
+const activeTransition = ref<"slide-fade-reverse" | "slide-fade">(
+  "slide-fade-reverse"
+);
+const _currentStep = ref<number>(currentStep.value);
 watch(
   () => currentStep.value,
-  async (newStep, oldStep) => {
-    disableOverflow.value = true;
-    await simulateSlideForm(newStep > oldStep ? "left" : "right");
-    disableOverflow.value = false;
+  (newIndex) => {
+    activeTransition.value =
+      newIndex > _currentStep.value ? "slide-fade-reverse" : "slide-fade";
+    nextTick(() => (_currentStep.value = newIndex));
   }
 );
-
-const sleep = (d: number) => new Promise((r, rj) => setTimeout(() => r(d), d));
-
-async function simulateSlideForm(direction: "left" | "right") {
-  if (!formRef.value) return;
-
-  const form = formRef.value as HTMLElement;
-  const formBounding = formRef.value.getBoundingClientRect();
-  tempHeight.value = formBounding.height;
-
-  await nextTick();
-  await sleep(50);
-
-  form.style.visibility = "hidden";
-  form.style.transform = `translateX(${
-    direction === "left" ? "-100%" : "100%"
-  })`;
-  form.style.transitionDuration = "0";
-
-  await sleep(50);
-  await nextTick();
-
-  form.style.opacity = "1";
-  form.style.transform = `translateX(${
-    direction === "left" ? "100%" : "-100%"
-  })`;
-  form.style.transitionDuration = "0.15s";
-
-  await sleep(50);
-  await nextTick();
-
-  form.style.visibility = "visible";
-  form.style.transform = "translateX(0)";
-}
 </script>
 
 <template>
-  {{ disableOverflow }}
   <div
     class="flex flex-col gap-4 relative"
     :class="{ 'overflow-hidden': disableOverflow }"
   >
     <slot name="stepper" />
-
-    <form
-      ref="formRef"
-      class="h-full grid gap-4 overflow-visible text-left transition-transform ease-in-out duration-150"
-      :style="`${formStyles?.gridSize.value}`"
-      :class="{
-        'max-h-10/12': $slots.header && $slots.footer,
-        'max-h-11/12':
-          ($slots.header && !$slots.footer) ||
-          ($slots.footer && !$slots.header),
-        'max-h-full': $slots.header && $slots.footer,
-      }"
+    <Transition
+      :name="activeTransition"
+      mode="out-in"
+      @before-enter="disableOverflow = true"
+      @after-appear="disableOverflow = false"
     >
-      <slot name="fields" />
-    </form>
+      <form
+        :key="_currentStep"
+        ref="formRef"
+        class="h-full grid gap-4 overflow-visible text-left transition-all ease-in-out duration-150"
+        :style="`${formStyles?.gridSize.value}`"
+        :class="{
+          'max-h-10/12': $slots.header && $slots.footer,
+          'max-h-11/12':
+            ($slots.header && !$slots.footer) ||
+            ($slots.footer && !$slots.header),
+          'max-h-full': $slots.header && $slots.footer,
+        }"
+      >
+        <slot name="fields" />
+      </form>
+    </Transition>
   </div>
 </template>
 
@@ -97,7 +72,7 @@ async function simulateSlideForm(direction: "left" | "right") {
 
 .slide-fade-reverse-enter-active,
 .slide-fade-reverse-leave-active {
-  transition: opacity 0.15s, transform 0.2s;
+  transition: opacity 0.15s, transform 0.1s;
 }
 .slide-fade-reverse-enter-from {
   opacity: 0;
