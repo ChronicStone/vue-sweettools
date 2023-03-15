@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { onKeyPressed, useWindowSize } from "@vueuse/core";
 import { NTooltip, NButton, NDrawer, NDrawerContent, NIcon } from "naive-ui";
-import { Form, FormRefInstance } from "@chronicstone/vue-sweetforms";
 import { computed, ref } from "vue";
 import { TableFilter } from "@/types/table";
 import { GenericObject } from "@/types/utils";
 import { mapFiltersToFormSchema } from "@/utils/table/mapFiltersToFormSchema.js";
+import { FormRefInstance } from "@/types/form/instance";
+import FormRenderer from "../Form/Renderer/FormRenderer.vue";
+import { FormSchema, Narrowable } from "@/types/form/form";
+import { FormField } from "@/types/form/fields";
 
 const emit = defineEmits<{
   (e: "update:filters", value: GenericObject): void;
@@ -19,11 +22,16 @@ const props = defineProps<{
 const { width } = useWindowSize();
 const isPanelOpen = ref<boolean>(false);
 
-const filtersSchema = computed(() => ({
-  gridSize: 8,
-  fieldSize: 8,
-  fields: mapFiltersToFormSchema(props.filtersSchema),
-}));
+const filtersSchema = computed(
+  () =>
+    buildFormSchema({
+      gridSize: 8,
+      fieldSize: 8,
+      fields: mapFiltersToFormSchema(props.filtersSchema) as Array<
+        FormField<Narrowable, string>
+      >,
+    }) as FormSchema<any, any>
+);
 
 const appliedFiltersCount = computed(
   () =>
@@ -38,8 +46,9 @@ const appliedFiltersCount = computed(
 );
 
 const formRef = ref<FormRefInstance>();
-const filtersState = computed<GenericObject>(() =>
-  !formRef.value ? {} : formRef.value?.formData
+const { formData: filtersState } = useFormController(
+  formRef,
+  filtersSchema.value as any
 );
 
 function applyFilters() {
@@ -47,7 +56,7 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  formRef.value?.$clear();
+  formRef.value?.$reset();
   applyFilters();
 }
 
@@ -91,13 +100,7 @@ onKeyPressed("Enter", () => applyFilters());
         </template>
 
         <div style="z-index: 3000 !important">
-          <Form
-            ref="formRef"
-            :form-options="filtersSchema"
-            :form-data="filters"
-          >
-            <template #actions></template>
-          </Form>
+          <FormRenderer ref="formRef" :schema="filtersSchema" :data="filters" />
         </div>
 
         <template #footer>
@@ -105,7 +108,7 @@ onKeyPressed("Enter", () => applyFilters());
             <NButton type="error" class="w-full" @click="resetFilters">
               <template #icon>
                 <n-icon>
-                  <i:system-uicons:reset />
+                  <system-uicons:reset />
                 </n-icon>
               </template>
               RESET
@@ -114,7 +117,7 @@ onKeyPressed("Enter", () => applyFilters());
             <NButton type="primary" class="w-full" @click="applyFilters">
               <template #icon>
                 <n-icon>
-                  <i:la:search />
+                  <la:search />
                 </n-icon>
               </template>
               SEARCH

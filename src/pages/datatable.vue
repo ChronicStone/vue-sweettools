@@ -44,7 +44,7 @@ function generateRandomNumber(): number {
 }
 
 const schema: DataTableSchema<User> = {
-  remote: true,
+  remote: false,
   tableKey: "test",
   searchQuery: ["firstName", "lastName", "email"],
   columns: [
@@ -117,11 +117,7 @@ const schema: DataTableSchema<User> = {
       progress: generateRandomNumber(),
     }));
 
-    return {
-      docs,
-      totalDocs: 5000,
-      totalPages: 10,
-    };
+    return docs;
   },
   actions: [
     {

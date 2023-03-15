@@ -97,6 +97,7 @@ const steppedSchema = buildFormSchema({
           storeDependencies: [],
         },
         {
+          label: "Hello obj",
           type: "object",
           key: "obj",
           fields: [

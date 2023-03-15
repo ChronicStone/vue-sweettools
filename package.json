@@ -21,7 +21,6 @@
   },
   "types": "./dist/types.d.ts",
   "peerDependencies": {
-    "@chronicstone/vue-sweetforms": "^0.7.1",
     "@vueuse/core": "^9.12.0",
     "naive-ui": "^2.34.2",
     "vue": "^3.2.47"

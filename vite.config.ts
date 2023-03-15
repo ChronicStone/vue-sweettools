@@ -64,12 +64,7 @@ export default defineConfig({
       fileName: (format) => `vue-sweettools.${format}.js`,
     },
     rollupOptions: {
-      external: [
-        "vue",
-        "@vueuse/core",
-        "@chronicstone/vue-sweetforms",
-        "naive-ui",
-      ],
+      external: ["vue", "@vueuse/core", "naive-ui"],
       output: {
         globals: {
           vue: "Vue",

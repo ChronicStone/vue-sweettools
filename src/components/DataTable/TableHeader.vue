@@ -55,7 +55,7 @@ const _panelFilters = computed({
         <NButton secondary type="primary" icon-placement="right">
           Actions
           <template #icon>
-            <NIcon> <i:mdi-chevron-down /> </NIcon>
+            <NIcon> <mdi-chevron-down /> </NIcon>
           </template>
         </NButton>
       </n-dropdown>
@@ -73,12 +73,12 @@ const _panelFilters = computed({
             class="w-full !md:w-auto"
           >
             <template #icon>
-              <NIcon> <i:mdi-filter /> </NIcon>
+              <NIcon> <mdi-filter /> </NIcon>
             </template>
           </NButton>
           <NButton v-else secondary type="primary" class="w-full !md:w-auto">
             <template #icon>
-              <NIcon><i:mdi-filter /> </NIcon>
+              <NIcon><mdi-filter /> </NIcon>
             </template>
             ({{ active }})
           </NButton>
