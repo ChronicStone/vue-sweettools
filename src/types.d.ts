@@ -13,6 +13,21 @@ import type {
 } from "./types/table";
 import type { App, DefineComponent } from "vue";
 import type { FormApi } from "./types/form/instance";
+import type { FormSchema } from "./types/form/form";
+import type { FormField } from "./types/form/fields";
+import type { FormRefInstance } from "./types/form/instance";
+import {
+  booleanExistFilter,
+  booleanFilter,
+  textFilter,
+  selectFilter,
+  timeRangeFilter,
+} from "./components/DataTable/filters";
+import {
+  useFormController,
+  buildFormSchema,
+} from "./composables/form/useFormController";
+import { useFormApi } from "./composables/form/useFormApi";
 
 declare module "@chronicstone/vue-sweettools" {
   export type {
@@ -25,6 +40,9 @@ declare module "@chronicstone/vue-sweettools" {
     TableActionParams,
     FetchParams,
     RemoteTableData,
+    FormSchema,
+    FormField,
+    FormRefInstance,
   };
 
   export const DataTable: DefineComponent<
@@ -33,7 +51,21 @@ declare module "@chronicstone/vue-sweettools" {
     Record<string, unknown>
   >;
 
-  export function useSweetform(): FormApi;
+  export const FormRenderer: DefineComponent<{
+    schema: FormSchema;
+    data?: Record<string, unknown>;
+  }>;
+
+  export {
+    booleanExistFilter,
+    booleanFilter,
+    textFilter,
+    selectFilter,
+    timeRangeFilter,
+    useFormController,
+    useFormApi,
+    buildFormSchema,
+  };
 
   const plugin: {
     install(app: App, config: SweettoolsPluginConfig): void;
