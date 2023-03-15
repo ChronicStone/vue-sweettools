@@ -2,6 +2,10 @@ import { ObjectField } from "@/types/form/fields";
 import { FieldInstance } from "@/types/form/instance";
 import { GenericObject } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
+import {
+  mapFieldDependencies,
+  preformatFieldDependencies,
+} from "@/utils/form/mapFieldDependencies";
 import { resolveFieldDependencies } from "@/utils/form/resolveFieldDependencies";
 import useVuelidate from "@vuelidate/core";
 import { helpers, required } from "@vuelidate/validators";
@@ -10,7 +14,8 @@ import { ComputedRef, Ref } from "vue";
 const [useProvideFormValidation, _useFormValidation] = createInjectionState(
   (
     formFields: ComputedRef<Array<FieldInstance>>,
-    formState: Ref<GenericObject>
+    formState: Ref<GenericObject>,
+    virtualStore: Ref<Record<string, unknown>>
   ) => {
     const libConfig = useGlobalConfig();
 
@@ -32,8 +37,15 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
           state
         );
         const dependencies = resolveFieldDependencies(field, state, parentKey);
-        const condition = field?.condition?.(dependencies) ?? true;
+        const virtualDependencies = mapFieldDependencies(
+          preformatFieldDependencies(
+            field?.virtualDependencies ?? [],
+            virtualStore.value
+          )
+        );
 
+        const condition =
+          field?.condition?.(dependencies, virtualDependencies) ?? true;
         if (!condition && (field?.conditionEffect ?? "hide") === "hide")
           continue;
 
@@ -43,7 +55,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
 
         const isRequired =
           typeof field.required === "function"
-            ? field.required(dependencies)
+            ? field.required(dependencies, virtualDependencies)
             : field?.required ?? false;
 
         if (isRequired)
@@ -89,7 +101,10 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
         }
 
         if (typeof field?.validators === "function")
-          fieldRules = { ...fieldRules, ...field.validators(dependencies) };
+          fieldRules = {
+            ...fieldRules,
+            ...field.validators(dependencies, virtualDependencies),
+          };
         if (typeof field?.validators === "object")
           fieldRules = { ...fieldRules, ...field.validators };
 

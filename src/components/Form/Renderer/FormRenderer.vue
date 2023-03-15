@@ -30,7 +30,7 @@ const libConfig = useGlobalConfig(props.schema);
 const { formFields, filteredFormFields, isMultiStep, formSteps, currentStep } =
   useProvideFormFields(_formSchema);
 
-const { formState, outputFormState, reset } = useProvideFormState(
+const { formState, outputFormState, virtualStore, reset } = useProvideFormState(
   formFields,
   props.data,
   props.schema.sharedStore
@@ -39,7 +39,11 @@ const { formState, outputFormState, reset } = useProvideFormState(
 const layoutConf = useProvideFormStyles(props.schema);
 const LayoutContainer = useFormLayout(_modalMode, layoutConf);
 
-const { $validator } = useProvideFormValidation(filteredFormFields, formState);
+const { $validator } = useProvideFormValidation(
+  filteredFormFields,
+  formState,
+  virtualStore
+);
 
 function updateRootFieldValue(field: FieldInstance, value: unknown) {
   if (field._stepRoot) formState.value[field._stepRoot][field.key] = value;

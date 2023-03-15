@@ -29,27 +29,8 @@ export function useFieldContext(
 
   const required = computed(() =>
     typeof field.value.required === "function"
-      ? field.value.required(dependencies.value)
+      ? field.value.required(dependencies.value, virtualDependencies.value)
       : !!field.value.required
-  );
-
-  const condition = ref<boolean>(true);
-  const _evalCondition = ref<boolean>(false);
-  const conditionEffect = computed(
-    () => field.value?.conditionEffect ?? "hide"
-  );
-
-  const _evalOptions = ref<boolean>(false);
-  const options = ref(
-    mapOptions(
-      Array.isArray((field.value as SelectField).options)
-        ? ((field.value as SelectField).options as unknown as (
-            | SelectOption
-            | TreeSelectOption
-            | CascaderOption
-          )[])
-        : []
-    )
   );
 
   const dependencies = computed(() =>
@@ -70,6 +51,43 @@ export function useFieldContext(
       )
     );
   });
+
+  const _evalCondition = ref<boolean>(false);
+  const conditionEffect = computed(
+    () => field.value?.conditionEffect ?? "hide"
+  );
+  const condition = computedAsync<boolean>(
+    () =>
+      field.value?.condition?.(dependencies.value, virtualDependencies.value) ??
+      true,
+    false,
+    _evalCondition
+  );
+
+  const _evalOptions = ref<boolean>(false);
+  const options = computedAsync(
+    async () => {
+      const _field = field.value as SelectField;
+      if (!_field.options) return [];
+      else if (Array.isArray(_field.options)) return mapOptions(_field.options);
+      else
+        return mapOptions(
+          Array.isArray((field.value as SelectField).options)
+            ? ((field.value as SelectField).options as unknown as (
+                | SelectOption
+                | TreeSelectOption
+                | CascaderOption
+              )[])
+            : typeof (field.value as SelectField).options === "function"
+            ? await (
+                (field.value as SelectField).options as (...args: any[]) => any
+              )({ ...dependencies.value }, { ...virtualDependencies.value })
+            : []
+        );
+    },
+    [],
+    _evalOptions
+  );
 
   if ("options" in field.value) {
     watch(
@@ -112,48 +130,6 @@ export function useFieldContext(
         })
     );
   }
-
-  async function resolveFieldOptions(deps: GenericObject) {
-    _evalOptions.value = true;
-    try {
-      options.value = mapOptions(
-        await ((field.value as SelectField).options as (...args: any[]) => any)(
-          {
-            ...deps,
-          }
-        )
-      );
-    } catch (err) {
-      console.error(`FIELD ${field.value.key} async options exec. failed`, err);
-    } finally {
-      _evalOptions.value = false;
-    }
-  }
-
-  async function resolveFieldCondition(deps: GenericObject) {
-    _evalCondition.value = true;
-    try {
-      condition.value = await (
-        field.value.condition as (...args: any[]) => any
-      )({
-        ...deps,
-      });
-    } catch (err) {
-      console.error(`FIELD ${field.value.key} condition exec. failed`, err);
-    } finally {
-      _evalCondition.value = false;
-    }
-  }
-
-  watch(
-    () => dependencies.value,
-    (deps) => {
-      if (field.value.condition) resolveFieldCondition(deps);
-      if (typeof (field.value as SelectField).options === "function")
-        resolveFieldOptions(deps);
-    },
-    { deep: true, immediate: true }
-  );
 
   return {
     _evalCondition,

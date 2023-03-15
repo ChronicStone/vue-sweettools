@@ -58,7 +58,7 @@ const collapsible = computed<boolean>(
         :for="field.key"
       >
         <Component :is="renderVNode(props.field?.label ?? '', dependencies)" />
-        <span class="text-red-500 ml-1.5">
+        <span v-if="field.type !== 'checkbox'" class="text-red-500 ml-1.5">
           {{ required ? "*" : "" }}
         </span>
       </label>

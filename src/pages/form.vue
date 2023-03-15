@@ -179,7 +179,28 @@ const sharedDepsSchema = buildFormSchema({
       key: "lastName",
     },
     {
-      label: "FullName",
+      label: "Switch options",
+      type: "checkbox",
+      required: true,
+      key: "isChecked",
+      size: 8,
+    },
+    {
+      label: "Select options",
+      type: "select",
+      required: true,
+      key: "select",
+      dependencies: ["isChecked"],
+      virtualDependencies: ["fullName"],
+      options: (dependencies, virtualDeps) => {
+        return dependencies?.isChecked
+          ? virtualDeps?.fullName?.toString?.()?.split("") ?? []
+          : [];
+      },
+      size: 8,
+    },
+    {
+      label: "Select 2",
       key: "test",
       type: "info",
       size: 8,
@@ -236,12 +257,12 @@ async function createForm() {
   <NEl
     class="p-16 bg-[var(--primary-color)] min-w-screen min-h-screen h-full flex flex-col gap-10"
   >
-    <NCard class="p-4">
+    <!-- <NCard class="p-4">
       <div class="flex flex-col gap-4">
         <FormRenderer ref="formRef" :schema="schema" />
         <NButton type="primary" @click="submit">SUBMIT</NButton>
       </div>
-    </NCard>
+    </NCard> -->
 
     <NCard class="p-4">
       <div class="flex flex-col gap-4">
