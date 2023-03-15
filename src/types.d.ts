@@ -56,6 +56,8 @@ declare module "@chronicstone/vue-sweettools" {
     data?: Record<string, unknown>;
   }>;
 
+  export const FormProvider: DefineComponent<{}>;
+
   export {
     booleanExistFilter,
     booleanFilter,

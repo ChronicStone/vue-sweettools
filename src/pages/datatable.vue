@@ -12,7 +12,7 @@ import {
 } from "naive-ui";
 
 type User = {
-  _id: string;
+  _id: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -108,7 +108,7 @@ const schema: DataTableSchema<User> = {
   ],
   datasource: async () => {
     const docs = Array.from({ length: 500 }, (_, index) => ({
-      _id: generateUUID(),
+      _id: index,
       firstName: `First name ${index}`,
       lastName: `Lastname name ${index}`,
       email: `user${index}@mail.com`,
@@ -123,7 +123,20 @@ const schema: DataTableSchema<User> = {
     {
       label: "Create user",
       icon: "mdi:user",
-      action: ({ tableApi }) => tableApi.refreshData(),
+      action: ({ tableApi }) =>
+        tableApi.updateRow(
+          (row) => row._id === 3,
+          (row) => ({ ...row, firstName: "Cyprien", lastName: "THAO" })
+        ),
+    },
+    {
+      label: "Update user",
+      icon: "mdi:user",
+      action: ({ tableApi }) =>
+        tableApi.updateRows(
+          (row) => row._id >= 3 && row._id <= 15,
+          (row) => ({ ...row, firstName: "Cyprien", lastName: "THAO" })
+        ),
     },
   ],
   rowActions: [

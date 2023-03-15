@@ -181,56 +181,61 @@ export type DataSource<T, Y extends "remote" | "local" | null = null> = (
         | T[]
 >;
 
-export interface TableActionParams {
+export interface TableActionParams<T = GenericObject> {
   nbSelected: number;
   selectAll: boolean;
-  selected: any[];
+  selected: T[];
   fetchParams: FetchParams;
-  tableApi: TableApi;
+  tableApi: TableApi<T>;
 }
 
 export interface TableAction<T = GenericObject> {
   label: string;
   icon: string;
-  action?: (actionParams: TableActionParams) => void;
+  action?: (actionParams: TableActionParams<T>) => void;
   link?: string | RouteLocationRaw;
   permissions?: (string | string[])[];
-  condition?: (data: T[], params: TableActionParams) => boolean;
+  condition?: (data: T[], params: TableActionParams<T>) => boolean;
 }
 
-export interface TableApi {
+export interface TableApi<T = Record<string, unknown>> {
   refreshData: () => void;
   setSearchQuery: (value: string) => void;
   resetFilters: () => void;
   setSort: (key: string, dir?: "asc" | "desc" | null) => void;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
+  updateRow: (selector: (row: T) => boolean, updater: (row: T) => T) => boolean;
+  updateRows: (
+    selector: (row: T) => boolean,
+    updater: (row: T) => T
+  ) => boolean;
 }
 
 export type TableRowAction<T> = {
   icon: string | ((params: { rowData: T }) => string);
   tooltip: string | ((params: { rowData: T }) => string);
-  action?: (params: { rowData: T; tableApi: TableApi }) => void;
+  action?: (params: { rowData: T; tableApi: TableApi<T> }) => void;
   link?:
     | string
     | RouteLocationRaw
     | ((params: { rowData: T }) => string | RouteLocationRaw);
   permissions?: (string | string[])[];
-  condition?: (params: { rowData: T; tableApi: TableApi }) => boolean;
+  condition?: (params: { rowData: T; tableApi: TableApi<T> }) => boolean;
 };
 
-export type CellRendererParams = {
+export type CellRendererParams<T = GenericObject> = {
   value: any;
   data: GenericObject;
   eGridCell: HTMLElement;
-  tableApi: Ref<TableApi>;
+  tableApi: Ref<TableApi<T>>;
   theme: ComputedRef<GlobalTheme | null>;
   themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>;
 };
 
-export type HeaderRendererParams = {
+export type HeaderRendererParams<T = GenericObject> = {
   eGridHeader: HTMLElement;
-  tableApi: Ref<TableApi>;
+  tableApi: Ref<TableApi<T>>;
   theme: ComputedRef<GlobalTheme | null>;
   themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>;
 };
@@ -271,7 +276,7 @@ export interface DataTableSchema<T extends GenericObject = GenericObject> {
   filters?: TableFilter[];
   searchQuery?: Array<NestedPaths<DeepRequired<T>>>;
   enableSelection?: boolean;
-  actions?: TableAction[];
+  actions?: TableAction<T>[];
   rowActions?: TableRowAction<T>[];
   columnFitMode?: "fit" | "fill";
   persistency?: false | "localStorage" | "sessionStorage";

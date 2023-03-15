@@ -119,6 +119,26 @@ tableApi.value = {
   ),
   setPage: (page: number) => (paginationState.value.pageIndex = page),
   setPageSize: (size: number) => (paginationState.value.pageSize = size),
+  updateRow: (rowSelector, rowUpdater) => {
+    const rowIndex = data.value.findIndex(rowSelector);
+    if (rowIndex === -1) return false;
+
+    data.value[rowIndex] = rowUpdater(data.value[rowIndex]);
+    return true;
+  },
+  updateRows: (rowsSelector, rowsUpdater) => {
+    const rowIndexes = data.value.reduce(
+      (acc, curr, index) =>
+        rowsSelector(curr) ? [...(acc as number[]), index] : acc,
+      []
+    ) as number[];
+
+    for (const index of rowIndexes) {
+      data.value[index] = rowsUpdater(data.value[index]);
+    }
+
+    return rowIndexes.length ? true : false;
+  },
 };
 
 function setGlobalSelection(value: boolean) {

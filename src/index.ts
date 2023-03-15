@@ -1,6 +1,7 @@
 import { App } from "vue";
 import DataTable from "./components/DataTable/DataTable.vue";
 import FormRenderer from "./components/Form/Renderer/FormRenderer.vue";
+import FormProvider from "./components/Form/Provider/FormProvider.vue";
 import {
   booleanExistFilter,
   booleanFilter,
@@ -27,6 +28,7 @@ export default {
 export {
   DataTable,
   FormRenderer,
+  FormProvider,
   textFilter,
   selectFilter,
   booleanExistFilter,
