@@ -25,4 +25,5 @@ export type SweettoolsPluginConfig = {
       allowOutsideClick?: boolean;
     };
   };
+  permissionValidator?: (keys: Array<string | string[]>) => boolean;
 };

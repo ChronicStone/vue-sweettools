@@ -35,6 +35,7 @@ export function useGridColumns(
   theme: ComputedRef<GlobalTheme | null>,
   themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>
 ) {
+  const { permissionValidator } = useGlobalConfig();
   const columnDefs = computed(() => [
     ...(params.enableSelection.value
       ? [
@@ -61,6 +62,7 @@ export function useGridColumns(
             cellRendererFramework: ActionsCellRenderer,
             cellRendererParams: {
               _rowActions: params.rowActions.value,
+              permissionValidator: permissionValidator.value,
               tableApi: tableApi,
               theme,
               themeOverrides,

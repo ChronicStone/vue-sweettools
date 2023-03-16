@@ -44,7 +44,7 @@ function handleOverlayClick(event: MouseEvent) {
       <Transition name="scale" appear>
         <NCard
           :style="{ maxWidth: formStyles.maxWidth.value, width: '100%' }"
-          class="transition-all opacity-100 fixed w-9/10 md:w-3/4 lg:w-1/2 rounded-lg h-auto"
+          class="transition-all opacity-100 rounded-lg h-auto"
           :content-style="{
             height: 'fit-content',
             maxHeight: formStyles.maxHeight.value,

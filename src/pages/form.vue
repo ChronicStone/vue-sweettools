@@ -5,8 +5,25 @@ import { NButton, NCard, NEl } from "naive-ui";
 
 const formApi = useFormApi();
 
+const _schema = (mode: true | false) =>
+  buildFormSchema({
+    title: "This is title",
+    fields: [
+      { label: "hi", key: "hi", type: "text" },
+      { label: "ho", key: "ho", type: "text", condition: () => mode === true },
+    ],
+  });
+
 const schema = buildFormSchema({
   fields: [
+    {
+      label: "Gender",
+      key: "gender",
+      type: "radio",
+      size: "8",
+      options: ["male", "female", "other"],
+      required: true,
+    },
     {
       label: "Exam",
       key: "examId",
@@ -228,7 +245,7 @@ async function submit() {
 }
 
 async function createForm() {
-  const { formData, isCompleted } = await formApi.createForm(steppedSchema, {
+  const { formData, isCompleted } = await formApi.createForm(_schema(true), {
     obj: { text1: "HAHAHA" },
   });
 }
@@ -240,7 +257,11 @@ async function createForm() {
   >
     <NCard class="p-4">
       <div class="flex flex-col gap-4">
-        <FormRenderer ref="formRef" :schema="schema" />
+        <FormRenderer
+          ref="formRef"
+          :schema="schema"
+          :data="{ gender: 'male' }"
+        />
         <NButton type="primary" @click="submit">SUBMIT</NButton>
       </div>
     </NCard>

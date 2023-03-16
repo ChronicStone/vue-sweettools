@@ -53,6 +53,9 @@ import { computed, ref } from "vue";
 
 interface ActionsCellProps extends CellRendererParams {
   _rowActions: TableRowAction<GenericObject>[];
+  permissionValidator: ReturnType<
+    typeof useGlobalConfig
+  >["permissionValidator"]["value"];
 }
 
 const props = defineProps<{ params: ActionsCellProps }>();
@@ -84,6 +87,11 @@ const rowActions = computed(() =>
           rowData: props.params.data,
           tableApi: props.params.tableApi.value,
         }) ?? true
+    )
+    .filter((action) =>
+      !action?.permissions?.length
+        ? true
+        : props.params.permissionValidator(action.permissions)
     )
 );
 </script>

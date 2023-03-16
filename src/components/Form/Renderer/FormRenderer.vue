@@ -112,11 +112,13 @@ defineExpose<FormRefInstance>({
 
 <template>
   <LayoutContainer :schema="schema" @close="closeForm">
-    <template v-if="schema.title" #title>
+    <template #title>
       <h1
         v-if="typeof schema.title === 'string'"
         class="text-center uppercase text-xl"
-      ></h1>
+      >
+        {{ schema.title }}
+      </h1>
       <component :is="renderVNode(schema.title)" v-else />
     </template>
 

@@ -15,6 +15,7 @@ export function useDropdownActions(
     selected: Ref<GenericObject[]>;
   }
 ) {
+  const { permissionValidator } = useGlobalConfig();
   return computed(() =>
     actions.value
       .filter(Boolean)
@@ -38,8 +39,14 @@ export function useDropdownActions(
               tableApi: tableApi.value as TableApi,
             }),
         },
-        _enable: ref(true), // usePermission(...(action?.permissions ?? [])),
+        _enable: ref(true),
+        _allowed: computed(() =>
+          action?.permissions?.length
+            ? permissionValidator.value(action.permissions)
+            : true
+        ),
+        // usePermission(...(action?.permissions ?? [])),
       }))
-      .filter((action: { _enable: Ref<boolean> }) => action._enable.value)
+      .filter((action) => action._enable.value && action._allowed.value)
   );
 }

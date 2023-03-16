@@ -1,6 +1,6 @@
 {
   "name": "@chronicstone/vue-sweettools",
-  "version": "0.1.13",
+  "version": "0.1.13-rc3",
   "type": "module",
   "scripts": {
     "dev": "vite",

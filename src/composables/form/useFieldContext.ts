@@ -64,7 +64,7 @@ export function useFieldContext(
     _evalCondition
   );
 
-  const _evalOptions = ref<boolean>(false);
+  const _evalOptions = ref<boolean>(true);
   const options = computedAsync(
     async () => {
       const _field = field.value as SelectField;
@@ -93,6 +93,7 @@ export function useFieldContext(
     watch(
       () => options.value,
       (fieldOptions: SelectOption[]) => {
+        if (_evalOptions.value) return;
         try {
           const optionValues = fieldOptions.map((option) => option.value) ?? [];
           if (Array.isArray(fieldState.value))

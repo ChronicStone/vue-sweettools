@@ -46,6 +46,10 @@ export function useGlobalConfig(formSchema?: FormSchema) {
         {}
   );
 
+  const permissionValidator = computed<
+    (keys: Array<string | string[]>) => boolean
+  >(() => config?.permissionValidator ?? ((keys) => true));
+
   const formConfig = computed(() => ({
     textOverrides: {
       requiredMessage:
@@ -107,6 +111,7 @@ export function useGlobalConfig(formSchema?: FormSchema) {
     isDark,
     themeOverrides,
     formConfig,
+    permissionValidator,
     getProp,
   };
 }

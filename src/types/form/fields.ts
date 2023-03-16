@@ -48,10 +48,25 @@ type Dependencies = Record<string, unknown>;
 export type _FieldOptions =
   | (number | string)[]
   | SelectOption[]
+  | TreeSelectOption[]
+  | CascaderOption[]
   | ((
       dependencies?: Dependencies,
       virtualDependencies?: Dependencies
-    ) => SelectOption[] | (number | string)[]);
+    ) =>
+      | SelectOption[]
+      | TreeSelectOption[]
+      | CascaderOption[]
+      | (number | string)[])
+  | ((
+      dependencies?: Dependencies,
+      virtualDependencies?: Dependencies
+    ) => Promise<
+      | SelectOption[]
+      | TreeSelectOption[]
+      | CascaderOption[]
+      | (number | string)[]
+    >);
 
 export interface TextField {
   type: "text";
