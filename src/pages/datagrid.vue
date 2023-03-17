@@ -22,8 +22,15 @@ type User = {
 };
 
 const dataGridSchema: DataGridSchema<User> = {
+  virtualStore: {
+    test: { value: "hola" },
+  },
   fields: [
-    { key: "fullName", render: () => <NAvatar>CT</NAvatar> },
+    {
+      key: "fullName",
+      fieldRowSize: "2",
+      render: ({ store }) => <div>{store?.test}</div>,
+    },
     { label: "First name", key: "firstName" },
     { label: "Last name", key: "lastName" },
     { label: "Email", key: "email" },
@@ -50,6 +57,6 @@ const user = computed(() => (enableData.value ? data : null));
 <template>
   <div class="p-10 flex flex-col gap-4">
     <NCheckbox v-model:checked="enableData">Show data</NCheckbox>
-    <DataGrid :fields="dataGridSchema.fields" :data="user" />
+    <DataGrid v-bind="dataGridSchema" :data="user" />
   </div>
 </template>

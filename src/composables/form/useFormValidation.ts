@@ -19,12 +19,15 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
   ) => {
     const libConfig = useGlobalConfig();
 
-    const formRules = computed(() =>
-      mapFormFules(formFields.value, formState.value)
+    const _evalRules = ref<boolean>(false);
+    const formRules = computedAsync(
+      () => mapFormFules(formFields.value, formState.value),
+      {},
+      _evalRules
     );
     const $validator = useVuelidate(formRules, formState.value);
 
-    function mapFormFules(
+    async function mapFormFules(
       fields: typeof formFields.value,
       state: GenericObject,
       parentKey: string[] = []
@@ -45,7 +48,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
         );
 
         const condition =
-          field?.condition?.(dependencies, virtualDependencies) ?? true;
+          (await field?.condition?.(dependencies, virtualDependencies)) ?? true;
         if (!condition && (field?.conditionEffect ?? "hide") === "hide")
           continue;
 

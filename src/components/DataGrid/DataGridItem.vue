@@ -8,6 +8,7 @@ import { NSkeleton, NEllipsis } from "naive-ui";
 import { computed } from "vue";
 
 const props = defineProps<{
+  virtualStore: Record<string, unknown>;
   fieldSchema: GridItem<any>;
   isLoading: boolean;
   data: GenericObject | null | undefined;
@@ -23,30 +24,37 @@ const resolvedValue = computed(() =>
 
 <template>
   <div
-    class="bg-red-500"
     :style="`grid-column: span ${fieldColSize} / span ${fieldColSize}; grid-row: span ${fieldRowSize} / span ${fieldRowSize}`"
   >
     <template v-if="isLoading">
-      <NSkeleton :class="fieldRowSize > 1 ? 'h-full' : 'h-10'" :sharp="false" />
+      <NSkeleton
+        :class="+fieldRowSize > 1 ? 'h-full' : 'h-10'"
+        :sharp="false"
+      />
     </template>
 
     <template v-else>
-      <div class="flex flex-col gap-1 w-auto">
+      <div class="flex flex-col gap-1 w-full h-full">
         <span v-if="fieldSchema?.label" class="font-semibold flex items-center">
           <Component
             :is="renderVNode(fieldSchema.label, resolvedValue, data)"
           />:
         </span>
 
-        <div v-if="!fieldSchema.render">
+        <template v-if="!fieldSchema.render">
           {{ resolvedValue }}
-        </div>
+        </template>
 
-        <div v-else>
-          <Component
-            :is="renderVNode(fieldSchema.render, resolvedValue, data)"
-          />
-        </div>
+        <Component
+          :is="
+            renderVNode(fieldSchema.render, {
+              value: resolvedValue,
+              data,
+              store: virtualStore,
+            })
+          "
+          v-else
+        />
       </div>
     </template>
   </div>

@@ -1,3 +1,4 @@
+import { DataGridProps, DataGridSchema } from "./types/datagrid";
 import type { SweettoolsPluginConfig } from "./types/lib";
 import type {
   DataTableProps,
@@ -12,7 +13,6 @@ import type {
   RemoteTableData,
 } from "./types/table";
 import type { App, DefineComponent } from "vue";
-import type { FormApi } from "./types/form/instance";
 import type { FormSchema } from "./types/form/form";
 import type { FormField } from "./types/form/fields";
 import type { FormRefInstance } from "./types/form/instance";
@@ -43,6 +43,7 @@ declare module "@chronicstone/vue-sweettools" {
     FormSchema,
     FormField,
     FormRefInstance,
+    DataGridSchema,
   };
 
   export const DataTable: DefineComponent<
@@ -57,6 +58,12 @@ declare module "@chronicstone/vue-sweettools" {
   }>;
 
   export const FormProvider: DefineComponent<{}>;
+
+  export const DataGrid: DefineComponent<
+    DataGridProps<any>,
+    unknown,
+    Record<string, unknown>
+  >;
 
   export {
     booleanExistFilter,

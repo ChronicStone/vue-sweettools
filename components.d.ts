@@ -46,7 +46,6 @@ declare module '@vue/runtime-core' {
     MdiPlus: typeof import('~icons/mdi/plus')['default']
     MdiRefresh: typeof import('~icons/mdi/refresh')['default']
     ModalLayout: typeof import('./src/components/Form/Layout/ModalLayout.vue')['default']
-    NDivider: typeof import('naive-ui')['NDivider']
     NEmpty: typeof import('naive-ui')['NEmpty']
     NumberField: typeof import('./src/components/Form/Field/NumberField.vue')['default']
     ObjectField: typeof import('./src/components/Form/Field/ObjectField.vue')['default']

@@ -424,7 +424,7 @@ export type _BaseField<
       ) => boolean);
   size?: number | string;
   gridSize?: number | string;
-  default?: any;
+  default?: unknown;
   fields?: FormField<FieldKey, StoreKey>[];
   conditionEffect?: "disable" | "hide";
   labelPosition?: "left" | "top";
@@ -433,7 +433,7 @@ export type _BaseField<
   condition?: (
     dependencies?: Dependencies,
     virtualDependencies?: Dependencies
-  ) => boolean;
+  ) => Promise<boolean> | boolean;
   preformat?: (value: unknown) => unknown;
   transform?: (value: unknown) => unknown;
   validators?:

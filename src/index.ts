@@ -2,6 +2,7 @@ import { App } from "vue";
 import DataTable from "./components/DataTable/DataTable.vue";
 import FormRenderer from "./components/Form/Renderer/FormRenderer.vue";
 import FormProvider from "./components/Form/Provider/FormProvider.vue";
+import DataGrid from "./components/DataGrid/DataGrid.vue";
 import {
   booleanExistFilter,
   booleanFilter,
@@ -29,6 +30,7 @@ export {
   DataTable,
   FormRenderer,
   FormProvider,
+  DataGrid,
   textFilter,
   selectFilter,
   booleanExistFilter,
