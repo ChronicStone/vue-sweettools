@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { FieldComponentEmits, FieldComponentProps } from "@/types/form/fields";
+import { MaskOptions, vMaska } from "maska";
 import { NInput } from "naive-ui";
 
 const emit = defineEmits<FieldComponentEmits>();
@@ -9,14 +10,27 @@ const fieldValue = computed({
   get: () => props.modelValue,
   set: (value) => emit("update:modelValue", value),
 });
+
+const maskConfig = computed(() => {
+  const maskConf = props.context.inputProps.value?.mask;
+  if (!maskConf) return {};
+  else if (typeof maskConf === "string") return { mask: maskConf };
+  return maskConf as MaskOptions;
+});
+
+const fieldProps = computed(() => {
+  const { mask, ...params } = props.context.inputProps.value;
+  return params;
+});
 </script>
 
 <template>
   <NInput
     v-model:value="fieldValue"
+    v-maska:[maskConfig]
     :class="{ fieldError: validator?.$errors?.length }"
     :type="field.type"
-    v-bind="context.inputProps.value"
+    v-bind="fieldProps"
     :placeholder="field.placeholder"
     :disabled="
       (context.condition.value == false &&

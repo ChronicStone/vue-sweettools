@@ -1,6 +1,6 @@
 {
   "name": "@chronicstone/vue-sweettools",
-  "version": "0.1.18",
+  "version": "0.1.20",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -31,6 +31,7 @@
     "ag-grid-community": "^29.0.0",
     "ag-grid-vue3": "^29.0.0",
     "deepmerge-ts": "^4.3.0",
+    "maska": "^2.1.7",
     "tinycolor2": "^1.6.0"
   },
   "devDependencies": {

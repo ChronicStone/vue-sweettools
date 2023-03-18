@@ -7,20 +7,30 @@ import {
 } from "@/types/form/form";
 import { FieldInstance, StepInstance } from "@/types/form/instance";
 
+function deepRemoveIgnoredFields(fields: FieldInstance[]): FieldInstance[] {
+  return fields
+    .filter((field) => !field.ignore)
+    .map((field) => ({
+      ...field,
+      ...(field.fields && { fields: deepRemoveIgnoredFields(field.fields) }),
+    }));
+}
+
 const [useProvideFormFields, _useFormFields] = createInjectionState(
   (formSchema: ComputedRef<FormSchema>) => {
-    const formFields = computed<FieldInstance[]>(
-      () =>
+    const formFields = computed<FieldInstance[]>(() =>
+      deepRemoveIgnoredFields(
         (formSchema.value as SimpleFormSchema)?.fields ??
-        (formSchema.value as SteppedFormSchema).steps
-          .map((step, _stepIndex) =>
-            step.fields.map((field) => ({
-              ...field,
-              _stepIndex,
-              ...(step.root ? { _stepRoot: step.root } : {}),
-            }))
-          )
-          .flat()
+          (formSchema.value as SteppedFormSchema).steps
+            .map((step, _stepIndex) =>
+              step.fields.map((field) => ({
+                ...field,
+                _stepIndex,
+                ...(step.root ? { _stepRoot: step.root } : {}),
+              }))
+            )
+            .flat()
+      )
     );
 
     const filteredFormFields = computed(() =>

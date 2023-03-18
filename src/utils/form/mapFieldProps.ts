@@ -18,6 +18,7 @@ export function mapFieldProps(
         ...(fieldProps.prefix && { prefix: fieldProps.prefix }),
         ...(fieldProps.suffix && { suffix: fieldProps.suffix }),
         ...(fieldType === "password" && { "show-password-on": "click" }),
+        ...(fieldProps.mask && { mask: fieldProps.mask }),
       };
     case "select":
       return {

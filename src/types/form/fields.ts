@@ -11,6 +11,7 @@ import {
 import { SelectBaseOption } from "naive-ui/es/select/src/interface";
 import { Component, VNode, VNodeChild } from "vue";
 import { Narrowable } from "./form";
+import { MaskOptions } from "maska";
 
 export enum FieldTypes {
   TEXT = "text",
@@ -77,6 +78,7 @@ export interface TextField {
     showCharacterCount?: boolean;
     prefix?: string;
     suffix?: string;
+    mask?: string | MaskOptions;
   };
 }
 

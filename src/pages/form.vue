@@ -103,6 +103,11 @@ const steppedSchema = buildFormSchema({
           type: "text",
           key: "text1",
           required: true,
+          fieldParams: {
+            mask: {
+              mask: "## ### ## ##",
+            },
+          },
         },
         {
           key: "?",
@@ -171,6 +176,7 @@ const sharedDepsSchema = buildFormSchema({
       type: "text",
       required: true,
       key: "lastName",
+      ignore: true,
     },
     {
       label: "Switch options",
