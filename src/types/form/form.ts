@@ -88,12 +88,12 @@ export type FormInfoReturnType<T extends FormField<any>> = RemoveNeverProps<
     | {
         [K in T as K["condition"] extends (...args: any) => any
           ? never
-          : K["key"]]: ResolveFormType<K>;
+          : K["key"]]: K["ignore"] extends true ? never : ResolveFormType<K>;
       }
     | {
         [K in T as K["condition"] extends (...args: any) => any
           ? K["key"]
-          : never]?: ResolveFormType<K>;
+          : never]?: K["ignore"] extends true ? never : ResolveFormType<K>;
       }
   >
 >;

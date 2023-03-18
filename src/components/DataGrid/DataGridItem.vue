@@ -36,13 +36,11 @@ const resolvedValue = computed(() =>
     <template v-else>
       <div class="flex flex-col gap-1 w-full h-full">
         <span v-if="fieldSchema?.label" class="font-semibold flex items-center">
-          <Component
-            :is="renderVNode(fieldSchema.label, resolvedValue, data)"
-          />:
+          <Component :is="renderVNode(fieldSchema.label, data)" />:
         </span>
 
         <template v-if="!fieldSchema.render">
-          {{ resolvedValue }}
+          {{ resolvedValue || "N/A" }}
         </template>
 
         <Component

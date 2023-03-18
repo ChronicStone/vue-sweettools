@@ -31,7 +31,7 @@ const dataGridSchema: DataGridSchema<User> = {
       fieldRowSize: "2",
       render: ({ store }) => <div>{store?.test}</div>,
     },
-    { label: "First name", key: "firstName" },
+    { label: (data) => <div>{data.firstName}</div>, key: "firstName" },
     { label: "Last name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Created at", key: "createdAt" },

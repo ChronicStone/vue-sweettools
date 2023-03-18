@@ -449,6 +449,7 @@ export type _BaseField<
       getValue: (key: string) => void;
     }
   ) => void;
+  ignore?: boolean;
 };
 
 export type FormField<
