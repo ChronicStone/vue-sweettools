@@ -44,7 +44,7 @@ export enum FieldTypes {
 
 export type TFieldTypes = `${FieldTypes}`;
 
-type Dependencies = Record<string, unknown>;
+export type Dependencies = Record<string, unknown>;
 
 export type _FieldOptions =
   | (number | string)[]
@@ -69,221 +69,266 @@ export type _FieldOptions =
       | (number | string)[]
     >);
 
+export interface TextFieldProps {
+  minLength?: number;
+  maxLength?: number;
+  showCharacterCount?: boolean;
+  prefix?: string;
+  suffix?: string;
+  mask?: string | MaskOptions;
+}
+
 export interface TextField {
   type: "text";
   clearable?: boolean;
-  fieldParams?: {
-    minLength?: number;
-    maxLength?: number;
-    showCharacterCount?: boolean;
-    prefix?: string;
-    suffix?: string;
-    mask?: string | MaskOptions;
-  };
+  fieldParams?:
+    | TextFieldProps
+    | ((deps?: Dependencies, virtualDeps?: Dependencies) => TextFieldProps);
+}
+
+export interface TreeSelectFieldProps {
+  cascade?: boolean;
+  multiple?: boolean;
+  checkStrategy?: "all" | "parent" | "child";
+  childrenField?: string;
+  valueField?: string;
+  labelField?: string;
+  disabledField?: string;
+  maxSelectedCount?: number | "responsive";
+  clearFilterAfterSelect?: boolean;
+  allowCheckingNotLoaded?: boolean;
+  filterable?: boolean;
+  placement?:
+    | "top"
+    | "top-start"
+    | "top-end"
+    | "bottom"
+    | "bottom-start"
+    | "bottom-end";
+  remote?: boolean;
+  separator?: string;
+  showPath?: boolean;
+  virtualScroll?: boolean;
+  renderLabel?: (option: {
+    option: TreeSelectOption;
+    checked: boolean;
+    selected: boolean;
+  }) => VNodeChild;
+  filter?: (
+    pattern: string,
+    option: TreeSelectOption,
+    path: TreeSelectOption[]
+  ) => boolean;
+  filterMenuProps?: Record<string, any>;
 }
 
 export interface TreeSelectField {
   type: "tree-select";
   clearable?: boolean;
   options: _FieldOptions;
-  fieldParams?: {
-    cascade?: boolean;
-    multiple?: boolean;
-    checkStrategy?: "all" | "parent" | "child";
-    childrenField?: string;
-    valueField?: string;
-    labelField?: string;
-    disabledField?: string;
-    maxSelectedCount?: number | "responsive";
-    clearFilterAfterSelect?: boolean;
-    allowCheckingNotLoaded?: boolean;
-    filterable?: boolean;
-    placement?:
-      | "top"
-      | "top-start"
-      | "top-end"
-      | "bottom"
-      | "bottom-start"
-      | "bottom-end";
-    remote?: boolean;
-    separator?: string;
-    showPath?: boolean;
-    virtualScroll?: boolean;
-    renderLabel?: (option: {
-      option: TreeSelectOption;
-      checked: boolean;
-      selected: boolean;
-    }) => VNodeChild;
-    filter?: (
-      pattern: string,
-      option: TreeSelectOption,
-      path: TreeSelectOption[]
-    ) => boolean;
-    filterMenuProps?: Record<string, any>;
-  };
+  fieldParams?:
+    | TreeSelectFieldProps
+    | ((
+        deps?: Dependencies,
+        virtualDeps?: Dependencies
+      ) => TreeSelectFieldProps);
+}
+
+export interface CascaderFieldParams {
+  cascade?: boolean;
+  multiple?: boolean;
+  checkable?: boolean;
+  checkStrategy?: "all" | "parent" | "child";
+  childrenField?: string;
+  valueField?: string;
+  labelField?: string;
+  disabledField?: string;
+  maxSelectedCount?: number | "responsive";
+  clearFilterAfterSelect?: boolean;
+  allowCheckingNotLoaded?: boolean;
+  filterable?: boolean;
+  placement?:
+    | "top"
+    | "top-start"
+    | "top-end"
+    | "bottom"
+    | "bottom-start"
+    | "bottom-end";
+  remote?: boolean;
+  separator?: string;
+  showPath?: boolean;
+  virtualScroll?: boolean;
+  renderLabel?: (option: CascaderOption, checked: boolean) => VNodeChild;
+  renderPrefix?: (option: CascaderOption, checked: boolean) => VNodeChild;
+  renderSuffix?: (option: CascaderOption, checked: boolean) => VNodeChild;
+  renderSwitcherIcon?: (option: CascaderOption, checked: boolean) => VNodeChild;
+  renderTag?: (option: CascaderOption, checked: boolean) => VNodeChild;
+  filter?: (
+    pattern: string,
+    option: CascaderOption,
+    path: CascaderOption[]
+  ) => boolean;
+  filterMenuProps?: Record<string, unknown>;
 }
 
 export interface CascaderField {
   type: "cascader";
   clearable?: boolean;
   options: _FieldOptions;
-  fieldParams?: {
-    cascade?: boolean;
-    multiple?: boolean;
-    checkable?: boolean;
-    checkStrategy?: "all" | "parent" | "child";
-    childrenField?: string;
-    valueField?: string;
-    labelField?: string;
-    disabledField?: string;
-    maxSelectedCount?: number | "responsive";
-    clearFilterAfterSelect?: boolean;
-    allowCheckingNotLoaded?: boolean;
-    filterable?: boolean;
-    placement?:
-      | "top"
-      | "top-start"
-      | "top-end"
-      | "bottom"
-      | "bottom-start"
-      | "bottom-end";
-    remote?: boolean;
-    separator?: string;
-    showPath?: boolean;
-    virtualScroll?: boolean;
-    renderLabel?: (option: CascaderOption, checked: boolean) => VNodeChild;
-    renderPrefix?: (option: CascaderOption, checked: boolean) => VNodeChild;
-    renderSuffix?: (option: CascaderOption, checked: boolean) => VNodeChild;
-    renderSwitcherIcon?: (
-      option: CascaderOption,
-      checked: boolean
-    ) => VNodeChild;
-    renderTag?: (option: CascaderOption, checked: boolean) => VNodeChild;
-    filter?: (
-      pattern: string,
-      option: CascaderOption,
-      path: CascaderOption[]
-    ) => boolean;
-    filterMenuProps?: Record<string, unknown>;
-  };
+  fieldParams?:
+    | CascaderFieldParams
+    | ((
+        deps?: Dependencies,
+        virtualDeps?: Dependencies
+      ) => CascaderFieldParams);
+}
+
+export interface TextAreaFieldParams extends TextFieldProps {
+  autosize?: boolean | { minRows?: number; maxRows?: number };
+  showCount?: boolean;
 }
 
 export interface TextAreaField {
   type: "textarea";
   clearable?: boolean;
-  fieldParams?: TextField["fieldParams"] & {
-    autosize?: boolean | { minRows?: number; maxRows?: number };
-    showCount?: boolean;
-  };
+  fieldParams?:
+    | TextAreaFieldParams
+    | ((
+        deps?: Dependencies,
+        virtualDeps?: Dependencies
+      ) => TextAreaFieldParams);
+}
+
+export interface TagFieldParams {
+  deletable?: boolean;
+  type?: "default" | "primary" | "info" | "success" | "warning" | "error";
+  size?: "small" | "medium" | "large";
+  tagStyle?: string | Record<string, Primitive>;
+  onCreate?:
+    | ((label: string) => string)
+    | ((label: string) => { label: string; value: string });
+  rounded?: boolean;
+  max?: number;
+  inputProps?: InputProps;
+  renderTag?:
+    | ((tag: string, index: number) => VNodeChild)
+    | ((tag: { label: string; value: string }, index: number) => VNodeChild);
 }
 
 export interface TagField {
   type: "tag";
-  fieldParams?: {
-    deletable?: boolean;
-    type?: "default" | "primary" | "info" | "success" | "warning" | "error";
-    size?: "small" | "medium" | "large";
-    tagStyle?: string | Record<string, Primitive>;
-    onCreate?:
-      | ((label: string) => string)
-      | ((label: string) => { label: string; value: string });
-    rounded?: boolean;
-    max?: number;
-    inputProps?: InputProps;
-    renderTag?:
-      | ((tag: string, index: number) => VNodeChild)
-      | ((tag: { label: string; value: string }, index: number) => VNodeChild);
-  };
+  fieldParams?:
+    | TagFieldParams
+    | ((deps?: Dependencies, virtualDeps?: Dependencies) => TagFieldParams);
 }
 
 export interface PasswordField extends Omit<TextField, "type" | "pair"> {
   type: "password";
   clearable?: boolean;
-  fieldParams?: Record<string, never>;
+}
+
+export interface SelectFieldParams {
+  multiple?: boolean;
+  filterable?: boolean;
+  renderLabel?: (
+    option: SelectOption | SelectGroupOption,
+    selected: boolean
+  ) => VNodeChild;
+  renderOption?: (info: {
+    node: VNode;
+    option: SelectOption | SelectGroupOption;
+    selected: boolean;
+  }) => VNodeChild;
+  renderTag?: (props: {
+    option: SelectBaseOption;
+    handleClose: () => void;
+  }) => VNodeChild;
+  createTags?: boolean;
+  virtualScroll?: boolean;
 }
 
 export interface SelectField {
   type: "select";
   clearable?: boolean;
   options: _FieldOptions;
-  fieldParams?: {
-    multiple?: boolean;
-    filterable?: boolean;
-    renderLabel?: (
-      option: SelectOption | SelectGroupOption,
-      selected: boolean
-    ) => VNodeChild;
-    renderOption?: (info: {
-      node: VNode;
-      option: SelectOption | SelectGroupOption;
-      selected: boolean;
-    }) => VNodeChild;
-    renderTag?: (props: {
-      option: SelectBaseOption;
-      handleClose: () => void;
-    }) => VNodeChild;
-    createTags?: boolean;
-    virtualScroll?: boolean;
-  };
+  fieldParams?:
+    | SelectFieldParams
+    | ((deps?: Dependencies, virtualDeps?: Dependencies) => SelectFieldParams);
+}
+
+export interface NumberFieldParams {
+  min?: number;
+  max?: number;
+  step?: number;
 }
 
 export interface NumberField {
   type: "number";
   clearable?: boolean;
-  fieldParams?: {
-    min?: number;
-    max?: number;
-    step?: number;
-  };
+  fieldParams?:
+    | NumberFieldParams
+    | ((deps?: Dependencies, virtualDeps?: Dependencies) => NumberFieldParams);
+}
+
+export interface RatingFieldParams {
+  renderIcon?: () => VNodeChild;
+  color?: string;
+  iconCount?: number;
+  size: "small" | "medium" | "large" | number;
+  allowHalf?: boolean;
 }
 
 export interface RatingField {
   type: "rating";
-  fieldParams?: {
-    renderIcon?: () => VNodeChild;
-    color?: string;
-    iconCount?: number;
-    size: "small" | "medium" | "large" | number;
-    allowHalf?: boolean;
-  };
+  fieldParams?:
+    | RatingFieldParams
+    | ((deps?: Dependencies, virtualDeps?: Dependencies) => RatingFieldParams);
+}
+
+export interface SliderFieldParams {
+  min?: number;
+  max?: number;
+  step?: number;
+  range?: boolean;
+  reverse?: boolean;
+  enableTooltip?: boolean;
+  formatTooltip?: (value: number) => string | number;
+  // alwaysShowTooltip?: boolean;
+  // tooltipPlacement?:
+  //     | "top-start"
+  //     | "top"
+  //     | "top-end"
+  //     | "right-start"
+  //     | "right"
+  //     | "right-end"
+  //     | "bottom-start"
+  //     | "bottom"
+  //     | "bottom-end"
+  //     | "left-start"
+  //     | "left"
+  //     | "left-end";
+  marks?: { [markValue: number]: string };
 }
 
 export interface SliderField {
   type: "slider";
-  fieldParams?: {
-    min?: number;
-    max?: number;
-    step?: number;
-    range?: boolean;
-    reverse?: boolean;
-    enableTooltip?: boolean;
-    formatTooltip?: (value: number) => string | number;
-    // alwaysShowTooltip?: boolean;
-    // tooltipPlacement?:
-    //     | "top-start"
-    //     | "top"
-    //     | "top-end"
-    //     | "right-start"
-    //     | "right"
-    //     | "right-end"
-    //     | "bottom-start"
-    //     | "bottom"
-    //     | "bottom-end"
-    //     | "left-start"
-    //     | "left"
-    //     | "left-end";
-    marks?: { [markValue: number]: string };
-  };
+  fieldParams?:
+    | SliderFieldParams
+    | ((deps?: Dependencies, virtualDeps?: Dependencies) => SliderFieldParams);
+}
+
+export interface SwitchFieldParams {
+  checkedStyle?: string;
+  uncheckedStyle?: string;
+  checkedValue?: string | boolean | number;
+  uncheckedValue?: string | boolean | number;
 }
 
 export interface SwitchField {
   type: "switch";
-  fieldParams?: {
-    checkedStyle?: string;
-    uncheckedStyle?: string;
-    checkedValue?: string | boolean | number;
-    uncheckedValue?: string | boolean | number;
-  };
+  fieldParams?:
+    | SwitchFieldParams
+    | ((deps?: Dependencies, virtualDeps?: Dependencies) => SwitchFieldParams);
 }
 
 export interface RadioField {
@@ -291,53 +336,72 @@ export interface RadioField {
   options: _FieldOptions;
 }
 
+export interface CheckboxFieldParams {
+  checkedValue?: string | boolean | number;
+  uncheckedValue?: string | boolean | number;
+}
+
 export interface CheckboxField {
   type: "checkbox";
-  fieldParams?: {
-    checkedValue?: string | boolean | number;
-    uncheckedValue?: string | boolean | number;
-  };
+  fieldParams?:
+    | CheckboxFieldParams
+    | ((
+        deps?: Dependencies,
+        virtualDeps?: Dependencies
+      ) => CheckboxFieldParams);
+}
+
+export interface CheckboxGroupFieldParams {
+  minChecked?: number;
+  maxChecked?: number;
 }
 
 export interface CheckboxGroupField {
   type: "checkbox-group";
   options: _FieldOptions;
-  fieldParams?: {
-    minChecked?: number;
-    maxChecked?: number;
-  };
+  fieldParams?:
+    | CheckboxGroupFieldParams
+    | ((deps?: CheckboxGroupFieldParams) => CheckboxGroupFieldParams);
+}
+
+export interface TimeFieldParams {
+  bottomActions?: Array<"now" | "confirm"> | null;
+  displayedHours?: number | number[];
+  displayedMinutes?: number | number[];
+  displayedSeconds?: number | number[];
+  disableHour?: (hour: number) => boolean;
+  disableMinute?: (minute: number, hour: number | null) => boolean;
+  disableSecond?: (
+    second: number,
+    minute: number | null,
+    hour: number | null
+  ) => boolean;
+  format?: string;
+  hourStep?: number;
+  minuteStep?: number;
+  secondStep?: number;
 }
 
 export interface TimeField {
   type: "time";
   clearable?: boolean;
-  fieldParams?: {
-    bottomActions?: Array<"now" | "confirm"> | null;
-    displayedHours?: number | number[];
-    displayedMinutes?: number | number[];
-    displayedSeconds?: number | number[];
-    disableHour?: (hour: number) => boolean;
-    disableMinute?: (minute: number, hour: number | null) => boolean;
-    disableSecond?: (
-      second: number,
-      minute: number | null,
-      hour: number | null
-    ) => boolean;
-    format?: string;
-    hourStep?: number;
-    minuteStep?: number;
-    secondStep?: number;
-  };
+  fieldParams?:
+    | TimeFieldParams
+    | ((deps?: Dependencies, virtualDeps?: Dependencies) => TimeFieldParams);
+}
+
+export interface DateFieldParams {
+  dateDisabled?: (current: number) => boolean;
+  timeDisabled?: (current: number) => boolean;
+  separator?: string;
 }
 
 export interface DateField {
   type: "date" | "datetime" | "daterange" | "datetimerange" | "month" | "year";
   clearable?: boolean;
-  fieldParams?: {
-    dateDisabled?: (current: number) => boolean;
-    timeDisabled?: (current: number) => boolean;
-    separator?: string;
-  };
+  fieldParams?:
+    | DateFieldParams
+    | ((deps?: Dependencies, virtualDeps?: Dependencies) => DateFieldParams);
 }
 
 export interface ObjectField<
@@ -394,7 +458,12 @@ export interface InfoField {
 export interface CustomField {
   type: "custom-component";
   component: Component;
-  fieldParams?: Record<string, unknown>;
+  fieldParams?:
+    | Record<string, unknown>
+    | ((
+        deps?: Dependencies,
+        virtualDeps?: Dependencies
+      ) => Record<string, unknown>);
   collapsible?: boolean;
   collapsed?: boolean;
 }

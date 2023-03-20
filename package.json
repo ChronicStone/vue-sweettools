@@ -31,6 +31,7 @@
     "ag-grid-community": "^29.0.0",
     "ag-grid-vue3": "^29.0.0",
     "deepmerge-ts": "^4.3.0",
+    "hotscript": "^1.0.10",
     "maska": "^2.1.7",
     "tinycolor2": "^1.6.0"
   },

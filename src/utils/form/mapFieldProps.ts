@@ -1,10 +1,22 @@
-import { FormField, TFieldTypes } from "@/types/form/fields";
+import { Dependencies, FormField, TFieldTypes } from "@/types/form/fields";
 import { FieldTypes } from "@/types/form/fields";
 
 export function mapFieldProps(
   fieldType: TFieldTypes,
-  fieldProps: Record<string, any> = {}
+  _fieldProps:
+    | Record<string, any>
+    | ((
+        deps?: Dependencies,
+        virtualDeps?: Dependencies
+      ) => Record<string, any>) = {},
+  dependencies: Dependencies,
+  virtualDependencies: Dependencies
 ) {
+  const fieldProps =
+    typeof _fieldProps === "function"
+      ? _fieldProps(dependencies, virtualDependencies)
+      : _fieldProps;
+
   switch (fieldType) {
     case "text":
     case "textarea":

@@ -19,6 +19,7 @@ specifiers:
   deepmerge-ts: ^4.3.0
   eslint: ^8.22.0
   eslint-plugin-vue: ^9.3.0
+  hotscript: ^1.0.10
   maska: ^2.1.7
   naive-ui: ^2.34.2
   prettier: ^2.7.1
@@ -47,6 +48,7 @@ dependencies:
   ag-grid-community: 29.0.0
   ag-grid-vue3: 29.0.0
   deepmerge-ts: 4.3.0
+  hotscript: 1.0.10
   maska: 2.1.7
   naive-ui: 2.34.3_vue@3.2.47
   tinycolor2: 1.6.0
@@ -2617,6 +2619,10 @@ packages:
   /hookable/5.4.2:
     resolution: {integrity: sha512-6rOvaUiNKy9lET1X0ECnyZ5O5kSV0PJbtA5yZUgdEF7fGJEVwSLSislltyt7nFwVVALYHQJtfGeAR2Y0A0uJkg==}
     dev: true
+
+  /hotscript/1.0.10:
+    resolution: {integrity: sha512-eDbtzWfe3LN1Zd9NYoNjogmnqd/LiAo1lKztARnEzzsRy5QKW+VJ7TCWzsDwbSuq79KZ0yVoelQD+GPW83O21w==}
+    dev: false
 
   /html-tags/3.2.0:
     resolution: {integrity: sha512-vy7ClnArOZwCnqZgvv+ddgHgJiAFXe3Ge9ML5/mBctVJoUoYPCdxVucOywjDARn6CVoh3dRSFdPHy2sX80L0Wg==}

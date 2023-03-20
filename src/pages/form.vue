@@ -103,9 +103,10 @@ const steppedSchema = buildFormSchema({
           type: "text",
           key: "text1",
           required: true,
+          default: "+",
           fieldParams: {
             mask: {
-              mask: "## ### ## ##",
+              mask: "+971-5#-###-####",
             },
           },
         },

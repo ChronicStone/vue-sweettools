@@ -23,10 +23,6 @@ export function useFieldContext(
     field.value.key,
   ]);
 
-  const inputProps = computed(() =>
-    mapFieldProps(field.value.type, field.value?.fieldParams ?? {})
-  );
-
   const required = computed(() =>
     typeof field.value.required === "function"
       ? field.value.required(dependencies.value, virtualDependencies.value)
@@ -51,6 +47,15 @@ export function useFieldContext(
       )
     );
   });
+
+  const inputProps = computed(() =>
+    mapFieldProps(
+      field.value.type,
+      field.value?.fieldParams ?? {},
+      dependencies.value,
+      virtualDependencies.value
+    )
+  );
 
   const _evalCondition = ref<boolean>(false);
   const conditionEffect = computed(
