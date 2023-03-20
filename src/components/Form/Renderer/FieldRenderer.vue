@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ObjectField, FormField } from "@/types/form/fields";
-import useVuelidate, { Validation } from "@vuelidate/core";
+import { ObjectField, FormField, TFieldTypes } from "@/types/form/fields";
+import { Validation } from "@vuelidate/core";
 import LabelRenderer from "./LabelRenderer.vue";
-import { NInput } from "naive-ui";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 
 const emit = defineEmits<{ (e: "update:modelValue", value: unknown): void }>();
@@ -13,6 +12,8 @@ const props = withDefaults(
     parentKey?: string[];
     itemIndex?: number | null;
     parentDisabled?: boolean;
+    parentType?: TFieldTypes | null;
+    groupLength?: number;
     multiStep?: boolean;
     stepIndex?: number;
     showError?: boolean;
@@ -24,6 +25,8 @@ const props = withDefaults(
     multiStep: false,
     stepIndex: undefined,
     showError: true,
+    parentType: null,
+    groupLength: 0,
   }
 );
 
@@ -36,7 +39,10 @@ const formStyle = useFormStyles();
 const collapsed = ref<boolean>(
   (props.field as ObjectField)?.collapsed ?? false
 );
-const fieldSize = useBreakpointStyle(props.field?.size ?? "", "col");
+const fieldSize = useBreakpointStyle(
+  props.field?.size ?? (props.parentType === "group" ? "100%" : ""),
+  props.parentType === "group" ? "value" : "col"
+);
 
 const fieldValue = computed({
   get: () => props.modelValue,
@@ -83,33 +89,60 @@ const FieldComponent = useFieldComponent(_field);
 </script>
 
 <template>
-  <div
+  <template
     v-if="
       fieldContext.condition.value ||
       fieldContext.conditionEffect.value === 'disable'
     "
-    class="flex flex-col gap-2"
-    :class="{
-      'flex-col': (field?.labelPosition ?? 'top') === 'top',
-      'flex-row items-center': (field?.labelPosition ?? 'top') === 'left',
-    }"
-    :style="field.size ? fieldSize : formStyle?.fieldSize.value"
   >
-    <LabelRenderer
-      v-if="
-        (!field?.label && field.type === 'info') ||
-        field.type === 'checkbox' ||
-        (field.type === 'object' && field?.fieldParams?.frameless)
-          ? false
-          : true
-      "
-      v-model:collapsed="collapsed"
-      :field="field"
-      :dependencies="fieldContext.dependencies.value"
-      :required="fieldContext.required.value"
-    />
+    <div
+      v-if="parentType !== 'group'"
+      class="flex flex-col gap-2"
+      :class="{
+        'flex-col': (field?.labelPosition ?? 'top') === 'top',
+        'flex-row items-center': (field?.labelPosition ?? 'top') === 'left',
+      }"
+      :style="field.size ? fieldSize : formStyle?.fieldSize.value"
+    >
+      <LabelRenderer
+        v-if="
+          (!field?.label && field.type === 'info') ||
+          field.type === 'checkbox' ||
+          (field.type === 'object' && field?.fieldParams?.frameless)
+            ? false
+            : true
+        "
+        v-model:collapsed="collapsed"
+        :field="field"
+        :dependencies="fieldContext.dependencies.value"
+        :required="fieldContext.required.value"
+      />
+
+      <FieldComponent
+        v-model="fieldValue"
+        :field="field"
+        :context="fieldContext"
+        :validator="$validator"
+        :disabled="
+          (fieldContext.condition.value == false &&
+            fieldContext.conditionEffect.value == 'disable') ||
+          parentDisabled
+        "
+        :parent-disabled="parentDisabled"
+        :collapsed="collapsed"
+        :parent-key="parentKey"
+      />
+
+      <div
+        v-if="$validator?.$errors?.length && showError"
+        class="flex items-center gap-2 transition-all ease-in-out duration-300 transform"
+      >
+        <span class="text-red-500">{{ errorMessage }}</span>
+      </div>
+    </div>
 
     <FieldComponent
+      v-else
       v-model="fieldValue"
       :field="field"
       :context="fieldContext"
@@ -122,15 +155,11 @@ const FieldComponent = useFieldComponent(_field);
       :parent-disabled="parentDisabled"
       :collapsed="collapsed"
       :parent-key="parentKey"
+      :size="fieldSize"
+      :group-length="groupLength"
+      :group="true"
     />
-
-    <div
-      v-if="$validator?.$errors?.length && showError"
-      class="flex items-center gap-2 transition-all ease-in-out duration-300 transform"
-    >
-      <span class="text-red-500">{{ errorMessage }}</span>
-    </div>
-  </div>
+  </template>
 </template>
 
 <script lang="ts">

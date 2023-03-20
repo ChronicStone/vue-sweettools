@@ -14,6 +14,7 @@ const fieldValue = computed({
 <template>
   <NDatePicker
     v-model:value="fieldValue"
+    :style="group ? { width: `${size} !important` } : {}"
     :placeholder="field.placeholder"
     :type="field.type"
     v-bind="context.inputProps.value"

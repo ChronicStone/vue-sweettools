@@ -14,6 +14,7 @@ const fieldValue = computed({
 <template>
   <NSelect
     v-model:value="fieldValue"
+    :style="group ? { width: `${size} !important` } : {}"
     :placeholder="field.placeholder"
     :options="context.options.value"
     v-bind="context.inputProps.value"

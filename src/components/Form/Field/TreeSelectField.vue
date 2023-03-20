@@ -13,6 +13,7 @@ const fieldValue = computed({
 <template>
   <NTreeSelect
     v-model:value="fieldValue"
+    :style="group ? { width: `${size} !important` } : {}"
     v-bind="context.inputProps.value"
     :placeholder="field.placeholder"
     :options="(context.options.value as TreeSelectOption[])"

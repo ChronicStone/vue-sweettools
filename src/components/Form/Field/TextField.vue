@@ -28,6 +28,7 @@ const fieldProps = computed(() => {
   <NInput
     v-model:value="fieldValue"
     v-maska:[maskConfig]
+    :style="group ? { width: `${size} !important` } : {}"
     :class="{ fieldError: validator?.$errors?.length }"
     :type="field.type"
     v-bind="fieldProps"

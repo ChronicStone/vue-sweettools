@@ -107,6 +107,7 @@ const steppedSchema = buildFormSchema({
           fieldParams: {
             mask: {
               mask: "+971-5#-###-####",
+              eager: true,
             },
           },
         },
@@ -118,6 +119,24 @@ const steppedSchema = buildFormSchema({
             <NButton onClick={() => createForm()}>OPEN NESTED FORM</NButton>
           ),
           virtualDependencies: ["haha"],
+        },
+        {
+          size: 8,
+          label: "Group fields",
+          type: "group",
+          key: "group",
+          transform: (value: any) => `${value?.hi} ${value?.hi2}`,
+          fields: [
+            {
+              type: "text",
+              key: "hi",
+              size: "120px",
+            },
+            {
+              type: "text",
+              key: "hi2",
+            },
+          ],
         },
       ],
     },
@@ -219,32 +238,7 @@ const {
   previousStep,
   canTriggerNext,
   canTriggerPrevious,
-} = useFormController(formRef, {
-  steps: [
-    {
-      label: "STEP 1",
-      fields: [
-        {
-          label: "Text 1",
-          type: "text",
-          key: "text1",
-          required: true,
-        },
-      ],
-    },
-    {
-      label: "STEP 2",
-      fields: [
-        {
-          label: "Text 2",
-          type: "text",
-          key: "text2",
-          required: true,
-        },
-      ],
-    },
-  ],
-});
+} = useFormController(formRef, steppedSchema);
 
 async function submit() {
   const isValid = await validate();

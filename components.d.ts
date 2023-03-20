@@ -28,6 +28,7 @@ declare module '@vue/runtime-core' {
     FormProvider: typeof import('./src/components/Form/Provider/FormProvider.vue')['default']
     FormRenderer: typeof import('./src/components/Form/Renderer/FormRenderer.vue')['default']
     FullScreenLayout: typeof import('./src/components/Form/Layout/FullScreenLayout.vue')['default']
+    GroupField: typeof import('./src/components/Form/Field/GroupField.vue')['default']
     InfoField: typeof import('./src/components/Form/Field/InfoField.vue')['default']
     InlineLayout: typeof import('./src/components/Form/Layout/InlineLayout.vue')['default']
     JsxCellRenderer: typeof import('./src/components/DataTable/CellRenderers/JsxCellRenderer.vue')['default']

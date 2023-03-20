@@ -40,6 +40,7 @@ export enum FieldTypes {
   RATING = "rating",
   TAG = "tag",
   CASCADER = "cascader",
+  GROUP = "group",
 }
 
 export type TFieldTypes = `${FieldTypes}`;
@@ -404,6 +405,27 @@ export interface DateField {
     | ((deps?: Dependencies, virtualDeps?: Dependencies) => DateFieldParams);
 }
 
+export interface GroupField<
+  FieldKey extends Narrowable = string,
+  StoreKey extends string = string
+> {
+  type: "group";
+  gridSize?: number | string;
+  fields: Array<
+    Omit<_BaseField<FieldKey, StoreKey>, "label"> &
+      (
+        | TextField
+        | PasswordField
+        | SelectField
+        | NumberField
+        | TimeField
+        | DateField
+        | TreeSelectField
+        | CascaderField
+      )
+  >;
+}
+
 export interface ObjectField<
   FieldKey extends Narrowable = string,
   StoreKey extends string = string
@@ -549,6 +571,7 @@ export type FormField<
     | CascaderField
     | RatingField
     | TagField
+    | GroupField
   );
 
 export type FieldContext = ReturnType<typeof useFieldContext>;
@@ -563,6 +586,9 @@ export type FieldComponentProps = {
   indent?: number;
   parentKey: string[];
   disabled: boolean;
+  size?: string;
+  groupLength?: number;
+  group?: boolean;
 };
 
 export type FieldComponentEmits = {

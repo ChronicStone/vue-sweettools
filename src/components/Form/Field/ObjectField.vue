@@ -13,8 +13,8 @@ const props = defineProps<FieldComponentProps>();
 
 const _field = computed(() => props.field as _BaseField & ObjectField);
 
-const fieldValue = computed({
-  get: () => props.modelValue,
+const fieldValue = computed<Record<string, unknown>>({
+  get: () => props.modelValue as Record<string, unknown>,
   set: (value) => emit("update:modelValue", value),
 });
 

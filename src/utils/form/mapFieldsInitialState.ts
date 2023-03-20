@@ -30,7 +30,7 @@ export function mapFieldsInitialState(
         )
       );
 
-    if (field.type === "object")
+    if (field.type === "object" || field.type === "group")
       fieldOutput = getNestedFieldOutput(
         "input",
         inputState,
@@ -92,7 +92,7 @@ export function mapFieldsOutputState(
           )
       );
 
-    if (field.type === "object")
+    if (field.type === "object" || field.type === "group")
       fieldOutput = getNestedFieldOutput(
         "output",
         inputState,

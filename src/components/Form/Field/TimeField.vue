@@ -13,8 +13,8 @@ const fieldValue = computed({
 
 <template>
   <NTimePicker
-    v-if="field.type === 'time'"
     v-model:value="fieldValue"
+    :style="group ? { width: `${size} !important` } : {}"
     :placeholder="field.placeholder"
     v-bind="context.inputProps.value"
     :disabled="disabled"

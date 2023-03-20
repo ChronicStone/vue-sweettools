@@ -23,6 +23,7 @@ import CheckboxGroupField from "@/components/Form/Field/CheckboxGroupField.vue";
 import InfoField from "@/components/Form/Field/InfoField.vue";
 import CustomField from "@/components/Form/Field/CustomField.vue";
 import RadioField from "@/components/Form/Field/RadioField.vue";
+import GroupField from "@/components/Form/Field/GroupField.vue";
 
 export function useFieldComponent(field: ComputedRef<FormField>) {
   const FieldComponent = computed(() => {
@@ -70,6 +71,8 @@ export function useFieldComponent(field: ComputedRef<FormField>) {
         return CustomField;
       case FieldTypes.RADIO:
         return RadioField;
+      case FieldTypes.GROUP:
+        return GroupField;
       default:
         return TextField;
     }

@@ -67,7 +67,7 @@ type ResolveFormType<K extends FormField<any>> = K["type"] extends "info"
   ? ReturnType<K["transform"]>
   : K["type"] extends "checkbox"
   ? boolean
-  : K["type"] extends "object"
+  : K["type"] extends "object" | "group"
   ? K["fields"] extends infer U extends FormField<any>[]
     ? FormInfoReturnType<U[number]>
     : never

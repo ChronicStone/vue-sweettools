@@ -13,8 +13,8 @@ const fieldValue = computed({
 
 <template>
   <NInputNumber
-    v-if="field.type === 'number'"
     v-model:value="fieldValue"
+    :style="group ? { width: `${size} !important` } : {}"
     v-bind="context.inputProps.value"
     :placeholder="field.placeholder"
     :disabled="disabled"
