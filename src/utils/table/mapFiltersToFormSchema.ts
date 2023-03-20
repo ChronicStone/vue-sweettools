@@ -8,10 +8,7 @@ export function mapFiltersToFormSchema(filters: TableFilter[]) {
       fieldParams: {
         ...(filter?.fieldParams ?? {}),
         ...(filter.type === "select" && {
-          multiple: filter?.fieldParams?.multiple ?? true,
-        }),
-        ...(filter.type === "checkbox" && {
-          hasThirdState: filter?.fieldParams?.hasThirdState ?? true,
+          multiple: filter?.multiple ?? true,
         }),
       },
     };

@@ -1,3 +1,4 @@
+import { FormField } from "@/types/form/fields";
 import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 import { ComputedRef, DefineComponent, Ref, VNodeChild } from "vue";
 import { DeepRequired, GenericObject, NestedPaths } from "@/types/utils";
@@ -37,25 +38,7 @@ export interface OptimizedQueryField {
 
 export type FilterFactory = (key: string, ...args: any[]) => TableFilter;
 
-export interface TableFilter {
-  condition?: (params: TableActionParams) => boolean;
-  label?: string | ((dependencies?: GenericObject) => string | VNodeChild);
-  key: string;
-  type: FilterType;
-  options?:
-    | SelectOptions[]
-    | ((
-        dependencies?: GenericObject | undefined
-      ) => SelectOptions[] | Promise<SelectOptions[]>);
-  placeholder?: string;
-  default?: any;
-  dependencies?: (string | string[])[];
-  fields?: Omit<TableFilter, "type">[];
-  format?: "list" | "tabs" | "table";
-  size?: number | string;
-  fieldParams?: GenericObject;
-  preformat?: (value: any) => any;
-  transform?: (value: any) => any;
+export type TableFilter = FormField & {
   matchMode?: FilterMatchMode;
   params?: {
     stringMap?: Array<
@@ -70,7 +53,7 @@ export interface TableFilter {
     dateMode?: boolean;
   };
   postCondition?: boolean;
-}
+};
 
 export interface StaticFilter {
   key: string;

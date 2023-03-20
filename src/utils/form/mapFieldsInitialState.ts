@@ -45,9 +45,11 @@ export function mapFieldsInitialState(
       state[field._stepRoot as string] = {};
       state[field._stepRoot as string][field.key] = getPreformatedField(
         fieldOutput,
+        fieldValue,
         field
       );
-    } else state[field.key] = getPreformatedField(fieldOutput, field);
+    } else
+      state[field.key] = getPreformatedField(fieldOutput, fieldValue, field);
   }
 
   return unwrapProxy(state);
@@ -117,8 +119,12 @@ function getTransformedField(value: unknown, field: FormField) {
   return field.transform?.(value) ?? value;
 }
 
-function getPreformatedField(value: unknown, field: FormField) {
-  return field?.preformat?.(value) ?? value;
+function getPreformatedField(
+  value: unknown,
+  rawValue: unknown,
+  field: FormField
+) {
+  return field?.preformat?.(rawValue) ?? value;
 }
 
 function unwrapProxy(data: Record<string, unknown>) {
@@ -169,7 +175,7 @@ function getFallbackFieldValue(field: FormField) {
     case "cascader":
     case "select":
     case "tree-select":
-      return field.fieldParams?.multiple ? [] : null;
+      return field?.multiple ? [] : null;
     case "checkbox":
     case "switch":
       return false;

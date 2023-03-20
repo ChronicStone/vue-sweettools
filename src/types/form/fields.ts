@@ -89,7 +89,6 @@ export interface TextField {
 
 export interface TreeSelectFieldProps {
   cascade?: boolean;
-  multiple?: boolean;
   checkStrategy?: "all" | "parent" | "child";
   childrenField?: string;
   valueField?: string;
@@ -126,6 +125,7 @@ export interface TreeSelectFieldProps {
 export interface TreeSelectField {
   type: "tree-select";
   clearable?: boolean;
+  multiple?: boolean;
   options: _FieldOptions;
   fieldParams?:
     | TreeSelectFieldProps
@@ -137,7 +137,6 @@ export interface TreeSelectField {
 
 export interface CascaderFieldParams {
   cascade?: boolean;
-  multiple?: boolean;
   checkable?: boolean;
   checkStrategy?: "all" | "parent" | "child";
   childrenField?: string;
@@ -176,6 +175,7 @@ export interface CascaderField {
   type: "cascader";
   clearable?: boolean;
   options: _FieldOptions;
+  multiple?: boolean;
   fieldParams?:
     | CascaderFieldParams
     | ((
@@ -229,7 +229,6 @@ export interface PasswordField extends Omit<TextField, "type" | "pair"> {
 }
 
 export interface SelectFieldParams {
-  multiple?: boolean;
   filterable?: boolean;
   renderLabel?: (
     option: SelectOption | SelectGroupOption,
@@ -252,6 +251,7 @@ export interface SelectField {
   type: "select";
   clearable?: boolean;
   options: _FieldOptions;
+  multiple?: boolean;
   fieldParams?:
     | SelectFieldParams
     | ((deps?: Dependencies, virtualDeps?: Dependencies) => SelectFieldParams);
@@ -522,7 +522,12 @@ export type _BaseField<
   conditionEffect?: "disable" | "hide";
   labelPosition?: "left" | "top";
   description?: string | (() => VNodeChild) | FieldDescription;
-  fieldParams?: Record<string, unknown>;
+  fieldParams?:
+    | Record<string, unknown>
+    | ((
+        deps?: Dependencies,
+        virtualDeps?: Dependencies
+      ) => Record<string, unknown>);
   condition?: (
     dependencies?: Dependencies,
     virtualDependencies?: Dependencies

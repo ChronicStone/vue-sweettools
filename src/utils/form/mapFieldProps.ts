@@ -1,8 +1,7 @@
-import { Dependencies, FormField, TFieldTypes } from "@/types/form/fields";
-import { FieldTypes } from "@/types/form/fields";
+import { Dependencies, FormField } from "@/types/form/fields";
 
 export function mapFieldProps(
-  fieldType: TFieldTypes,
+  field: FormField,
   _fieldProps:
     | Record<string, any>
     | ((
@@ -17,7 +16,7 @@ export function mapFieldProps(
       ? _fieldProps(dependencies, virtualDependencies)
       : _fieldProps;
 
-  switch (fieldType) {
+  switch (field.type) {
     case "text":
     case "textarea":
     case "password":
@@ -29,14 +28,14 @@ export function mapFieldProps(
         ...(fieldProps.maxLength && { maxlength: fieldProps.maxLength }),
         ...(fieldProps.prefix && { prefix: fieldProps.prefix }),
         ...(fieldProps.suffix && { suffix: fieldProps.suffix }),
-        ...(fieldType === "password" && { "show-password-on": "click" }),
+        ...(field.type === "password" && { "show-password-on": "click" }),
         ...(fieldProps.mask && { mask: fieldProps.mask }),
       };
     case "select":
       return {
         filterable: fieldProps.filterable ?? true,
-        clearable: fieldProps.clearable ?? true,
-        multiple: fieldProps.multiple ?? false,
+        clearable: field.clearable ?? true,
+        multiple: field.multiple ?? false,
         "virtual-scroll": fieldProps.virtualScroll ?? false,
         ...(fieldProps.renderLabel && {
           "render-label": fieldProps.renderLabel,
@@ -51,8 +50,8 @@ export function mapFieldProps(
     case "tree-select":
       return {
         cascade: fieldProps?.cascade ?? true,
-        clearable: fieldProps?.clearable ?? true,
-        multiple: fieldProps?.multiple ?? false,
+        clearable: field?.clearable ?? true,
+        multiple: field?.multiple ?? false,
         "check-strategy": fieldProps?.checkStrategy ?? "all",
         ...(fieldProps.childrenField && {
           "children-field": fieldProps.childrenField,
@@ -83,8 +82,8 @@ export function mapFieldProps(
     case "cascader":
       return {
         cascade: fieldProps?.cascade ?? true,
-        clearable: fieldProps?.clearable ?? true,
-        multiple: fieldProps?.multiple ?? false,
+        clearable: field?.clearable ?? true,
+        multiple: field?.multiple ?? false,
         checkable: fieldProps?.checkable ?? false,
         "check-strategy": fieldProps?.checkStrategy ?? "all",
         "max-tag-count": fieldProps?.maxSelectedCount ?? "responsive",

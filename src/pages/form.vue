@@ -131,6 +131,7 @@ const steppedSchema = buildFormSchema({
               type: "text",
               key: "hi",
               size: "120px",
+              fieldParams: () => ({}),
             },
             {
               type: "text",

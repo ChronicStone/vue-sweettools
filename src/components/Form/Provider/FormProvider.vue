@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
-import { NDialogProvider } from "naive-ui";
+import { NDialogProvider, NMessageProvider } from "naive-ui";
 import { FormInstance } from "@/types/form/instance";
 import { FormInferredData, FormSchema, Narrowable } from "@/types/form/form";
 
@@ -71,32 +71,34 @@ function submitForm(
 
 <template>
   <NDialogProvider>
-    <slot />
+    <NMessageProvider>
+      <slot />
 
-    <div
-      v-if="formInstances.length"
-      id="sweetforms__overlay"
-      style="z-index: 1000"
-      class="fixed left-0 top-0 grid place-items-center w-full h-screen"
-    >
-      <FormRenderer
-        v-for="formInstance in formInstances"
-        :key="formInstance._id"
-        :schema="formInstance.formSchema"
-        :data="formInstance.formData"
-        :_resolve="formInstance._resolve"
-        :modal-mode="true"
-        @close-form="closeForm(formInstance._id)"
+      <div
+        v-if="formInstances.length"
+        id="sweetforms__overlay"
+        style="z-index: 1000"
+        class="fixed left-0 top-0 grid place-items-center w-full h-screen"
+      >
+        <FormRenderer
+          v-for="formInstance in formInstances"
+          :key="formInstance._id"
+          :schema="formInstance.formSchema"
+          :data="formInstance.formData"
+          :_resolve="formInstance._resolve"
+          :modal-mode="true"
+          @close-form="closeForm(formInstance._id)"
+        />
+      </div>
+      <div
+        v-show="showModalOverlay"
+        id="sweetforms__modalContainer"
+        ref="modalOverlay"
+        style="z-index: 2000"
+        class="absolute top-0 left-0 h-screen w-full"
+        @click="showModalOverlay = false"
       />
-    </div>
-    <div
-      v-show="showModalOverlay"
-      id="sweetforms__modalContainer"
-      ref="modalOverlay"
-      style="z-index: 2000"
-      class="absolute top-0 left-0 h-screen w-full"
-      @click="showModalOverlay = false"
-    />
+    </NMessageProvider>
   </NDialogProvider>
 </template>
 

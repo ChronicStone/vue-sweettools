@@ -50,7 +50,7 @@ export function useFieldContext(
 
   const inputProps = computed(() =>
     mapFieldProps(
-      field.value.type,
+      field.value,
       field.value?.fieldParams ?? {},
       dependencies.value,
       virtualDependencies.value
