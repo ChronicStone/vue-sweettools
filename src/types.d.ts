@@ -28,6 +28,11 @@ import {
   buildFormSchema,
 } from "./composables/form/useFormController";
 import { useFormApi } from "./composables/form/useFormApi";
+import {
+  buildExcelSchema,
+  useExcelReader,
+} from "./composables/excel/useImportController";
+import TExcelReader from "./components/ExcelReader/ExcelReader.vue";
 
 declare module "@chronicstone/vue-sweettools" {
   export type {
@@ -40,7 +45,6 @@ declare module "@chronicstone/vue-sweettools" {
     TableActionParams,
     FetchParams,
     RemoteTableData,
-    FormSchema,
     FormField,
     FormRefInstance,
     DataGridSchema,
@@ -65,6 +69,8 @@ declare module "@chronicstone/vue-sweettools" {
     Record<string, unknown>
   >;
 
+  export const ExcelReader: typeof TExcelReader;
+
   export {
     booleanExistFilter,
     booleanFilter,
@@ -74,6 +80,8 @@ declare module "@chronicstone/vue-sweettools" {
     useFormController,
     useFormApi,
     buildFormSchema,
+    buildExcelSchema,
+    useExcelReader,
   };
 
   const plugin: {

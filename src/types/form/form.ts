@@ -1,6 +1,12 @@
 import { VNodeChild } from "vue";
-import { Primitive } from "./../utils";
-import { FormField, SelectField } from "./fields";
+import {
+  ExpandRecursively,
+  Narrowable,
+  Primitive,
+  RemoveNeverProps,
+  UnionToIntersection,
+} from "./../utils";
+import { FormField, SelectField, _FieldOptions } from "./fields";
 
 interface FormSharedStore {
   dependencies?: (string | [string, string])[];
@@ -61,20 +67,31 @@ export type SteppedFormSchema<
   stepperLayout?: "full" | "compact" | string;
 };
 
-type ResolveFormType<K extends FormField<any>> = K["type"] extends "info"
+type ExtractFieldParams<K extends FormField<any>> = K["fieldParams"] extends (
+  ...args: any
+) => any
+  ? ReturnType<K["fieldParams"]>
+  : K["fieldParams"];
+
+type ResolveFormType<
+  K extends FormField<any>,
+  P = ExtractFieldParams<K>
+> = K["type"] extends "info"
   ? never
   : K["transform"] extends (value: any) => any
   ? ReturnType<K["transform"]>
+  : K extends { options: _FieldOptions }
+  ? K extends { multiple: true }
+    ? ExtractOptionsType<K["options"]>[]
+    : ExtractOptionsType<K["options"]>
   : K["type"] extends "checkbox"
-  ? boolean
+  ? P extends { uncheckedValue: any; checkedValue: any }
+    ? P["checkedValue"] | P["uncheckedValue"]
+    : boolean
   : K["type"] extends "object" | "group"
   ? K["fields"] extends infer U extends FormField<any>[]
     ? FormInfoReturnType<U[number]>
     : never
-  : K extends SelectField
-  ? K["multiple"] extends true
-    ? string[]
-    : string
   : K["type"] extends "array-list" | "array-tabs"
   ? K["fields"] extends infer U extends FormField<any>[]
     ? FormInfoReturnType<U[number]>[]
@@ -82,6 +99,16 @@ type ResolveFormType<K extends FormField<any>> = K["type"] extends "info"
   : K["type"] extends "daterange"
   ? [string, string]
   : string;
+
+export type ExtractOptionsType<T extends _FieldOptions> = T extends Array<any>
+  ? T[number] extends { value: any }
+    ? T[number]["value"]
+    : T[number]
+  : T extends (...args: any) => Promise<Array<any>> | Array<any>
+  ? Awaited<ReturnType<T>>[number] extends { value: any }
+    ? Awaited<ReturnType<T>>[number]["value"]
+    : Awaited<ReturnType<T>>[number]
+  : never;
 
 export type FormInfoReturnType<T extends FormField<any>> = RemoveNeverProps<
   UnionToIntersection<
@@ -97,32 +124,6 @@ export type FormInfoReturnType<T extends FormField<any>> = RemoveNeverProps<
       }
   >
 >;
-
-type RemoveNeverProps<T> = {
-  [K in keyof T as T[K] extends never ? never : K]: T[K];
-};
-
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I
-) => void
-  ? I
-  : never;
-
-export type ExpandRecursively<T> = T extends object
-  ? T extends infer O
-    ? { [K in keyof O]: ExpandRecursively<O[K]> }
-    : never
-  : T;
-
-export type Narrowable =
-  | string
-  | number
-  | boolean
-  | symbol
-  | object
-  | undefined
-  | void
-  | null;
 
 export type FormSchema<
   StepKey extends Narrowable = string,

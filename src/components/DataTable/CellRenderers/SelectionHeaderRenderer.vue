@@ -5,7 +5,11 @@
       :theme-overrides="params.themeOverrides.value ?? null"
     >
       <div :style="{ width: `${width}px` }">
-        <NCheckbox v-model:checked="selectAll" size="large" />
+        <NCheckbox
+          :checked="selectAll"
+          :on-update:checked="(value) => (selectAll = value)"
+          size="large"
+        />
       </div>
     </NConfigProvider>
   </div>

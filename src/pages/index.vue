@@ -14,6 +14,9 @@ import { NButton } from "naive-ui";
       <NButton type="primary" @click="$router.push('/datagrid')"
         >DATAGRID SANDBOX</NButton
       >
+      <NButton type="primary" @click="$router.push('/excelreader')"
+        >EXCEL READER SANDBOX</NButton
+      >
     </div>
   </div>
 </template>

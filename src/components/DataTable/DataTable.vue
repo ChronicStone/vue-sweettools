@@ -20,6 +20,7 @@ import { NSpin, NCard, NDialogProvider } from "naive-ui";
 import { AgGridVue } from "ag-grid-vue3";
 import { computed, ref, watch } from "vue";
 import { useGlobalConfig } from "@/composables/useGlobalConfig";
+import { ModuleRegistry } from "@ag-grid-community/core";
 
 const props = withDefaults(defineProps<DataTableProps>(), {
   tableKey: () => Date.now().toString(),
@@ -161,8 +162,9 @@ function handleGridSort({ columnApi }: SortChangedEvent) {
   }
 }
 
-function handleGridSelection({ api }: SelectionChangedEvent) {
-  selected.value = api.getSelectedRows();
+function handleGridSelection({ api, source }: SelectionChangedEvent) {
+  if (source === "uiSelectAll") selectAll.value = !selectAll.value;
+  else selected.value = api.getSelectedRows();
 }
 
 function handleGridScrollEnd({ api }: BodyScrollEvent) {

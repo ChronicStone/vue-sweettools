@@ -44,7 +44,7 @@ function generateRandomNumber(): number {
 }
 
 const schema: DataTableSchema<User> = {
-  remote: false,
+  remote: true,
   tableKey: "test",
   searchQuery: ["firstName", "lastName", "email"],
   columns: [
@@ -58,6 +58,7 @@ const schema: DataTableSchema<User> = {
       key: "progress",
       label: "Progress",
       render: (value: number) => <NProgress percentage={value} />,
+      condition: () => false,
     },
     { label: "Email", key: "email" },
     { label: "Created at", key: "createdAt" },
@@ -117,7 +118,11 @@ const schema: DataTableSchema<User> = {
       progress: generateRandomNumber(),
     }));
 
-    return docs;
+    return {
+      docs,
+      totalDocs: docs.length * 50,
+      totalPages: 50,
+    };
   },
   actions: [
     {
@@ -143,7 +148,7 @@ const schema: DataTableSchema<User> = {
     {
       tooltip: "Hello",
       icon: "mdi:trash",
-      link: (params) => "/test",
+      // link: (params) => "/test",
     },
     {
       tooltip: "Hello",

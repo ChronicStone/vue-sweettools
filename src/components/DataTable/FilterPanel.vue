@@ -3,11 +3,11 @@ import { onKeyPressed, useWindowSize } from "@vueuse/core";
 import { NTooltip, NButton, NDrawer, NDrawerContent, NIcon } from "naive-ui";
 import { computed, ref } from "vue";
 import { TableFilter } from "@/types/table";
-import { GenericObject } from "@/types/utils";
+import { GenericObject, Narrowable } from "@/types/utils";
 import { mapFiltersToFormSchema } from "@/utils/table/mapFiltersToFormSchema.js";
 import { FormRefInstance } from "@/types/form/instance";
 import FormRenderer from "../Form/Renderer/FormRenderer.vue";
-import { FormSchema, Narrowable } from "@/types/form/form";
+import { FormSchema } from "@/types/form/form";
 import { FormField } from "@/types/form/fields";
 
 const emit = defineEmits<{

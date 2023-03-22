@@ -1,6 +1,7 @@
 import { ComputedRef } from "vue";
 import { FormField } from "./fields";
-import { FormInferredData, FormSchema, FormStep, Narrowable } from "./form";
+import { FormInferredData, FormSchema, FormStep } from "./form";
+import { Narrowable } from "../utils";
 
 export type FormInstance = {
   _id: string;

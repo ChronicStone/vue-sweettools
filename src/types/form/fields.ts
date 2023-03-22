@@ -10,7 +10,7 @@ import {
 } from "naive-ui";
 import { SelectBaseOption } from "naive-ui/es/select/src/interface";
 import { Component, VNode, VNodeChild } from "vue";
-import { Narrowable } from "./form";
+import { Narrowable } from "../utils";
 import { MaskOptions } from "maska";
 
 export enum FieldTypes {
@@ -48,6 +48,7 @@ export type TFieldTypes = `${FieldTypes}`;
 export type Dependencies = Record<string, unknown>;
 
 export type _FieldOptions =
+  | readonly unknown[]
   | (number | string)[]
   | SelectOption[]
   | TreeSelectOption[]
@@ -532,8 +533,8 @@ export type _BaseField<
     dependencies?: Dependencies,
     virtualDependencies?: Dependencies
   ) => Promise<boolean> | boolean;
-  preformat?: (value: unknown) => unknown;
-  transform?: (value: unknown) => unknown;
+  preformat?: (value: any) => unknown;
+  transform?: (value: any) => unknown;
   validators?:
     | ((
         dependencies?: Dependencies,
@@ -541,7 +542,7 @@ export type _BaseField<
       ) => ValidationArgs)
     | ValidationArgs;
   watch?: (
-    value: unknown,
+    value: any,
     params: {
       setValue: (key: string, value: unknown) => void;
       getValue: (key: string) => void;

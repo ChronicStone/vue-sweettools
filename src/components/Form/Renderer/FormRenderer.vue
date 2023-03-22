@@ -84,7 +84,7 @@ async function submitForm() {
   const isValid = await $validator.value.$validate();
   if (!isValid) return;
 
-  props?._resolve?.(true, unwrapReactivity(formState));
+  props?._resolve?.(true, unwrapReactivity(outputFormState));
 }
 
 function unwrapReactivity(value: MaybeRef<Record<string, unknown>>) {

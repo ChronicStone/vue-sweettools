@@ -41,15 +41,15 @@ export function useGridColumns(
       ? [
           {
             checkboxSelection: true,
-            ...(params.isRemote.value && {
-              headerComponentFramework: SelectionHeaderRenderer,
-              headerComponentParams: {
-                setGlobalSelection: params.setGlobalSelection,
-                theme,
-                themeOverrides,
-              },
-            }),
-            ...(!params.isRemote.value && { headerCheckboxSelection: true }),
+            // ...(params.isRemote.value && {
+            //   headerComponent: SelectionHeaderRenderer,
+            //   headerComponentParams: {
+            //     setGlobalSelection: params.setGlobalSelection,
+            //     theme,
+            //     themeOverrides,
+            //   },
+            // }),
+            headerCheckboxSelection: true,
             width: 80,
             resizable: false,
           },
@@ -59,7 +59,7 @@ export function useGridColumns(
       ? [
           {
             headerName: "Actions",
-            cellRendererFramework: ActionsCellRenderer,
+            cellRenderer: ActionsCellRenderer,
             cellRendererParams: {
               _rowActions: params.rowActions.value,
               permissionValidator: permissionValidator.value,
@@ -91,7 +91,7 @@ export function useGridColumns(
         resizable: column.resizable ?? true,
         sortable: column.sortable ?? true,
         ...(column.render && {
-          cellRendererFramework: JsxCellRenderer,
+          cellRenderer: JsxCellRenderer,
           cellRendererParams: {
             _cellRenderer: column.render,
             tableApi,
@@ -100,7 +100,7 @@ export function useGridColumns(
           },
         }),
         ...(column.cellComponent && {
-          cellRendererFramework: ComponentCellRenderer,
+          cellRenderer: ComponentCellRenderer,
           cellRendererParams: {
             _cellRenderer: column.cellComponent,
             ...(column.cellComponentParams && column.cellComponentParams),

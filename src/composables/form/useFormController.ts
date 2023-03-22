@@ -1,5 +1,6 @@
-import { FormInferredData, FormSchema, Narrowable } from "@/types/form/form";
+import { FormInferredData, FormSchema } from "@/types/form/form";
 import { FormRefInstance } from "@/types/form/instance";
+import { Narrowable } from "@/types/utils";
 import { ComputedRef, Ref } from "vue";
 
 export function useFormController<

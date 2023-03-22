@@ -5,12 +5,49 @@ import { NButton, NCard, NEl } from "naive-ui";
 
 const formApi = useFormApi();
 
+const options = [1, "hahaa"];
+
 const _schema = (mode: true | false) =>
   buildFormSchema({
     title: "This is title",
     fields: [
-      { label: "hi", key: "hi", type: "text" },
+      {
+        label: "Assign on creation",
+        key: "testStatus",
+        type: "checkbox",
+        default: "Assigned",
+        fieldParams: { uncheckedValue: "Created", checkedValue: "Assigned" },
+      },
+      {
+        label: "Assign on creation",
+        key: "test",
+        type: "select",
+        multiple: true,
+        options: async () => options,
+      },
+      {
+        label: "hi",
+        key: "hi",
+        type: "text",
+        transform: (value) => {
+          console.log("text", value);
+          return "hi";
+        },
+      },
       { label: "ho", key: "ho", type: "text", condition: () => mode === true },
+      {
+        label: "Due date / deadline",
+        key: "expectedDueDate",
+        type: "date",
+        required: true,
+        transform: (value) => {
+          console.log("dueDate", value);
+          return new Date(value).toISOString();
+        },
+        // fieldParams: {
+        //   dateDisabled: (v) => dayjs(v).valueOf() < Date.now(),
+        // },
+      },
     ],
   });
 
@@ -187,6 +224,19 @@ const sharedDepsSchema = buildFormSchema({
   },
   fields: [
     {
+      label: "Due date / deadline",
+      key: "expectedDueDate",
+      type: "text",
+      required: true,
+      transform: (value) => {
+        console.log("dueDate", value);
+        return new Date(value?.toString?.() ?? "").toISOString();
+      },
+      // fieldParams: {
+      //   dateDisabled: (v) => dayjs(v).valueOf() < Date.now(),
+      // },
+    },
+    {
       label: "First name",
       type: "text",
       required: true,
@@ -250,6 +300,9 @@ async function createForm() {
   const { formData, isCompleted } = await formApi.createForm(_schema(true), {
     obj: { text1: "HAHAHA" },
   });
+
+  console.log("formdata", formData);
+  formData.test.find((item) => item === 1);
 }
 </script>
 

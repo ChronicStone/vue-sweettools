@@ -47,3 +47,29 @@ export type TypeFromPath<T extends GenericObject, Path extends string> = {
 export type DeepRequired<T> = Required<{
   [P in keyof T]-?: DeepRequired<T[P]>;
 }>;
+
+export type RemoveNeverProps<T> = {
+  [K in keyof T as T[K] extends never ? never : K]: T[K];
+};
+
+export type UnionToIntersection<U> = (
+  U extends any ? (k: U) => void : never
+) extends (k: infer I) => void
+  ? I
+  : never;
+
+export type ExpandRecursively<T> = T extends object
+  ? T extends infer O
+    ? { [K in keyof O]: ExpandRecursively<O[K]> }
+    : never
+  : T;
+
+export type Narrowable =
+  | string
+  | number
+  | boolean
+  | symbol
+  | object
+  | undefined
+  | void
+  | null;

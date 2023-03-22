@@ -1,3 +1,4 @@
+import ExcelReader from "./components/ExcelReader/ExcelReader.vue";
 import { App } from "vue";
 import DataTable from "./components/DataTable/DataTable.vue";
 import FormRenderer from "./components/Form/Renderer/FormRenderer.vue";
@@ -18,6 +19,10 @@ import {
   buildFormSchema,
 } from "./composables/form/useFormController";
 import { useFormApi } from "./composables/form/useFormApi";
+import {
+  buildExcelSchema,
+  useExcelReader,
+} from "./composables/excel/useImportController";
 
 export default {
   install: (app: App, config: SweettoolsPluginConfig) => {
@@ -31,6 +36,7 @@ export {
   FormRenderer,
   FormProvider,
   DataGrid,
+  ExcelReader,
   textFilter,
   selectFilter,
   booleanExistFilter,
@@ -39,4 +45,6 @@ export {
   useFormController,
   buildFormSchema,
   useFormApi,
+  buildExcelSchema,
+  useExcelReader,
 };

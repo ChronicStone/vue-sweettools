@@ -2,7 +2,8 @@
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
 import { NDialogProvider, NMessageProvider } from "naive-ui";
 import { FormInstance } from "@/types/form/instance";
-import { FormInferredData, FormSchema, Narrowable } from "@/types/form/form";
+import { FormInferredData, FormSchema } from "@/types/form/form";
+import { Narrowable } from "@/types/utils";
 
 const formInstances = ref<FormInstance[]>([]);
 const showModalOverlay = ref<boolean>(false);
