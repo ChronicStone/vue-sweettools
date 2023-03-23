@@ -245,6 +245,7 @@ export interface GridControls {
 
 export interface DataTableSchema<T extends GenericObject = GenericObject> {
   remote: boolean;
+  draggable?: boolean;
   datasource: DataSource<T>;
   columns: Column<T>[];
   optimizeQuery?: OptimizedQueryField[];
@@ -257,6 +258,7 @@ export interface DataTableSchema<T extends GenericObject = GenericObject> {
   rowActions?: TableRowAction<T>[];
   columnFitMode?: "fit" | "fill";
   persistency?: false | "localStorage" | "sessionStorage";
+  onRowDrag?: (params: { rows: Array<T>; movedRows: Array<T> }) => void;
 }
 
 export interface DataTableProps extends DataTableSchema<any> {

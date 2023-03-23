@@ -33,25 +33,26 @@ export function useGridColumns(
   params: AgGridConfigParams,
   tableApi: Ref<TableApi | undefined>,
   theme: ComputedRef<GlobalTheme | null>,
-  themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>
+  themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>,
+  draggable: ComputedRef<boolean>
 ) {
   const { permissionValidator } = useGlobalConfig();
   const columnDefs = computed(() => [
+    ...(draggable.value
+      ? [
+          {
+            rowDrag: true,
+            width: 50,
+          },
+        ]
+      : []),
     ...(params.enableSelection.value
       ? [
           {
             checkboxSelection: true,
-            // ...(params.isRemote.value && {
-            //   headerComponent: SelectionHeaderRenderer,
-            //   headerComponentParams: {
-            //     setGlobalSelection: params.setGlobalSelection,
-            //     theme,
-            //     themeOverrides,
-            //   },
-            // }),
             headerCheckboxSelection: true,
-            width: 80,
             resizable: false,
+            width: 80,
           },
         ]
       : []),

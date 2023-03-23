@@ -13,6 +13,7 @@ import {
   GridApi,
   GridOptions,
   GridReadyEvent,
+  RowDragEvent,
   SelectionChangedEvent,
   SortChangedEvent,
 } from "ag-grid-community";
@@ -34,6 +35,7 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   rowActions: () => [],
   actions: () => [],
   persistency: "sessionStorage",
+  draggable: false,
 });
 
 const { isDark, themeOverrides } = useGlobalConfig();
@@ -49,6 +51,7 @@ const _actions = computed(() => props.actions);
 const _remote = computed(() => props.remote);
 const _panelFilters = computed(() => props.filters);
 const _staticFilters = computed(() => props.staticFilters);
+const _draggable = computed(() => props.draggable);
 
 const gridApi = ref<GridApi>();
 const columnApi = ref<ColumnApi>();
@@ -108,7 +111,8 @@ const { columnDefs, defaultColumnDef } = useGridColumns(
   },
   tableApi,
   theme,
-  _themeOverrides
+  _themeOverrides,
+  _draggable
 );
 
 tableApi.value = {
@@ -169,6 +173,13 @@ function handleGridSelection({ api, source }: SelectionChangedEvent) {
 
 function handleGridScrollEnd({ api }: BodyScrollEvent) {
   topViewportOffset.value = api.getVerticalPixelRange().top;
+}
+
+function handleRowDrag(params: RowDragEvent) {
+  props?.onRowDrag?.({
+    rows: data.value,
+    movedRows: [params.nodes.map((node) => node.data)],
+  });
 }
 
 function handleGridInitialization(params: GridReadyEvent) {
@@ -246,9 +257,12 @@ watch(
             :suppress-scroll-on-new-data="false"
             always-show-horizontal-scroll
             always-show-vertical-scroll
+            row-drag-managed
+            row-drag-multi-row
             @sort-changed="handleGridSort"
             @selection-changed="handleGridSelection"
             @body-scroll-end="handleGridScrollEnd"
+            @row-drag-end="handleRowDrag"
             @grid-ready="handleGridInitialization"
           />
         </NSpin>

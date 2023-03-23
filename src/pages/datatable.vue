@@ -45,6 +45,8 @@ function generateRandomNumber(): number {
 
 const schema: DataTableSchema<User> = {
   remote: true,
+  draggable: true,
+  onRowDrag: (params) => console.log("drag", params),
   tableKey: "test",
   searchQuery: ["firstName", "lastName", "email"],
   columns: [
