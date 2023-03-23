@@ -1,218 +1,10 @@
 <script setup lang="tsx">
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
 import { FormRefInstance } from "@/types/form/instance";
-import { NButton, NCard, NEl } from "naive-ui";
+import { helpers } from "@vuelidate/validators";
+import { NButton, NCard, NEl, SelectOption } from "naive-ui";
 
 const formApi = useFormApi();
-
-const options = [1, "hahaa"];
-
-const _schema = (mode: true | false) =>
-  buildFormSchema({
-    title: "This is title",
-    fields: [
-      {
-        label: "Assign on creation",
-        key: "testStatus",
-        type: "checkbox",
-        default: "Assigned",
-        fieldParams: { uncheckedValue: "Created", checkedValue: "Assigned" },
-      },
-      {
-        label: "Assign on creation",
-        key: "test",
-        type: "select",
-        multiple: true,
-        options: async () => options,
-      },
-      {
-        label: "hi",
-        key: "hi",
-        type: "text",
-        transform: (value) => {
-          console.log("text", value);
-          return "hi";
-        },
-      },
-      { label: "ho", key: "ho", type: "text", condition: () => mode === true },
-      {
-        label: "Due date / deadline",
-        key: "expectedDueDate",
-        type: "date",
-        required: true,
-        transform: (value) => {
-          console.log("dueDate", value);
-          return new Date(value).toISOString();
-        },
-        // fieldParams: {
-        //   dateDisabled: (v) => dayjs(v).valueOf() < Date.now(),
-        // },
-      },
-    ],
-  });
-
-const schema = buildFormSchema({
-  fields: [
-    {
-      label: "Gender",
-      key: "gender",
-      type: "radio",
-      size: "8",
-      options: ["male", "female", "other"],
-      required: true,
-    },
-    {
-      label: "Exam",
-      key: "examId",
-      type: "tree-select",
-      required: true,
-      options: [],
-      fieldParams: {
-        cascade: true,
-        checkStrategy: "child",
-        showPath: false,
-      },
-      watch: async (value) => {
-        console.log("exam changed", value);
-      },
-    },
-    {
-      label: "Administration mode",
-      key: "proctoringType",
-      type: "select",
-      required: true,
-      options: [],
-      default: "general",
-      watch(value, { setValue }) {
-        if (["online", "onsite"].includes(value as string))
-          setValue("pause", false);
-      },
-    },
-    {
-      label: "On-site session",
-      key: "onSiteSessionId",
-      type: "select",
-      options: [],
-      required: true,
-      dependencies: ["proctoringType", "quantity"],
-      condition: (dependencies) => {
-        return (dependencies?.proctoringType ?? "") === "onsite";
-      },
-      size: "8",
-    },
-    {
-      label: "Date mode",
-      key: "dateMode",
-      type: "select",
-      required: true,
-      options: [],
-      default: "dueDate",
-    },
-    {
-      label: "Due date / deadline",
-      key: "expectedDueDate",
-      type: "date",
-      required: true,
-    },
-    {
-      label: "Batch",
-      key: "batchId",
-      type: "select",
-      options: [],
-      size: 8,
-    },
-  ],
-});
-
-const steppedSchema = buildFormSchema({
-  sharedStore: {
-    someStoreProp: {
-      value: () => [],
-    },
-  },
-  steps: [
-    {
-      icon: "mdi:user",
-      title: "A very long step title dkzqdkz qkdqz",
-      fields: [
-        {
-          label: "Text 1",
-          type: "text",
-          key: "text1",
-          required: true,
-          default: "+",
-          fieldParams: {
-            mask: {
-              mask: "+971-5#-###-####",
-              eager: true,
-            },
-          },
-        },
-        {
-          key: "?",
-          label: "Button",
-          type: "info",
-          content: () => (
-            <NButton onClick={() => createForm()}>OPEN NESTED FORM</NButton>
-          ),
-          virtualDependencies: ["haha"],
-        },
-        {
-          size: 8,
-          label: "Group fields",
-          type: "group",
-          key: "group",
-          transform: (value: any) => `${value?.hi} ${value?.hi2}`,
-          fields: [
-            {
-              type: "text",
-              key: "hi",
-              size: "120px",
-              fieldParams: () => ({}),
-            },
-            {
-              type: "text",
-              key: "hi2",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      title: "STEP 2",
-      fields: [
-        {
-          label: "Text 2",
-          type: "text",
-          key: "text2",
-          required: true,
-        },
-      ],
-    },
-    {
-      title: "STEP 3",
-      fields: [
-        {
-          label: "Text 3",
-          type: "text",
-          key: "text3",
-          required: true,
-        },
-      ],
-    },
-    {
-      title: "STEP 4",
-      fields: [
-        {
-          label: "Text 4",
-          type: "text",
-          key: "text4",
-          required: true,
-        },
-      ],
-    },
-  ],
-});
 
 const sharedDepsSchema = buildFormSchema({
   sharedStore: {
@@ -281,15 +73,54 @@ const sharedDepsSchema = buildFormSchema({
   ],
 });
 
+const arraySchema = buildFormSchema({
+  gridSize: 1,
+  fieldSize: 1,
+  fields: [
+    { type: "text", key: "name", label: "Name", required: true },
+    {
+      key: "items",
+      label: "Items",
+      type: "array-list",
+      extraProperties: true,
+      required: true,
+      fields: [
+        {
+          key: "label",
+          label: "Label",
+          type: "text",
+          required: true,
+          dependencies: ["items"],
+          validators: ({ items }: { items: Array<{ label: string }> }) => ({
+            uniqueLabel: helpers.withMessage(
+              (params) => `The item "${params.$model}" already exists`,
+              (value: string) => {
+                if (!value) return true;
+                return (
+                  items
+                    .map((item) => item.label.toLocaleLowerCase())
+                    .filter(Boolean)
+                    .filter((item) => item === value.toLocaleLowerCase())
+                    .length < 2
+                );
+              }
+            ),
+          }),
+          transform: (value: string) => value?.trim?.() ?? "",
+        },
+      ],
+      headerTemplate: (data, index) =>
+        `ITEM ${index + 1}: ${data?.label || ""}`,
+    },
+  ],
+});
+
+const data = {
+  items: [{ label: "haha", otherProp: "hehehey" }, { label: "jqzdkdzqkdqz" }],
+};
+
 const formRef = ref<FormRefInstance>();
-const {
-  formData,
-  validate,
-  nextStep,
-  previousStep,
-  canTriggerNext,
-  canTriggerPrevious,
-} = useFormController(formRef, steppedSchema);
+const { formData, validate } = useFormController(formRef, arraySchema);
 
 async function submit() {
   const isValid = await validate();
@@ -297,12 +128,9 @@ async function submit() {
 }
 
 async function createForm() {
-  const { formData, isCompleted } = await formApi.createForm(_schema(true), {
+  const { formData, isCompleted } = await formApi.createForm(arraySchema, {
     obj: { text1: "HAHAHA" },
   });
-
-  console.log("formdata", formData);
-  formData.test.find((item) => item === 1);
 }
 </script>
 
@@ -312,37 +140,13 @@ async function createForm() {
   >
     <NCard class="p-4">
       <div class="flex flex-col gap-4">
-        <FormRenderer
-          ref="formRef"
-          :schema="schema"
-          :data="{ gender: 'male' }"
-        />
-        <NButton type="primary" @click="submit">SUBMIT</NButton>
-      </div>
-    </NCard>
-
-    <NCard class="p-4">
-      <div class="flex flex-col gap-4">
-        <FormRenderer ref="formRef" :schema="sharedDepsSchema" />
-        <NButton type="primary" @click="submit">SUBMIT</NButton>
-      </div>
-    </NCard>
-
-    <NCard class="p-4">
-      <div class="flex flex-col gap-4">
-        <FormRenderer ref="formRef" :schema="steppedSchema" />
+        <FormRenderer ref="formRef" :schema="arraySchema" :data="data" />
         <div class="flex items-center gap-4 w-full">
-          <NButton secondary type="primary" @click="previousStep">
-            <template #icon>
-              <mdi:chevron-left />
-            </template>
-            BACK
-          </NButton>
-          <NButton type="primary" icon-placement="right" @click="nextStep">
+          <NButton type="primary" icon-placement="right" @click="submit">
             <template #icon>
               <mdi:chevron-right />
             </template>
-            NEXT
+            SUBMIT
           </NButton>
         </div>
         <NDivider class="!m-0 !my-2" />

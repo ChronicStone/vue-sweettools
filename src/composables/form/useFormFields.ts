@@ -13,7 +13,7 @@ function deepRemoveIgnoredFields(fields: FieldInstance[]): FieldInstance[] {
     .map((field) => ({
       ...field,
       ...(field.fields && { fields: deepRemoveIgnoredFields(field.fields) }),
-    }));
+    })) as FieldInstance[];
 }
 
 const [useProvideFormFields, _useFormFields] = createInjectionState(

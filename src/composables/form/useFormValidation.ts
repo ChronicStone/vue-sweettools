@@ -19,13 +19,16 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
   ) => {
     const libConfig = useGlobalConfig();
 
-    const _evalRules = ref<boolean>(false);
-    const formRules = computedAsync(
-      () => mapFormFules(formFields.value, formState.value),
-      {},
-      _evalRules
-    );
+    const formRules = ref<GenericObject>({});
     const $validator = useVuelidate(formRules, formState.value);
+
+    watch(
+      [() => formState.value, () => formFields.value],
+      async ([state, fields]) => {
+        formRules.value = await mapFormFules(fields, state);
+      },
+      { immediate: true, deep: true }
+    );
 
     async function mapFormFules(
       fields: typeof formFields.value,
@@ -89,17 +92,19 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
         }
 
         if (field.type === "array-list" || field.type === "array-tabs") {
+          const arrayItemsRules = await Promise.all(
+            (fieldValue as GenericObject[]).map((_, index) =>
+              mapFormFules(field.fields, state, [
+                ...parentKey,
+                field.key,
+                index.toString(),
+              ])
+            )
+          );
+
           fieldRules = {
             ...fieldRules,
-            ...arrayToObject(
-              (fieldValue as GenericObject[]).map((_, index) => ({
-                ...mapFormFules(field.fields, state, [
-                  ...parentKey,
-                  field.key,
-                  index.toString(),
-                ]),
-              }))
-            ),
+            ...arrayToObject(arrayItemsRules),
           };
         }
 

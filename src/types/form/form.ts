@@ -81,7 +81,7 @@ type ResolveFormType<
   : K["transform"] extends (value: any) => any
   ? ReturnType<K["transform"]>
   : K extends { options: _FieldOptions }
-  ? K extends { multiple: true }
+  ? K extends { multiple: true } | { type: "checkbox-group" }
     ? ExtractOptionsType<K["options"]>[]
     : ExtractOptionsType<K["options"]>
   : K["type"] extends "checkbox"
@@ -98,17 +98,22 @@ type ResolveFormType<
     : never
   : K["type"] extends "daterange"
   ? [string, string]
+  : K["type"] extends "number" | "slider"
+  ? number
   : string;
 
-export type ExtractOptionsType<T extends _FieldOptions> = T extends Array<any>
-  ? T[number] extends { value: any }
-    ? T[number]["value"]
-    : T[number]
-  : T extends (...args: any) => Promise<Array<any>> | Array<any>
-  ? Awaited<ReturnType<T>>[number] extends { value: any }
-    ? Awaited<ReturnType<T>>[number]["value"]
-    : Awaited<ReturnType<T>>[number]
-  : never;
+export type ExtractOptionsType<
+  T extends _FieldOptions,
+  V = T extends Array<unknown>
+    ? T[number]
+    : T extends (...args: any) => Promise<Array<unknown>> | Array<unknown>
+    ? Awaited<ReturnType<T>>[number]
+    : string | number
+> = V extends { value: unknown }
+  ? V["value"]
+  : V extends { key: unknown }
+  ? V["key"]
+  : V;
 
 export type FormInfoReturnType<T extends FormField<any>> = RemoveNeverProps<
   UnionToIntersection<

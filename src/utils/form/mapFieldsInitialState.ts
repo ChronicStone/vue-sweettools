@@ -2,6 +2,18 @@ import { FormField } from "@/types/form/fields";
 import { resolveFieldDependencies } from "./resolveFieldDependencies";
 import { getPropertyFromPath } from "./getPropertyFromPath";
 
+function appendExtraProperties(
+  fields: Array<FormField>,
+  fieldState: Record<string, unknown>
+) {
+  const extraProperties: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(fieldState)) {
+    if (!fields.some((field) => field.key === key))
+      extraProperties[key] = value;
+  }
+  return extraProperties;
+}
+
 export function mapFieldsInitialState(
   inputState: Record<string, unknown>,
   fields: Array<FormField & { _stepRoot?: string }> = [],
@@ -18,26 +30,41 @@ export function mapFieldsInitialState(
 
     let fieldOutput: unknown = fieldValue;
 
-    if (["array-list", "array-tabs"].includes(field.type))
-      fieldOutput = ((fieldValue ?? []) as Array<unknown>).map((_, index) =>
-        getNestedFieldOutput(
+    if (["array-list", "array-tabs"].includes(field.type)) {
+      fieldOutput = ((fieldValue ?? []) as Array<unknown>).map(
+        (itemValue, index) => ({
+          ...("extraProperties" in field && field.extraProperties === true
+            ? appendExtraProperties(
+                field.fields,
+                itemValue as Record<string, unknown>
+              )
+            : {}),
+          ...getNestedFieldOutput(
+            "input",
+            inputState,
+            rootState,
+            field,
+            parentKeys,
+            index
+          ),
+        })
+      );
+    }
+
+    if (field.type === "object" || field.type === "group") {
+      fieldOutput = {
+        ...("extraProperties" in field && field.extraProperties === true
+          ? appendExtraProperties(field.fields, fieldValue)
+          : {}),
+        ...getNestedFieldOutput(
           "input",
           inputState,
           rootState,
           field,
-          parentKeys,
-          index
-        )
-      );
-
-    if (field.type === "object" || field.type === "group")
-      fieldOutput = getNestedFieldOutput(
-        "input",
-        inputState,
-        rootState,
-        field,
-        parentKeys
-      );
+          parentKeys
+        ),
+      };
+    }
 
     if (!fieldOutput) fieldOutput = getFallbackFieldValue(field);
 
@@ -81,27 +108,41 @@ export function mapFieldsOutputState(
     if (!includeField) continue;
     let fieldOutput = fieldValue;
 
-    if (["array-list", "array-tabs"].includes(field.type))
-      fieldOutput = (fieldValue as Array<Record<string, unknown>>).map(
-        (_, index) =>
-          getNestedFieldOutput(
+    if (["array-list", "array-tabs"].includes(field.type)) {
+      fieldOutput = ((fieldValue ?? []) as Array<unknown>).map(
+        (itemValue, index) => ({
+          ...("extraProperties" in field && field.extraProperties === true
+            ? appendExtraProperties(
+                field.fields,
+                itemValue as Record<string, unknown>
+              )
+            : {}),
+          ...getNestedFieldOutput(
             "output",
             inputState,
             rootState,
             field,
             parentKeys,
             index
-          )
+          ),
+        })
       );
+    }
 
-    if (field.type === "object" || field.type === "group")
-      fieldOutput = getNestedFieldOutput(
-        "output",
-        inputState,
-        rootState,
-        field,
-        parentKeys
-      );
+    if (field.type === "object" || field.type === "group") {
+      fieldOutput = {
+        ...("extraProperties" in field && field.extraProperties === true
+          ? appendExtraProperties(field.fields, fieldValue)
+          : {}),
+        ...getNestedFieldOutput(
+          "output",
+          inputState,
+          rootState,
+          field,
+          parentKeys
+        ),
+      };
+    }
 
     if (field._stepRoot && !parentKeys.length) {
       state[field._stepRoot as string] = {};
@@ -143,17 +184,23 @@ function getNestedFieldOutput(
   const executor =
     mode === "input" ? mapFieldsInitialState : mapFieldsOutputState;
 
+  const fieldValue = getPropertyFromPath(
+    [
+      ...(hasRoot ? [field._stepRoot as string] : []),
+      field.key,
+      ...(typeof index === "number" ? [index.toString()] : []),
+    ],
+    inputState
+  );
+
   return executor(
-    getPropertyFromPath(
-      [
-        ...(hasRoot ? [field._stepRoot as string] : []),
-        field.key,
-        ...(index ? [index.toString()] : []),
-      ],
-      inputState
-    ),
+    fieldValue,
     field.fields,
-    [...parentKeys, field.key],
+    [
+      ...parentKeys,
+      field.key,
+      ...(typeof index === "number" ? [index.toString()] : []),
+    ],
     rootState
   );
 }
