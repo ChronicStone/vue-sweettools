@@ -1,19 +1,23 @@
 <script setup lang="tsx">
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
+import { buildFieldSchema } from "@/composables/form/useFormController";
 import { FormRefInstance } from "@/types/form/instance";
 import { helpers } from "@vuelidate/validators";
 import { NButton, NCard, NEl, SelectOption } from "naive-ui";
 
 const formApi = useFormApi();
 
+const fieldTest = buildFieldSchema({
+  key: "objTestExt",
+  type: "object",
+  fields: [
+    { key: "item1", type: "text" },
+    { key: "item2", type: "select", options: [...(["haha", "he"] as const)] },
+  ],
+});
+
 const sharedDepsSchema = buildFormSchema({
-  sharedStore: {
-    fullName: {
-      dependencies: ["firstName", "lastName"],
-      value: (dependencies: Record<string, unknown>) =>
-        `${dependencies?.firstName} ${dependencies?.lastName}`,
-    },
-  },
+  sharedStore: [{ key: "haha", value: () => ["haha", "hoho"] as const }],
   fields: [
     {
       label: "Due date / deadline",
@@ -27,6 +31,7 @@ const sharedDepsSchema = buildFormSchema({
       // fieldParams: {
       //   dateDisabled: (v) => dayjs(v).valueOf() < Date.now(),
       // },
+      condition: (data, data2) => data2?.haha.includes("haha") ?? false,
     },
     {
       label: "First name",
@@ -54,10 +59,9 @@ const sharedDepsSchema = buildFormSchema({
       required: true,
       key: "select",
       dependencies: ["isChecked"],
-      virtualDependencies: ["fullName"],
       options: (dependencies, virtualDeps) => {
         return dependencies?.isChecked
-          ? virtualDeps?.fullName?.toString?.()?.split("") ?? []
+          ? virtualDeps?.toString?.()?.split("") ?? []
           : [];
       },
       size: 8,
@@ -67,23 +71,21 @@ const sharedDepsSchema = buildFormSchema({
       key: "test",
       type: "info",
       size: 8,
-      virtualDependencies: ["fullName"],
-      content: (_, virtualDeps) => <div>{virtualDeps?.fullName}</div>,
+      content: (_, virtualDeps) => <div>{virtualDeps?.haha}</div>,
     },
   ],
 });
 
 const arraySchema = buildFormSchema({
-  gridSize: 1,
-  fieldSize: 1,
   fields: [
-    { type: "text", key: "name", label: "Name", required: true },
     {
       key: "items",
       label: "Items",
       type: "array-list",
       extraProperties: true,
       required: true,
+      size: 8,
+      gridSize: "1 md:2",
       fields: [
         {
           key: "label",
@@ -106,7 +108,7 @@ const arraySchema = buildFormSchema({
               }
             ),
           }),
-          transform: (value: string) => value?.trim?.() ?? "",
+          transform: (value: string) => value.trim(),
         },
       ],
       headerTemplate: (data, index) =>
@@ -120,17 +122,55 @@ const data = {
 };
 
 const formRef = ref<FormRefInstance>();
-const { formData, validate } = useFormController(formRef, arraySchema);
+// const { formData, validate } = useFormController(formRef, arraySchema);
 
 async function submit() {
   const isValid = await validate();
   console.log({ isValid, data: formData.value });
 }
 
+const depsSchema = buildFormSchema({
+  sharedStore: [
+    { key: "options", value: () => ["haha", "hoho"] },
+    { key: "options2", value: () => ["haha", "hoho"] },
+    {
+      key: "sync",
+      dependencies: ["syncVal"],
+      value: (deps: Record<string, unknown>) =>
+        (deps?.syncVal ?? "N/A") as string,
+    },
+    // // {
+    // //   key: "sync",
+    // //   // dependencies: ["syncField"],
+    // //   value: (deps) => deps?.syncField as string ?? "N/A",
+    // // },
+  ],
+  fields: [
+    {
+      key: "select",
+      type: "select",
+      options: (_, { options }) => {
+        console.log("refresh", options);
+        return options ?? [];
+      },
+    },
+    {
+      key: "syncVal",
+      type: "text",
+    },
+    {
+      key: "info",
+      type: "info",
+      content: (_, deps) => `${deps?.sync ?? "N/A"} - ${JSON.stringify(deps)}`,
+    },
+    fieldTest,
+  ],
+});
+
+const { formData, validate } = useFormController(formRef, depsSchema);
+
 async function createForm() {
-  const { formData, isCompleted } = await formApi.createForm(arraySchema, {
-    obj: { text1: "HAHAHA" },
-  });
+  const { formData, isCompleted } = await formApi.createForm(depsSchema);
 }
 </script>
 
@@ -140,7 +180,7 @@ async function createForm() {
   >
     <NCard class="p-4">
       <div class="flex flex-col gap-4">
-        <FormRenderer ref="formRef" :schema="arraySchema" :data="data" />
+        <FormRenderer ref="formRef" :schema="depsSchema" />
         <div class="flex items-center gap-4 w-full">
           <NButton type="primary" icon-placement="right" @click="submit">
             <template #icon>

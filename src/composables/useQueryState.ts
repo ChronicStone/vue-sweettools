@@ -1,6 +1,7 @@
 import { mapFilterInitialState } from "@/utils/table/mapFilterInitialState";
 import { mapQueryFetchParams } from "@/utils/table/mapQueryFetchParams";
 import {
+  DataTableSchema,
   GridControls,
   OptimizedQueryField,
   StaticFilter,
@@ -17,7 +18,8 @@ export function useQueryState(
   optimizeQuery: OptimizedQueryField[],
   panelFilters: ComputedRef<TableFilter[]>,
   staticFilters: ComputedRef<StaticFilter[]>,
-  persistency: false | "localStorage" | "sessionStorage"
+  persistency: false | "localStorage" | "sessionStorage",
+  defaultSort: ComputedRef<DataTableSchema["sort"]>
 ) {
   const route = useRoute();
   const isLoading = ref<boolean>(false);
@@ -74,8 +76,12 @@ export function useQueryState(
   const fetchParams = computed<FetchParams>(() => ({
     page: paginationState.value.pageIndex,
     limit: paginationState.value.pageSize,
-    sortKey: sortState.value.key,
-    sortOrder: sortState.value.dir,
+    sortKey:
+      (sortState.value.key || defaultSort.value?.key) ??
+      ((defaultSort?.value as unknown as string) || ""),
+    sortOrder: sortState.value.key
+      ? sortState.value?.dir ?? "asc"
+      : defaultSort?.value?.dir ?? "asc",
     searchQuery: filterState.value.searchQuery
       ? { value: filterState.value.searchQuery, fields: searchQueryFields }
       : null,

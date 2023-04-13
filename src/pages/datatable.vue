@@ -3,13 +3,9 @@ import { DataTableSchema } from "@/types/table";
 import { generateUUID } from "@/utils/generateUUID";
 import DataTable from "@/components/DataTable/DataTable.vue";
 import { ref } from "vue";
-import {
-  GlobalThemeOverrides,
-  NCheckbox,
-  NConfigProvider,
-  darkTheme,
-  NProgress,
-} from "naive-ui";
+import { NCheckbox, NConfigProvider, darkTheme, NProgress } from "naive-ui";
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 type User = {
   _id: number;
@@ -49,6 +45,7 @@ const schema: DataTableSchema<User> = {
   onRowDrag: (params) => console.log("drag", params),
   tableKey: "test",
   searchQuery: ["firstName", "lastName", "email"],
+  sort: { key: "firstName", dir: "desc" },
   columns: [
     { label: "ID", key: "_id" },
     {
@@ -109,7 +106,8 @@ const schema: DataTableSchema<User> = {
       default: [0, 100],
     },
   ],
-  datasource: async () => {
+  datasource: async (fetchParams) => {
+    await sleep(3000);
     const docs = Array.from({ length: 500 }, (_, index) => ({
       _id: index,
       firstName: `First name ${index}`,

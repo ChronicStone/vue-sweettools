@@ -25,7 +25,7 @@ export function useFieldContext(
 
   const required = computed(() =>
     typeof field.value.required === "function"
-      ? field.value.required(dependencies.value, virtualDependencies.value)
+      ? field.value.required(dependencies.value, virtualStore.value)
       : !!field.value.required
   );
 
@@ -39,21 +39,22 @@ export function useFieldContext(
     )
   );
 
-  const virtualDependencies = computed(() => {
-    return mapFieldDependencies(
-      preformatFieldDependencies(
-        field.value?.virtualDependencies ?? [],
-        virtualStore.value
-      )
-    );
-  });
-
   const inputProps = computed(() =>
     mapFieldProps(
       field.value,
       field.value?.fieldParams ?? {},
       dependencies.value,
-      virtualDependencies.value
+      virtualStore.value
+    )
+  );
+
+  const rawInputProps = computed(() =>
+    mapFieldProps(
+      field.value,
+      field.value?.fieldParams ?? {},
+      dependencies.value,
+      virtualStore.value,
+      true
     )
   );
 
@@ -63,8 +64,7 @@ export function useFieldContext(
   );
   const condition = computedAsync<boolean>(
     () =>
-      field.value?.condition?.(dependencies.value, virtualDependencies.value) ??
-      true,
+      field.value?.condition?.(dependencies.value, virtualStore.value) ?? true,
     false,
     _evalCondition
   );
@@ -86,7 +86,7 @@ export function useFieldContext(
             : typeof (field.value as SelectField).options === "function"
             ? await (
                 (field.value as SelectField).options as (...args: any[]) => any
-              )({ ...dependencies.value }, { ...virtualDependencies.value })
+              )({ ...dependencies.value }, { ...virtualStore.value })
             : []
         );
     },
@@ -121,6 +121,7 @@ export function useFieldContext(
       },
       {
         immediate: true,
+        deep: true,
       }
     );
   }
@@ -147,8 +148,8 @@ export function useFieldContext(
     conditionEffect,
     options,
     dependencies,
-    virtualDependencies,
     inputProps,
+    rawInputProps,
   };
 }
 

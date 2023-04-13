@@ -22,6 +22,7 @@ import { AgGridVue } from "ag-grid-vue3";
 import { computed, ref, watch } from "vue";
 import { useGlobalConfig } from "@/composables/useGlobalConfig";
 import { ModuleRegistry } from "@ag-grid-community/core";
+import { id } from "date-fns/locale";
 
 const props = withDefaults(defineProps<DataTableProps>(), {
   tableKey: () => Date.now().toString(),
@@ -52,6 +53,7 @@ const _remote = computed(() => props.remote);
 const _panelFilters = computed(() => props.filters);
 const _staticFilters = computed(() => props.staticFilters);
 const _draggable = computed(() => props.draggable);
+const _defaultSort = computed(() => props.sort);
 
 const gridApi = ref<GridApi>();
 const columnApi = ref<ColumnApi>();
@@ -77,7 +79,8 @@ const {
   props.optimizeQuery,
   _panelFilters,
   _staticFilters,
-  props.persistency
+  props.persistency,
+  _defaultSort
 );
 
 const mappedActions = useDropdownActions(_actions, tableApi, fetchParams, {
@@ -176,9 +179,12 @@ function handleGridScrollEnd({ api }: BodyScrollEvent) {
 }
 
 function handleRowDrag(params: RowDragEvent) {
+  const orderedRows: Record<string, any>[] = [];
+  params.api.forEachNode((rowNode, index) => orderedRows.push(rowNode.data));
   props?.onRowDrag?.({
-    rows: data.value,
-    movedRows: [params.nodes.map((node) => node.data)],
+    rows: orderedRows,
+    movedRows: params.nodes.map((node) => node.data),
+    tableApi: tableApi.value as TableApi,
   });
 }
 

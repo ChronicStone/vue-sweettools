@@ -17,6 +17,7 @@ const props = withDefaults(
     multiStep?: boolean;
     stepIndex?: number;
     showError?: boolean;
+    renderLabel?: boolean;
   }>(),
   {
     parentKey: () => [],
@@ -27,6 +28,7 @@ const props = withDefaults(
     showError: true,
     parentType: null,
     groupLength: 0,
+    renderLabel: true,
   }
 );
 
@@ -96,7 +98,7 @@ const FieldComponent = useFieldComponent(_field);
     "
   >
     <div
-      v-if="parentType !== 'group'"
+      v-if="parentType !== 'group' || renderLabel === true"
       class="flex flex-col gap-2"
       :class="{
         'flex-col': (field?.labelPosition ?? 'top') === 'top',
@@ -108,7 +110,8 @@ const FieldComponent = useFieldComponent(_field);
         v-if="
           (!field?.label && field.type === 'info') ||
           field.type === 'checkbox' ||
-          (field.type === 'object' && field?.fieldParams?.frameless)
+          (field.type === 'object' &&
+            fieldContext.rawInputProps.value?.frameless)
             ? false
             : true
         "

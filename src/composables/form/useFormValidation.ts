@@ -82,12 +82,14 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
           );
 
         if (field.type === "object") {
+          const newRules = await mapFormFules(
+            (field as ObjectField).fields,
+            state,
+            [...parentKey, field.key]
+          );
           fieldRules = {
             ...fieldRules,
-            ...mapFormFules((field as ObjectField).fields, state, [
-              ...parentKey,
-              field.key,
-            ]),
+            ...newRules,
           };
         }
 

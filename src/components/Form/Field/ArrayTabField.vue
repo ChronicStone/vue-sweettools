@@ -24,7 +24,7 @@ const props = defineProps<FieldComponentProps>();
 const _field = computed(() => props.field as _BaseField & ArrayTabsField);
 
 const fieldValue = computed({
-  get: () => props.modelValue,
+  get: () => props.modelValue as Record<string, any>[],
   set: (value) => emit("update:modelValue", value),
 });
 
@@ -136,31 +136,29 @@ function buildItemControls(
       </NTabs>
 
       <div v-if="fieldValue?.length" class="overflow-x-hidden pb-5 px-5">
-        <transition name="slide-fade" mode="out-in">
-          <component
-            :is="'div'"
-            v-if="fieldValue?.[activeTab]"
-            class="grid gap-4"
-            :style="field.gridSize ? gridSize : formStyle?.gridSize"
-          >
-            <template v-for="(item, index) in fieldValue" :key="index">
-              <FieldRenderer
-                v-if="index === activeTab"
-                v-model="fieldValue[index]"
-                :field="{
-                  ..._field,
-                  type: 'object',
-                  key: index,
-                  fieldParams: { frameless: true },
-                }"
-                :parent-key="[...parentKey, _field.key]"
-                :item-index="index"
-                :show-error="false"
-              />
-            </template>
-          </component>
-          <NEmpty v-else />
-        </transition>
+        <component
+          :is="'div'"
+          v-for="(_, index) in fieldValue"
+          v-show="index === activeTab"
+          :key="index"
+          class="grid gap-4"
+          :style="field.gridSize ? gridSize : formStyle?.gridSize"
+        >
+          <FieldRenderer
+            v-model="fieldValue[index]"
+            :field="{
+              ..._field,
+              type: 'object',
+              key: index.toString(),
+              fieldParams: { frameless: true },
+            }"
+            :render-label="false"
+            :parent-key="[...parentKey, _field.key]"
+            :item-index="index"
+            :show-error="false"
+          />
+        </component>
+        <NEmpty v-show="!fieldValue[activeTab]" />
       </div>
     </NCard>
   </NCollapseTransition>

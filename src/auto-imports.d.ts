@@ -13,7 +13,9 @@ declare global {
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
   const buildExcelSchema: typeof import('./composables/excel/useImportController')['buildExcelSchema']
+  const buildFieldSchema: typeof import('./composables/form/useFormController')['buildFieldSchema']
   const buildFormSchema: typeof import('./composables/form/useFormController')['buildFormSchema']
+  const buildFormSchemaDist: typeof import('./composables/form/useFormController')['buildFormSchemaDist']
   const changeRgbaOpacity: typeof import('./utils/manipulateColor')['changeRgbaOpacity']
   const computeHslColor: typeof import('./utils/simulateHslColorOpacity')['computeHslColor']
   const computed: typeof import('vue')['computed']
@@ -338,7 +340,9 @@ declare module 'vue' {
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
     readonly buildExcelSchema: UnwrapRef<typeof import('./composables/excel/useImportController')['buildExcelSchema']>
+    readonly buildFieldSchema: UnwrapRef<typeof import('./composables/form/useFormController')['buildFieldSchema']>
     readonly buildFormSchema: UnwrapRef<typeof import('./composables/form/useFormController')['buildFormSchema']>
+    readonly buildFormSchemaDist: UnwrapRef<typeof import('./composables/form/useFormController')['buildFormSchemaDist']>
     readonly changeRgbaOpacity: UnwrapRef<typeof import('./utils/manipulateColor')['changeRgbaOpacity']>
     readonly computeHslColor: UnwrapRef<typeof import('./utils/simulateHslColorOpacity')['computeHslColor']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>

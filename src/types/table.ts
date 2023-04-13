@@ -258,7 +258,14 @@ export interface DataTableSchema<T extends GenericObject = GenericObject> {
   rowActions?: TableRowAction<T>[];
   columnFitMode?: "fit" | "fill";
   persistency?: false | "localStorage" | "sessionStorage";
-  onRowDrag?: (params: { rows: Array<T>; movedRows: Array<T> }) => void;
+  sort?:
+    | NestedPaths<DeepRequired<T>>
+    | { key: NestedPaths<DeepRequired<T>>; dir: "asc" | "desc" };
+  onRowDrag?: (params: {
+    rows: Array<T>;
+    movedRows: Array<T>;
+    tableApi: TableApi<T>;
+  }) => void;
 }
 
 export interface DataTableProps extends DataTableSchema<any> {

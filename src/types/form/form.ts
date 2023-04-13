@@ -2,21 +2,18 @@ import { VNodeChild } from "vue";
 import {
   ExpandRecursively,
   Narrowable,
-  Primitive,
   RemoveNeverProps,
   UnionToIntersection,
 } from "./../utils";
-import { FormField, SelectField, _FieldOptions } from "./fields";
+import { FormField, _FieldOptions } from "./fields";
 
-interface FormSharedStore {
+export type FormSharedStore<K extends string = string> = Array<{
+  key: K;
   dependencies?: (string | [string, string])[];
-  value:
-    | unknown
-    | ((dependencies?: Record<string, unknown>) => unknown)
-    | ((dependencies?: Record<string, unknown>) => Promise<unknown>);
-}
+  value: (dependencies: Record<string, unknown>) => unknown | Promise<unknown>;
+}>;
 
-interface BaseFormSchema<StoreKey extends string = string> {
+interface BaseFormSchema {
   title?: string | (() => VNodeChild);
   gridSize?: number | string;
   fieldSize?: number | string;
@@ -33,36 +30,35 @@ interface BaseFormSchema<StoreKey extends string = string> {
   nextButtonText?: string;
   showStepper?: boolean;
   requiredMessage?: string | ((label: string | (() => string)) => string);
-  sharedStore?: Record<StoreKey, FormSharedStore>;
 }
 
 export interface FormStep<
   StepKey extends Narrowable = string,
   FieldKey extends Narrowable = string,
-  StoreKey extends string = string
+  StoreData extends Record<string, unknown> = Record<string, unknown>
 > {
   title?: string;
   icon?: string;
   root?: StepKey;
-  fields: FormField<FieldKey, StoreKey>[];
+  fields: FormField<FieldKey, StoreData>[];
 }
 
 export type SimpleFormSchema<
   FieldKey extends Narrowable = string,
-  StoreKey extends string = string
-> = BaseFormSchema<StoreKey> & {
-  fields: FormField<FieldKey, StoreKey>[];
+  StoreData extends Record<string, unknown> = Record<string, unknown>
+> = BaseFormSchema & {
+  fields: FormField<FieldKey, StoreData>[];
 };
 
 export type SteppedFormSchema<
   StepKey extends Narrowable = "",
   FieldKey extends Narrowable = "",
-  StoreKey extends string = string
-> = BaseFormSchema<StoreKey> & {
+  StoreData extends Record<string, unknown> = Record<string, unknown>
+> = BaseFormSchema & {
   showPreviousButton?: boolean;
   previousButtonText?: string;
   nextButtonText?: string;
-  steps: FormStep<StepKey, FieldKey, StoreKey>[];
+  steps: FormStep<StepKey, FieldKey, StoreData>[];
   showStepper?: boolean;
   stepperLayout?: "full" | "compact" | string;
 };
@@ -85,7 +81,7 @@ type ResolveFormType<
     ? ExtractOptionsType<K["options"]>[]
     : ExtractOptionsType<K["options"]>
   : K["type"] extends "checkbox"
-  ? P extends { uncheckedValue: any; checkedValue: any }
+  ? P extends { uncheckedValue: unknown; checkedValue: unknown }
     ? P["checkedValue"] | P["uncheckedValue"]
     : boolean
   : K["type"] extends "object" | "group"
@@ -115,33 +111,34 @@ export type ExtractOptionsType<
   ? V["key"]
   : V;
 
-export type FormInfoReturnType<T extends FormField<any>> = RemoveNeverProps<
-  UnionToIntersection<
-    | {
-        [K in T as K["condition"] extends (...args: any) => any
-          ? never
-          : K["key"]]: K["ignore"] extends true ? never : ResolveFormType<K>;
-      }
-    | {
-        [K in T as K["condition"] extends (...args: any) => any
-          ? K["key"]
-          : never]?: K["ignore"] extends true ? never : ResolveFormType<K>;
-      }
-  >
->;
+export type FormInfoReturnType<T extends FormField<any, any>> =
+  RemoveNeverProps<
+    UnionToIntersection<
+      | {
+          [K in T as K["condition"] extends (...args: any) => any
+            ? never
+            : K["key"]]: K["ignore"] extends true ? never : ResolveFormType<K>;
+        }
+      | {
+          [K in T as K["condition"] extends (...args: any) => any
+            ? K["key"]
+            : never]?: K["ignore"] extends true ? never : ResolveFormType<K>;
+        }
+    >
+  >;
 
 export type FormSchema<
   StepKey extends Narrowable = string,
   FieldKey extends Narrowable = string,
-  StoreKey extends string = string
+  StoreData extends Record<string, unknown> = Record<string, unknown>
 > =
-  | SimpleFormSchema<FieldKey, StoreKey>
-  | SteppedFormSchema<StepKey, FieldKey, StoreKey>;
+  | SimpleFormSchema<FieldKey, StoreData>
+  | SteppedFormSchema<StepKey, FieldKey, StoreData>;
 
 export type ExtractFieldsFromSteps<
   StepKey extends Narrowable,
   FieldKey extends Narrowable,
-  TStep extends FormStep<StepKey, FieldKey>
+  TStep extends FormStep<StepKey, FieldKey, any>
 > = TStep["root"] extends string
   ? {
       [key in TStep["root"]]: ExpandRecursively<
@@ -151,13 +148,22 @@ export type ExtractFieldsFromSteps<
   : ExpandRecursively<FormInfoReturnType<TStep["fields"][number]>>;
 
 export type FormInferredData<
-  TFormSchema extends FormSchema<StepKey, FieldKey>,
+  StoreData extends Record<string, unknown>,
+  TFormSchema extends FormSchema<StepKey, FieldKey, StoreData>,
   StepKey extends Narrowable,
   FieldKey extends Narrowable
-> = TFormSchema extends SimpleFormSchema<FieldKey>
+> = TFormSchema extends SimpleFormSchema<FieldKey, StoreData>
   ? ExpandRecursively<FormInfoReturnType<TFormSchema["fields"][number]>>
-  : TFormSchema extends SteppedFormSchema<StepKey, FieldKey>
+  : TFormSchema extends SteppedFormSchema<StepKey, FieldKey, StoreData>
   ? ExpandRecursively<
       ExtractFieldsFromSteps<StepKey, FieldKey, TFormSchema["steps"][number]>
     >
   : never;
+
+export type InferSharedStoreData<
+  Store extends FormSharedStore<string> | undefined
+> = Store extends Array<unknown>
+  ? {
+      [K in Store[number] as K["key"]]: Awaited<ReturnType<K["value"]>>;
+    }
+  : Record<string, unknown>;

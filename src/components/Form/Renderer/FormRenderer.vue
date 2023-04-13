@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NButton } from "naive-ui";
-import { FormSchema } from "@/types/form/form";
+import { FormSchema, FormSharedStore } from "@/types/form/form";
 import FieldRenderer from "./FieldRenderer.vue";
 import {
   FieldInstance,
@@ -13,7 +13,7 @@ import { MaybeRef } from "@vueuse/core";
 
 const emit = defineEmits<{ (e: "test"): void }>();
 const props = defineProps<{
-  schema: FormSchema;
+  schema: FormSchema<any, any, any> & { sharedStore?: FormSharedStore<string> };
   data?: Record<string, unknown>;
   modalMode?: boolean;
   // eslint-disable-next-line vue/prop-name-casing

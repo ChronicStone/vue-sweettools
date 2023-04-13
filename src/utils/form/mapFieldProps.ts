@@ -9,12 +9,15 @@ export function mapFieldProps(
         virtualDeps?: Dependencies
       ) => Record<string, any>) = {},
   dependencies: Dependencies,
-  virtualDependencies: Dependencies
+  virtualDependencies: Dependencies,
+  raw = false
 ) {
   const fieldProps =
     typeof _fieldProps === "function"
       ? _fieldProps(dependencies, virtualDependencies)
       : _fieldProps;
+
+  if (raw) return fieldProps;
 
   switch (field.type) {
     case "text":

@@ -12,7 +12,7 @@ export function useArrayField(
   const dialogApi = useDialog();
 
   async function addItem() {
-    const value = mapFieldsInitialState(field.value.fields);
+    const value = mapFieldsInitialState({}, field.value.fields);
     if (!Array.isArray(fieldValue.value)) fieldValue.value = [value];
     else fieldValue.value.push(value);
     nextTick(() => {
@@ -24,7 +24,7 @@ export function useArrayField(
   async function removeItem(index: number) {
     const proceed = await useConfirmDialog(dialogApi, {
       title: "Confirm suppression",
-      content: "re you sure you want to delete this item?",
+      content: "Are you sure you want to delete this item?",
       type: "error",
     });
     if (!proceed) return;

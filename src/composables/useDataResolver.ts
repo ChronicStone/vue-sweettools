@@ -1,4 +1,9 @@
-import { DataSource, FetchParams, GridControls } from "@/types/table";
+import {
+  DataSource,
+  DataTableSchema,
+  FetchParams,
+  GridControls,
+} from "@/types/table";
 import { GenericObject } from "@/types/utils";
 import { obsoletableFn } from "@/utils/obsoletableFn";
 import { remoteDataMapper } from "@/utils/table/remoteDataMapper";

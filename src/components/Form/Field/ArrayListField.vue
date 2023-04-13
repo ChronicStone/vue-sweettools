@@ -13,7 +13,7 @@ const props = defineProps<FieldComponentProps>();
 
 const _field = computed(() => props.field as _BaseField & ArrayListField);
 const fieldValue = computed({
-  get: () => props.modelValue,
+  get: () => props.modelValue as Record<string, any>[],
   set: (value) => emit("update:modelValue", value),
 });
 
@@ -90,7 +90,7 @@ const { addItem, removeItem, moveItem } = useArrayField(_field, fieldValue);
             :field="{
               ..._field,
               type: 'object',
-              key: index,
+              key: index.toString(),
               fieldParams: { frameless: true },
             }"
             :parent-key="[...parentKey, _field.key]"

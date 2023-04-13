@@ -17,6 +17,7 @@ import { SweettoolsPluginConfig } from "./types/lib";
 import {
   useFormController,
   buildFormSchema,
+  buildFieldSchema,
 } from "./composables/form/useFormController";
 import { useFormApi } from "./composables/form/useFormApi";
 import {
@@ -44,6 +45,7 @@ export {
   booleanFilter,
   useFormController,
   buildFormSchema,
+  buildFieldSchema,
   useFormApi,
   buildExcelSchema,
   useExcelReader,
