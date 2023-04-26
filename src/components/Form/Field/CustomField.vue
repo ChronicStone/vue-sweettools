@@ -29,6 +29,7 @@ const fieldValue = computed({
         evalOptions: context._evalOptions.value,
         evalCondition: context._evalCondition.value,
         validator: validator,
+        placeholder: context.placeholder.value,
       }"
     />
   </NCollapseTransition>

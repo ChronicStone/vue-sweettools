@@ -1,9 +1,10 @@
 <script setup lang="tsx">
-import { DataTableSchema } from "@/types/table";
+import { DataTableSchema, FetchParams, RemoteTableData } from "@/types/table";
 import { generateUUID } from "@/utils/generateUUID";
 import DataTable from "@/components/DataTable/DataTable.vue";
 import { ref } from "vue";
 import { NCheckbox, NConfigProvider, darkTheme, NProgress } from "naive-ui";
+import axios from "axios";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -39,13 +40,51 @@ function generateRandomNumber(): number {
   return Math.floor(Math.random() * 100) + 1;
 }
 
-const schema: DataTableSchema<User> = {
+type Policy = {
+  access: boolean;
+  children?: { [key: string]: Policy };
+};
+
+type Assessment = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  field: Policy;
+  someProp?: {
+    haha: true;
+    test?: {
+      hehe: string;
+    };
+  };
+};
+
+function getDataAssessment(fetchParams: FetchParams) {
+  return axios
+    .post<RemoteTableData<Assessment>>(
+      "https://api.vtest.com/api/v2/assessment/list",
+      fetchParams,
+      {
+        headers: {
+          "entity-type": "admin",
+          "entity-token": "0",
+          authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIwMDAwMDAwMmIyNzI2MzFjYzJhM2FkMDEiLCJwYXJ0bmVyQWNjZXNzIjpbIjYyOTQ2ZTJmYjI3MjYzMWNjMmEzYWU3OCJdLCJ0ZXN0Q2VudGVyQWNjZXNzIjpbIjYyOTQ2ZTJmYjI3MjYzMWNjMmEzYWUxNSIsIjYyOTRkZDIyYzBiZjU4YzM2ZjU3OTQ0OSIsIjYzM2M0ZjA5MzBmOTUwNTg5OGU5OTNiYyIsIjYzYjZhZTQ5MDAwZmRlZjhmOWNhNDkwNiIsIjY0MTg4NTRjMWJiMTMwMTFiY2M4NzcxOSJdLCJjdXN0b21lckFjY2VzcyI6WyI2MmQ1NTNhMWFhOGU5NTAxMTQ1NDhlZjUiXSwibGFzdE5hbWUiOiJUSEFPIiwiZmlyc3ROYW1lIjoiQ3lwcmllbiIsInVwZGF0ZWRBdCI6IjIwMjMtMDMtMjBUMTY6MDk6NDguNjI3WiIsImNyZWF0ZWRBdCI6IjIwMjEtMDItMThUMTk6NDQ6NDcuMDAwWiIsIl9fdiI6Nywicm9sZSI6IjYyOTQ3ZTU5NWVkZWJkZGFjMmJmOTEzZSIsImlhdCI6MTY4MjUwNDQ5MiwiZXhwIjoxNjgyNTE1MjkyfQ.WeEa6x6JX1Tq1_NA9QTt6vIwGsjYu0WT20iX-dXnz-g",
+        },
+      }
+    )
+    .then((res) => res.data);
+}
+
+const schema: DataTableSchema<Assessment> = {
   remote: true,
   draggable: true,
   onRowDrag: (params) => console.log("drag", params),
   tableKey: "test",
-  searchQuery: ["firstName", "lastName", "email"],
-  sort: { key: "firstName", dir: "desc" },
+  searchQuery: ["firstName", "lastName", "email", ""],
+  // sort: { key: "firstName", dir: "desc" },
   columns: [
     { label: "ID", key: "_id" },
     {
@@ -53,12 +92,6 @@ const schema: DataTableSchema<User> = {
       key: "firstName",
     },
     { label: "Last name", key: "lastName" },
-    {
-      key: "progress",
-      label: "Progress",
-      render: (value: number) => <NProgress percentage={value} />,
-      condition: () => false,
-    },
     { label: "Email", key: "email" },
     { label: "Created at", key: "createdAt" },
     { label: "Updated at", key: "updatedAt" },
@@ -93,44 +126,45 @@ const schema: DataTableSchema<User> = {
       matchMode: "between",
       params: { dateMode: true },
     },
-    {
-      key: "progress",
-      matchMode: "between",
-      type: "slider",
-      label: "Progress",
-      fieldParams: {
-        range: true,
-        min: 0,
-        max: 100,
-      },
-      default: [0, 100],
-    },
+    // {
+    //   key: "progress",
+    //   matchMode: "between",
+    //   type: "slider",
+    //   label: "Progress",
+    //   fieldParams: {
+    //     range: true,
+    //     min: 0,
+    //     max: 100,
+    //   },
+    //   default: [0, 100],
+    // },
   ],
-  datasource: async (fetchParams) => {
-    await sleep(3000);
-    const docs = Array.from({ length: 500 }, (_, index) => ({
-      _id: index,
-      firstName: `First name ${index}`,
-      lastName: `Lastname name ${index}`,
-      email: `user${index}@mail.com`,
-      createdAt: generateRandomDate().toISOString(),
-      updatedAt: generateRandomDate().toISOString(),
-      progress: generateRandomNumber(),
-    }));
+  datasource: getDataAssessment,
+  // datasource: async (fetchParams) => {
+  //   await sleep(3000);
+  //   const docs = Array.from({ length: 500 }, (_, index) => ({
+  //     _id: index,
+  //     firstName: `First name ${index}`,
+  //     lastName: `Lastname name ${index}`,
+  //     email: `user${index}@mail.com`,
+  //     createdAt: generateRandomDate().toISOString(),
+  //     updatedAt: generateRandomDate().toISOString(),
+  //     progress: generateRandomNumber(),
+  //   }));
 
-    return {
-      docs,
-      totalDocs: docs.length * 50,
-      totalPages: 50,
-    };
-  },
+  //   return {
+  //     docs,
+  //     totalDocs: docs.length * 50,
+  //     totalPages: 50,
+  //   };
+  // },
   actions: [
     {
       label: "Create user",
       icon: "mdi:user",
       action: ({ tableApi }) =>
         tableApi.updateRow(
-          (row) => row._id === 3,
+          (row) => row._id === "3",
           (row) => ({ ...row, firstName: "Cyprien", lastName: "THAO" })
         ),
     },
@@ -139,7 +173,7 @@ const schema: DataTableSchema<User> = {
       icon: "mdi:user",
       action: ({ tableApi }) =>
         tableApi.updateRows(
-          (row) => row._id >= 3 && row._id <= 15,
+          (row) => row._id >= "3" && row._id <= "15",
           (row) => ({ ...row, firstName: "Cyprien", lastName: "THAO" })
         ),
     },
@@ -165,6 +199,44 @@ const schema: DataTableSchema<User> = {
       icon: "mdi:trash",
       action: () => console.log("trigger"),
     },
+  ],
+  optimizeQuery: [
+    { field: "candidate" },
+    { field: "secureCode" },
+    { field: "testStatus" },
+    { field: "proctoring.status" },
+    { field: "testEndDate" },
+    { field: "lastName" },
+    { field: "firstName" },
+    { field: "email" },
+    { field: "proctoring.type" },
+    { field: "exam.name", externalDocument: true },
+    { field: "testCenter.name", externalDocument: true },
+    { field: "candidate.candidateCustomerId", externalDocument: true },
+    { field: "dateMode" },
+    { field: "expectedDueDate" },
+    { field: "scoreReport" },
+    { field: "officialCertificate" },
+    { field: "evidenceReport" },
+    { field: "securityReport" },
+    { field: "batch.label", externalDocument: true },
+    { field: "customer.name", externalDocument: true },
+    { field: "requireInterview" },
+    { field: "onsiteSession.name", externalDocument: true },
+    { field: "customer", externalDocument: true },
+    { field: "customer.name", externalDocument: true },
+    { field: "codeGeneratorGroupId" },
+    { field: "createdAt" },
+    { field: "affiliation" },
+    { field: "statusHistory" },
+    { field: "_id" },
+    ...["scoreReport", "officialCertificate", "evidenceReport"].map(
+      (certificate) => ({
+        field: `exam.config.certificates.${certificate}.generate`,
+        externalDocument: true,
+      })
+    ),
+    // ...If(smartReview, [{ field: "results.smartReview.status" }, { field: "results.smartReview.modules" }]),
   ],
 };
 

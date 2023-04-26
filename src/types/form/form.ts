@@ -1,4 +1,10 @@
-import { VNodeChild } from "vue";
+import {
+  AllowedComponentProps,
+  Component,
+  DefineComponent,
+  VNodeChild,
+  VNodeProps,
+} from "vue";
 import {
   ExpandRecursively,
   Narrowable,
@@ -76,6 +82,8 @@ type ResolveFormType<
   ? never
   : K["transform"] extends (value: any) => any
   ? ReturnType<K["transform"]>
+  : K extends { component: Component }
+  ? ExtractCustomComponentType<K["component"]>
   : K extends { options: _FieldOptions }
   ? K extends { multiple: true } | { type: "checkbox-group" }
     ? ExtractOptionsType<K["options"]>[]
@@ -111,16 +119,34 @@ export type ExtractOptionsType<
   ? V["key"]
   : V;
 
+type ComponentProps<C extends Component> = C extends new (...args: any) => any
+  ? Omit<
+      InstanceType<C>["$props"],
+      keyof VNodeProps | keyof AllowedComponentProps
+    >
+  : never;
+
+export type ExtractCustomComponentType<
+  T extends Component,
+  Props = ComponentProps<T>
+> = Props extends { modelValue: any } ? Props["modelValue"] : unknown;
+
 export type FormInfoReturnType<T extends FormField<any, any>> =
   RemoveNeverProps<
     UnionToIntersection<
       | {
-          [K in T as K["condition"] extends (...args: any) => any
+          [K in T as K extends {
+            condition: (...args: any) => any;
+            conditionEffect?: "hide" | undefined;
+          }
             ? never
             : K["key"]]: K["ignore"] extends true ? never : ResolveFormType<K>;
         }
       | {
-          [K in T as K["condition"] extends (...args: any) => any
+          [K in T as K extends {
+            condition: (...args: any) => any;
+            conditionEffect?: "hide" | undefined;
+          }
             ? K["key"]
             : never]?: K["ignore"] extends true ? never : ResolveFormType<K>;
         }

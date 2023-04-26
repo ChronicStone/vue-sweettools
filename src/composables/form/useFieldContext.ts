@@ -138,6 +138,12 @@ export function useFieldContext(
     );
   }
 
+  const placeholder = computed(() =>
+    typeof field.value.placeholder === "function"
+      ? field.value.placeholder()
+      : field.value.placeholder
+  );
+
   return {
     _evalCondition,
     _evalOptions,
@@ -150,6 +156,7 @@ export function useFieldContext(
     dependencies,
     inputProps,
     rawInputProps,
+    placeholder,
   };
 }
 

@@ -2,7 +2,12 @@
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
 import { NDialogProvider, NMessageProvider } from "naive-ui";
 import { FormInstance } from "@/types/form/instance";
-import { FormInferredData, FormSchema } from "@/types/form/form";
+import {
+  FormInferredData,
+  FormSchema,
+  FormSharedStore,
+  InferSharedStoreData,
+} from "@/types/form/form";
 import { Narrowable } from "@/types/utils";
 
 const formInstances = ref<FormInstance[]>([]);
@@ -23,15 +28,18 @@ provide(MODAL_OVERLAY_INJECTION_KEY, {
 });
 
 function createForm<
-  TFormSchema extends FormSchema<StepKey, FieldKey>,
+  TFormSchema extends FormSchema<StepKey, FieldKey, StoreData>,
   StepKey extends Narrowable,
-  FieldKey extends Narrowable
+  FieldKey extends Narrowable,
+  StoreKey extends string,
+  Store extends FormSharedStore<StoreKey>,
+  StoreData extends Record<string, unknown> = InferSharedStoreData<Store>
 >(
-  formSchema: TFormSchema,
+  formSchema: TFormSchema & { sharedStore?: Store },
   inputData?: Record<string, unknown>
 ): Promise<{
   isCompleted: boolean;
-  formData: FormInferredData<TFormSchema, StepKey, FieldKey>;
+  formData: FormInferredData<StoreData, TFormSchema, StepKey, FieldKey>;
 }> {
   const _id = generateUUID();
   return new Promise((resolve) => {
@@ -44,6 +52,7 @@ function createForm<
         resolve({
           isCompleted,
           formData: formData as unknown as FormInferredData<
+            StoreData,
             TFormSchema,
             StepKey,
             FieldKey

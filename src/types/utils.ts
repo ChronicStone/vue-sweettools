@@ -49,7 +49,7 @@ export type DeepRequired<T> = Required<{
 }>;
 
 export type RemoveNeverProps<T> = {
-  [K in keyof T as T[K] extends never ? never : K]: T[K];
+  [K in keyof T as T[K] extends never | undefined ? never : K]: T[K];
 };
 
 export type UnionToIntersection<U> = (

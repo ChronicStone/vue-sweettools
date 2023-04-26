@@ -24,7 +24,8 @@ export function useDataResolver(
   const localDataStore = ref<GenericObject[]>();
 
   const resolveGridData = obsoletableFn(
-    async (isObsolete, fullReload: boolean) => {
+    async (isObsolete, fullReload: boolean, run = new Date().toISOString()) => {
+      console.log("resolveGridData::start", run);
       try {
         isLoading.value = true;
         const { docs, totalPages, totalDocs, ...rest } = remote.value
@@ -42,16 +43,22 @@ export function useDataResolver(
         if (fullReload && !remote.value)
           localDataStore.value = (rest as { rawDocs: GenericObject[] }).rawDocs;
 
+        console.log("resolveGridData::data::resolved", run);
+
         data.value = docs;
         pagination.value.pageTotalCount = totalPages;
         pagination.value.rowTotalCount = totalDocs;
         isLoading.value = false;
+
+        console.log("resolveGridData::data::saved", run);
 
         if (totalPages < pagination.value.pageIndex)
           pagination.value.pageIndex = totalPages < 1 ? 1 : totalPages;
 
         await nextTick();
         if (allSelected.value) gridApi.value?.selectAll();
+
+        console.log("resolveGridData::end", run);
       } catch (err) {
         console.error(err);
         isLoading.value = false;

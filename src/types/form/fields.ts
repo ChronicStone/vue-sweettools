@@ -532,7 +532,7 @@ export type _BaseField<
         virtualDependencies: StoreData
       ) => VNodeChild | string);
   key: FieldKey;
-  placeholder?: string;
+  placeholder?: string | (() => string);
   dependencies?: (string | [string, string])[];
   required?:
     | boolean
@@ -595,7 +595,7 @@ export type FormField<
     | CascaderField<StoreData>
     | RatingField<StoreData>
     | TagField<StoreData>
-    | GroupField<StoreData>
+    | GroupField<FieldKey, StoreData>
   );
 
 export type FieldContext = ReturnType<typeof useFieldContext>;

@@ -32,7 +32,7 @@ const fieldProps = computed(() => {
     :class="{ fieldError: validator?.$errors?.length }"
     :type="field.type"
     v-bind="fieldProps"
-    :placeholder="field.placeholder"
+    :placeholder="context.placeholder.value"
     :disabled="
       (context.condition.value == false &&
         context.conditionEffect.value == 'disable') ||

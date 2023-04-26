@@ -39,7 +39,7 @@ const _stepIndex = computed(() => props.stepIndex);
 
 const formStyle = useFormStyles();
 const collapsed = ref<boolean>(
-  (props.field as ObjectField)?.collapsed ?? false
+  Boolean((props.field as ObjectField)?.collapsed ?? false)
 );
 const fieldSize = useBreakpointStyle(
   props.field?.size ?? (props.parentType === "group" ? "100%" : ""),

@@ -1,9 +1,10 @@
 <script setup lang="tsx">
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
+import CollapseButton from "@/components/Utils/CollapseButton.vue";
 import { buildFieldSchema } from "@/composables/form/useFormController";
 import { FormRefInstance } from "@/types/form/instance";
 import { helpers } from "@vuelidate/validators";
-import { NButton, NCard, NEl, SelectOption } from "naive-ui";
+import { NButton, NCard, NEl } from "naive-ui";
 
 const formApi = useFormApi();
 
@@ -20,58 +21,11 @@ const sharedDepsSchema = buildFormSchema({
   sharedStore: [{ key: "haha", value: () => ["haha", "hoho"] as const }],
   fields: [
     {
-      label: "Due date / deadline",
-      key: "expectedDueDate",
-      type: "text",
-      required: true,
-      transform: (value) => {
-        console.log("dueDate", value);
-        return new Date(value?.toString?.() ?? "").toISOString();
-      },
-      // fieldParams: {
-      //   dateDisabled: (v) => dayjs(v).valueOf() < Date.now(),
-      // },
-      condition: (data, data2) => data2?.haha.includes("haha") ?? false,
-    },
-    {
       label: "First name",
       type: "text",
       required: true,
       key: "firstName",
-    },
-    {
-      label: "Last name",
-      type: "text",
-      required: true,
-      key: "lastName",
-      ignore: true,
-    },
-    {
-      label: "Switch options",
-      type: "checkbox",
-      required: true,
-      key: "isChecked",
-      size: 8,
-    },
-    {
-      label: "Select options",
-      type: "select",
-      required: true,
-      key: "select",
-      dependencies: ["isChecked"],
-      options: (dependencies, virtualDeps) => {
-        return dependencies?.isChecked
-          ? virtualDeps?.toString?.()?.split("") ?? []
-          : [];
-      },
-      size: 8,
-    },
-    {
-      label: "Select 2",
-      key: "test",
-      type: "info",
-      size: 8,
-      content: (_, virtualDeps) => <div>{virtualDeps?.haha}</div>,
+      condition: () => true,
     },
   ],
 });
@@ -130,6 +84,8 @@ async function submit() {
 }
 
 const depsSchema = buildFormSchema({
+  title: "Hello test",
+  fullScreen: "true md:false",
   sharedStore: [
     { key: "options", value: () => ["haha", "hoho"] },
     { key: "options2", value: () => ["haha", "hoho"] },
@@ -139,31 +95,28 @@ const depsSchema = buildFormSchema({
       value: (deps: Record<string, unknown>) =>
         (deps?.syncVal ?? "N/A") as string,
     },
-    // // {
-    // //   key: "sync",
-    // //   // dependencies: ["syncField"],
-    // //   value: (deps) => deps?.syncField as string ?? "N/A",
-    // // },
   ],
   fields: [
     {
-      key: "select",
-      type: "select",
-      options: (_, { options }) => {
-        console.log("refresh", options);
-        return options ?? [];
-      },
-    },
-    {
-      key: "syncVal",
       type: "text",
+      key: "phone",
+      label: "Phone nb",
+      condition: () => false,
     },
     {
-      key: "info",
-      type: "info",
-      content: (_, deps) => `${deps?.sync ?? "N/A"} - ${JSON.stringify(deps)}`,
+      type: "text",
+      key: "phone2",
+      label: "Phone nb",
+      condition: () => [""].includes(""),
+      conditionEffect: "disable",
     },
-    fieldTest,
+    {
+      type: "text",
+      key: "phone3",
+      label: "Phone nb",
+      condition: () => true,
+      ignore: true,
+    },
   ],
 });
 

@@ -18,16 +18,21 @@ const [useProvideFormState, _useFormState] = createInjectionState(
     storeConfig: FormSharedStore<string> | undefined
   ) => {
     const formState = ref<{ [key: string]: any }>(
-      mapFieldsInitialState(formData ?? {}, fields.value)
+      mapFieldsInitialState(formData ?? {}, fields.value, {})
     );
     const outputFormState = computed(() =>
-      mapFieldsOutputState({ ...formState.value }, fields.value)
+      mapFieldsOutputState(
+        { ...formState.value },
+        fields.value,
+        virtualStore.value
+      )
     );
 
     function reset(clear = false) {
       formState.value = mapFieldsInitialState(
         clear ? {} : formData ?? {},
-        fields.value
+        fields.value,
+        virtualStore.value
       );
     }
 

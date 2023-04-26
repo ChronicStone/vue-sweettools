@@ -15,7 +15,7 @@ const fieldValue = computed({
   <NTimePicker
     v-model:value="fieldValue"
     :style="group ? { width: `${size} !important` } : {}"
-    :placeholder="field.placeholder"
+    :placeholder="context.placeholder.value"
     v-bind="context.inputProps.value"
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"

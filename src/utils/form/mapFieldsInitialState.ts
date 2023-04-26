@@ -17,6 +17,7 @@ function appendExtraProperties(
 export function mapFieldsInitialState(
   inputState: Record<string, unknown>,
   fields: Array<FormField & { _stepRoot?: string }> = [],
+  virtualStore: Record<string, unknown>,
   parentKeys: string[] = [],
   rootState: Record<string, unknown> = inputState
 ) {
@@ -43,6 +44,7 @@ export function mapFieldsInitialState(
             "input",
             inputState,
             rootState,
+            virtualStore,
             field,
             parentKeys,
             index
@@ -60,6 +62,7 @@ export function mapFieldsInitialState(
           "input",
           inputState,
           rootState,
+          virtualStore,
           field,
           parentKeys
         ),
@@ -85,6 +88,7 @@ export function mapFieldsInitialState(
 export function mapFieldsOutputState(
   inputState: Record<string, unknown>,
   fields: Array<FormField & { _stepRoot?: string }> = [],
+  virtualStore: Record<string, unknown>,
   parentKeys: string[] = [],
   rootState: Record<string, unknown> = inputState
 ) {
@@ -103,7 +107,8 @@ export function mapFieldsOutputState(
 
     const includeField = !field.condition
       ? true
-      : field.condition(fieldDependencies) || field?.conditionEffect !== "hide";
+      : field.condition(fieldDependencies, {}) ||
+        field?.conditionEffect !== "hide";
 
     if (!includeField) continue;
     let fieldOutput = fieldValue;
@@ -121,6 +126,7 @@ export function mapFieldsOutputState(
             "output",
             inputState,
             rootState,
+            virtualStore,
             field,
             parentKeys,
             index
@@ -138,6 +144,7 @@ export function mapFieldsOutputState(
           "output",
           inputState,
           rootState,
+          virtualStore,
           field,
           parentKeys
         ),
@@ -176,6 +183,7 @@ function getNestedFieldOutput(
   mode: "input" | "output",
   inputState: Record<string, unknown>,
   rootState: Record<string, unknown>,
+  virtualDeps: Record<string, unknown>,
   field: FormField & { _stepRoot?: string },
   parentKeys: string[],
   index?: number
@@ -196,6 +204,7 @@ function getNestedFieldOutput(
   return executor(
     fieldValue,
     field.fields,
+    virtualDeps,
     [
       ...parentKeys,
       field.key,

@@ -2,7 +2,7 @@
 import { computed } from "vue";
 
 const emit = defineEmits<{ (e: "update:modelValue", value: boolean): void }>();
-const props = defineProps({ modelValue: Boolean });
+const props = defineProps<{ modelValue: boolean }>();
 
 const collapsed = computed({
   get: () => props.modelValue,

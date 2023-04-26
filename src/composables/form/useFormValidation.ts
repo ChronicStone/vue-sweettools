@@ -43,15 +43,9 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
           state
         );
         const dependencies = resolveFieldDependencies(field, state, parentKey);
-        const virtualDependencies = mapFieldDependencies(
-          preformatFieldDependencies(
-            field?.virtualDependencies ?? [],
-            virtualStore.value
-          )
-        );
 
         const condition =
-          (await field?.condition?.(dependencies, virtualDependencies)) ?? true;
+          (await field?.condition?.(dependencies, virtualStore.value)) ?? true;
         if (!condition && (field?.conditionEffect ?? "hide") === "hide")
           continue;
 
@@ -61,7 +55,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
 
         const isRequired =
           typeof field.required === "function"
-            ? field.required(dependencies, virtualDependencies)
+            ? field.required(dependencies, virtualStore.value)
             : field?.required ?? false;
 
         if (isRequired)
@@ -74,7 +68,9 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
                   ) => string
                 )?.(
                   typeof field.label === "function"
-                    ? field.label({})?.toString() ?? ""
+                    ? field
+                        .label(dependencies, virtualStore.value)
+                        ?.toString() ?? ""
                     : field?.label ?? field.key
                 )
               : (libConfig.getProp("textOverrides.requiredMessage") as string),
@@ -113,7 +109,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
         if (typeof field?.validators === "function")
           fieldRules = {
             ...fieldRules,
-            ...field.validators(dependencies, virtualDependencies),
+            ...field.validators(dependencies, virtualStore.value),
           };
         if (typeof field?.validators === "object")
           fieldRules = { ...fieldRules, ...field.validators };

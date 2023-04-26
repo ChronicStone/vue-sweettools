@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/prop-name-casing -->
 <script setup lang="ts">
 import { NButton } from "naive-ui";
 import { FormSchema, FormSharedStore } from "@/types/form/form";
@@ -16,7 +17,6 @@ const props = defineProps<{
   schema: FormSchema<any, any, any> & { sharedStore?: FormSharedStore<string> };
   data?: Record<string, unknown>;
   modalMode?: boolean;
-  // eslint-disable-next-line vue/prop-name-casing
   _resolve?:
     | ((isCompleted: boolean, formData: Record<string, unknown>) => void)
     | null;
