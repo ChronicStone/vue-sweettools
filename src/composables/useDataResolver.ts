@@ -21,7 +21,7 @@ export function useDataResolver(
   gridApi: Ref<GridApi | undefined>,
   allSelected: Ref<boolean>
 ) {
-  const localDataStore = ref<GenericObject[]>();
+  const localDataStore = ref<GenericObject[]>([]);
 
   const resolveGridData = obsoletableFn(
     async (isObsolete, fullReload: boolean, run = new Date().toISOString()) => {
@@ -74,5 +74,6 @@ export function useDataResolver(
 
   return {
     resolveGridData,
+    localDataStore,
   };
 }

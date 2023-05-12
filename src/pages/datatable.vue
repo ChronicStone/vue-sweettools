@@ -5,6 +5,8 @@ import DataTable from "@/components/DataTable/DataTable.vue";
 import { ref } from "vue";
 import { NCheckbox, NConfigProvider, darkTheme, NProgress } from "naive-ui";
 import axios from "axios";
+import { DeepRequired } from "@/types/utils";
+import { test } from "node:test";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -23,6 +25,12 @@ type User = {
     };
   };
 };
+
+type testType = DeepRequired<User>;
+
+const user: testType;
+
+user.someProp.otherProp?.value?.map((value) => value.test);
 
 function generateRandomDate(): Date {
   const today = new Date();
@@ -59,6 +67,7 @@ type Assessment = {
       hehe: string;
     };
   };
+  test: any;
 };
 
 function getDataAssessment(fetchParams: FetchParams) {
@@ -83,7 +92,7 @@ const schema: DataTableSchema<Assessment> = {
   draggable: true,
   onRowDrag: (params) => console.log("drag", params),
   tableKey: "test",
-  searchQuery: ["firstName", "lastName", "email", ""],
+  searchQuery: ["firstName", "lastName", "email", "someProp"],
   // sort: { key: "firstName", dir: "desc" },
   columns: [
     { label: "ID", key: "_id" },
@@ -163,6 +172,11 @@ const schema: DataTableSchema<Assessment> = {
       label: "Create user",
       icon: "mdi:user",
       action: ({ tableApi }) =>
+        tableApi.updateRow(
+          (row) => row._id === "3",
+          (row) => ({ ...row, firstName: "Cyprien", lastName: "THAO" })
+        ),
+      condition: (data, { tableApi }) =>
         tableApi.updateRow(
           (row) => row._id === "3",
           (row) => ({ ...row, firstName: "Cyprien", lastName: "THAO" })

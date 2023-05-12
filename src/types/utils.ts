@@ -44,8 +44,16 @@ export type TypeFromPath<T extends GenericObject, Path extends string> = {
     : never;
 }[Path];
 
-export type DeepRequired<T> = Required<{
-  [P in keyof T]-?: DeepRequired<T[P]>;
+type NonRecursive<T> = T extends Record<string, any>
+  ? T & {
+      [K in keyof T]-?: K extends keyof NonRecursive<T[K]> ? never : unknown;
+    }
+  : T;
+
+export type DeepRequired<T> = NonRecursive<{
+  [P in keyof T]-?: T[P] extends Record<string, any>
+    ? DeepRequired<T[P]>
+    : T[P];
 }>;
 
 export type RemoveNeverProps<T> = {

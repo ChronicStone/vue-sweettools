@@ -21,8 +21,6 @@ import { NSpin, NCard, NDialogProvider } from "naive-ui";
 import { AgGridVue } from "ag-grid-vue3";
 import { computed, ref, watch } from "vue";
 import { useGlobalConfig } from "@/composables/useGlobalConfig";
-import { ModuleRegistry } from "@ag-grid-community/core";
-import { id } from "date-fns/locale";
 
 const props = withDefaults(defineProps<DataTableProps>(), {
   tableKey: () => Date.now().toString(),
@@ -83,13 +81,7 @@ const {
   _defaultSort
 );
 
-const mappedActions = useDropdownActions(_actions, tableApi, fetchParams, {
-  selectAll,
-  selected,
-  nbSelected,
-});
-
-const { resolveGridData } = useDataResolver(
+const { resolveGridData, localDataStore } = useDataResolver(
   _remote,
   isLoading,
   data,
@@ -98,6 +90,18 @@ const { resolveGridData } = useDataResolver(
   fetchParams,
   gridApi,
   selectAll
+);
+
+const mappedActions = useDropdownActions(
+  _actions,
+  tableApi,
+  fetchParams,
+  !props.remote ? localDataStore : data,
+  {
+    selectAll,
+    selected,
+    nbSelected,
+  }
 );
 
 const { columnDefs, defaultColumnDef } = useGridColumns(
