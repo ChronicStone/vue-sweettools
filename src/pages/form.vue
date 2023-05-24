@@ -31,7 +31,19 @@ const sharedDepsSchema = buildFormSchema({
 });
 
 const arraySchema = buildFormSchema({
+  testId: "testForm",
   fields: [
+    {
+      label: "Checkgroup",
+      key: "checkgroup",
+      type: "checkbox-group",
+      options: [
+        { label: "haha", value: "haha" },
+        { label: "hehe", value: "hehe" },
+      ],
+      size: 8,
+      required: true,
+    },
     {
       key: "items",
       label: "Items",
@@ -84,6 +96,7 @@ async function submit() {
 }
 
 const depsSchema = buildFormSchema({
+  testId: "formDemo",
   title: "Hello test",
   fullScreen: "true md:false",
   sharedStore: [
@@ -102,6 +115,7 @@ const depsSchema = buildFormSchema({
       key: "phone",
       label: "Phone nb",
       condition: () => false,
+      required: true,
     },
     {
       type: "text",
@@ -109,6 +123,7 @@ const depsSchema = buildFormSchema({
       label: "Phone nb",
       condition: () => [""].includes(""),
       conditionEffect: "disable",
+      required: true,
     },
     {
       type: "text",
@@ -133,7 +148,7 @@ async function createForm() {
   >
     <NCard class="p-4">
       <div class="flex flex-col gap-4">
-        <FormRenderer ref="formRef" :schema="depsSchema" />
+        <FormRenderer ref="formRef" :schema="arraySchema" />
         <div class="flex items-center gap-4 w-full">
           <NButton type="primary" icon-placement="right" @click="submit">
             <template #icon>

@@ -35,7 +35,8 @@ interface BaseFormSchema {
   prevButtonText?: string;
   nextButtonText?: string;
   showStepper?: boolean;
-  requiredMessage?: string | ((label: string | (() => string)) => string);
+  requiredMessage?: string | ((label: string) => string);
+  testId?: string;
 }
 
 export interface FormStep<

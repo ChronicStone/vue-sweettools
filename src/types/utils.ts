@@ -26,13 +26,23 @@ export type Union<
 
 export type NestedPaths<
   T extends GenericObject,
+  MaxDepth extends number = 45,
   Prev extends Primitive | undefined = undefined,
-  Path extends Primitive | undefined = undefined
-> = {
-  [K in keyof T]: T[K] extends GenericObject
-    ? NestedPaths<T[K], Union<Prev, Path>, Join<Path, K>>
-    : Union<Union<Prev, Path>, Join<Path, K>>;
-}[keyof T];
+  Path extends Primitive | undefined = undefined,
+  Depth extends 1[] = []
+> = Depth["length"] extends MaxDepth
+  ? never
+  : {
+      [K in keyof T]: T[K] extends GenericObject
+        ? NestedPaths<
+            T[K],
+            MaxDepth,
+            Union<Prev, Path>,
+            Join<Path, K>,
+            [1, ...Depth]
+          >
+        : Union<Union<Prev, Path>, Join<Path, K>>;
+    }[keyof T];
 
 export type TypeFromPath<T extends GenericObject, Path extends string> = {
   [K in Path]: K extends keyof T
@@ -44,16 +54,8 @@ export type TypeFromPath<T extends GenericObject, Path extends string> = {
     : never;
 }[Path];
 
-type NonRecursive<T> = T extends Record<string, any>
-  ? T & {
-      [K in keyof T]-?: K extends keyof NonRecursive<T[K]> ? never : unknown;
-    }
-  : T;
-
-export type DeepRequired<T> = NonRecursive<{
-  [P in keyof T]-?: T[P] extends Record<string, any>
-    ? DeepRequired<T[P]>
-    : T[P];
+export type DeepRequired<T> = Required<{
+  [P in keyof T]-?: DeepRequired<T[P]>;
 }>;
 
 export type RemoveNeverProps<T> = {

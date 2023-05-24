@@ -268,7 +268,8 @@ export interface DataTableSchema<T extends GenericObject = GenericObject> {
   }) => void;
 }
 
-export interface DataTableProps extends DataTableSchema<any> {
+export interface DataTableProps
+  extends DataTableSchema<{ [key: string]: unknown }> {
   dark?: boolean;
   themeOverrides?: GlobalThemeOverrides;
 }

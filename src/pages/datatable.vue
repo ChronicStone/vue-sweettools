@@ -7,6 +7,7 @@ import { NCheckbox, NConfigProvider, darkTheme, NProgress } from "naive-ui";
 import axios from "axios";
 import { DeepRequired } from "@/types/utils";
 import { test } from "node:test";
+import { GenericObject } from "@/types/utils";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -24,13 +25,8 @@ type User = {
       value?: Array<{ test: string }>;
     };
   };
+  test: any;
 };
-
-type testType = DeepRequired<User>;
-
-const user: testType;
-
-user.someProp.otherProp?.value?.map((value) => value.test);
 
 function generateRandomDate(): Date {
   const today = new Date();
@@ -46,6 +42,10 @@ function generateRandomDate(): Date {
 
 function generateRandomNumber(): number {
   return Math.floor(Math.random() * 100) + 1;
+}
+
+function buildTableSchema<T extends GenericObject>(schema: DataTableSchema<T>) {
+  return schema as unknown as DataTableSchema<GenericObject>;
 }
 
 type Policy = {
@@ -67,7 +67,7 @@ type Assessment = {
       hehe: string;
     };
   };
-  test: any;
+  // test: any;
 };
 
 function getDataAssessment(fetchParams: FetchParams) {
@@ -87,12 +87,19 @@ function getDataAssessment(fetchParams: FetchParams) {
     .then((res) => res.data);
 }
 
-const schema: DataTableSchema<Assessment> = {
+const schema = buildTableSchema<Assessment>({
   remote: true,
   draggable: true,
   onRowDrag: (params) => console.log("drag", params),
   tableKey: "test",
-  searchQuery: ["firstName", "lastName", "email", "someProp"],
+  searchQuery: [
+    "firstName",
+    "lastName",
+    "email",
+    "someProp",
+    "someProp.test",
+    "field.children",
+  ],
   // sort: { key: "firstName", dir: "desc" },
   columns: [
     { label: "ID", key: "_id" },
@@ -252,7 +259,7 @@ const schema: DataTableSchema<Assessment> = {
     ),
     // ...If(smartReview, [{ field: "results.smartReview.status" }, { field: "results.smartReview.modules" }]),
   ],
-};
+});
 
 const dark = ref<boolean>(true);
 </script>

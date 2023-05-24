@@ -24,7 +24,7 @@ import {
   buildExcelSchema,
   useExcelReader,
 } from "./composables/excel/useImportController";
-
+import { buildTableSchema } from "./composables/buildTableSchema";
 export default {
   install: (app: App, config: SweettoolsPluginConfig) => {
     app.provide(PLUGIN_CONF_INJECTION_KEY, config);
@@ -49,4 +49,5 @@ export {
   useFormApi,
   buildExcelSchema,
   useExcelReader,
+  buildTableSchema,
 };

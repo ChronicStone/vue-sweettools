@@ -29,6 +29,7 @@ import {
   buildFieldSchema,
 } from "./composables/form/useFormController";
 import { useFormApi } from "./composables/form/useFormApi";
+import { buildTableSchema } from "./composables/buildTableSchema";
 import {
   buildExcelSchema,
   useExcelReader,
@@ -62,10 +63,11 @@ declare module "@chronicstone/vue-sweettools" {
     data?: Record<string, unknown>;
   }>;
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   export const FormProvider: DefineComponent<{}>;
 
   export const DataGrid: DefineComponent<
-    DataGridProps<any>,
+    DataGridProps,
     unknown,
     Record<string, unknown>
   >;
@@ -84,6 +86,7 @@ declare module "@chronicstone/vue-sweettools" {
     buildFieldSchema,
     buildExcelSchema,
     useExcelReader,
+    buildTableSchema,
   };
 
   const plugin: {

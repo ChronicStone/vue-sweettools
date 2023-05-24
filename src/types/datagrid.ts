@@ -33,7 +33,7 @@ export type DataGridSchema<T extends GenericObject = GenericObject> = {
   fields: GridItem<T>[];
 };
 
-export interface DataGridProps<T extends GenericObject> {
+export interface DataGridProps<T extends GenericObject = GenericObject> {
   virtualStore?: Record<string, VirtualStoreItem>;
   gridColSize?: string | number;
   gridRowSize?: string | number;
