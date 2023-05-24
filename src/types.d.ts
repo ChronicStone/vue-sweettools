@@ -35,6 +35,7 @@ import {
   useExcelReader,
 } from "./composables/excel/useImportController";
 import TExcelReader from "./components/ExcelReader/ExcelReader.vue";
+import { buildGridSchema } from "./composables/buildTableSchema";
 
 declare module "@chronicstone/vue-sweettools" {
   export type {
@@ -87,6 +88,7 @@ declare module "@chronicstone/vue-sweettools" {
     buildExcelSchema,
     useExcelReader,
     buildTableSchema,
+    buildGridSchema,
   };
 
   const plugin: {

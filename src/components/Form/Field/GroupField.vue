@@ -29,6 +29,7 @@ const fieldValue = computed<Record<string, unknown>>({
       :parent-key="[...parentKey, _field.key]"
       :parent-type="'group'"
       :group-length="_field.fields.length"
+      :render-label="false"
     />
   </NInputGroup>
 </template>

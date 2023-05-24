@@ -1,4 +1,5 @@
-import { TableFilter } from "@/types/table";
+import { _FieldOptions } from "@/types/form/fields";
+import { SelectOptions, TableFilter } from "@/types/table";
 import { formatDateToISOstring } from "@/utils/formatDate";
 
 export function textFilter(
@@ -17,7 +18,7 @@ export function textFilter(
 export function selectFilter(
   label: string,
   key: string,
-  options: TableFilter["options"],
+  options: _FieldOptions,
   multiple = true
 ): TableFilter {
   return {

@@ -105,10 +105,7 @@ const fieldKey = computed(() =>
   >
     <div
       v-if="parentType !== 'group' || renderLabel === true"
-      v-testid="[
-        `${formTestId}#field::${fieldKey}::wrapper`,
-        { selector: 'label', value: `${formTestId}#field::${fieldKey}::label` },
-      ]"
+      v-testid="[`${formTestId}#field::${fieldKey}::wrapper`]"
       class="flex flex-col gap-2"
       :class="{
         'flex-col': (field?.labelPosition ?? 'top') === 'top',

@@ -28,7 +28,7 @@ import { GenericObject } from "@/types/utils";
 import { useBreakpointStyle } from "@/composables/useBreakpointStyle";
 import { DataGridProps } from "@/types/datagrid";
 
-const props = defineProps<DataGridProps<any>>();
+const props = defineProps<DataGridProps>();
 
 const isLoading = computed<boolean>(() => !props.data);
 

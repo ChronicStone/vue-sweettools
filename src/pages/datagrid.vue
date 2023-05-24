@@ -21,7 +21,7 @@ type User = {
   };
 };
 
-const dataGridSchema: DataGridSchema<User> = {
+const dataGridSchema = buildGridSchema<User>({
   virtualStore: {
     test: { value: "hola" },
   },
@@ -37,7 +37,7 @@ const dataGridSchema: DataGridSchema<User> = {
     { label: "Created at", key: "createdAt" },
     { label: "Updated at", key: "updatedAt" },
   ],
-};
+});
 
 const data: User = {
   fullName: "test",

@@ -34,6 +34,26 @@ const arraySchema = buildFormSchema({
   testId: "testForm",
   fields: [
     {
+      key: "test",
+      type: "group",
+      label: "Group",
+      fields: [
+        {
+          key: "countryCode",
+          type: "select",
+          options: [],
+          size: "7.5rem",
+        },
+        {
+          key: "phoneValue",
+          type: "text",
+          dependencies: [["$parent.countryCode", "countryCode"]],
+          condition: (deps) => !!deps?.countryCode,
+          conditionEffect: "disable",
+        },
+      ],
+    },
+    {
       label: "Checkgroup",
       key: "checkgroup",
       type: "checkbox-group",
