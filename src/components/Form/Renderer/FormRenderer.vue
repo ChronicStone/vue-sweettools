@@ -11,8 +11,8 @@ import {
 import { _BaseField } from "@/types/form/fields";
 import StepsRenderer from "./StepsRenderer.vue";
 import { MaybeRef } from "@vueuse/core";
+import { vTestid } from "@chronicstone/vue-testid";
 
-const emit = defineEmits<{ (e: "test"): void }>();
 const props = defineProps<{
   schema: FormSchema<any, any, any> & { sharedStore?: FormSharedStore<string> };
   data?: Record<string, unknown>;
@@ -25,6 +25,7 @@ const props = defineProps<{
 const _formSchema = computed<FormSchema>(() => props.schema);
 const _modalMode = computed<boolean>(() => props.modalMode);
 
+const formTestId = useProvideFormTestId(_formSchema);
 const libConfig = useGlobalConfig(props.schema);
 
 const { formFields, filteredFormFields, isMultiStep, formSteps, currentStep } =
@@ -111,7 +112,11 @@ defineExpose<FormRefInstance>({
 </script>
 
 <template>
-  <LayoutContainer :schema="schema" @close="closeForm">
+  <LayoutContainer
+    v-testid="{ selector: 'form', value: `${formTestId}#form::root` }"
+    :schema="schema"
+    @close="closeForm"
+  >
     <template #title>
       <h1
         v-if="typeof schema.title === 'string'"
@@ -143,6 +148,7 @@ defineExpose<FormRefInstance>({
     <template #actions>
       <NButton
         v-if="libConfig.getProp('uiConfig.showCancelButton')"
+        v-testid="`${formTestId}#form::cancel`"
         secondary
         type="error"
         @click="closeForm"
@@ -151,6 +157,7 @@ defineExpose<FormRefInstance>({
       </NButton>
       <NButton
         v-if="libConfig.getProp('uiConfig.showPrevButton') && isMultiStep"
+        v-testid="`${formTestId}#form::previous`"
         secondary
         :disabled="currentStep === 0"
         type="primary"
@@ -162,6 +169,7 @@ defineExpose<FormRefInstance>({
         {{ libConfig.getProp("textOverrides.prevBtnMessage") }}
       </NButton>
       <NButton
+        v-testid="`${formTestId}#form::submit`"
         type="primary"
         icon-placement="right"
         @click="

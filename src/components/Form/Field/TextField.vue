@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { vTestid } from "@chronicstone/vue-testid";
 import { FieldComponentEmits, FieldComponentProps } from "@/types/form/fields";
 import { MaskOptions, vMaska } from "maska";
 import { NInput } from "naive-ui";
@@ -22,12 +23,24 @@ const fieldProps = computed(() => {
   const { mask, ...params } = props.context.inputProps.value;
   return params;
 });
+
+const formTestId = useFormTestId();
+const fieldKey = computed(() =>
+  [...props.parentKey, props.field.key].join(".")
+);
+const testIdConfig = [
+  {
+    selector: 'input[type="text"]',
+    value: `${formTestId.value}#field::${fieldKey.value}::input`,
+  },
+];
 </script>
 
 <template>
   <NInput
     v-model:value="fieldValue"
     v-maska:[maskConfig]
+    v-testid="testIdConfig"
     :style="group ? { width: `${size} !important` } : {}"
     :class="{ fieldError: validator?.$errors?.length }"
     :type="field.type"

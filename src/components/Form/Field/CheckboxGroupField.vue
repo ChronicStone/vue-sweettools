@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { vTestid, TestIdSelector } from "@chronicstone/vue-testid";
 import { FieldComponentEmits, FieldComponentProps } from "@/types/form/fields";
 import { NCheckboxGroup, NCheckbox } from "naive-ui";
 
@@ -12,6 +13,19 @@ const fieldValue = computed({
 
 const formStyle = useFormStyles();
 const gridSize = useBreakpointStyle(props.field.gridSize ?? "", "grid-cols");
+
+const formTestId = useFormTestId();
+const fieldKey = computed(() =>
+  [...props.parentKey, props.field.key].join(".")
+);
+const testIdConfig = [
+  {
+    selector: ".n-checkbox",
+    value: (index) =>
+      `${formTestId.value}#field::${fieldKey.value}::input::${index}`,
+    multiple: true,
+  },
+] satisfies TestIdSelector;
 </script>
 
 <template>
@@ -19,6 +33,7 @@ const gridSize = useBreakpointStyle(props.field.gridSize ?? "", "grid-cols");
     v-if="field.type === 'checkbox-group'"
     v-model:value="fieldValue"
     v-bind="context.inputProps.value"
+    v-testid="testIdConfig"
     :disabled="disabled"
   >
     <div

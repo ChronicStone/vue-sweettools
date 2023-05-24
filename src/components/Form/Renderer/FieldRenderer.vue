@@ -3,6 +3,7 @@ import { ObjectField, FormField, TFieldTypes } from "@/types/form/fields";
 import { Validation } from "@vuelidate/core";
 import LabelRenderer from "./LabelRenderer.vue";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
+import { vTestid } from "@chronicstone/vue-testid";
 
 const emit = defineEmits<{ (e: "update:modelValue", value: unknown): void }>();
 const props = withDefaults(
@@ -88,6 +89,11 @@ const errorMessage = computed(() => {
 });
 
 const FieldComponent = useFieldComponent(_field);
+
+const formTestId = useFormTestId();
+const fieldKey = computed(() =>
+  [...props.parentKey, _field.value.key].join(".")
+);
 </script>
 
 <template>
@@ -99,6 +105,10 @@ const FieldComponent = useFieldComponent(_field);
   >
     <div
       v-if="parentType !== 'group' || renderLabel === true"
+      v-testid="[
+        `${formTestId}#field::${fieldKey}::wrapper`,
+        { selector: 'label', value: `${formTestId}#field::${fieldKey}::label` },
+      ]"
       class="flex flex-col gap-2"
       :class="{
         'flex-col': (field?.labelPosition ?? 'top') === 'top',
@@ -140,13 +150,18 @@ const FieldComponent = useFieldComponent(_field);
         v-if="$validator?.$errors?.length && showError"
         class="flex items-center gap-2 transition-all ease-in-out duration-300 transform"
       >
-        <span class="text-red-500">{{ errorMessage }}</span>
+        <span
+          v-testid="`${formTestId}#field::${fieldKey}::error`"
+          class="text-red-500"
+          >{{ errorMessage }}</span
+        >
       </div>
     </div>
 
     <FieldComponent
       v-else
       v-model="fieldValue"
+      v-testid="`${formTestId}#field::${fieldKey}`"
       :field="field"
       :context="fieldContext"
       :validator="$validator"

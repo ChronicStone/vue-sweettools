@@ -6,7 +6,12 @@ import { FieldDescription } from "@/types/form/fields";
 import { GenericObject } from "@/types/utils";
 
 const props = defineProps<{
-  fieldLabel?: string | ((dependencies: GenericObject) => VNodeChild);
+  fieldLabel?:
+    | string
+    | ((
+        dependencies: GenericObject,
+        virtualDependencies: GenericObject
+      ) => VNodeChild);
   description: string | (() => VNodeChild) | FieldDescription;
 }>();
 
