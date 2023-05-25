@@ -47,30 +47,28 @@ export type TFieldTypes = `${FieldTypes}`;
 
 export type Dependencies = Record<string, unknown>;
 
-export type _FieldOptions<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> =
+export type _CoreFieldOptions =
   | (number | string)[]
   | SelectOption[]
   | TreeSelectOption[]
   | CascaderOption[]
+  | readonly (string | number)[]
+  | readonly SelectOption[]
+  | readonly TreeSelectOption[]
+  | readonly CascaderOption[];
+
+export type _FieldOptions<
+  StoreData extends Record<string, unknown> = Record<string, unknown>
+> =
+  | _CoreFieldOptions
   | ((
       dependencies: Dependencies,
       virtualDependencies: StoreData
-    ) =>
-      | SelectOption[]
-      | TreeSelectOption[]
-      | CascaderOption[]
-      | (number | string)[])
+    ) => _CoreFieldOptions)
   | ((
       dependencies: Dependencies,
       virtualDependencies: StoreData
-    ) => Promise<
-      | SelectOption[]
-      | TreeSelectOption[]
-      | CascaderOption[]
-      | (number | string)[]
-    >);
+    ) => Promise<_CoreFieldOptions>);
 
 export interface TextFieldProps {
   minLength?: number;

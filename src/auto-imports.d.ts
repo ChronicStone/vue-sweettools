@@ -16,6 +16,8 @@ declare global {
   const buildFieldSchema: typeof import('./composables/form/useFormController')['buildFieldSchema']
   const buildFormSchema: typeof import('./composables/form/useFormController')['buildFormSchema']
   const buildFormSchemaDist: typeof import('./composables/form/useFormController')['buildFormSchemaDist']
+  const buildGridSchema: typeof import('./composables/buildTableSchema')['buildGridSchema']
+  const buildTableSchema: typeof import('./composables/buildTableSchema')['buildTableSchema']
   const changeRgbaOpacity: typeof import('./utils/manipulateColor')['changeRgbaOpacity']
   const computeHslColor: typeof import('./utils/simulateHslColorOpacity')['computeHslColor']
   const computed: typeof import('vue')['computed']
@@ -199,6 +201,7 @@ declare global {
   const useFormLayout: typeof import('./composables/form/useFormLayout')['useFormLayout']
   const useFormState: typeof import('./composables/form/useFormState')['useFormState']
   const useFormStyles: typeof import('./composables/form/useFormStyles')['useFormStyles']
+  const useFormTestId: typeof import('./composables/form/useFormTestId')['useFormTestId']
   const useFormValidation: typeof import('./composables/form/useFormValidation')['useFormValidation']
   const useFps: typeof import('@vueuse/core')['useFps']
   const useFullscreen: typeof import('@vueuse/core')['useFullscreen']
@@ -253,6 +256,7 @@ declare global {
   const useProvideFormFields: typeof import('./composables/form/useFormFields')['useProvideFormFields']
   const useProvideFormState: typeof import('./composables/form/useFormState')['useProvideFormState']
   const useProvideFormStyles: typeof import('./composables/form/useFormStyles')['useProvideFormStyles']
+  const useProvideFormTestId: typeof import('./composables/form/useFormTestId')['useProvideFormTestId']
   const useProvideFormValidation: typeof import('./composables/form/useFormValidation')['useProvideFormValidation']
   const useQueryState: typeof import('./composables/useQueryState')['useQueryState']
   const useRafFn: typeof import('@vueuse/core')['useRafFn']
@@ -343,6 +347,8 @@ declare module 'vue' {
     readonly buildFieldSchema: UnwrapRef<typeof import('./composables/form/useFormController')['buildFieldSchema']>
     readonly buildFormSchema: UnwrapRef<typeof import('./composables/form/useFormController')['buildFormSchema']>
     readonly buildFormSchemaDist: UnwrapRef<typeof import('./composables/form/useFormController')['buildFormSchemaDist']>
+    readonly buildGridSchema: UnwrapRef<typeof import('./composables/buildTableSchema')['buildGridSchema']>
+    readonly buildTableSchema: UnwrapRef<typeof import('./composables/buildTableSchema')['buildTableSchema']>
     readonly changeRgbaOpacity: UnwrapRef<typeof import('./utils/manipulateColor')['changeRgbaOpacity']>
     readonly computeHslColor: UnwrapRef<typeof import('./utils/simulateHslColorOpacity')['computeHslColor']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
@@ -526,6 +532,7 @@ declare module 'vue' {
     readonly useFormLayout: UnwrapRef<typeof import('./composables/form/useFormLayout')['useFormLayout']>
     readonly useFormState: UnwrapRef<typeof import('./composables/form/useFormState')['useFormState']>
     readonly useFormStyles: UnwrapRef<typeof import('./composables/form/useFormStyles')['useFormStyles']>
+    readonly useFormTestId: UnwrapRef<typeof import('./composables/form/useFormTestId')['useFormTestId']>
     readonly useFormValidation: UnwrapRef<typeof import('./composables/form/useFormValidation')['useFormValidation']>
     readonly useFps: UnwrapRef<typeof import('@vueuse/core')['useFps']>
     readonly useFullscreen: UnwrapRef<typeof import('@vueuse/core')['useFullscreen']>
@@ -580,6 +587,7 @@ declare module 'vue' {
     readonly useProvideFormFields: UnwrapRef<typeof import('./composables/form/useFormFields')['useProvideFormFields']>
     readonly useProvideFormState: UnwrapRef<typeof import('./composables/form/useFormState')['useProvideFormState']>
     readonly useProvideFormStyles: UnwrapRef<typeof import('./composables/form/useFormStyles')['useProvideFormStyles']>
+    readonly useProvideFormTestId: UnwrapRef<typeof import('./composables/form/useFormTestId')['useProvideFormTestId']>
     readonly useProvideFormValidation: UnwrapRef<typeof import('./composables/form/useFormValidation')['useProvideFormValidation']>
     readonly useQueryState: UnwrapRef<typeof import('./composables/useQueryState')['useQueryState']>
     readonly useRafFn: UnwrapRef<typeof import('@vueuse/core')['useRafFn']>

@@ -12,7 +12,7 @@ export function useArrayField(
   const dialogApi = useDialog();
 
   async function addItem() {
-    const value = mapFieldsInitialState({}, field.value.fields);
+    const value = mapFieldsInitialState({}, field.value.fields, {});
     if (!Array.isArray(fieldValue.value)) fieldValue.value = [value];
     else fieldValue.value.push(value);
     nextTick(() => {

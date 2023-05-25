@@ -1,9 +1,4 @@
-import {
-  DataSource,
-  DataTableSchema,
-  FetchParams,
-  GridControls,
-} from "@/types/table";
+import { DataSource, FetchParams, GridControls } from "@/types/table";
 import { GenericObject } from "@/types/utils";
 import { obsoletableFn } from "@/utils/obsoletableFn";
 import { remoteDataMapper } from "@/utils/table/remoteDataMapper";
@@ -25,7 +20,6 @@ export function useDataResolver(
 
   const resolveGridData = obsoletableFn(
     async (isObsolete, fullReload: boolean, run = new Date().toISOString()) => {
-      console.log("resolveGridData::start", run);
       try {
         isLoading.value = true;
         const { docs, totalPages, totalDocs, ...rest } = remote.value
@@ -43,22 +37,16 @@ export function useDataResolver(
         if (fullReload && !remote.value)
           localDataStore.value = (rest as { rawDocs: GenericObject[] }).rawDocs;
 
-        console.log("resolveGridData::data::resolved", run);
-
         data.value = docs;
         pagination.value.pageTotalCount = totalPages;
         pagination.value.rowTotalCount = totalDocs;
         isLoading.value = false;
-
-        console.log("resolveGridData::data::saved", run);
 
         if (totalPages < pagination.value.pageIndex)
           pagination.value.pageIndex = totalPages < 1 ? 1 : totalPages;
 
         await nextTick();
         if (allSelected.value) gridApi.value?.selectAll();
-
-        console.log("resolveGridData::end", run);
       } catch (err) {
         console.error(err);
         isLoading.value = false;
@@ -68,7 +56,7 @@ export function useDataResolver(
 
   watch(
     () => fetchParams.value,
-    () => resolveGridData(Array.isArray(localDataStore.value) ? false : true),
+    () => resolveGridData(localDataStore.value.length ? false : true),
     { deep: true, immediate: true }
   );
 

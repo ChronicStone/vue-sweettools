@@ -1,12 +1,9 @@
 <script setup lang="tsx">
 import { DataTableSchema, FetchParams, RemoteTableData } from "@/types/table";
-import { generateUUID } from "@/utils/generateUUID";
 import DataTable from "@/components/DataTable/DataTable.vue";
 import { ref } from "vue";
 import { NCheckbox, NConfigProvider, darkTheme, NProgress } from "naive-ui";
 import axios from "axios";
-import { DeepRequired } from "@/types/utils";
-import { test } from "node:test";
 import { GenericObject } from "@/types/utils";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -16,16 +13,6 @@ type User = {
   firstName: string;
   lastName: string;
   email: string;
-  progress: number;
-  createdAt: string;
-  updatedAt: string;
-  someProp?: {
-    data: string;
-    otherProp?: {
-      value?: Array<{ test: string }>;
-    };
-  };
-  test: any;
 };
 
 function generateRandomDate(): Date {
@@ -60,46 +47,14 @@ type Assessment = {
   _id: string;
   createdAt: string;
   updatedAt: string;
-  field: Policy;
-  someProp?: {
-    haha: true;
-    test?: {
-      hehe: string;
-    };
-  };
-  // test: any;
 };
 
-function getDataAssessment(fetchParams: FetchParams) {
-  return axios
-    .post<RemoteTableData<Assessment>>(
-      "https://api.vtest.com/api/v2/assessment/list",
-      fetchParams,
-      {
-        headers: {
-          "entity-type": "admin",
-          "entity-token": "0",
-          authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiIwMDAwMDAwMmIyNzI2MzFjYzJhM2FkMDEiLCJwYXJ0bmVyQWNjZXNzIjpbIjYyOTQ2ZTJmYjI3MjYzMWNjMmEzYWU3OCJdLCJ0ZXN0Q2VudGVyQWNjZXNzIjpbIjYyOTQ2ZTJmYjI3MjYzMWNjMmEzYWUxNSIsIjYyOTRkZDIyYzBiZjU4YzM2ZjU3OTQ0OSIsIjYzM2M0ZjA5MzBmOTUwNTg5OGU5OTNiYyIsIjYzYjZhZTQ5MDAwZmRlZjhmOWNhNDkwNiIsIjY0MTg4NTRjMWJiMTMwMTFiY2M4NzcxOSJdLCJjdXN0b21lckFjY2VzcyI6WyI2MmQ1NTNhMWFhOGU5NTAxMTQ1NDhlZjUiXSwibGFzdE5hbWUiOiJUSEFPIiwiZmlyc3ROYW1lIjoiQ3lwcmllbiIsInVwZGF0ZWRBdCI6IjIwMjMtMDMtMjBUMTY6MDk6NDguNjI3WiIsImNyZWF0ZWRBdCI6IjIwMjEtMDItMThUMTk6NDQ6NDcuMDAwWiIsIl9fdiI6Nywicm9sZSI6IjYyOTQ3ZTU5NWVkZWJkZGFjMmJmOTEzZSIsImlhdCI6MTY4MjUwNDQ5MiwiZXhwIjoxNjgyNTE1MjkyfQ.WeEa6x6JX1Tq1_NA9QTt6vIwGsjYu0WT20iX-dXnz-g",
-        },
-      }
-    )
-    .then((res) => res.data);
-}
-
 const schema = buildTableSchema<Assessment>({
-  remote: true,
+  remote: false,
   draggable: true,
   onRowDrag: (params) => console.log("drag", params),
   tableKey: "test",
-  searchQuery: [
-    "firstName",
-    "lastName",
-    "email",
-    "someProp",
-    "someProp.test",
-    "field.children",
-  ],
+  searchQuery: ["firstName", "lastName", "email"],
   // sort: { key: "firstName", dir: "desc" },
   columns: [
     { label: "ID", key: "_id" },
@@ -155,7 +110,17 @@ const schema = buildTableSchema<Assessment>({
     //   default: [0, 100],
     // },
   ],
-  datasource: getDataAssessment,
+  datasource: async () => {
+    console.warn("LOADING DATA...");
+    return Array.from({ length: 300 }, (_, index) => ({
+      _id: generateUUID(),
+      firstName: `First name ${index}`,
+      lastName: `Lastname name ${index}`,
+      email: `useremail${index}@mail.com`,
+      updatedAt: generateRandomDate().toISOString(),
+      createdAt: generateRandomDate().toISOString(),
+    })) as Assessment[];
+  },
   // datasource: async (fetchParams) => {
   //   await sleep(3000);
   //   const docs = Array.from({ length: 500 }, (_, index) => ({

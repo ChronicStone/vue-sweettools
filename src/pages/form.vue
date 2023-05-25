@@ -118,7 +118,7 @@ async function submit() {
 const depsSchema = buildFormSchema({
   testId: "formDemo",
   title: "Hello test",
-  fullScreen: "true md:false",
+  fullScreen: "true",
   sharedStore: [
     { key: "options", value: () => ["haha", "hoho"] },
     { key: "options2", value: () => ["haha", "hoho"] },
@@ -136,6 +136,11 @@ const depsSchema = buildFormSchema({
       label: "Phone nb",
       condition: () => false,
       required: true,
+    },
+    {
+      key: "select",
+      type: "select",
+      options: ["haha", "hehe", 1] as const,
     },
     {
       type: "text",
