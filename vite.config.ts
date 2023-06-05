@@ -12,9 +12,12 @@ import Pages from "vite-plugin-pages";
 import dts from "vite-plugin-dts";
 import AutoImports from "unplugin-auto-import/vite";
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
+import VueDevtools from "vite-plugin-vue-devtools";
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    VueDevtools(),
     vue({ reactivityTransform: true }),
     VueTypeImports(),
     WindiCSS(),

@@ -1,6 +1,7 @@
 import { FormField } from "@/types/form/fields";
 import { resolveFieldDependencies } from "./resolveFieldDependencies";
 import { getPropertyFromPath } from "./getPropertyFromPath";
+import { GenericObject } from "@/types/utils";
 
 function appendExtraProperties(
   fields: Array<FormField>,
@@ -21,7 +22,7 @@ export function mapFieldsInitialState(
   parentKeys: string[] = [],
   rootState: Record<string, unknown> = inputState
 ) {
-  const state: Record<string, any> = {};
+  const state: GenericObject = {};
   for (const field of fields) {
     if (field.type === "info") continue;
     const fieldValue = getPropertyFromPath(
@@ -70,16 +71,17 @@ export function mapFieldsInitialState(
     }
 
     if (!fieldOutput) fieldOutput = getFallbackFieldValue(field);
+    const finalFieldValue = getPreformatedField(fieldOutput, fieldValue, field);
 
-    if (field._stepRoot && !parentKeys.length) {
-      state[field._stepRoot as string] = {};
-      state[field._stepRoot as string][field.key] = getPreformatedField(
-        fieldOutput,
-        fieldValue,
-        field
-      );
-    } else
-      state[field.key] = getPreformatedField(fieldOutput, fieldValue, field);
+    if (
+      typeof field._stepRoot === "string" &&
+      field._stepRoot &&
+      !parentKeys.length
+    ) {
+      if (!state[field._stepRoot] || typeof state[field._stepRoot] !== "object")
+        state[field._stepRoot] = {};
+      (state[field._stepRoot] as GenericObject)[field.key] = finalFieldValue;
+    } else state[field.key] = finalFieldValue;
   }
 
   return unwrapProxy(state);
@@ -152,12 +154,16 @@ export function mapFieldsOutputState(
     }
 
     if (field._stepRoot && !parentKeys.length) {
-      state[field._stepRoot as string] = {};
+      console.log("hello field map");
+      if (!state[field._stepRoot as string])
+        state[field._stepRoot as string] = {};
       state[field._stepRoot as string][field.key] = getTransformedField(
         fieldOutput,
         field
       );
-    } else state[field.key] = getTransformedField(fieldOutput, field);
+    } else {
+      state[field.key] = getTransformedField(fieldOutput, field);
+    }
   }
 
   return unwrapProxy(state);

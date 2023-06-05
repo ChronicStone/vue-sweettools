@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AllowedComponentProps, Component, VNodeChild, VNodeProps } from "vue";
 import {
   ExpandRecursively,
@@ -29,6 +30,7 @@ interface BaseFormSchema {
   prevButtonText?: string;
   nextButtonText?: string;
   showStepper?: boolean;
+  overlayOpacity?: number;
   requiredMessage?: string | ((label: string) => string);
   testId?: string;
 }

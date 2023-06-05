@@ -4,11 +4,12 @@ import { Validation } from "@vuelidate/core";
 import LabelRenderer from "./LabelRenderer.vue";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 import { vTestid } from "@chronicstone/vue-testid";
+import { FieldInstance } from "@/types/form/instance";
 
 const emit = defineEmits<{ (e: "update:modelValue", value: unknown): void }>();
 const props = withDefaults(
   defineProps<{
-    field: FormField & { _stepIndex?: number };
+    field: FieldInstance;
     modelValue: unknown;
     parentKey?: string[];
     itemIndex?: number | null;
@@ -65,7 +66,11 @@ const $globalValidation = useFormValidation();
 const $validator = computed(
   () =>
     getPropertyFromPath(
-      [...props.parentKey, _field.value.key],
+      [
+        ...(_field.value._stepRoot ? [_field.value._stepRoot] : []),
+        ...props.parentKey,
+        _field.value.key,
+      ],
       $globalValidation.$validator.value
     ) as Validation
 );

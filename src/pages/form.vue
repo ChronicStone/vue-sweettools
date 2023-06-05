@@ -4,9 +4,10 @@ import CollapseButton from "@/components/Utils/CollapseButton.vue";
 import { buildFieldSchema } from "@/composables/form/useFormController";
 import { FormRefInstance } from "@/types/form/instance";
 import { helpers } from "@vuelidate/validators";
-import { NButton, NCard, NEl } from "naive-ui";
+import { NButton, NCard, NEl, useNotification } from "naive-ui";
 
 const formApi = useFormApi();
+const notif = useNotification();
 
 const fieldTest = buildFieldSchema({
   key: "objTestExt",
@@ -163,73 +164,48 @@ const depsSchema = buildFormSchema({
 const { formData, validate } = useFormController(formRef, depsSchema);
 
 async function createForm() {
-  const { formData, isCompleted } = await formApi.createForm({
-    steps: [
-      {
-        root: "testRoot",
-        fields: [
-          { key: "text", type: "text", label: "Text" },
-          {
-            label: "Checkgroup",
-            key: "checkgroup",
-            type: "radio",
-            options: [
-              { label: "haha", value: "haha" as const },
-              { label: "hehe", value: "hehe" as const },
-            ],
-            size: 8,
-            required: true,
-          },
-          {
-            key: "items",
-            label: "Items",
-            type: "array-list",
-            extraProperties: true,
-            required: true,
-            size: 8,
-            gridSize: "1 md:2",
-            fields: [
-              {
-                key: "label",
-                label: "Label",
-                type: "text",
-                required: true,
-                dependencies: ["items"],
-                validators: ({
-                  items,
-                }: {
-                  items: Array<{ label: string }>;
-                }) => ({
-                  uniqueLabel: helpers.withMessage(
-                    (params) => `The item "${params.$model}" already exists`,
-                    (value: string) => {
-                      if (!value) return true;
-                      return (
-                        items
-                          .map((item) => item.label.toLocaleLowerCase())
-                          .filter(Boolean)
-                          .filter((item) => item === value.toLocaleLowerCase())
-                          .length < 2
-                      );
-                    }
-                  ),
-                }),
-                transform: (value: string) => value.trim(),
-              },
-            ],
-            headerTemplate: (data, index) =>
-              `ITEM ${index + 1}: ${data?.label || ""}`,
-          },
-        ],
+  const { formData, isCompleted } = await formApi.createForm(
+    {
+      gridSize: 8,
+      fieldSize: 8,
+      overlayOpacity: 0.95,
+      maxWidth: "700px",
+      steps: [
+        {
+          icon: "mdi:plus",
+          label: "Hello",
+          root: "step1",
+          fields: [
+            { key: "text", type: "text", label: "Text", required: true },
+          ],
+        },
+        {
+          root: "step1",
+          fields: [{ key: "text3", type: "text", label: "hi" }],
+        },
+        {
+          root: "step2",
+          fields: [{ type: "date", key: "date", label: "Hi", required: true }],
+        },
+        {
+          fields: [{ key: "text3", type: "text", label: "hi", required: true }],
+        },
+      ],
+    },
+    {
+      step1: {
+        text: "qzdqzddzq",
+        text3: "hiiii2",
       },
-      {
-        root: "testRoot",
-        fields: [{ key: "text2", type: "text", label: "hi" }],
+      step2: {
+        date: 1688076000000,
       },
-      {
-        fields: [{ key: "text3", type: "text", label: "hi" }],
-      },
-    ],
+      text3: "dqzdzqdzqdzq",
+    }
+  );
+
+  notif.create({
+    content: JSON.stringify(formData, null, 4),
   });
 }
 </script>

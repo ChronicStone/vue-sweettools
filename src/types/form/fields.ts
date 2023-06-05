@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Primitive } from "./../utils";
 import { GenericObject } from "@/types/utils";
 import { Validation, ValidationArgs } from "@vuelidate/core";
