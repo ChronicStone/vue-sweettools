@@ -163,7 +163,74 @@ const depsSchema = buildFormSchema({
 const { formData, validate } = useFormController(formRef, depsSchema);
 
 async function createForm() {
-  const { formData, isCompleted } = await formApi.createForm(depsSchema);
+  const { formData, isCompleted } = await formApi.createForm({
+    steps: [
+      {
+        root: "testRoot",
+        fields: [
+          { key: "text", type: "text", label: "Text" },
+          {
+            label: "Checkgroup",
+            key: "checkgroup",
+            type: "radio",
+            options: [
+              { label: "haha", value: "haha" as const },
+              { label: "hehe", value: "hehe" as const },
+            ],
+            size: 8,
+            required: true,
+          },
+          {
+            key: "items",
+            label: "Items",
+            type: "array-list",
+            extraProperties: true,
+            required: true,
+            size: 8,
+            gridSize: "1 md:2",
+            fields: [
+              {
+                key: "label",
+                label: "Label",
+                type: "text",
+                required: true,
+                dependencies: ["items"],
+                validators: ({
+                  items,
+                }: {
+                  items: Array<{ label: string }>;
+                }) => ({
+                  uniqueLabel: helpers.withMessage(
+                    (params) => `The item "${params.$model}" already exists`,
+                    (value: string) => {
+                      if (!value) return true;
+                      return (
+                        items
+                          .map((item) => item.label.toLocaleLowerCase())
+                          .filter(Boolean)
+                          .filter((item) => item === value.toLocaleLowerCase())
+                          .length < 2
+                      );
+                    }
+                  ),
+                }),
+                transform: (value: string) => value.trim(),
+              },
+            ],
+            headerTemplate: (data, index) =>
+              `ITEM ${index + 1}: ${data?.label || ""}`,
+          },
+        ],
+      },
+      {
+        root: "testRoot",
+        fields: [{ key: "text2", type: "text", label: "hi" }],
+      },
+      {
+        fields: [{ key: "text3", type: "text", label: "hi" }],
+      },
+    ],
+  });
 }
 </script>
 

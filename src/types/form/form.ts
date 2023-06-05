@@ -1,10 +1,4 @@
-import {
-  AllowedComponentProps,
-  Component,
-  DefineComponent,
-  VNodeChild,
-  VNodeProps,
-} from "vue";
+import { AllowedComponentProps, Component, VNodeChild, VNodeProps } from "vue";
 import {
   ExpandRecursively,
   Narrowable,
@@ -166,13 +160,30 @@ export type ExtractFieldsFromSteps<
   StepKey extends Narrowable,
   FieldKey extends Narrowable,
   TStep extends FormStep<StepKey, FieldKey, any>
-> = TStep["root"] extends string
-  ? {
-      [key in TStep["root"]]: ExpandRecursively<
-        FormInfoReturnType<TStep["fields"][number]>
-      >;
-    }
-  : ExpandRecursively<FormInfoReturnType<TStep["fields"][number]>>;
+> = ExtractSharedRoot<
+  RemoveNeverProps<
+    UnionToIntersection<
+      | {
+          [K in TStep as K["root"] extends string
+            ? K["root"]
+            : never]: ExpandRecursively<
+            FormInfoReturnType<K["fields"][number]>
+          >;
+        }
+      | {
+          [K in TStep as K["root"] extends string
+            ? never
+            : "___$$sharedRoot___"]: K["root"] extends string
+            ? never
+            : ExpandRecursively<FormInfoReturnType<K["fields"][number]>>;
+        }
+    >
+  >
+>;
+
+type ExtractSharedRoot<T> = T extends { ___$$sharedRoot___: infer R }
+  ? R & Omit<T, "___$$sharedRoot___">
+  : T;
 
 export type FormInferredData<
   StoreData extends Record<string, unknown>,
