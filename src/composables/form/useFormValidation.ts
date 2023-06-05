@@ -2,10 +2,6 @@ import { ObjectField } from "@/types/form/fields";
 import { FieldInstance } from "@/types/form/instance";
 import { GenericObject } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
-import {
-  mapFieldDependencies,
-  preformatFieldDependencies,
-} from "@/utils/form/mapFieldDependencies";
 import { resolveFieldDependencies } from "@/utils/form/resolveFieldDependencies";
 import useVuelidate from "@vuelidate/core";
 import { helpers, required } from "@vuelidate/validators";
@@ -114,7 +110,18 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
         if (typeof field?.validators === "object")
           fieldRules = { ...fieldRules, ...field.validators };
 
-        rules[field.key] = fieldRules;
+        if (
+          typeof field._stepRoot === "string" &&
+          field._stepRoot &&
+          !parentKey.length
+        ) {
+          if (
+            !rules[field._stepRoot] ||
+            typeof rules[field._stepRoot] !== "object"
+          )
+            rules[field._stepRoot] = {};
+          (rules[field._stepRoot] as GenericObject)[field.key] = fieldRules;
+        } else rules[field.key] = fieldRules;
       }
 
       return rules;
