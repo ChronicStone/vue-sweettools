@@ -38,7 +38,13 @@ function handleOverlayClick(event: MouseEvent) {
     <div
       :id="formOverlayId"
       ref="formOverlay"
-      class="fixed left-0 top-0 bg-black/40 grid place-items-center w-full h-screen"
+      class="fixed left-0 top-0 grid place-items-center w-full h-screen"
+      :style="{
+        backgroundColor: changeRgbaOpacity(
+          'rgba(0,0,0, 1)',
+          globalConfig.getProp('uiConfig.overlayOpacity')
+        ),
+      }"
       @click="handleOverlayClick"
     >
       <Transition name="scale" appear>

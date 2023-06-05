@@ -25,6 +25,7 @@ const DEFAULT_FORM_CONFIG = {
     showCancelButton: false,
     showPrevButton: true,
     allowOutsideClick: true,
+    overlayOpacity: 0.4,
   },
 } as const;
 
@@ -94,6 +95,10 @@ export function useGlobalConfig(formSchema?: FormSchema) {
         formSchema?.allowOutsideClick ??
         config?.form?.uiConfig?.allowOutsideClick ??
         DEFAULT_FORM_CONFIG.uiConfig.allowOutsideClick,
+      overlayOpacity:
+        formSchema?.overlayOpacity ??
+        config?.form?.uiConfig?.overlayOpacity ??
+        DEFAULT_FORM_CONFIG.uiConfig.overlayOpacity,
     },
   }));
 
@@ -104,8 +109,6 @@ export function useGlobalConfig(formSchema?: FormSchema) {
   ): NonNullable<TypeFromPath<NonNullable<SweettoolsPluginConfig["form"]>, T>> {
     return getPropertyFromPath(key as string, formConfig.value);
   }
-
-  const test = getProp("textOverrides.requiredMessage");
 
   return {
     isDark,

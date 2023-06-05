@@ -23,6 +23,7 @@ export type SweettoolsPluginConfig = {
       showCancelButton?: boolean;
       showPrevButton?: boolean;
       allowOutsideClick?: boolean;
+      overlayOpacity?: number;
     };
   };
   permissionValidator?: (keys: Array<string | string[]>) => boolean;
