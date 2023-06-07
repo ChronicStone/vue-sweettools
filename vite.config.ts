@@ -17,7 +17,7 @@ import VueDevtools from "vite-plugin-vue-devtools";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    VueDevtools(),
+    // VueDevtools(),
     vue({ reactivityTransform: true }),
     VueTypeImports(),
     WindiCSS(),
@@ -36,6 +36,7 @@ export default defineConfig({
         "src/libs",
         "src/utils",
         "src/config",
+        "src/samples",
       ],
       vueTemplate: true,
     }),
@@ -60,6 +61,26 @@ export default defineConfig({
       allow: [".."],
     },
   },
+  optimizeDeps: {
+    include: [
+      "@ag-grid-community/core",
+      "@chronicstone/vue-testid",
+      "@vuelidate/core",
+      "@vuelidate/validators",
+      "@vueuse/components",
+      "@vueuse/core",
+      "ag-grid-community",
+      "ag-grid-vue3",
+      "axios",
+      "deepmerge-ts",
+      "json-as-xlsx",
+      "maska",
+      "naive-ui",
+      "tinycolor2",
+      "util",
+      "xlsx",
+    ],
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
@@ -67,7 +88,7 @@ export default defineConfig({
       fileName: (format) => `vue-sweettools.${format}.js`,
     },
     rollupOptions: {
-      external: ["vue", "@vueuse/core", "naive-ui"],
+      external: ["vue"],
       output: {
         globals: {
           vue: "Vue",
