@@ -83,3 +83,11 @@ export type Narrowable =
   | undefined
   | void
   | null;
+
+type Expect<T extends true> = T extends true ? true : false;
+
+type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B
+  ? 1
+  : 2
+  ? true
+  : false;

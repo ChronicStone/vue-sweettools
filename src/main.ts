@@ -16,15 +16,7 @@ async function bootstrap() {
   const app = createApp(App);
 
   app.use(router);
-  app.use(Plugin, {
-    isDark: true,
-    themeOverrides: {
-      common: {
-        primaryColor: "#f7382a",
-        infoColor: "#f7382a",
-      },
-    },
-  });
+  app.use(Plugin);
 
   await router.isReady();
   app.mount("#app");

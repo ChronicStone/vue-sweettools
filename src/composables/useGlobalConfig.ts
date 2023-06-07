@@ -1,9 +1,7 @@
 import { SweettoolsPluginConfig } from "@/types/lib";
 import { FormSchema } from "@/types/form/form";
-import { GlobalThemeOverrides } from "naive-ui";
 import { PLUGIN_CONF_INJECTION_KEY } from "@/config/injectionKeys";
 import { NestedPaths, TypeFromPath } from "@/types/utils";
-import { Ref } from "vue";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 
 const DEFAULT_FORM_CONFIG = {
@@ -34,18 +32,6 @@ export function useGlobalConfig(formSchema?: FormSchema) {
     isDark: false,
     form: DEFAULT_FORM_CONFIG,
   });
-  const isDark = computed<boolean>(
-    () => (config?.isDark as Ref<boolean>)?.value ?? config?.isDark ?? false
-  );
-  const themeOverrides = computed<GlobalThemeOverrides>(() =>
-    isDark.value
-      ? (config?.themeOverrides as { dark: GlobalThemeOverrides })?.dark ??
-        config?.themeOverrides ??
-        {}
-      : (config?.themeOverrides as { light: GlobalThemeOverrides })?.light ??
-        config?.themeOverrides ??
-        {}
-  );
 
   const permissionValidator = computed<
     (keys: Array<string | string[]>) => boolean
@@ -111,8 +97,6 @@ export function useGlobalConfig(formSchema?: FormSchema) {
   }
 
   return {
-    isDark,
-    themeOverrides,
     formConfig,
     permissionValidator,
     getProp,

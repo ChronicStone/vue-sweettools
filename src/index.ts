@@ -27,7 +27,7 @@ import {
 import { buildTableSchema } from "./composables/buildTableSchema";
 import { buildGridSchema } from "./composables/buildTableSchema";
 export default {
-  install: (app: App, config: SweettoolsPluginConfig) => {
+  install: (app: App, config?: SweettoolsPluginConfig) => {
     app.provide(PLUGIN_CONF_INJECTION_KEY, config);
     // app.component("DataTable", DataTable);
   },

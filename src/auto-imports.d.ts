@@ -41,6 +41,7 @@ declare global {
   const defaultCellRenderer: typeof import('./composables/excel/useImportManager.tsx')['defaultCellRenderer']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
+  const defineFormSchemaSample: typeof import('./samples/utils')['defineFormSchemaSample']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
   const extendRef: typeof import('@vueuse/core')['extendRef']
@@ -85,6 +86,7 @@ declare global {
   const onUpdated: typeof import('vue')['onUpdated']
   const pausableWatch: typeof import('@vueuse/core')['pausableWatch']
   const pipeMergeObject: typeof import('./utils/pipeMergeObject')['pipeMergeObject']
+  const prettyPrintSchema: typeof import('./samples/utils')['prettyPrintSchema']
   const provide: typeof import('vue')['provide']
   const reactify: typeof import('@vueuse/core')['reactify']
   const reactifyObject: typeof import('@vueuse/core')['reactifyObject']
@@ -371,6 +373,7 @@ declare module 'vue' {
     readonly defaultCellRenderer: UnwrapRef<typeof import('./composables/excel/useImportManager.tsx')['defaultCellRenderer']>
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
+    readonly defineFormSchemaSample: UnwrapRef<typeof import('./samples/utils')['defineFormSchemaSample']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
@@ -415,6 +418,7 @@ declare module 'vue' {
     readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
     readonly pausableWatch: UnwrapRef<typeof import('@vueuse/core')['pausableWatch']>
     readonly pipeMergeObject: UnwrapRef<typeof import('./utils/pipeMergeObject')['pipeMergeObject']>
+    readonly prettyPrintSchema: UnwrapRef<typeof import('./samples/utils')['prettyPrintSchema']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly reactify: UnwrapRef<typeof import('@vueuse/core')['reactify']>
     readonly reactifyObject: UnwrapRef<typeof import('@vueuse/core')['reactifyObject']>

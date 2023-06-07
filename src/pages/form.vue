@@ -1,35 +1,11 @@
 <script setup lang="tsx">
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
-import CollapseButton from "@/components/Utils/CollapseButton.vue";
-import { buildFieldSchema } from "@/composables/form/useFormController";
 import { FormRefInstance } from "@/types/form/instance";
 import { helpers } from "@vuelidate/validators";
 import { NButton, NCard, NEl, useNotification } from "naive-ui";
 
 const formApi = useFormApi();
 const notif = useNotification();
-
-const fieldTest = buildFieldSchema({
-  key: "objTestExt",
-  type: "object",
-  fields: [
-    { key: "item1", type: "text" },
-    { key: "item2", type: "select", options: [...(["haha", "he"] as const)] },
-  ],
-});
-
-const sharedDepsSchema = buildFormSchema({
-  sharedStore: [{ key: "haha", value: () => ["haha", "hoho"] as const }],
-  fields: [
-    {
-      label: "First name",
-      type: "text",
-      required: true,
-      key: "firstName",
-      condition: () => true,
-    },
-  ],
-});
 
 const arraySchema = buildFormSchema({
   testId: "testForm",
@@ -164,45 +140,91 @@ const depsSchema = buildFormSchema({
 const { formData, validate } = useFormController(formRef, depsSchema);
 
 async function createForm() {
-  const { formData, isCompleted } = await formApi.createForm(
-    {
-      gridSize: 8,
-      fieldSize: 8,
-      overlayOpacity: 0.95,
-      maxWidth: "700px",
-      steps: [
-        {
-          icon: "mdi:plus",
-          label: "Hello",
-          root: "step1",
-          fields: [
-            { key: "text", type: "text", label: "Text", required: true },
-          ],
-        },
-        {
-          root: "step1",
-          fields: [{ key: "text3", type: "text", label: "hi" }],
-        },
-        {
-          root: "step2",
-          fields: [{ type: "date", key: "date", label: "Hi", required: true }],
-        },
-        {
-          fields: [{ key: "text3", type: "text", label: "hi", required: true }],
-        },
-      ],
-    },
-    {
-      step1: {
-        text: "qzdqzddzq",
-        text3: "hiiii2",
+  const { formData, isCompleted } = await formApi.createForm({
+    gridSize: 8,
+    fieldSize: 8,
+    overlayOpacity: 0.95,
+    maxWidth: "700px",
+    steps: [
+      {
+        icon: "mdi:plus",
+        title: "User information",
+        root: "userIdentity",
+        fields: [
+          { key: "firstName", type: "text", label: "Text", required: true },
+          { key: "lastName", type: "text", label: "Text", required: true },
+          { key: "email", type: "text", label: "Text", required: true },
+        ],
       },
-      step2: {
-        date: 1688076000000,
+      {
+        title: "Address",
+        root: "userAddress",
+        fields: [
+          { key: "address", type: "text", label: "Text", required: true },
+          { key: "city", type: "text", label: "Text", required: true },
+          { key: "zipCode", type: "text", label: "Text", required: true },
+          {
+            key: "country",
+            type: "select",
+            label: "Text",
+            required: true,
+            options: [...(["France", "Belgium", "Germany", "Spain"] as const)],
+          },
+        ],
       },
-      text3: "dqzdzqdzqdzq",
-    }
-  );
+      {
+        title: "Organizations",
+        fields: [
+          {
+            key: "organizations",
+            type: "array-tabs",
+            label: "Organizations",
+            fields: [
+              { key: "name", type: "text", label: "Text", required: true },
+              {
+                key: "address",
+                type: "text",
+                label: "Text",
+                required: true,
+              },
+              { key: "city", type: "text", label: "Text", required: true },
+              {
+                key: "zipCode",
+                type: "text",
+                label: "Text",
+                required: true,
+              },
+              {
+                key: "country",
+                type: "select",
+                label: "Text",
+                required: true,
+                options: [
+                  ...(["France", "Belgium", "Germany", "Spain"] as const),
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        fields: [
+          {
+            key: "acceptsCGU",
+            type: "checkbox",
+            label: "Text",
+            required: true,
+          },
+          {
+            key: "acceptsNewsletter",
+            type: "checkbox",
+            label: "Text",
+            required: true,
+          },
+        ],
+      },
+    ],
+  });
 
   notif.create({
     content: JSON.stringify(formData, null, 4),

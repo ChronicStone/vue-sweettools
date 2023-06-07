@@ -8,7 +8,6 @@ import {
   FormRefInstance,
   StepStatus,
 } from "@/types/form/instance";
-import { _BaseField } from "@/types/form/fields";
 import StepsRenderer from "./StepsRenderer.vue";
 import { MaybeRef } from "@vueuse/core";
 import { vTestid } from "@chronicstone/vue-testid";
@@ -96,6 +95,7 @@ defineExpose<FormRefInstance>({
   $data: outputFormState,
   $reset: reset,
   $validate: () => $validator.value.$validate(),
+  $v: computed(() => $validator.value),
   ...(isMultiStep.value && {
     nextStep,
     previousStep,
@@ -105,7 +105,7 @@ defineExpose<FormRefInstance>({
         isMultiStep.value && currentStep.value !== formSteps.value.length - 1
     ),
     canTriggerPrevious: computed(
-      () => isMultiStep.value && currentStep.value >= 0
+      () => isMultiStep.value && currentStep.value > 0
     ),
   }),
 });

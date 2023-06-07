@@ -8,7 +8,8 @@ import {
   FormStep,
   InferSharedStoreData,
 } from "./form";
-import { Narrowable } from "../utils";
+import { GenericObject, Narrowable } from "../utils";
+import type { Validation } from "@vuelidate/core";
 
 export type FormInstance = {
   _id: string;
@@ -55,6 +56,7 @@ export type FieldInstance = FormField & {
 export type FormRefInstance = {
   $reset(): void;
   $validate(): Promise<boolean>;
+  $v: ComputedRef<Validation<GenericObject, GenericObject>>;
   $data: ComputedRef<{ [key: string]: any }>;
   nextStep?: () => Promise<boolean>;
   previousStep?: () => void;

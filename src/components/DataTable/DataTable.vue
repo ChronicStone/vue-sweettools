@@ -17,10 +17,12 @@ import {
   SelectionChangedEvent,
   SortChangedEvent,
 } from "ag-grid-community";
-import { NSpin, NCard, NDialogProvider } from "naive-ui";
+import { NSpin, NCard, NDialogProvider, GlobalThemeOverrides } from "naive-ui";
 import { AgGridVue } from "ag-grid-vue3";
 import { computed, ref, watch } from "vue";
 import { useGlobalConfig } from "@/composables/useGlobalConfig";
+import { ComputedRef } from "vue";
+import { BuiltInGlobalTheme } from "naive-ui/es/themes/interface";
 
 const props = withDefaults(defineProps<DataTableProps>(), {
   tableKey: () => Date.now().toString(),
@@ -37,9 +39,17 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   draggable: false,
 });
 
-const { isDark, themeOverrides } = useGlobalConfig();
-const _isDark = computed(() => isDark.value);
-const _themeOverrides = computed(() => themeOverrides.value);
+const parentConfigScope = inject<{
+  mergedThemeOverridesRef: ComputedRef<GlobalThemeOverrides>;
+  mergedThemeRef: ComputedRef<BuiltInGlobalTheme | null>;
+}>("n-config-provider");
+
+const _isDark = computed(
+  () => parentConfigScope?.mergedThemeRef.value?.name === "dark"
+);
+const _themeOverrides = computed(
+  () => parentConfigScope?.mergedThemeOverridesRef.value ?? {}
+);
 const { borderColor, themeVars, selectedCellColor, hoverCellColor, theme } =
   useGridStyle(_isDark);
 

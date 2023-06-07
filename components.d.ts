@@ -54,6 +54,7 @@ declare module '@vue/runtime-core' {
     NTag: typeof import('naive-ui')['NTag']
     NumberField: typeof import('./src/components/Form/Field/NumberField.vue')['default']
     ObjectField: typeof import('./src/components/Form/Field/ObjectField.vue')['default']
+    OpenState: typeof import('./src/components/Utils/OpenState.vue')['default']
     RadioField: typeof import('./src/components/Form/Field/RadioField.vue')['default']
     RatingField: typeof import('./src/components/Form/Field/RatingField.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
