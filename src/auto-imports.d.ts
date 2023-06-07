@@ -100,7 +100,6 @@ declare global {
   const refThrottled: typeof import('@vueuse/core')['refThrottled']
   const refWithControl: typeof import('@vueuse/core')['refWithControl']
   const renderBoolean: typeof import('./composables/excel/useImportManager.tsx')['renderBoolean']
-  const renderVNode: typeof import('./utils/renderVNode')['renderVNode']
   const resolveComponent: typeof import('vue')['resolveComponent']
   const resolveDirective: typeof import('vue')['resolveDirective']
   const resolveFromStringPath: typeof import('./utils/resolveFromStringPath')['resolveFromStringPath']
@@ -431,7 +430,6 @@ declare module 'vue' {
     readonly refThrottled: UnwrapRef<typeof import('@vueuse/core')['refThrottled']>
     readonly refWithControl: UnwrapRef<typeof import('@vueuse/core')['refWithControl']>
     readonly renderBoolean: UnwrapRef<typeof import('./composables/excel/useImportManager.tsx')['renderBoolean']>
-    readonly renderVNode: UnwrapRef<typeof import('./utils/renderVNode')['renderVNode']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
     readonly resolveDirective: UnwrapRef<typeof import('vue')['resolveDirective']>
     readonly resolveFromStringPath: UnwrapRef<typeof import('./utils/resolveFromStringPath')['resolveFromStringPath']>

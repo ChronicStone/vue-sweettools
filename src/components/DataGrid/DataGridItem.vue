@@ -2,7 +2,7 @@
 import { useBreakpointStyle } from "@/composables/useBreakpointStyle";
 import { GridItem } from "@/types/datagrid";
 import { GenericObject } from "@/types/utils";
-import { renderVNode } from "@/utils/renderVNode";
+import { renderVNode } from "@/utils/renderVNode.jsx";
 import { resolveFromStringPath } from "@/utils/resolveFromStringPath";
 import { NSkeleton, NEllipsis } from "naive-ui";
 import { computed } from "vue";

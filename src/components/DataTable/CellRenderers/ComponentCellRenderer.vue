@@ -15,7 +15,7 @@
 import { NConfigProvider } from "naive-ui";
 import { CellRendererParams } from "@/types/table";
 import { useElementSize } from "@vueuse/core";
-import { defineComponent, ref } from "vue";
+import { Ref, defineComponent, ref } from "vue";
 
 interface CustomCellRendererProps extends CellRendererParams {
   _cellRenderer: ReturnType<typeof defineComponent>;
@@ -23,5 +23,5 @@ interface CustomCellRendererProps extends CellRendererParams {
 
 const props = defineProps<{ params: CustomCellRendererProps }>();
 const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
-const { width } = useElementSize(cellContainerRef);
+const { width } = useElementSize(cellContainerRef as Ref<HTMLElement>);
 </script>

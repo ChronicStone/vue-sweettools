@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { VNodeChild } from "vue";
 import { NModal, NCard, NScrollbar } from "naive-ui";
-import { renderVNode } from "@/utils/renderVNode";
+import { preRenderStringContent, renderVNode } from "@/utils/renderVNode.jsx";
 import { FieldDescription } from "@/types/form/fields";
 import { GenericObject } from "@/types/utils";
 
@@ -18,8 +18,7 @@ const props = defineProps<{
 const showDescription = ref<boolean>(false);
 const modalOverlayApi = inject(MODAL_OVERLAY_INJECTION_KEY);
 
-const PreRenderStringContent = (content: string | VNodeChild) =>
-  typeof content === "string" ? () => <div v-html={content}></div> : content;
+
 
 function renderLabel(
   fieldLabel: typeof props.fieldLabel,
@@ -32,7 +31,7 @@ function renderLabel(
 
 function renderContent(description: typeof props.description) {
   return renderVNode(
-    PreRenderStringContent(
+    preRenderStringContent(
       (description as { title: string; content: string })?.content ??
         description
     )
@@ -53,7 +52,7 @@ watch(
     <mdi-information class="h-3.5 w-3.5" />
   </div>
   <NModal v-model:show="showDescription">
-    <NCard
+     <NCard
       closable
       :on-close="() => (showDescription = false)"
       style="width: 600px; z-index: 30000"
@@ -64,9 +63,11 @@ watch(
       <template #header>
         <Component :is="renderLabel(fieldLabel, description)" />
       </template>
+      
       <NScrollbar style="max-height: 80vh" class="pr-6">
         <Component :is="renderContent(description)" />
       </NScrollbar>
+      
     </NCard>
   </NModal>
 </template>

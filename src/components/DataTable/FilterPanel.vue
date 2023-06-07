@@ -28,7 +28,7 @@ const filtersSchema = computed(
       gridSize: 8,
       fieldSize: 8,
       fields: mapFiltersToFormSchema(props.filtersSchema) as Array<
-        FormField<Narrowable, string>
+        FormField<Narrowable, Record<string, unknown>>
       >,
     }) as FormSchema<any, any>
 );

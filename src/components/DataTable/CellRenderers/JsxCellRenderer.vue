@@ -16,10 +16,10 @@
 
 <script setup lang="ts">
 import { CellRendererParams } from "@/types/table";
-import { renderVNode } from "@/utils/renderVNode";
+import { renderVNode } from "@/utils/renderVNode.jsx";
 import { useElementSize } from "@vueuse/core";
 import { NConfigProvider } from "naive-ui";
-import { VNodeChild, ref } from "vue";
+import { Ref, VNodeChild, ref } from "vue";
 
 interface JsxCellRendererProps extends CellRendererParams {
   _cellRenderer: (...args: any[]) => VNodeChild;
@@ -27,8 +27,8 @@ interface JsxCellRendererProps extends CellRendererParams {
 
 const props = defineProps<{ params: JsxCellRendererProps }>();
 
-const cellContainerRef = ref(props.params.eGridCell);
-const { width, height } = useElementSize(cellContainerRef);
+const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
+const { width, height } = useElementSize(cellContainerRef as Ref<HTMLElement>);
 
 const RenderedCell = renderVNode(
   props.params?._cellRenderer,

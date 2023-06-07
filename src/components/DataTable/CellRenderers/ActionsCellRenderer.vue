@@ -49,7 +49,7 @@ import { CellRendererParams, TableRowAction } from "@/types/table";
 import { NTooltip, NEl, NConfigProvider, NIcon, NButton } from "naive-ui";
 import { GenericObject } from "@/types/utils";
 import { useElementSize } from "@vueuse/core";
-import { computed, ref } from "vue";
+import { Ref, computed, ref } from "vue";
 
 interface ActionsCellProps extends CellRendererParams {
   _rowActions: TableRowAction<GenericObject>[];
@@ -60,7 +60,7 @@ interface ActionsCellProps extends CellRendererParams {
 
 const props = defineProps<{ params: ActionsCellProps }>();
 const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
-const { width } = useElementSize(cellContainerRef);
+const { width } = useElementSize(cellContainerRef as Ref<HTMLDivElement>);
 
 const rowActions = computed(() =>
   props.params._rowActions

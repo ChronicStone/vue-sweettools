@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { NConfigProvider, NCheckbox } from "naive-ui";
 import { useElementSize } from "@vueuse/core";
-import { ref, watch } from "vue";
+import { Ref, ref, watch } from "vue";
 import { HeaderRendererParams } from "@/types/table";
 
 interface JsxCellRendererProps extends HeaderRendererParams {
@@ -27,7 +27,7 @@ interface JsxCellRendererProps extends HeaderRendererParams {
 
 const props = defineProps<{ params: JsxCellRendererProps }>();
 const cellContainerRef = ref<HTMLElement>(props.params.eGridHeader);
-const { width } = useElementSize(cellContainerRef);
+const { width } = useElementSize(cellContainerRef as Ref<HTMLElement>);
 
 const selectAll = ref<boolean>(false);
 watch(

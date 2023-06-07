@@ -21,3 +21,7 @@ export const renderVNode = <T extends any[]>(
     return null;
   }
 };
+
+export function preRenderStringContent(content: string | VNodeChild) {
+  return typeof content === "string" ? () => <div v-html={content}></div> : content;
+}
