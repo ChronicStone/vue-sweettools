@@ -8,7 +8,7 @@ import { RouteLocationRaw, RouterLink } from "vue-router";
 export function useDropdownActions(
   actions: ComputedRef<TableAction[]>,
   tableApi: Ref<TableApi | undefined>,
-  fetchParams: ComputedRef<FetchParams>,
+  fetchParams: Readonly<Ref<FetchParams>>,
   data: Ref<Record<string, any>[]>,
   selectionState: {
     nbSelected: Ref<number>;

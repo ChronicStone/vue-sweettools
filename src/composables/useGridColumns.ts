@@ -26,7 +26,7 @@ type AgGridConfigParams = {
   selectAll: Ref<boolean>;
   selected: Ref<Array<Record<string, any>>>;
   nbSelected: ComputedRef<number>;
-  fetchParams: ComputedRef<FetchParams>;
+  fetchParams: Readonly<Ref<FetchParams>>;
 };
 
 export function useGridColumns(

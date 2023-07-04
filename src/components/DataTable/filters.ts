@@ -62,12 +62,17 @@ export function timeRangeFilter(key: string, label: string): TableFilter {
     label,
     type: "daterange",
     transform: (value: any[]) => {
+      console.log(value);
       return !Array.isArray(value) || value.some((value) => !value)
         ? null
         : value.map(formatDateToISOstring);
     },
-    preformat: (value: any) =>
-      value?.length ? value.map((date: string) => new Date(date)) : null,
+    preformat: (value: any) => {
+      console.log("inputVal", value);
+      return value?.length
+        ? value.map((date: string) => new Date(date).getTime())
+        : null;
+    },
     matchMode: "between",
     params: { dateMode: true },
   };

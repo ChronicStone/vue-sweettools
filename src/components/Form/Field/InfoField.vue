@@ -5,6 +5,7 @@ import {
   InfoField,
 } from "@/types/form/fields";
 import { GenericObject } from "@/types/utils";
+import { renderVNode } from "@/utils/renderVNode";
 
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();

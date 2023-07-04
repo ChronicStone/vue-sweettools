@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const sample = defineFormSchemaSample({
+const { sample, formData } = defineFormSchemaSample({
   title: "Field dependencies + async options",
   description:
     "This sample shows how to use async options with field dependencies & automatic options resolution.",
@@ -15,8 +15,8 @@ const sample = defineFormSchemaSample({
         type: "select",
         label: "Dog breed",
         placeholder: "Select a breed",
-        options: async () =>
-          await axios
+        options: () =>
+          axios
             .get<{ message: Record<string, string[]> }>(
               "https://dog.ceo/api/breeds/list/all"
             )
@@ -31,16 +31,23 @@ const sample = defineFormSchemaSample({
         description:
           "This field depends on dogBreed. When DogBreen changes, the async function will be re-executed to get the updated options.",
         dependencies: ["dogBreed"],
-        options: async ({ dogBreed }) => {
-          return await axios
+        options: ({ dogBreed }) =>
+          axios
             .get<{ message: string[] }>(
               `https://dog.ceo/api/breed/${dogBreed}/list`
             )
-            .then((res) => res.data.message);
-        },
+            .then((res) => res.data.message),
       },
     ],
   },
 });
 
-export default sample;
+assertDataTypeInferrence<
+  {
+    dogBreed: string | number;
+    dogSubBreed: string | number;
+  },
+  typeof formData
+>();
+
+export default { sample };

@@ -5,7 +5,7 @@ import {
   InferSharedStoreData,
 } from "@/types/form/form";
 import { Narrowable } from "@/types/utils";
-import fs from "fs";
+import { Equal, Expect } from "hotscript/dist/internals/helpers";
 
 export function defineFormSchemaSample<
   TFormSchema extends FormSchema<StepKey, FieldKey, StoreData>,
@@ -18,6 +18,7 @@ export function defineFormSchemaSample<
   title: string;
   description?: string;
   schema: TFormSchema & { sharedStore?: Store };
+  data?: Record<string, any>;
 }) {
   return {
     sample,
@@ -66,4 +67,11 @@ export function prettyPrintSchema(obj: any) {
   delete Array.prototype.toJSON;
 
   return str;
+}
+
+export function assertDataTypeInferrence<
+  T extends Record<string, unknown>,
+  Y extends T
+>() {
+  return true;
 }

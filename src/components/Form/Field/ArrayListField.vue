@@ -35,7 +35,7 @@ const { addItem, removeItem, moveItem } = useArrayField(_field, fieldValue);
 <template>
   <NCollapseTransition :show="!collapsed">
     <div class="grid gap-4" :style="listGridSize">
-      <TransitionGroup name="list" mode="out-in">
+      <TransitionGroup name="list">
         <NCard
           v-for="(item, index) in fieldValue"
           :key="`${_field.key}.${index}`"
@@ -55,24 +55,6 @@ const { addItem, removeItem, moveItem } = useArrayField(_field, fieldValue);
             </div>
           </template>
           <template #header-extra>
-            <!-- <NTooltip v-if="index - 1 >= fieldValue?.length ?? 0">
-            <template #trigger>
-              <mdi:arrow-up
-                class="text-black dark:text-white hover:text-red-400 cursor-pointer"
-                @click.prevent="moveItem(index, 'left')"
-              />
-            </template>
-            Delete item
-          </NTooltip>
-          <NTooltip v-if="index + 1 <= fieldValue?.length ?? 0">
-            <template #trigger>
-              <mdi:arrow-down
-                class="text-black dark:text-white hover:text-red-400 cursor-pointer"
-                @click.prevent="moveItem(index, 'right')"
-              />
-            </template>
-            Delete item
-          </NTooltip> -->
             <NTooltip>
               <template #trigger>
                 <mdi:trash

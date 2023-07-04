@@ -3,6 +3,7 @@ import CollapseButton from "@/components/Utils/CollapseButton.vue";
 import DescriptionPopup from "@/components/Utils/DescriptionPopup.vue";
 import { ObjectField, FormField } from "@/types/form/fields";
 import { GenericObject } from "@/types/utils";
+import { renderVNode } from "@/utils/renderVNode";
 
 const emit = defineEmits<{ (e: "update:collapsed", value: boolean): void }>();
 const props = defineProps<{

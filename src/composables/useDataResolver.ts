@@ -5,6 +5,7 @@ import { remoteDataMapper } from "@/utils/table/remoteDataMapper";
 import { RemovableRef } from "@vueuse/core";
 import { GridApi } from "ag-grid-community";
 import { ComputedRef, Ref } from "vue";
+import { watchDebounced } from "@vueuse/core";
 
 export function useDataResolver(
   remote: ComputedRef<boolean>,
@@ -12,7 +13,7 @@ export function useDataResolver(
   data: Ref<GenericObject[]>,
   datasource: DataSource<any>,
   pagination: RemovableRef<GridControls["pagination"]>,
-  fetchParams: ComputedRef<FetchParams>,
+  fetchParams: Readonly<Ref<FetchParams>>,
   gridApi: Ref<GridApi | undefined>,
   allSelected: Ref<boolean>
 ) {
@@ -54,11 +55,25 @@ export function useDataResolver(
     }
   );
 
-  watch(
+  const stalledFetchParams = ref<FetchParams>(fetchParams.value);
+
+  watchDebounced(
     () => fetchParams.value,
-    () => resolveGridData(localDataStore.value.length ? false : true),
-    { deep: true, immediate: true }
+    () => {
+      resolveGridData(false);
+    },
+    {
+      deep: true,
+      immediate: true,
+      debounce: 50,
+    }
   );
+
+  // watch(
+  //   () => fetchParams.value,
+  //   () => resolveGridData(localDataStore.value.length ? false : true),
+  //   { deep: true, immediate: true }
+  // );
 
   return {
     resolveGridData,

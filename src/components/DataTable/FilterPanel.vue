@@ -56,7 +56,7 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  formRef.value?.$reset();
+  formRef.value?.$reset(true);
   applyFilters();
 }
 

@@ -26,11 +26,41 @@ import {
 } from "./composables/excel/useImportController";
 import { buildTableSchema } from "./composables/buildTableSchema";
 import { buildGridSchema } from "./composables/buildTableSchema";
+import { FormRefInstance } from "./types/form/instance";
+import { Column } from "ag-grid-community";
+import { DataGridSchema } from "./types/datagrid";
+import { FormField } from "./types/form/fields";
+import {
+  DataTableSchema,
+  TableFilter,
+  StaticFilter,
+  TableAction,
+  TableRowAction,
+  TableActionParams,
+  FetchParams,
+  RemoteTableData,
+} from "./types/table";
+import { renderVNode } from "./utils/renderVNode";
 export default {
   install: (app: App, config?: SweettoolsPluginConfig) => {
     app.provide(PLUGIN_CONF_INJECTION_KEY, config);
     // app.component("DataTable", DataTable);
   },
+};
+
+export type {
+  DataTableSchema,
+  TableFilter,
+  StaticFilter,
+  Column,
+  TableAction,
+  TableRowAction,
+  TableActionParams,
+  FetchParams,
+  RemoteTableData,
+  FormField,
+  FormRefInstance,
+  DataGridSchema,
 };
 
 export {
@@ -52,4 +82,5 @@ export {
   useExcelReader,
   buildTableSchema,
   buildGridSchema,
+  renderVNode,
 };

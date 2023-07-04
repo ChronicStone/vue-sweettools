@@ -7,10 +7,8 @@ import {
   StaticFilter,
   TableFilter,
 } from "./../types/table";
-import { FetchParams } from "@/types/table";
 import { useStorage } from "@vueuse/core";
 import { ComputedRef, computed, ref } from "vue";
-import { useRoute } from "vue-router";
 
 export function useQueryState(
   tableKey: string,
@@ -21,7 +19,7 @@ export function useQueryState(
   persistency: false | "localStorage" | "sessionStorage",
   defaultSort: ComputedRef<DataTableSchema["sort"]>
 ) {
-  const route = useRoute();
+  const router = useRouter();
   const isLoading = ref<boolean>(false);
   const data = ref<Record<string, any>[]>([]);
   const selected = ref<Record<string, any>[]>([]);
@@ -35,7 +33,9 @@ export function useQueryState(
   const topViewportOffset = !persistency
     ? ref<number>(0)
     : useStorage<number>(
-        `${tableKey}__${route?.name?.toString?.() ?? ""}__#viewportTopRow`,
+        `${tableKey}__${
+          router.currentRoute.value?.name?.toString?.() ?? ""
+        }__#viewportTopRow`,
         0,
         persistency === "localStorage" ? localStorage : sessionStorage
       );
@@ -43,7 +43,9 @@ export function useQueryState(
   const sortState = !persistency
     ? ref<GridControls["sort"]>({ colId: "", key: "", dir: null })
     : useStorage<GridControls["sort"]>(
-        `${tableKey}__${route?.name?.toString?.() ?? ""}__#sortState`,
+        `${tableKey}__${
+          router.currentRoute.value?.name?.toString?.() ?? ""
+        }__#sortState`,
         { colId: "", key: "", dir: null },
         persistency === "localStorage" ? localStorage : sessionStorage
       );
@@ -56,7 +58,9 @@ export function useQueryState(
         rowTotalCount: 0,
       })
     : useStorage<GridControls["pagination"]>(
-        `${tableKey}__${route?.name?.toString?.() ?? ""}__#paginationstate`,
+        `${tableKey}__${
+          router.currentRoute.value?.name?.toString?.() ?? ""
+        }__#paginationstate`,
         { pageSize: 50, pageIndex: 1, pageTotalCount: 1, rowTotalCount: 0 },
         persistency === "localStorage" ? localStorage : sessionStorage
       );
@@ -68,12 +72,14 @@ export function useQueryState(
         staticFilters: {},
       })
     : useStorage<GridControls["filters"]>(
-        `${tableKey}__${route?.name?.toString?.() ?? ""}__#filtersState`,
+        `${tableKey}__${
+          router.currentRoute.value?.name?.toString?.() ?? ""
+        }__#filtersState`,
         { searchQuery: "", panelFilters: {}, staticFilters: {} },
         persistency === "localStorage" ? localStorage : sessionStorage
       );
 
-  const fetchParams = computed<FetchParams>(() => ({
+  const fetchParams = computedWithControl([], () => ({
     page: paginationState.value.pageIndex,
     limit: paginationState.value.pageSize,
     sortKey:
@@ -92,6 +98,16 @@ export function useQueryState(
       staticFilters.value
     ),
   }));
+
+  watch(
+    [
+      () => paginationState.value.pageSize,
+      () => paginationState.value.pageIndex,
+      () => sortState.value,
+      () => filterState.value,
+    ],
+    () => fetchParams.trigger()
+  );
 
   function initializeFilterState(clearMode: boolean) {
     filterState.value.panelFilters = mapFilterInitialState(

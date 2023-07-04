@@ -11,6 +11,7 @@ import {
 import StepsRenderer from "./StepsRenderer.vue";
 import { MaybeRef } from "@vueuse/core";
 import { vTestid } from "@chronicstone/vue-testid";
+import { renderVNode } from "@/utils/renderVNode";
 
 const props = defineProps<{
   schema: FormSchema<any, any, any> & { sharedStore?: FormSharedStore<string> };

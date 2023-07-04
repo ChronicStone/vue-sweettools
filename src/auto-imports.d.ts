@@ -10,6 +10,7 @@ declare global {
   const MODAL_OVERLAY_INJECTION_KEY: typeof import('./config/injectionKeys')['MODAL_OVERLAY_INJECTION_KEY']
   const PLUGIN_CONF_INJECTION_KEY: typeof import('./config/injectionKeys')['PLUGIN_CONF_INJECTION_KEY']
   const arrayToObject: typeof import('./utils/arrayToObject')['arrayToObject']
+  const assertDataTypeInferrence: typeof import('./samples/utils')['assertDataTypeInferrence']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
   const buildExcelSchema: typeof import('./composables/excel/useImportController')['buildExcelSchema']
@@ -27,6 +28,7 @@ declare global {
   const computedWithControl: typeof import('@vueuse/core')['computedWithControl']
   const controlledComputed: typeof import('@vueuse/core')['controlledComputed']
   const controlledRef: typeof import('@vueuse/core')['controlledRef']
+  const convertFileSizeToMb: typeof import('./utils/general/format')['convertFileSizeToMb']
   const convertHexToRgba: typeof import('./utils/manipulateColor')['convertHexToRgba']
   const createApp: typeof import('vue')['createApp']
   const createEventHook: typeof import('@vueuse/core')['createEventHook']
@@ -44,13 +46,17 @@ declare global {
   const defineFormSchemaSample: typeof import('./samples/utils')['defineFormSchemaSample']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
+  const exportExcel: typeof import('./utils/excel/excel')['exportExcel']
   const extendRef: typeof import('@vueuse/core')['extendRef']
   const formatDateToISOstring: typeof import('./utils/formatDate')['formatDateToISOstring']
+  const formatFileExtension: typeof import('./utils/general/format')['formatFileExtension']
+  const generateInportSchemaRefFile: typeof import('./utils/excel/excel')['generateInportSchemaRefFile']
   const generateUUID: typeof import('./utils/generateUUID')['generateUUID']
   const getCellRenderer: typeof import('./composables/excel/useImportManager.tsx')['getCellRenderer']
   const getColorFormat: typeof import('./utils/manipulateColor')['getColorFormat']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getPropertyFromPath: typeof import('./utils/form/getPropertyFromPath')['getPropertyFromPath']
   const h: typeof import('vue')['h']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
   const inject: typeof import('vue')['inject']
@@ -60,6 +66,14 @@ declare global {
   const isReadonly: typeof import('vue')['isReadonly']
   const isRef: typeof import('vue')['isRef']
   const makeDestructurable: typeof import('@vueuse/core')['makeDestructurable']
+  const mapFieldDependencies: typeof import('./utils/form/mapFieldDependencies')['mapFieldDependencies']
+  const mapFieldProps: typeof import('./utils/form/mapFieldProps')['mapFieldProps']
+  const mapFieldsInitialState: typeof import('./utils/form/mapFieldsInitialState')['mapFieldsInitialState']
+  const mapFieldsOutputState: typeof import('./utils/form/mapFieldsInitialState')['mapFieldsOutputState']
+  const mapFilterInitialState: typeof import('./utils/table/mapFilterInitialState')['mapFilterInitialState']
+  const mapFiltersToFormSchema: typeof import('./utils/table/mapFiltersToFormSchema')['mapFiltersToFormSchema']
+  const mapQueryFetchParams: typeof import('./utils/table/mapQueryFetchParams')['mapQueryFetchParams']
+  const mapTableFilters: typeof import('./utils/table/mapQueryFetchParams')['mapTableFilters']
   const markRaw: typeof import('vue')['markRaw']
   const multiCellRenderer: typeof import('./composables/excel/useImportManager.tsx')['multiCellRenderer']
   const nextTick: typeof import('vue')['nextTick']
@@ -86,6 +100,8 @@ declare global {
   const onUpdated: typeof import('vue')['onUpdated']
   const pausableWatch: typeof import('@vueuse/core')['pausableWatch']
   const pipeMergeObject: typeof import('./utils/pipeMergeObject')['pipeMergeObject']
+  const preRenderStringContent: typeof import('./utils/renderVNode.tsx')['preRenderStringContent']
+  const preformatFieldDependencies: typeof import('./utils/form/mapFieldDependencies')['preformatFieldDependencies']
   const prettyPrintSchema: typeof import('./samples/utils')['prettyPrintSchema']
   const provide: typeof import('vue')['provide']
   const reactify: typeof import('@vueuse/core')['reactify']
@@ -101,14 +117,18 @@ declare global {
   const refDefault: typeof import('@vueuse/core')['refDefault']
   const refThrottled: typeof import('@vueuse/core')['refThrottled']
   const refWithControl: typeof import('@vueuse/core')['refWithControl']
+  const remoteDataMapper: typeof import('./utils/table/remoteDataMapper')['remoteDataMapper']
   const renderBoolean: typeof import('./composables/excel/useImportManager.tsx')['renderBoolean']
+  const renderIcon: typeof import('./utils/renderIcon.tsx')['renderIcon']
+  const renderVNode: typeof import('./utils/renderVNode.tsx')['renderVNode']
   const resolveComponent: typeof import('vue')['resolveComponent']
   const resolveDirective: typeof import('vue')['resolveDirective']
+  const resolveFieldDependencies: typeof import('./utils/form/resolveFieldDependencies')['resolveFieldDependencies']
   const resolveFromStringPath: typeof import('./utils/resolveFromStringPath')['resolveFromStringPath']
   const resolveRef: typeof import('@vueuse/core')['resolveRef']
   const resolveUnref: typeof import('@vueuse/core')['resolveUnref']
   const rowValidityRenderer: typeof import('./composables/excel/useImportManager.tsx')['rowValidityRenderer']
-  const setPropertyFromPath: typeof import('./utils/setPropertyFromPath')['setPropertyFromPath']
+  const setPropertyFromPath: typeof import('./utils/form/setPropertyFromPath')['setPropertyFromPath']
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
@@ -342,6 +362,7 @@ declare module 'vue' {
     readonly MODAL_OVERLAY_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['MODAL_OVERLAY_INJECTION_KEY']>
     readonly PLUGIN_CONF_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['PLUGIN_CONF_INJECTION_KEY']>
     readonly arrayToObject: UnwrapRef<typeof import('./utils/arrayToObject')['arrayToObject']>
+    readonly assertDataTypeInferrence: UnwrapRef<typeof import('./samples/utils')['assertDataTypeInferrence']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
     readonly buildExcelSchema: UnwrapRef<typeof import('./composables/excel/useImportController')['buildExcelSchema']>
@@ -359,6 +380,7 @@ declare module 'vue' {
     readonly computedWithControl: UnwrapRef<typeof import('@vueuse/core')['computedWithControl']>
     readonly controlledComputed: UnwrapRef<typeof import('@vueuse/core')['controlledComputed']>
     readonly controlledRef: UnwrapRef<typeof import('@vueuse/core')['controlledRef']>
+    readonly convertFileSizeToMb: UnwrapRef<typeof import('./utils/general/format')['convertFileSizeToMb']>
     readonly convertHexToRgba: UnwrapRef<typeof import('./utils/manipulateColor')['convertHexToRgba']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly createEventHook: UnwrapRef<typeof import('@vueuse/core')['createEventHook']>
@@ -376,13 +398,17 @@ declare module 'vue' {
     readonly defineFormSchemaSample: UnwrapRef<typeof import('./samples/utils')['defineFormSchemaSample']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly exportExcel: UnwrapRef<typeof import('./utils/excel/excel')['exportExcel']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
     readonly formatDateToISOstring: UnwrapRef<typeof import('./utils/formatDate')['formatDateToISOstring']>
+    readonly formatFileExtension: UnwrapRef<typeof import('./utils/general/format')['formatFileExtension']>
+    readonly generateInportSchemaRefFile: UnwrapRef<typeof import('./utils/excel/excel')['generateInportSchemaRefFile']>
     readonly generateUUID: UnwrapRef<typeof import('./utils/generateUUID')['generateUUID']>
     readonly getCellRenderer: UnwrapRef<typeof import('./composables/excel/useImportManager.tsx')['getCellRenderer']>
     readonly getColorFormat: UnwrapRef<typeof import('./utils/manipulateColor')['getColorFormat']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getPropertyFromPath: UnwrapRef<typeof import('./utils/form/getPropertyFromPath')['getPropertyFromPath']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
@@ -392,6 +418,14 @@ declare module 'vue' {
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
     readonly isRef: UnwrapRef<typeof import('vue')['isRef']>
     readonly makeDestructurable: UnwrapRef<typeof import('@vueuse/core')['makeDestructurable']>
+    readonly mapFieldDependencies: UnwrapRef<typeof import('./utils/form/mapFieldDependencies')['mapFieldDependencies']>
+    readonly mapFieldProps: UnwrapRef<typeof import('./utils/form/mapFieldProps')['mapFieldProps']>
+    readonly mapFieldsInitialState: UnwrapRef<typeof import('./utils/form/mapFieldsInitialState')['mapFieldsInitialState']>
+    readonly mapFieldsOutputState: UnwrapRef<typeof import('./utils/form/mapFieldsInitialState')['mapFieldsOutputState']>
+    readonly mapFilterInitialState: UnwrapRef<typeof import('./utils/table/mapFilterInitialState')['mapFilterInitialState']>
+    readonly mapFiltersToFormSchema: UnwrapRef<typeof import('./utils/table/mapFiltersToFormSchema')['mapFiltersToFormSchema']>
+    readonly mapQueryFetchParams: UnwrapRef<typeof import('./utils/table/mapQueryFetchParams')['mapQueryFetchParams']>
+    readonly mapTableFilters: UnwrapRef<typeof import('./utils/table/mapQueryFetchParams')['mapTableFilters']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
     readonly multiCellRenderer: UnwrapRef<typeof import('./composables/excel/useImportManager.tsx')['multiCellRenderer']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
@@ -418,6 +452,8 @@ declare module 'vue' {
     readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
     readonly pausableWatch: UnwrapRef<typeof import('@vueuse/core')['pausableWatch']>
     readonly pipeMergeObject: UnwrapRef<typeof import('./utils/pipeMergeObject')['pipeMergeObject']>
+    readonly preRenderStringContent: UnwrapRef<typeof import('./utils/renderVNode.tsx')['preRenderStringContent']>
+    readonly preformatFieldDependencies: UnwrapRef<typeof import('./utils/form/mapFieldDependencies')['preformatFieldDependencies']>
     readonly prettyPrintSchema: UnwrapRef<typeof import('./samples/utils')['prettyPrintSchema']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly reactify: UnwrapRef<typeof import('@vueuse/core')['reactify']>
@@ -433,14 +469,18 @@ declare module 'vue' {
     readonly refDefault: UnwrapRef<typeof import('@vueuse/core')['refDefault']>
     readonly refThrottled: UnwrapRef<typeof import('@vueuse/core')['refThrottled']>
     readonly refWithControl: UnwrapRef<typeof import('@vueuse/core')['refWithControl']>
+    readonly remoteDataMapper: UnwrapRef<typeof import('./utils/table/remoteDataMapper')['remoteDataMapper']>
     readonly renderBoolean: UnwrapRef<typeof import('./composables/excel/useImportManager.tsx')['renderBoolean']>
+    readonly renderIcon: UnwrapRef<typeof import('./utils/renderIcon.tsx')['renderIcon']>
+    readonly renderVNode: UnwrapRef<typeof import('./utils/renderVNode.tsx')['renderVNode']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
     readonly resolveDirective: UnwrapRef<typeof import('vue')['resolveDirective']>
+    readonly resolveFieldDependencies: UnwrapRef<typeof import('./utils/form/resolveFieldDependencies')['resolveFieldDependencies']>
     readonly resolveFromStringPath: UnwrapRef<typeof import('./utils/resolveFromStringPath')['resolveFromStringPath']>
     readonly resolveRef: UnwrapRef<typeof import('@vueuse/core')['resolveRef']>
     readonly resolveUnref: UnwrapRef<typeof import('@vueuse/core')['resolveUnref']>
     readonly rowValidityRenderer: UnwrapRef<typeof import('./composables/excel/useImportManager.tsx')['rowValidityRenderer']>
-    readonly setPropertyFromPath: UnwrapRef<typeof import('./utils/setPropertyFromPath')['setPropertyFromPath']>
+    readonly setPropertyFromPath: UnwrapRef<typeof import('./utils/form/setPropertyFromPath')['setPropertyFromPath']>
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>

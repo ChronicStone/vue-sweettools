@@ -17,10 +17,9 @@ import {
   SelectionChangedEvent,
   SortChangedEvent,
 } from "ag-grid-community";
-import { NSpin, NCard, NDialogProvider, GlobalThemeOverrides } from "naive-ui";
+import { NSpin, NCard, GlobalThemeOverrides } from "naive-ui";
 import { AgGridVue } from "ag-grid-vue3";
 import { computed, ref, watch } from "vue";
-import { useGlobalConfig } from "@/composables/useGlobalConfig";
 import { ComputedRef } from "vue";
 import { BuiltInGlobalTheme } from "naive-ui/es/themes/interface";
 
@@ -227,72 +226,76 @@ function handleGridInitialization(params: GridReadyEvent) {
     });
 }
 
-watch(
-  () => selectAll.value,
-  (value: boolean) => {
-    value ? gridApi.value?.selectAll() : gridApi.value?.deselectAll();
-  }
-);
+// watch(
+//   () => selectAll.value,
+//   (value: boolean) => {
+//     value ? gridApi.value?.selectAll() : gridApi.value?.deselectAll();
+//   }
+// );
 </script>
 
 <template>
-  <NDialogProvider>
-    <NCard
-      embedded
-      :bordered="!props.borderless"
-      content-style="padding: 0;"
-      class="datagrid"
-      :segmented="{ content: true }"
-    >
-      <template #header>
-        <TableHeader
-          v-model:search-query="filterState.searchQuery"
-          v-model:panel-filters="filterState.panelFilters"
-          :filters="filters"
-          :dropdown-actions="mappedActions"
-          :nb-selected="nbSelected"
-          :enable-search-query="searchQuery.length > 0"
-          :resolve-grid-data="() => resolveGridData(true)"
-          :table-key="tableKey"
-        >
-          <slot />
-        </TableHeader>
-      </template>
+  <NCard
+    embedded
+    :bordered="!props.borderless"
+    content-style="padding: 0;"
+    class="datagrid"
+    :segmented="{ content: true }"
+  >
+    <template #header>
+      <TableHeader
+        v-model:search-query="filterState.searchQuery"
+        v-model:panel-filters="filterState.panelFilters"
+        :filters="filters"
+        :dropdown-actions="mappedActions"
+        :nb-selected="nbSelected"
+        :enable-search-query="searchQuery.length > 0"
+        :resolve-grid-data="() => resolveGridData(true)"
+        :table-key="tableKey"
+      >
+        <slot />
+      </TableHeader>
+    </template>
 
-      <div ref="gridContainer" class="flex flex-col gap-0">
-        <NSpin :show="isLoading">
-          <AgGridVue
-            ref="gridRef"
-            class="ag-theme-material w-full h-[56vh]"
-            :column-defs="columnDefs"
-            :row-data="data"
-            :default-col-def="defaultColumnDef"
-            :grid-options="gridOptions"
-            row-selection="multiple"
-            animate-rows
-            enable-range-selection
-            enable-cell-text-selection
-            auto-params-refresh
-            suppress-pagination-panel
-            :suppress-scroll-on-new-data="false"
-            always-show-horizontal-scroll
-            always-show-vertical-scroll
-            row-drag-managed
-            row-drag-multi-row
-            @sort-changed="handleGridSort"
-            @selection-changed="handleGridSelection"
-            @body-scroll-end="handleGridScrollEnd"
-            @row-drag-end="handleRowDrag"
-            @grid-ready="handleGridInitialization"
-          />
-        </NSpin>
-      </div>
+    <div ref="gridContainer" class="flex flex-col gap-0">
+      <NSpin :show="isLoading">
+        <AgGridVue
+          ref="gridRef"
+          class="ag-theme-material w-full h-[56vh]"
+          :column-defs="columnDefs"
+          :row-data="data"
+          :default-col-def="defaultColumnDef"
+          :grid-options="gridOptions"
+          row-selection="multiple"
+          animate-rows
+          enable-range-selection
+          enable-cell-text-selection
+          auto-params-refresh
+          suppress-pagination-panel
+          :suppress-scroll-on-new-data="false"
+          always-show-horizontal-scroll
+          always-show-vertical-scroll
+          row-drag-managed
+          row-drag-multi-row
+          @sort-changed="handleGridSort"
+          @selection-changed="handleGridSelection"
+          @body-scroll-end="handleGridScrollEnd"
+          @row-drag-end="handleRowDrag"
+          @grid-ready="handleGridInitialization"
+        />
+      </NSpin>
+    </div>
 
-      <template #action>
-        <TableFooter v-model:pagination-state="paginationState" />
-      </template>
-    </NCard>
-  </NDialogProvider>
+    <template #action>
+      <TableFooter v-model:pagination-state="paginationState" />
+    </template>
+  </NCard>
+
+  <pre>
+  {{ fetchParams }}
+
+</pre
+  >
 </template>
 
 <style lang="scss">

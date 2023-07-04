@@ -1,6 +1,7 @@
 import { email, helpers, sameAs } from "@vuelidate/validators";
+import { Equal, Expect } from "hotscript/dist/internals/helpers";
 
-const sample = defineFormSchemaSample({
+const { sample, formData } = defineFormSchemaSample({
   title: "Cross field validation with dependencies",
   description:
     "This sample shows how to use cross field validation with dependencies, to create a simple password confirmation field.",
@@ -41,4 +42,13 @@ const sample = defineFormSchemaSample({
   },
 });
 
-export default sample;
+assertDataTypeInferrence<
+  {
+    email: string;
+    password: string;
+    passwordConfirmation: string;
+  },
+  typeof formData
+>();
+
+export default { sample };

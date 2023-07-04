@@ -1,6 +1,7 @@
 import { GenericObject } from "@/types/utils";
 import { FetchParams } from "@/types/table";
 import { resolveFromStringPath } from "@/utils/resolveFromStringPath";
+import { resolve } from "path";
 
 export async function remoteDataMapper(
   data: Array<GenericObject>,
@@ -48,8 +49,8 @@ export async function remoteDataMapper(
     // Process sorting
     if (sortKey) {
       output = output.sort((a, b) => {
-        const aValue = a[sortKey];
-        const bValue = b[sortKey];
+        const aValue = resolveFromStringPath(sortKey, a) as any;
+        const bValue = resolveFromStringPath(sortKey, b) as any;
         if (aValue === bValue) return 0;
         if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
         if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;

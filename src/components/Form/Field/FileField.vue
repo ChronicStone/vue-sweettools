@@ -5,6 +5,7 @@ import {
   convertFileSizeToMb,
 } from "@/utils/general/format";
 import { useMessage, useThemeVars, NSpin } from "naive-ui";
+import { renderVNode } from "@/utils/renderVNode";
 
 type IFile = {
   fileName: string;

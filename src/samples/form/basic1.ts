@@ -1,6 +1,6 @@
 import { Expect, Equal } from "hotscript/dist/internals/helpers";
 
-const sample = defineFormSchemaSample({
+const { sample, formData } = defineFormSchemaSample({
   title: "Basic form - field types",
   description: "This form shows all the available field types.",
   schema: {
@@ -8,7 +8,38 @@ const sample = defineFormSchemaSample({
     fullScreen: true,
     fields: [
       { key: "text", label: "Text", type: "text", required: true },
-      { key: "textarea", label: "Textarea", type: "textarea", required: true },
+      {
+        key: "treeSelect",
+        label: "Tree select",
+        type: "tree-select",
+        multiple: true,
+        options: [
+          {
+            label: "test1",
+            key: "test1",
+            children: [{ label: "test1.1", key: "test1.1" }],
+          },
+          {
+            label: "test2",
+            key: "test2",
+            children: [{ label: "test2.1", key: "test2.1" }],
+          },
+        ],
+        fieldParams: {
+          multiple: true,
+          cascade: true,
+          checkStrategy: "child",
+          showPath: false,
+          checkable: true,
+        },
+      },
+      {
+        key: "textarea",
+        label: "Textarea",
+        type: "textarea",
+        size: 8,
+        required: true,
+      },
       { key: "number", label: "Number", type: "number", required: true },
       { key: "password", label: "Password", type: "password" },
       {
@@ -111,4 +142,4 @@ const sample = defineFormSchemaSample({
 
 // type Result = Expect<Equal<typeof sample.formData, { text: string }>>;
 
-export default sample;
+export default { sample };

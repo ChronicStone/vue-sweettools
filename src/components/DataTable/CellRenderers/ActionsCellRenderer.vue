@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { CellRendererParams, TableRowAction } from "@/types/table";
-import { NTooltip, NEl, NConfigProvider, NIcon, NButton } from "naive-ui";
+import { NTooltip, NEl, NConfigProvider, NIcon } from "naive-ui";
 import { GenericObject } from "@/types/utils";
 import { useElementSize } from "@vueuse/core";
 import { Ref, computed, ref } from "vue";

@@ -18,8 +18,6 @@ const props = defineProps<{
 const showDescription = ref<boolean>(false);
 const modalOverlayApi = inject(MODAL_OVERLAY_INJECTION_KEY);
 
-
-
 function renderLabel(
   fieldLabel: typeof props.fieldLabel,
   description: typeof props.description
@@ -52,7 +50,7 @@ watch(
     <mdi-information class="h-3.5 w-3.5" />
   </div>
   <NModal v-model:show="showDescription">
-     <NCard
+    <NCard
       closable
       :on-close="() => (showDescription = false)"
       style="width: 600px; z-index: 30000"
@@ -63,11 +61,10 @@ watch(
       <template #header>
         <Component :is="renderLabel(fieldLabel, description)" />
       </template>
-      
+
       <NScrollbar style="max-height: 80vh" class="pr-6">
         <Component :is="renderContent(description)" />
       </NScrollbar>
-      
     </NCard>
   </NModal>
 </template>

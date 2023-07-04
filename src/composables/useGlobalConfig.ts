@@ -11,7 +11,7 @@ const DEFAULT_FORM_CONFIG = {
         typeof label === "function"
           ? label()?.toLocaleLowerCase()
           : label.toLocaleLowerCase()
-      } can't be empty`,
+      } is required`,
     nextBtnMessage: "NEXT",
     prevBtnMessage: "BACK",
     submitBtnMessage: "SUBMIT",
@@ -29,7 +29,6 @@ const DEFAULT_FORM_CONFIG = {
 
 export function useGlobalConfig(formSchema?: FormSchema) {
   const config = inject(PLUGIN_CONF_INJECTION_KEY, {
-    isDark: false,
     form: DEFAULT_FORM_CONFIG,
   });
 

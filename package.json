@@ -1,6 +1,6 @@
 {
   "name": "@chronicstone/vue-sweettools",
-  "version": "0.3.3",
+  "version": "0.3.7-rc1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -20,7 +20,7 @@
     },
     "./dist/style.css": "./dist/style.css"
   },
-  "types": "./dist/types.d.ts",
+  "types": "./dist/index.d.ts",
   "dependencies": {
     "@ag-grid-community/core": "^29.1.0",
     "@chronicstone/vue-testid": "^0.1.0",

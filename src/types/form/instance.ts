@@ -54,7 +54,7 @@ export type FieldInstance = FormField & {
 };
 
 export type FormRefInstance = {
-  $reset(): void;
+  $reset(clear?: boolean): void;
   $validate(): Promise<boolean>;
   $v: ComputedRef<Validation<GenericObject, GenericObject>>;
   $data: ComputedRef<{ [key: string]: any }>;
