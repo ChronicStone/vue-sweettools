@@ -290,12 +290,6 @@ function handleGridInitialization(params: GridReadyEvent) {
       <TableFooter v-model:pagination-state="paginationState" />
     </template>
   </NCard>
-
-  <pre>
-  {{ fetchParams }}
-
-</pre
-  >
 </template>
 
 <style lang="scss">

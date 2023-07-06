@@ -11,6 +11,6 @@ export function mapFiltersToFormSchema(filters: TableFilter[]) {
           multiple: filter?.multiple ?? true,
         }),
       },
-    }
+    };
   });
 }

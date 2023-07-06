@@ -19,7 +19,6 @@ export function useQueryState(
   persistency: false | "localStorage" | "sessionStorage",
   defaultSort: ComputedRef<DataTableSchema["sort"]>
 ) {
-  const router = useRouter();
   const isLoading = ref<boolean>(false);
   const data = ref<Record<string, any>[]>([]);
   const selected = ref<Record<string, any>[]>([]);
@@ -33,9 +32,7 @@ export function useQueryState(
   const topViewportOffset = !persistency
     ? ref<number>(0)
     : useStorage<number>(
-        `${tableKey}__${
-          router.currentRoute.value?.name?.toString?.() ?? ""
-        }__#viewportTopRow`,
+        `${tableKey}__#viewportTopRow`,
         0,
         persistency === "localStorage" ? localStorage : sessionStorage
       );
@@ -43,9 +40,7 @@ export function useQueryState(
   const sortState = !persistency
     ? ref<GridControls["sort"]>({ colId: "", key: "", dir: null })
     : useStorage<GridControls["sort"]>(
-        `${tableKey}__${
-          router.currentRoute.value?.name?.toString?.() ?? ""
-        }__#sortState`,
+        `${tableKey}__#sortState`,
         { colId: "", key: "", dir: null },
         persistency === "localStorage" ? localStorage : sessionStorage
       );
@@ -58,9 +53,7 @@ export function useQueryState(
         rowTotalCount: 0,
       })
     : useStorage<GridControls["pagination"]>(
-        `${tableKey}__${
-          router.currentRoute.value?.name?.toString?.() ?? ""
-        }__#paginationstate`,
+        `${tableKey}__#paginationstate`,
         { pageSize: 50, pageIndex: 1, pageTotalCount: 1, rowTotalCount: 0 },
         persistency === "localStorage" ? localStorage : sessionStorage
       );
@@ -72,9 +65,7 @@ export function useQueryState(
         staticFilters: {},
       })
     : useStorage<GridControls["filters"]>(
-        `${tableKey}__${
-          router.currentRoute.value?.name?.toString?.() ?? ""
-        }__#filtersState`,
+        `${tableKey}__#filtersState`,
         { searchQuery: "", panelFilters: {}, staticFilters: {} },
         persistency === "localStorage" ? localStorage : sessionStorage
       );

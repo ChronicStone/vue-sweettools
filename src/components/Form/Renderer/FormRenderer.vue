@@ -125,7 +125,7 @@ defineExpose<FormRefInstance>({
       >
         {{ schema.title }}
       </h1>
-      <component :is="renderVNode(schema.title)" v-else />
+      <component :is="() => renderVNode(schema.title)" v-else />
     </template>
 
     <template v-if="isMultiStep" #stepper>

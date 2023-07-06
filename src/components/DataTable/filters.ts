@@ -61,15 +61,13 @@ export function timeRangeFilter(key: string, label: string): TableFilter {
     key,
     label,
     type: "daterange",
-    transform: (value: any[]) => {
-      console.log(value);
+    transform: (value: unknown[]) => {
       return !Array.isArray(value) || value.some((value) => !value)
         ? null
-        : value.map(formatDateToISOstring);
+        : value.map((value) => formatDateToISOstring(value as string));
     },
-    preformat: (value: any) => {
-      console.log("inputVal", value);
-      return value?.length
+    preformat: (value: unknown) => {
+      return Array.isArray(value) && value.length
         ? value.map((date: string) => new Date(date).getTime())
         : null;
     },
