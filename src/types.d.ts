@@ -1,5 +1,5 @@
 import { DataGridProps, DataGridSchema } from "./types/datagrid";
-import type { SweettoolsPluginConfig } from "./types/lib";
+import type { AppTypes, SweettoolsPluginConfig } from "./types/lib";
 import type {
   DataTableProps,
   TableActionParams,
@@ -51,6 +51,7 @@ declare module "@chronicstone/vue-sweettools" {
     FormField,
     FormRefInstance,
     DataGridSchema,
+    AppTypes,
   };
 
   export const DataTable: DefineComponent<

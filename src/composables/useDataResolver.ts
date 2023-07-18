@@ -24,12 +24,12 @@ export function useDataResolver(
       try {
         isLoading.value = true;
         const { docs, totalPages, totalDocs, ...rest } = remote.value
-          ? await (datasource as unknown as DataSource<any, "remote">)(
+          ? await (datasource as unknown as DataSource<any, true>)(
               fetchParams.value
             )
           : await remoteDataMapper(
               localDataStore?.value ?? [],
-              datasource as unknown as DataSource<any, "local">,
+              datasource as unknown as DataSource<any, false>,
               fetchParams.value,
               fullReload
             );
@@ -55,8 +55,7 @@ export function useDataResolver(
     }
   );
 
-  const stalledFetchParams = ref<FetchParams>(fetchParams.value);
-
+  ref<FetchParams>(fetchParams.value);
   watchDebounced(
     () => fetchParams.value,
     () => {

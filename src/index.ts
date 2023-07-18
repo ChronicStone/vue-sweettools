@@ -13,7 +13,7 @@ import {
 } from "./components/DataTable/filters";
 import "virtual:windi.css";
 import { PLUGIN_CONF_INJECTION_KEY } from "./config/injectionKeys";
-import { SweettoolsPluginConfig } from "./types/lib";
+import { AppTypes, SweettoolsPluginConfig } from "./types/lib";
 import {
   useFormController,
   buildFormSchema,
@@ -61,6 +61,7 @@ export type {
   FormField,
   FormRefInstance,
   DataGridSchema,
+  AppTypes,
 };
 
 export {

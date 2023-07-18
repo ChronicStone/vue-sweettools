@@ -1,5 +1,4 @@
-import { MaybeComputedRef, MaybeRef } from "@vueuse/core";
-import { GlobalThemeOverrides } from "naive-ui";
+import { RouteLocationRaw } from "vue-router";
 
 export type SweettoolsPluginConfig = {
   form?: {
@@ -21,3 +20,8 @@ export type SweettoolsPluginConfig = {
   };
   permissionValidator?: (keys: Array<string | string[]>) => boolean;
 };
+
+export interface AppTypes {
+  routeLocation: RouteLocationRaw;
+  permissionKey: string;
+}

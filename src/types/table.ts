@@ -2,7 +2,7 @@ import { FormField } from "@/types/form/fields";
 import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 import { ComputedRef, DefineComponent, Ref, VNodeChild } from "vue";
 import { DeepRequired, GenericObject, NestedPaths } from "@/types/utils";
-import { RouteLocationRaw } from "vue-router";
+import { AppTypes } from "./lib";
 
 export type FilterMatchMode =
   | "arrayContains"
@@ -55,13 +55,25 @@ export type TableFilter = FormField & {
   postCondition?: boolean;
 };
 
-export interface StaticFilter {
+export type StaticFilter = {
   key: string;
-  matchMode: FilterMatchMode;
   value: any;
   required?: boolean;
-  params?: TableFilter["params"];
-}
+  postCondition?: boolean;
+  matchMode: FilterMatchMode;
+  params?: {
+    stringMap?: Array<
+      | string
+      | {
+          propertyName: string;
+          matchMode: Omit<FilterMatchMode, "objectStringMap">;
+        }
+    >;
+    stringMapSeparator?: string;
+    stringMapOperator?: "AND" | "OR";
+    dateMode?: boolean;
+  };
+};
 
 export interface FilterState {
   [key: string]: string | number | boolean | any[] | object;
@@ -110,6 +122,7 @@ export interface MappedFilters {
   matchMode: FilterMatchMode;
   required?: boolean | undefined;
   params: TableFilter["params"];
+  postCondition?: boolean;
 }
 
 export interface FetchParams {
@@ -138,16 +151,16 @@ export type RemoteTableData<T extends GenericObject> = {
   totalPages: number;
 };
 
-export type DataSource<T, Y extends "remote" | "local" | null = null> = (
+export type DataSource<T, Remote extends boolean = boolean> = (
   params: FetchParams
 ) => Promise<
-  Y extends "remote"
+  Remote extends true
     ? {
         docs: T[];
         totalDocs: number;
         totalPages: number;
       }
-    : Y extends "local"
+    : Remote extends false
     ? T[]
     :
         | {
@@ -170,8 +183,8 @@ export interface TableAction<T = GenericObject> {
   label: string;
   icon: string;
   action?: (actionParams: TableActionParams<T>) => void;
-  link?: string | RouteLocationRaw;
-  permissions?: (string | string[])[];
+  link?: string | AppTypes["routeLocation"];
+  permissions?: (AppTypes["permissionKey"] | AppTypes["permissionKey"][])[];
   condition?: (data: T[], params: TableActionParams<T>) => boolean;
 }
 
@@ -195,9 +208,9 @@ export type TableRowAction<T> = {
   action?: (params: { rowData: T; tableApi: TableApi<T> }) => void;
   link?:
     | string
-    | RouteLocationRaw
-    | ((params: { rowData: T }) => string | RouteLocationRaw);
-  permissions?: (string | string[])[];
+    | AppTypes["routeLocation"]
+    | ((params: { rowData: T }) => AppTypes["routeLocation"]);
+  permissions?: (AppTypes["permissionKey"] | AppTypes["permissionKey"][])[];
   condition?: (params: { rowData: T; tableApi: TableApi<T> }) => boolean;
 };
 
@@ -243,28 +256,31 @@ export interface GridControls {
   };
 }
 
-export interface DataTableSchema<T extends GenericObject = GenericObject> {
-  remote: boolean;
+export interface DataTableSchema<
+  TData extends GenericObject = GenericObject,
+  Remote extends boolean = boolean
+> {
+  remote: Remote;
   draggable?: boolean;
-  datasource: DataSource<T>;
-  columns: Column<T>[];
+  datasource: DataSource<TData, Remote>;
+  columns: Column<TData>[];
   optimizeQuery?: OptimizedQueryField[];
   tableKey?: string;
   staticFilters?: StaticFilter[];
   filters?: TableFilter[];
-  searchQuery?: Array<NestedPaths<DeepRequired<T>>>;
+  searchQuery?: Array<NestedPaths<DeepRequired<TData>>>;
   enableSelection?: boolean;
-  actions?: TableAction<T>[];
-  rowActions?: TableRowAction<T>[];
+  actions?: TableAction<TData>[];
+  rowActions?: TableRowAction<TData>[];
   columnFitMode?: "fit" | "fill";
   persistency?: false | "localStorage" | "sessionStorage";
   sort?:
-    | NestedPaths<DeepRequired<T>>
-    | { key: NestedPaths<DeepRequired<T>>; dir: "asc" | "desc" };
+    | NestedPaths<DeepRequired<TData>>
+    | { key: NestedPaths<DeepRequired<TData>>; dir: "asc" | "desc" };
   onRowDrag?: (params: {
-    rows: Array<T>;
-    movedRows: Array<T>;
-    tableApi: TableApi<T>;
+    rows: Array<TData>;
+    movedRows: Array<TData>;
+    tableApi: TableApi<TData>;
   }) => void;
 }
 

@@ -226,12 +226,12 @@ function handleGridInitialization(params: GridReadyEvent) {
     });
 }
 
-// watch(
-//   () => selectAll.value,
-//   (value: boolean) => {
-//     value ? gridApi.value?.selectAll() : gridApi.value?.deselectAll();
-//   }
-// );
+watch(
+  () => selectAll.value,
+  (value: boolean) => {
+    value ? gridApi.value?.selectAll() : gridApi.value?.deselectAll();
+  }
+);
 </script>
 
 <template>

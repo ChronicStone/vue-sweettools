@@ -35,24 +35,27 @@ const resolvedValue = computed(() =>
 
     <template v-else>
       <div class="flex flex-col gap-1 w-full h-full">
-        <span v-if="fieldSchema?.label" class="font-semibold flex items-center">
-          <Component :is="renderVNode(fieldSchema.label, data)" />:
-        </span>
+        <div v-if="fieldSchema?.label" class="font-semibold flex items-center">
+          <component :is="() => renderVNode(fieldSchema.label, data)" />:
+        </div>
 
-        <template v-if="!fieldSchema.render">
-          {{ resolvedValue || "N/A" }}
-        </template>
+        <div class="w-[fit-content]">
+          <template v-if="!fieldSchema.render">
+            {{ resolvedValue || "N/A" }}
+          </template>
 
-        <Component
-          :is="
-            renderVNode(fieldSchema.render, {
-              value: resolvedValue,
-              data,
-              store: virtualStore,
-            })
-          "
-          v-else
-        />
+          <component
+            :is="
+              () =>
+                renderVNode(fieldSchema.render, {
+                  value: resolvedValue,
+                  data,
+                  store: virtualStore,
+                })
+            "
+            v-else
+          />
+        </div>
       </div>
     </template>
   </div>

@@ -9,7 +9,7 @@ export function useDropdownActions(
   actions: ComputedRef<TableAction[]>,
   tableApi: Ref<TableApi | undefined>,
   fetchParams: Readonly<Ref<FetchParams>>,
-  data: Ref<Record<string, any>[]>,
+  data: Ref<Record<string, any>[] | undefined>,
   selectionState: {
     nbSelected: Ref<number>;
     selectAll: Ref<boolean>;
@@ -42,7 +42,7 @@ export function useDropdownActions(
         },
         _enable: computed(() =>
           typeof action.condition === "function"
-            ? action.condition(data.value, {
+            ? action.condition(Array.isArray(data.value) ? data.value : [], {
                 nbSelected: selectionState.nbSelected.value,
                 selectAll: selectionState.selectAll.value,
                 selected: selectionState.selected.value,
@@ -56,7 +56,6 @@ export function useDropdownActions(
             ? permissionValidator.value(action.permissions)
             : true
         ),
-        // usePermission(...(action?.permissions ?? [])),
       }))
       .filter((action) => action._enable.value && action._allowed.value)
   );

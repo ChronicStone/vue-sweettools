@@ -18,11 +18,17 @@ export function mapQueryFetchParams(
 
 function mapStaticFilters(filters: StaticFilter[]) {
   return filters.reduce(
-    (acc, { key, value, matchMode, required, params }) => ({
+    (acc, { key, value, matchMode, required, params, postCondition }) => ({
       ...acc,
       [key]: [
         ...(acc?.[key] ?? []),
-        { value, matchMode, required: required ?? false, params: params ?? {} },
+        {
+          value,
+          matchMode,
+          required: required ?? false,
+          params: params ?? {},
+          postCondition,
+        },
       ],
     }),
     {} as Record<string, MappedFilters[]>
