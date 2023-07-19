@@ -70,7 +70,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
                     : field?.label ?? field.key
                 )
               : (libConfig.getProp("textOverrides.requiredMessage") as string),
-            field.type === 'checkbox' ? (value: boolean) => !!value : required
+            field.type === "checkbox" ? (value: boolean) => !!value : required
           );
 
         if (field.type === "object") {
@@ -94,6 +94,28 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
                 index.toString(),
               ])
             )
+          );
+
+          fieldRules = {
+            ...fieldRules,
+            ...arrayToObject(arrayItemsRules),
+          };
+        }
+
+        if (field.type === "array-variant") {
+          const arrayItemsRules = await Promise.all(
+            (fieldValue as GenericObject[]).map((itemValue, index) => {
+              const fields =
+                field.variants.find(
+                  (variant) => variant.key === itemValue[field.variantKey]
+                )?.fields ?? [];
+
+              return mapFormFules(fields, state, [
+                ...parentKey,
+                field.key,
+                index.toString(),
+              ]);
+            })
           );
 
           fieldRules = {

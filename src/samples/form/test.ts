@@ -11,6 +11,7 @@ const variant2 = buildMultiFieldSchema([
     label: "Variant 2 field 2",
     key: "variant2Field1",
     type: "text",
+    required: true,
   },
   {
     label: "Select",
@@ -24,7 +25,8 @@ const { sample, formData } = defineFormSchemaSample({
   title: "Testing sample",
   data: {},
   schema: {
-    size: 8,
+    fieldSize: 8,
+    gridSize: 8,
     fields: [
       {
         label: "Variant array",
