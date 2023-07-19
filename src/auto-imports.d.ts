@@ -18,6 +18,7 @@ declare global {
   const buildFormSchema: typeof import('./composables/form/useFormController')['buildFormSchema']
   const buildFormSchemaDist: typeof import('./composables/form/useFormController')['buildFormSchemaDist']
   const buildGridSchema: typeof import('./composables/buildTableSchema')['buildGridSchema']
+  const buildMultiFieldSchema: typeof import('./composables/form/useFormController')['buildMultiFieldSchema']
   const buildTableSchema: typeof import('./composables/buildTableSchema')['buildTableSchema']
   const changeRgbaOpacity: typeof import('./utils/manipulateColor')['changeRgbaOpacity']
   const computeHslColor: typeof import('./utils/simulateHslColorOpacity')['computeHslColor']
@@ -370,6 +371,7 @@ declare module 'vue' {
     readonly buildFormSchema: UnwrapRef<typeof import('./composables/form/useFormController')['buildFormSchema']>
     readonly buildFormSchemaDist: UnwrapRef<typeof import('./composables/form/useFormController')['buildFormSchemaDist']>
     readonly buildGridSchema: UnwrapRef<typeof import('./composables/buildTableSchema')['buildGridSchema']>
+    readonly buildMultiFieldSchema: UnwrapRef<typeof import('./composables/form/useFormController')['buildMultiFieldSchema']>
     readonly buildTableSchema: UnwrapRef<typeof import('./composables/buildTableSchema')['buildTableSchema']>
     readonly changeRgbaOpacity: UnwrapRef<typeof import('./utils/manipulateColor')['changeRgbaOpacity']>
     readonly computeHslColor: UnwrapRef<typeof import('./utils/simulateHslColorOpacity')['computeHslColor']>

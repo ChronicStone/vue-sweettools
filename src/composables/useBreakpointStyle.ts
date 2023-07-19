@@ -4,13 +4,13 @@ import { breakpointsTailwind } from "@vueuse/core";
 
 function computeStyleModifier(value: string, type: string) {
   if (type === "grid-cols")
-    return `grid-template-columns: repeat(${value}, minmax(0, 1fr));`;
+    return `grid-template-columns: repeat(${value}, minmax(0, 1fr))`;
   if (type === "grid-rows")
-    return `grid-template-rows: repeat(${value}, minmax(0, 1fr));`;
-  if (type === "col") return `grid-column: span ${value} / span ${value};`;
-  if (type === "row") return `grid-row: span ${value} / span ${value};`;
-  if (type === "maxWidth") return `max-width: ${value};`;
-  if (type === "maxHeight") return `max-height: ${value};`;
+    return `grid-template-rows: repeat(${value}, minmax(0, 1fr))`;
+  if (type === "col") return `grid-column: span ${value} / span ${value}`;
+  if (type === "row") return `grid-row: span ${value} / span ${value}`;
+  if (type === "maxWidth") return `max-width: ${value}`;
+  if (type === "maxHeight") return `max-height: ${value}`;
   if (type === "boolean") return value === "true";
   if (type === "value") return value;
 }

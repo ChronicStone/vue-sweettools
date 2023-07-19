@@ -72,6 +72,7 @@ const { addItem, removeItem, moveItem } = useArrayField(_field, fieldValue);
             :field="{
               ..._field,
               type: 'object',
+              collapsed: false,
               key: index.toString(),
               fieldParams: { frameless: true },
             }"

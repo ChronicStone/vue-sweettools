@@ -42,6 +42,7 @@ export enum FieldTypes {
   TAG = "tag",
   CASCADER = "cascader",
   GROUP = "group",
+  ARRAY_VARIANT = "array-variant",
 }
 
 export type TFieldTypes = `${FieldTypes}`;
@@ -477,6 +478,20 @@ export interface _ArrayField<
   ) => string;
 }
 
+export type ArrayVariantField<
+  FieldKey extends Narrowable = string,
+  StoreData extends Record<string, unknown> = Record<string, unknown>
+> = Omit<_ArrayField<FieldKey, StoreData>, "fields"> & {
+  type: "array-variant";
+  displayMode: "list" | "tabs";
+  variantKey: string;
+  variants: Array<{
+    label: string;
+    key: string | number;
+    fields: FormField<FieldKey, StoreData>[];
+  }>;
+};
+
 export interface ArrayListField<
   FieldKey extends Narrowable = string,
   StoreData extends Record<string, unknown> = Record<string, unknown>
@@ -595,6 +610,7 @@ export type FormField<
     | RatingField<StoreData>
     | TagField<StoreData>
     | GroupField<FieldKey, StoreData>
+    | ArrayVariantField<FieldKey, StoreData>
   );
 
 export type FieldContext = ReturnType<typeof useFieldContext>;

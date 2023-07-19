@@ -32,29 +32,50 @@ export function mapFieldsInitialState(
 
     let fieldOutput: unknown = fieldValue;
 
-    if (["array-list", "array-tabs"].includes(field.type)) {
-      fieldOutput = ((fieldValue ?? []) as Array<unknown>).map(
-        (itemValue, index) => ({
-          ...("extraProperties" in field && field.extraProperties === true
-            ? appendExtraProperties(
-                field.fields,
-                itemValue as Record<string, unknown>
-              )
-            : {}),
-          ...getNestedFieldOutput(
-            "input",
-            inputState,
-            rootState,
-            virtualStore,
-            field,
-            parentKeys,
-            index
-          ),
-        })
+    if (
+      field.type === "array-list" ||
+      field.type === "array-tabs" ||
+      field.type === "array-variant"
+    ) {
+      fieldOutput = ((fieldValue ?? []) as Array<Record<string, unknown>>).map(
+        (itemValue, index) => {
+          let fields: Array<FormField>;
+          let variantKey = "";
+          if (field.type === "array-variant") {
+            variantKey = field.variantKey;
+            fields =
+              field.variants.find((v) => v.key === itemValue[variantKey])
+                ?.fields ?? [];
+          } else {
+            fields = field.fields;
+          }
+          return {
+            ...("extraProperties" in field && field.extraProperties === true
+              ? appendExtraProperties(
+                  fields,
+                  itemValue as Record<string, unknown>
+                )
+              : {}),
+            ...getNestedFieldOutput(
+              "input",
+              inputState,
+              rootState,
+              virtualStore,
+              field.type === "array-variant"
+                ? {
+                    ...field,
+                    type: "array-tabs",
+                    fields,
+                  }
+                : field,
+              parentKeys,
+              index
+            ),
+            ...(variantKey ? { [variantKey]: itemValue[variantKey] } : {}),
+          };
+        }
       );
-    }
-
-    if (field.type === "object" || field.type === "group") {
+    } else if (field.type === "object" || field.type === "group") {
       fieldOutput = {
         ...("extraProperties" in field && field.extraProperties === true
           ? appendExtraProperties(field.fields, fieldValue)
@@ -115,29 +136,51 @@ export function mapFieldsOutputState(
     if (!includeField) continue;
     let fieldOutput = fieldValue;
 
-    if (["array-list", "array-tabs"].includes(field.type)) {
-      fieldOutput = ((fieldValue ?? []) as Array<unknown>).map(
-        (itemValue, index) => ({
-          ...("extraProperties" in field && field.extraProperties === true
-            ? appendExtraProperties(
-                field.fields,
-                itemValue as Record<string, unknown>
-              )
-            : {}),
-          ...getNestedFieldOutput(
-            "output",
-            inputState,
-            rootState,
-            virtualStore,
-            field,
-            parentKeys,
-            index
-          ),
-        })
-      );
-    }
+    if (
+      field.type === "array-list" ||
+      field.type === "array-tabs" ||
+      field.type === "array-variant"
+    ) {
+      fieldOutput = ((fieldValue ?? []) as Array<Record<string, unknown>>).map(
+        (itemValue, index) => {
+          let fields: Array<FormField>;
+          let variantKey = "";
+          if (field.type === "array-variant") {
+            variantKey = field.variantKey;
+            fields =
+              field.variants.find((v) => v.key === itemValue[variantKey])
+                ?.fields ?? [];
+          } else {
+            fields = field.fields;
+          }
 
-    if (field.type === "object" || field.type === "group") {
+          return {
+            ...("extraProperties" in field && field.extraProperties === true
+              ? appendExtraProperties(
+                  fields,
+                  itemValue as Record<string, unknown>
+                )
+              : {}),
+            ...getNestedFieldOutput(
+              "output",
+              inputState,
+              rootState,
+              virtualStore,
+              field.type === "array-variant"
+                ? {
+                    ...field,
+                    type: "array-tabs",
+                    fields,
+                  }
+                : field,
+              parentKeys,
+              index
+            ),
+            ...(variantKey ? { [variantKey]: itemValue[variantKey] } : {}),
+          };
+        }
+      );
+    } else if (field.type === "object" || field.type === "group") {
       fieldOutput = {
         ...("extraProperties" in field && field.extraProperties === true
           ? appendExtraProperties(field.fields, fieldValue)

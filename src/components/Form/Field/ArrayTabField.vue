@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   ArrayTabsField,
+  ArrayVariantField,
   FieldComponentEmits,
   FieldComponentProps,
   _BaseField,
@@ -21,7 +22,9 @@ import { renderIcon } from "@/utils/renderIcon";
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
-const _field = computed(() => props.field as _BaseField & ArrayTabsField);
+const _field = computed(
+  () => props.field as _BaseField & (ArrayTabsField | ArrayVariantField)
+);
 
 const fieldValue = computed({
   get: () => props.modelValue as Record<string, any>[],
@@ -33,7 +36,7 @@ const gridSize = useBreakpointStyle(props.field.gridSize ?? "", "grid-cols");
 
 const activeTab = ref<number>(0);
 const tabsInstanceRef = ref<TabsInst>();
-const { addItem, removeItem, moveItem } = useArrayField(
+const { addItem, removeItem, moveItem, resolveVariantFields } = useArrayField(
   _field,
   fieldValue,
   activeTab,
@@ -136,28 +139,58 @@ function buildItemControls(
       </NTabs>
 
       <div v-if="fieldValue?.length" class="overflow-x-hidden pb-5 px-5">
-        <component
-          :is="'div'"
-          v-for="(_, index) in fieldValue"
-          v-show="index === activeTab"
-          :key="index"
-          class="grid gap-4"
-          :style="field.gridSize ? gridSize : formStyle?.gridSize"
-        >
-          <FieldRenderer
-            v-model="fieldValue[index]"
-            :field="{
-              ..._field,
-              type: 'object',
-              key: index.toString(),
-              fieldParams: { frameless: true },
-            }"
-            :render-label="false"
-            :parent-key="[...parentKey, _field.key]"
-            :item-index="index"
-            :show-error="false"
-          />
-        </component>
+        <template v-if="_field.type !== 'array-variant'">
+          <component
+            :is="'div'"
+            v-for="(_, index) in fieldValue"
+            v-show="index === activeTab"
+            :key="index"
+            class="grid gap-4"
+            :style="field.gridSize ? gridSize : formStyle?.gridSize"
+          >
+            <FieldRenderer
+              v-model="fieldValue[index]"
+              :field="{
+                ..._field,
+                type: 'object',
+                collapsed: false,
+                key: index.toString(),
+                fieldParams: { frameless: true },
+              }"
+              :render-label="false"
+              :parent-key="[...parentKey, _field.key]"
+              :item-index="index"
+              :show-error="false"
+            />
+          </component>
+        </template>
+
+        <template v-else>
+          <component
+            :is="'div'"
+            v-for="(_, index) in fieldValue"
+            v-show="index === activeTab"
+            :key="index"
+            class="grid gap-4"
+            :style="field.gridSize ? gridSize : formStyle?.gridSize"
+          >
+            <FieldRenderer
+              v-model="fieldValue[index]"
+              :field="{
+                ..._field,
+                fields: resolveVariantFields(fieldValue[index]),
+                type: 'object',
+                collapsed: false,
+                key: index.toString(),
+                fieldParams: { frameless: true },
+              }"
+              :render-label="false"
+              :parent-key="[...parentKey, _field.key]"
+              :item-index="index"
+              :show-error="false"
+            />
+          </component>
+        </template>
         <NEmpty v-show="!fieldValue[activeTab]" />
       </div>
     </NCard>

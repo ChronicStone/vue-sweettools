@@ -6,11 +6,18 @@ import { NCheckbox, NConfigProvider, darkTheme } from "naive-ui";
 const schema = buildTableSchema<{ firstName: string; lastName: string }>({
   remote: false,
   columns: [
-    { label: "First name", key: "firstName" },
+    {
+      label: "First name",
+      key: "firstName",
+      render: (value) => {
+        console.log("render");
+        return value;
+      },
+    },
     { label: "Last name", key: "lastName" },
   ],
   datasource: async () =>
-    Array.from({ length: 100 }, (_, i) => ({
+    Array.from({ length: 1 }, (_, i) => ({
       firstName: `First name ${i}`,
       lastName: `Last name ${i}`,
     })),

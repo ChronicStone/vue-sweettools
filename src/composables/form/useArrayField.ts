@@ -1,18 +1,66 @@
-import { ArrayListField, ArrayTabsField } from "@/types/form/fields";
+import {
+  ArrayListField,
+  ArrayTabsField,
+  ArrayVariantField,
+  FormField,
+} from "@/types/form/fields";
 import { mapFieldsInitialState } from "@/utils/form/mapFieldsInitialState";
 import { TabsInst, useDialog } from "naive-ui";
 import { ComputedRef, Ref, WritableComputedRef } from "vue";
 
 export function useArrayField(
-  field: ComputedRef<ArrayListField | ArrayTabsField>,
+  field: ComputedRef<ArrayListField | ArrayTabsField | ArrayVariantField>,
   fieldValue: WritableComputedRef<Array<Record<string, any>>>,
   activeTab?: Ref<number>,
   tabsRef?: Ref<TabsInst | undefined>
 ) {
   const dialogApi = useDialog();
+  const formApi = useFormApi();
+
+  function resolveVariantFields(item: Record<string, any>) {
+    if (field.value.type !== "array-variant") return [];
+    const variantKey = item[field.value.variantKey];
+    const variant = field.value.variants.find((v) => v.key === variantKey);
+    if (!variant) return [];
+    return variant.fields;
+  }
 
   async function addItem() {
-    const value = mapFieldsInitialState({}, field.value.fields, {});
+    let fields: Array<FormField>;
+    let value: any;
+    if (field.value.type === "array-variant") {
+      const { isCompleted, formData } = await formApi.createForm({
+        title: "Select a variant",
+        maxWidth: "500px",
+        gridSize: 1,
+        fieldSize: 1,
+        fields: [
+          {
+            label: "Variant",
+            key: "variant",
+            type: "select",
+            options: field.value.variants.map((v) => ({
+              label: v.label,
+              value: v.key,
+            })),
+          },
+        ],
+      });
+      if (!isCompleted) return;
+      const variant = field.value.variants.find(
+        (v) => v.key === formData.variant
+      );
+      if (!variant) return;
+      fields = variant.fields;
+      value = {
+        ...mapFieldsInitialState({}, fields, {}),
+        [field.value.variantKey]: formData.variant,
+      };
+    } else {
+      fields = field.value.fields;
+      value = mapFieldsInitialState({}, fields, {});
+    }
+
     if (!Array.isArray(fieldValue.value)) fieldValue.value = [value];
     else fieldValue.value.push(value);
     nextTick(() => {
@@ -63,5 +111,6 @@ export function useArrayField(
     addItem,
     removeItem,
     moveItem,
+    resolveVariantFields,
   };
 }

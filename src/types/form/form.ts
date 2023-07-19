@@ -6,7 +6,8 @@ import {
   RemoveNeverProps,
   UnionToIntersection,
 } from "./../utils";
-import { FormField, _FieldOptions } from "./fields";
+import { ArrayVariantField, FormField, _FieldOptions } from "./fields";
+import { F } from "ts-toolbelt";
 
 export type FormSharedStore<K extends string = string> = Array<{
   key: K;
@@ -97,11 +98,21 @@ type ResolveFormType<
   ? K["fields"] extends infer U extends FormField<any>[]
     ? FormInfoReturnType<U[number]>[]
     : never
+  : K extends { type: "array-variant" }
+  ? Array<ExtractVariantType<K["variants"]>>
   : K["type"] extends "daterange"
   ? [string, string]
   : K["type"] extends "number" | "slider"
   ? number
   : string;
+
+export type ExtractVariantType<
+  Variants extends ArrayVariantField<any, any>["variants"]
+> = {
+  [K in Variants[number] as K["key"]]: {
+    [F in K["fields"][number] as F["key"]]: ResolveFormType<F>;
+  };
+}[Variants[number]["key"]];
 
 export type ExtractOptionsType<
   T extends _FieldOptions,

@@ -67,6 +67,10 @@ export function useFieldComponent(field: ComputedRef<FormField>) {
         return ArrayListField;
       case FieldTypes.ARRAY_TABS:
         return ArrayTabField;
+      case FieldTypes.ARRAY_VARIANT:
+        return (field.value?.displayMode ?? "tabs") === "tabs"
+          ? ArrayTabField
+          : ArrayListField;
       case FieldTypes.CUSTOM_COMPONENT:
         return CustomField;
       case FieldTypes.RADIO:

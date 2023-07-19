@@ -82,3 +82,10 @@ export function buildFieldSchema<
 >(field: TField): TField {
   return field;
 }
+
+export function buildMultiFieldSchema<
+  TField extends FormField<FieldKey>[],
+  FieldKey extends Narrowable
+>(fields: TField): TField {
+  return fields;
+}

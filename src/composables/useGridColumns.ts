@@ -74,16 +74,7 @@ export function useGridColumns(
       : []),
     ...(params.columns.value ?? [])
       .filter(Boolean)
-      .filter(
-        (column) =>
-          column?.condition?.({
-            tableApi: tableApi.value as TableApi,
-            nbSelected: params.nbSelected.value,
-            selectAll: params.selectAll.value,
-            selected: params.selected.value,
-            fetchParams: params.fetchParams.value,
-          }) ?? true
-      )
+      .filter((column) => column?.condition?.() ?? true)
       .map((column) => ({
         headerName: column.label,
         field: column.key,

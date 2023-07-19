@@ -13,7 +13,7 @@ import { GenericObject } from "@/types/utils";
 import { timeRangeFilter } from "@/components/DataTable/filters";
 import { Assessment, AssessmentStatus } from "./types";
 
-const API_BASE_URL = "https://api.dev-vtest.com/api/v2";
+const API_BASE_URL = "http://localhost:3333/api/v2";
 
 const instance = getCurrentInstance();
 console.log(instance);
@@ -26,7 +26,7 @@ onMounted(() => authenticate());
 async function authenticate() {
   const token = await axios
     .post<{ accessToken: string }>(`${API_BASE_URL}/auth/login`, {
-      email: "cyprienthao@gmail.com",
+      email: "cyprien@vtest.com",
       password: "Trunks99",
     })
     .then((res) => res.data.accessToken);
@@ -114,8 +114,16 @@ function statusHistoryFilter<K extends string>(key: K): TableFilter {
 const schema = buildTableSchema<Assessment>({
   remote: true,
   columns: [
-    { label: "First name", key: "firstName" },
+    { label: "First name", key: "firstName", render: (value) => value + "!" },
     { label: "Last name", key: "lastName" },
+  ],
+  rowActions: [
+    {
+      tooltip: "Test",
+      icon: "mdi:plus",
+      condition: ({ rowData }) => !!rowData._id,
+      action: ({ rowData }) => console.log(rowData),
+    },
   ],
   filters: [statusHistoryFilter("statusHistory")],
   datasource: loadAssessmentData,

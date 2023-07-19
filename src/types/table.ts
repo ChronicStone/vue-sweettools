@@ -90,10 +90,10 @@ export interface Column<
   width?: number | string;
   sortable?: boolean;
   resizable?: boolean;
-  render?: (value: any, row: T, params: GenericObject) => VNodeChild | string;
+  render?: (value: any, row: T) => VNodeChild | string;
   cellComponent?: DefineComponent<any, any, any>;
   cellComponentParams?: GenericObject;
-  condition?: (params: TableActionParams) => boolean;
+  condition?: () => boolean;
 }
 
 // type PickTypeFromPath<
