@@ -11,6 +11,7 @@ const props = defineProps<{
   dependencies: GenericObject;
   required: boolean;
   collapsed?: boolean;
+  renderDescription?: boolean;
 }>();
 
 const collapsed = computed({
@@ -30,20 +31,30 @@ const collapsible = computed<boolean>(
       class="m-0 flex gap-2 justify-start items-center group cursor-pointer"
       style="cursor: pointer !important"
       @click="
-        ['object', 'array-list', 'array-tabs', 'custom-component'].includes(
-          field.type
-        )
+        [
+          'object',
+          'array-list',
+          'array-tabs',
+          'custom-component',
+          'array-variant',
+        ].includes(field.type)
           ? (collapsed = !collapsed)
           : null
       "
     >
       <CollapseButton
         v-if="
-          ['object', 'array-list', 'array-tabs', 'custom-component'].includes(
-            field.type
-          ) &&
+          [
+            'object',
+            'array-list',
+            'array-tabs',
+            'custom-component',
+            'array-variant',
+          ].includes(field.type) &&
           (collapsible ??
-          ['object', 'array-list', 'array-tabs'].includes(field.type)
+          ['object', 'array-list', 'array-tabs', 'array-variant'].includes(
+            field.type
+          )
             ? true
             : false)
         "
@@ -52,14 +63,18 @@ const collapsible = computed<boolean>(
       <label
         class="flex items-center transition-all ease-in-out duration-150"
         :class="{
-          'cursor-pointer': ['object', 'array-list', 'array-tabs'].includes(
-            field.type
-          ),
+          'cursor-pointer': [
+            'object',
+            'array-list',
+            'array-tabs',
+            'array-variant',
+            'custom-component',
+          ].includes(field.type),
         }"
         :for="field.key"
       >
         <Component
-          :is="renderVNode(props.field?.label ?? '', dependencies, {})"
+          :is="() => renderVNode(props.field?.label ?? '', dependencies, {})"
         />
         <span v-if="field.type !== 'checkbox'" class="text-red-500 ml-1.5">
           {{ required ? "*" : "" }}
@@ -68,7 +83,7 @@ const collapsible = computed<boolean>(
     </span>
 
     <DescriptionPopup
-      v-if="field.description"
+      v-if="field.description && (renderDescription ?? true)"
       :description="field.description"
       :field-label="field.label ?? ''"
     />

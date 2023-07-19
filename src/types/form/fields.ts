@@ -47,7 +47,7 @@ export enum FieldTypes {
 
 export type TFieldTypes = `${FieldTypes}`;
 
-export type Dependencies = Record<string, unknown>;
+export type Dependencies = Record<string, any>;
 
 export type _CoreFieldOptions =
   | (number | string)[]
@@ -472,10 +472,7 @@ export interface _ArrayField<
   fields: FormField<FieldKey, StoreData>[];
   collapsible?: boolean;
   collapsed?: boolean;
-  headerTemplate?: (
-    item: Record<string, GenericObject>,
-    index: number
-  ) => string;
+  headerTemplate?: (item: Record<string, any>, index: number) => string;
 }
 
 export type ArrayVariantField<

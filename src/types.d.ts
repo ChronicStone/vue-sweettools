@@ -27,6 +27,7 @@ import {
   useFormController,
   buildFormSchema,
   buildFieldSchema,
+  buildMultiFieldSchema,
 } from "./composables/form/useFormController";
 import { useFormApi } from "./composables/form/useFormApi";
 import { buildTableSchema } from "./composables/buildTableSchema";
@@ -86,6 +87,7 @@ declare module "@chronicstone/vue-sweettools" {
     useFormApi,
     buildFormSchema,
     buildFieldSchema,
+    buildMultiFieldSchema,
     buildExcelSchema,
     useExcelReader,
     buildTableSchema,

@@ -26,6 +26,7 @@ const fieldValue = computed({
           :field="field"
           :required="context.required.value"
           :dependencies="context.dependencies.value"
+          :render-description="false"
         />
         <span class="text-red-500 ml-1.5">
           {{ context.required.value ? "*" : "" }}

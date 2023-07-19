@@ -24,7 +24,7 @@ const resolvedValue = computed(() =>
 
 <template>
   <div
-    :style="`grid-column: span ${fieldColSize} / span ${fieldColSize}; grid-row: span ${fieldRowSize} / span ${fieldRowSize}`"
+    :style="`grid-column: span ${fieldColSize} / span ${fieldColSize}; grid-row: span ${fieldRowSize} / span ${fieldRowSize};`"
   >
     <template v-if="isLoading">
       <NSkeleton

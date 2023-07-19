@@ -2,7 +2,7 @@
   <div
     v-if="mappedSchema?.length"
     class="grid gap-4 auto-rows-min"
-    :style="`${_gridColSize} ${_gridRowSize}`"
+    :style="`${_gridColSize};${_gridRowSize};`"
   >
     <DataGridItem
       v-for="(field, index) in mappedSchema"

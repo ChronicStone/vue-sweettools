@@ -18,6 +18,7 @@ import {
   useFormController,
   buildFormSchema,
   buildFieldSchema,
+  buildMultiFieldSchema,
 } from "./composables/form/useFormController";
 import { useFormApi } from "./composables/form/useFormApi";
 import {
@@ -78,6 +79,7 @@ export {
   useFormController,
   buildFormSchema,
   buildFieldSchema,
+  buildMultiFieldSchema,
   useFormApi,
   buildExcelSchema,
   useExcelReader,
