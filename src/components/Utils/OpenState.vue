@@ -4,7 +4,6 @@ const isOpen = ref<boolean>(props?.default ?? false);
 
 const toggle = () => (isOpen.value = !isOpen.value);
 const setValue = (value: boolean) => {
-  console.log("update", value);
   isOpen.value = value;
 };
 </script>

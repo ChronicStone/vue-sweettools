@@ -197,7 +197,6 @@ export function mapFieldsOutputState(
     }
 
     if (field._stepRoot && !parentKeys.length) {
-      console.log("hello field map");
       if (!state[field._stepRoot as string])
         state[field._stepRoot as string] = {};
       state[field._stepRoot as string][field.key] = getTransformedField(

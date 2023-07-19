@@ -20,7 +20,6 @@ const sampleHeaderRef = ref<HTMLElement>();
 const { height } = useElementSize(sampleHeaderRef);
 
 async function printInlineData(index: number) {
-  console.log("ref", formRef.value?.$data);
   const data = formRef.value?.$data;
   const isValid = await formRef.value?.$validate();
   notif[isValid ? "success" : "error"]({
