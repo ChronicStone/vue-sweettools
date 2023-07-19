@@ -99,7 +99,7 @@ type ResolveFormType<
     ? FormInfoReturnType<U[number]>[]
     : never
   : K extends { type: "array-variant" }
-  ? Array<ExtractVariantType<K["variants"]>>
+  ? Array<ExtractVariantType<K["variants"], K["variantKey"]>>
   : K["type"] extends "daterange"
   ? [string, string]
   : K["type"] extends "number" | "slider"
@@ -107,11 +107,12 @@ type ResolveFormType<
   : string;
 
 export type ExtractVariantType<
-  Variants extends ArrayVariantField<any, any>["variants"]
+  Variants extends ArrayVariantField<any, any>["variants"],
+  VKey extends string
 > = {
   [K in Variants[number] as K["key"]]: {
     [F in K["fields"][number] as F["key"]]: ResolveFormType<F>;
-  };
+  } & { [key in VKey]: K["key"] };
 }[Variants[number]["key"]];
 
 export type ExtractOptionsType<

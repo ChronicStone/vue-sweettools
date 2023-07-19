@@ -33,16 +33,16 @@ const { sample, formData } = defineFormSchemaSample({
         key: "variantArray",
         type: "array-variant",
         displayMode: "tabs",
-        variantKey: "variant",
+        variantKey: "variant" as const,
         variants: [
           {
             label: "Variant 1",
-            key: "variant1",
+            key: "variant1" as const,
             fields: variant1,
           },
           {
             label: "Variant 2",
-            key: "variant2",
+            key: "variant2" as const,
             fields: variant2,
           },
         ],
