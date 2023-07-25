@@ -8,7 +8,7 @@ export function exportExcel<T extends IContent>(
 ) {
   const sheets = [
     {
-      sheet: "invalid",
+      sheet: "data",
       columns: [...columns],
       content: data,
     },

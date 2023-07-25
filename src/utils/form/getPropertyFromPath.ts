@@ -24,7 +24,7 @@ export function getPropertyFromPath(
 function getPathOffset(key: string) {
   try {
     if (!key) return 0;
-    const offset = key.split(":").pop();
+    const offset = key.split(".")[0].split(":").pop();
     return offset && !isNaN(+offset) ? +offset : 0;
   } catch (err) {
     return 0;

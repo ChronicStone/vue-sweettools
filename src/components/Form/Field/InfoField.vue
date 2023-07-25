@@ -23,6 +23,7 @@ function renderInfoContent(
 </script>
 
 <template>
+  <!-- @vue-expect-error Weird inferrence of expected props for passed render funct -->
   <component
     :is="
       renderInfoContent(

@@ -139,58 +139,35 @@ function buildItemControls(
       </NTabs>
 
       <div v-if="fieldValue?.length" class="overflow-x-hidden pb-5 px-5">
-        <template v-if="_field.type !== 'array-variant'">
-          <component
-            :is="'div'"
-            v-for="(_, index) in fieldValue"
-            v-show="index === activeTab"
-            :key="index"
-            class="grid gap-4"
-            :style="field.gridSize ? gridSize : formStyle?.gridSize"
-          >
-            <FieldRenderer
-              v-model="fieldValue[index]"
-              :field="{
-                ..._field,
-                type: 'object',
-                collapsed: false,
-                key: index.toString(),
-                fieldParams: { frameless: true },
-              }"
-              :render-label="false"
-              :parent-key="[...parentKey, _field.key]"
-              :item-index="index"
-              :show-error="false"
-            />
-          </component>
-        </template>
+        <component
+          :is="'div'"
+          v-for="(_, index) in fieldValue"
+          v-show="index === activeTab"
+          :key="index"
+          class="grid gap-4"
+          :style="field.gridSize ? gridSize : formStyle?.gridSize"
+        >
+          <FieldRenderer
+            v-model="fieldValue[index]"
+            :field="{
+              ..._field,
+              fields:
+                _field.type === 'array-variant'
+                  ? resolveVariantFields(fieldValue[index])
+                  : _field.fields,
+              type: 'object',
+              collapsed: false,
+              key: index.toString(),
+              fieldParams: { frameless: true },
+              condition: () => true,
+            }"
+            :render-label="false"
+            :parent-key="[...parentKey, _field.key]"
+            :item-index="index"
+            :show-error="false"
+          />
+        </component>
 
-        <template v-else>
-          <component
-            :is="'div'"
-            v-for="(_, index) in fieldValue"
-            v-show="index === activeTab"
-            :key="index"
-            class="grid gap-4"
-            :style="field.gridSize ? gridSize : formStyle?.gridSize"
-          >
-            <FieldRenderer
-              v-model="fieldValue[index]"
-              :field="{
-                ..._field,
-                fields: resolveVariantFields(fieldValue[index]),
-                type: 'object',
-                collapsed: false,
-                key: index.toString(),
-                fieldParams: { frameless: true },
-              }"
-              :render-label="false"
-              :parent-key="[...parentKey, _field.key]"
-              :item-index="index"
-              :show-error="false"
-            />
-          </component>
-        </template>
         <NEmpty v-show="!fieldValue[activeTab]" />
       </div>
     </NCard>

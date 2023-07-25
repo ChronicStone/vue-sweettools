@@ -36,7 +36,7 @@ const resolvedValue = computed(() =>
     <template v-else>
       <div class="flex flex-col gap-1 w-full h-full">
         <div v-if="fieldSchema?.label" class="font-semibold flex items-center">
-          <component :is="() => renderVNode(fieldSchema.label, data)" />:
+          <component :is="renderVNode(fieldSchema.label, data)" />:
         </div>
 
         <div class="w-[fit-content]">
@@ -46,12 +46,11 @@ const resolvedValue = computed(() =>
 
           <component
             :is="
-              () =>
-                renderVNode(fieldSchema.render, {
-                  value: resolvedValue,
-                  data,
-                  store: virtualStore,
-                })
+              renderVNode(fieldSchema.render, {
+                value: resolvedValue,
+                data,
+                store: virtualStore,
+              })
             "
             v-else
           />

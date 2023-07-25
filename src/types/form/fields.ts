@@ -480,14 +480,22 @@ export type ArrayVariantField<
   StoreData extends Record<string, unknown> = Record<string, unknown>
 > = Omit<_ArrayField<FieldKey, StoreData>, "fields"> & {
   type: "array-variant";
-  displayMode: "list" | "tabs";
   variantKey: string;
   variants: Array<{
     label: string;
     key: string | number;
     fields: FormField<FieldKey, StoreData>[];
   }>;
-};
+} & (
+    | {
+        displayMode: "tabs";
+      }
+    | {
+        displayMode: "list";
+        listGridSize?: number | string;
+        listItemSize?: number | string;
+      }
+  );
 
 export interface ArrayListField<
   FieldKey extends Narrowable = string,

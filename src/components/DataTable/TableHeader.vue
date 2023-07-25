@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FilterPanel from "./FilterPanel.vue";
 import SearchQueryInput from "./SearchQueryInput.vue";
-import { NTooltip, NDropdown, NButton, NIcon } from "naive-ui";
+import { NTooltip, NDropdown, NButton, NIcon, useThemeVars } from "naive-ui";
 import { useDropdownActions } from "@/composables/useDropdownActions";
 import { TableFilter } from "@/types/table";
 import { GenericObject } from "@/types/utils";
@@ -32,6 +32,12 @@ const _panelFilters = computed({
   get: () => props.panelFilters,
   set: (value: GenericObject) => emit("update:panelFilters", value),
 });
+
+const themeVars = useThemeVars();
+function getAnimationColor(opacity: number) {
+  const _color = themeVars.value.primaryColor;
+  return computeHslColor(_color, opacity);
+}
 </script>
 
 <template>
@@ -76,7 +82,12 @@ const _panelFilters = computed({
               <NIcon> <mdi-filter /> </NIcon>
             </template>
           </NButton>
-          <NButton v-else secondary type="primary" class="w-full !md:w-auto">
+          <NButton
+            v-else
+            secondary
+            type="primary"
+            class="w-full !md:w-auto animate-pulse"
+          >
             <template #icon>
               <NIcon><mdi-filter /> </NIcon>
             </template>

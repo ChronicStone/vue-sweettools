@@ -78,6 +78,7 @@ declare global {
   const markRaw: typeof import('vue')['markRaw']
   const multiCellRenderer: typeof import('./composables/excel/useImportManager.tsx')['multiCellRenderer']
   const nextTick: typeof import('vue')['nextTick']
+  const normalizeFieldLabel: typeof import('./utils/renderVNode.tsx')['normalizeFieldLabel']
   const obsoletableFn: typeof import('./utils/obsoletableFn')['obsoletableFn']
   const omitKeysFromObject: typeof import('./utils/omitKeysFromObject')['omitKeysFromObject']
   const onActivated: typeof import('vue')['onActivated']
@@ -431,6 +432,7 @@ declare module 'vue' {
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
     readonly multiCellRenderer: UnwrapRef<typeof import('./composables/excel/useImportManager.tsx')['multiCellRenderer']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
+    readonly normalizeFieldLabel: UnwrapRef<typeof import('./utils/renderVNode.tsx')['normalizeFieldLabel']>
     readonly obsoletableFn: UnwrapRef<typeof import('./utils/obsoletableFn')['obsoletableFn']>
     readonly omitKeysFromObject: UnwrapRef<typeof import('./utils/omitKeysFromObject')['omitKeysFromObject']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>

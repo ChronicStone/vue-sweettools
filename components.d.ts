@@ -57,6 +57,7 @@ declare module '@vue/runtime-core' {
     OpenState: typeof import('./src/components/Utils/OpenState.vue')['default']
     RadioField: typeof import('./src/components/Form/Field/RadioField.vue')['default']
     RatingField: typeof import('./src/components/Form/Field/RatingField.vue')['default']
+    Renderer: typeof import('./src/components/Utils/Renderer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchQueryInput: typeof import('./src/components/DataTable/SearchQueryInput.vue')['default']

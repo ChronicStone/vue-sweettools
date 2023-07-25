@@ -2,7 +2,7 @@
 import DataGrid from "@/components/DataGrid/DataGrid.vue";
 import { DataGridSchema } from "@/types/datagrid";
 import { computed, ref } from "vue";
-import { NCheckbox, NAvatar } from "naive-ui";
+import { NCard, NCheckbox, NConfigProvider, darkTheme } from "naive-ui";
 
 type User = {
   _id: string;
@@ -19,8 +19,10 @@ type User = {
       value?: Array<{ test: string }>;
     };
   };
+  valid: true;
 };
 
+const dark = ref<boolean>(true);
 const dataGridSchema = buildGridSchema<User>({
   virtualStore: {
     test: { value: "hola" },
@@ -35,7 +37,16 @@ const dataGridSchema = buildGridSchema<User>({
     { label: "Last name", key: "lastName" },
     { label: "Email", key: "email" },
     { label: "Created at", key: "createdAt" },
-    { label: "Updated at", key: "updatedAt" },
+    {
+      label: "Updated at",
+      key: "valid",
+      render: ({ value, store }) => (
+        <span
+          class={`iconify ${value ? "text-green-500" : "text-red-500"}`}
+          data-icon={value ? "mdi:check" : "mdi:close"}
+        />
+      ),
+    },
   ],
 });
 
@@ -48,15 +59,22 @@ const data: User = {
   progress: 29,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
+  valid: true,
 };
 
-const enableData = ref<boolean>(false);
+const enableData = ref<boolean>(true);
 const user = computed(() => (enableData.value ? data : null));
 </script>
 
 <template>
-  <div class="p-10 flex flex-col gap-4">
+  <div class="flex flex-col gap-4 p-4">
     <NCheckbox v-model:checked="enableData">Show data</NCheckbox>
-    <DataGrid v-bind="dataGridSchema" :data="user" />
+    <NCheckbox v-model:checked="dark">Dark mode</NCheckbox>
+
+    <NConfigProvider :theme="dark ? darkTheme : null">
+      <NCard class="p-10 flex flex-col gap-4">
+        <DataGrid v-bind="dataGridSchema" :data="user" />
+      </NCard>
+    </NConfigProvider>
   </div>
 </template>

@@ -36,21 +36,22 @@ watch(
       @before-enter="disableOverflow = true"
       @after-appear="disableOverflow = false"
     >
-      <form
-        :key="_currentStep"
-        ref="formRef"
-        class="h-full grid gap-4 overflow-visible text-left transition-all ease-in-out duration-150"
-        :style="`${formStyles?.gridSize.value}`"
-        :class="{
-          'max-h-10/12': $slots.header && $slots.footer,
-          'max-h-11/12':
-            ($slots.header && !$slots.footer) ||
-            ($slots.footer && !$slots.header),
-          'max-h-full': $slots.header && $slots.footer,
-        }"
-      >
-        <slot name="fields" />
-      </form>
+      <div :key="_currentStep" class="grid" style="grid-template-rows: 1fr">
+        <form
+          ref="formRef"
+          class="h-full grid gap-4 overflow-visible text-left transition-all ease-in-out duration-150"
+          :style="`${formStyles?.gridSize.value}`"
+          :class="{
+            'max-h-10/12': $slots.header && $slots.footer,
+            'max-h-11/12':
+              ($slots.header && !$slots.footer) ||
+              ($slots.footer && !$slots.header),
+            'max-h-full': $slots.header && $slots.footer,
+          }"
+        >
+          <slot name="fields" />
+        </form>
+      </div>
     </Transition>
   </div>
 </template>

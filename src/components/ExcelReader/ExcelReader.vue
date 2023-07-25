@@ -83,7 +83,7 @@ const {
 function exportInvalidRows() {
   return exportExcel(
     invalidRows.value as IContent[],
-    Object.keys(props.schema).map((key) => ({ label: key, value: key }))
+    props.schema.map(({ key }) => ({ label: key, value: key }))
   );
 }
 

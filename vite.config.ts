@@ -90,7 +90,7 @@ export default defineConfig({
       fileName: (format) => `vue-sweettools.${format}.js`,
     },
     rollupOptions: {
-      external: ["vue"],
+      external: ["vue", "naive-ui"],
       output: {
         globals: {
           vue: "Vue",

@@ -96,6 +96,7 @@ export function useQueryState(
       () => paginationState.value.pageIndex,
       () => sortState.value,
       () => filterState.value,
+      () => staticFilters.value,
     ],
     () => fetchParams.trigger()
   );

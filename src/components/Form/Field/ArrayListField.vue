@@ -4,6 +4,7 @@ import {
   FieldComponentProps,
   ArrayListField,
   _BaseField,
+  ArrayVariantField,
 } from "@/types/form/fields";
 import { NCard, NTooltip, NButton, NCollapseTransition } from "naive-ui";
 import FieldRenderer from "@/components/Form/Renderer/FieldRenderer.vue";
@@ -11,13 +12,16 @@ import FieldRenderer from "@/components/Form/Renderer/FieldRenderer.vue";
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
-const _field = computed(() => props.field as _BaseField & ArrayListField);
+const _field = computed(
+  () =>
+    props.field as _BaseField &
+      (ArrayListField | (ArrayVariantField & { displayMode: "list" }))
+);
 const fieldValue = computed({
   get: () => props.modelValue as Record<string, any>[],
   set: (value) => emit("update:modelValue", value),
 });
 
-const formStyle = useFormStyles();
 const gridSize = useBreakpointStyle(_field.value.gridSize ?? "", "grid-cols");
 
 const listGridSize = useBreakpointStyle(
@@ -29,7 +33,10 @@ const listItemSize = useBreakpointStyle(
   "col"
 );
 
-const { addItem, removeItem, moveItem } = useArrayField(_field, fieldValue);
+const { addItem, removeItem, moveItem, resolveVariantFields } = useArrayField(
+  _field,
+  fieldValue
+);
 </script>
 
 <template>
@@ -71,10 +78,15 @@ const { addItem, removeItem, moveItem } = useArrayField(_field, fieldValue);
             v-model="fieldValue[index]"
             :field="{
               ..._field,
+              fields:
+                _field.type === 'array-variant'
+                  ? resolveVariantFields(fieldValue[index])
+                  : _field.fields,
               type: 'object',
               collapsed: false,
               key: index.toString(),
               fieldParams: { frameless: true },
+              condition: () => true,
             }"
             :parent-key="[...parentKey, _field.key]"
             :item-index="index"

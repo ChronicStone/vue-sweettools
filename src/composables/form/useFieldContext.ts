@@ -70,13 +70,18 @@ export function useFieldContext(
   );
 
   const _evalOptions = ref<boolean>(true);
-  const options = computedAsync(
+  const options = ref<(CascaderOption | SelectOption | TreeSelectOption)[]>([]);
+  watch(
+    () => JSON.stringify(dependencies.value),
     async () => {
+      if (!("options" in field.value)) return [];
+      _evalOptions.value = true;
       const _field = field.value as SelectField;
       if (!_field.options) return [];
-      else if (Array.isArray(_field.options)) return mapOptions(_field.options);
+      else if (Array.isArray(_field.options))
+        options.value = mapOptions(_field.options);
       else
-        return mapOptions(
+        options.value = mapOptions(
           Array.isArray((field.value as SelectField).options)
             ? ((field.value as SelectField).options as unknown as (
                 | SelectOption
@@ -89,9 +94,10 @@ export function useFieldContext(
               )({ ...dependencies.value }, { ...virtualStore.value })
             : []
         );
+
+      _evalOptions.value = false;
     },
-    [],
-    _evalOptions
+    { immediate: true }
   );
 
   if ("options" in field.value) {
@@ -157,12 +163,14 @@ export function useFieldContext(
     inputProps,
     rawInputProps,
     placeholder,
+    virtualStore,
   };
 }
 
 function mapOptions(
   options: unknown[]
 ): (SelectOption | TreeSelectOption | CascaderOption)[] {
+  if (!Array.isArray(options)) return [];
   if (options.every((option) => ["number", "string"].includes(typeof option)))
     return options.map((option) => ({
       label: option,

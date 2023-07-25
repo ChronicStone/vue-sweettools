@@ -81,15 +81,20 @@ const errorMessage = computed(() => {
       (err) => err.$validator != "$each"
     )[0]?.$message;
   else {
-    if ($validator.value.$errors[0]?.$property !== _field.value.key)
+    if (
+      $validator.value.$errors[0]?.$propertyPath !==
+      fieldContext.fieldFullPath.value.join(".")
+    )
       return ["array-tabs", "array-list"].includes(_field.value.type)
-        ? `The field ${props.field.label
-            ?.toString()
-            ?.toLocaleLowerCase()} has items with invalid properties`
-        : `The field ${props.field.label
-            ?.toString()
-            ?.toLocaleLowerCase()} has invalid properties`;
-    else return $validator.value.$errors[0]?.$message;
+        ? `The field ${normalizeFieldLabel(
+            _field.value,
+            fieldContext
+          )} has items with invalid properties`
+        : `The field ${normalizeFieldLabel(
+            _field.value,
+            fieldContext
+          )} has invalid properties`;
+    else return "hehe"; // $validator.value.$errors[0]?.$message;
   }
 });
 

@@ -68,13 +68,14 @@ onUnmounted(() => document.body.classList.remove("overflow-hidden"));
           @before-enter="disableOverflow = true"
           @after-appear="disableOverflow = false"
         >
-          <form
-            :key="currentStep"
-            class="w-full h-full pb-4 grid gap-4 overflow-visible"
-            :style="`height:fit-content !important;${formStyles.gridSize.value}`"
-          >
-            <slot name="fields" />
-          </form>
+          <div :key="currentStep" class="grid" style="grid-template-rows: 1fr">
+            <form
+              class="w-full h-full pb-4 grid gap-4 overflow-visible"
+              :style="`height:fit-content !important;${formStyles.gridSize.value}`"
+            >
+              <slot name="fields" />
+            </form>
+          </div>
         </Transition>
       </NScrollbar>
 
