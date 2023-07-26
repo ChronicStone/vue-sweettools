@@ -69,7 +69,13 @@ export function useFieldContext(
     _evalCondition
   );
 
-  const _evalOptions = ref<boolean>(true);
+  const disabled = computed(
+    () =>
+      (conditionEffect.value === "disable" && !condition.value) ||
+      _evalOptions.value
+  );
+
+  const _evalOptions = ref<boolean>(false);
   const options = ref<(CascaderOption | SelectOption | TreeSelectOption)[]>([]);
   watch(
     () => JSON.stringify(dependencies.value),
@@ -164,6 +170,7 @@ export function useFieldContext(
     rawInputProps,
     placeholder,
     virtualStore,
+    disabled,
   };
 }
 

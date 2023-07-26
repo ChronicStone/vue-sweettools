@@ -143,11 +143,7 @@ const fieldKey = computed(() =>
         :field="field"
         :context="fieldContext"
         :validator="$validator"
-        :disabled="
-          (fieldContext.condition.value == false &&
-            fieldContext.conditionEffect.value == 'disable') ||
-          parentDisabled
-        "
+        :disabled="fieldContext.disabled.value || parentDisabled"
         :parent-disabled="parentDisabled"
         :collapsed="collapsed"
         :parent-key="parentKey"
