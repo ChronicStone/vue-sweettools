@@ -14,6 +14,15 @@ export async function remoteDataMapper(
   docs: any[];
   rawDocs: any[];
 }> {
+  console.log("remoteDataMapper", {
+    searchQuery,
+    page,
+    limit,
+    sortKey,
+    sortOrder,
+    query,
+    fullReload,
+  });
   try {
     let output = fullReload
       ? (await datasource({
@@ -68,11 +77,17 @@ export async function remoteDataMapper(
               return !!(filter.value === value);
             }
             if (filter.matchMode === "contains")
-              return !!(item[key] && value.includes(filter.value));
+              return !!(
+                typeof item[key] !== "undefined" && value.includes(filter.value)
+              );
             if (filter.matchMode === "between")
               return !!(value >= filter.value[0] && value <= filter.value[1]);
             if (filter.matchMode === "arrayContains")
-              return !!(item[key] && filter.value.includes(item[key]));
+              return !!(
+                typeof item[key] !== "undefined" &&
+                Array.isArray(filter.value) &&
+                filter.value.some((val) => val === item[key])
+              );
           }
           return false;
         });
