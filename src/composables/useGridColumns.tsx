@@ -1,5 +1,6 @@
 import { ComputedRef, Ref, computed } from "vue";
 import { Column, FetchParams, TableApi, TableRowAction } from "@/types/table";
+import { DataTableColumn } from "naive-ui";
 
 import SelectionHeaderRenderer from "@/components/DataTable/CellRenderers/SelectionHeaderRenderer.vue";
 import ActionsCellRenderer from "@/components/DataTable/CellRenderers/ActionsCellRenderer.vue";
@@ -104,8 +105,74 @@ export function useGridColumns(
       })),
   ]);
 
+  const columnDefs2 = computed<DataTableColumn[]>(() => [
+    ...(params.enableSelection.value
+      ? [{ type: "selection" } satisfies DataTableColumn]
+      : []),
+    ...(params.rowActions.value?.length
+      ? [
+          {
+            title: "Actions",
+            key: "#actions",
+            width: 80 + params.rowActions.value.length * 20,
+            render: (row: GenericObject) => (
+              <ActionsCellRenderer
+                permissionValidator={permissionValidator.value}
+                data={row}
+                tableApi={tableApi.value!}
+                actions={params.rowActions.value}
+              />
+            ),
+          },
+        ]
+      : []),
+    ...(params.columns.value ?? [])
+      .filter(Boolean)
+      .filter((column) => column?.condition?.() ?? true)
+      .map(
+        (column) =>
+          ({
+            title: column.label,
+            key: column.key,
+            width: column.width,
+            minWidth: column.minWidth,
+            maxWidth: column.maxWidth,
+            resizable: column?.resizable ?? true,
+            ...(column.render && {
+              render: (row: GenericObject) => renderVNode(column.render, row),
+            }),
+            // headerName: column.label,
+            // field: column.key,
+            // width: column.width,
+            // hide: column.hide ?? false,
+            // resizable: column.resizable ?? true,
+            // sortable: column.sortable ?? true,
+            // ...(column.render && {
+            //   cellRenderer: JsxCellRenderer,
+            //   cellRendererParams: {
+            //     _cellRenderer: column.render,
+            //     tableApi,
+            //     theme,
+            //     themeOverrides,
+            //   },
+            // }),
+            // ...(column.cellComponent && {
+            //   cellRenderer: ComponentCellRenderer,
+            //   cellRendererParams: {
+            //     _cellRenderer: column.cellComponent,
+            //     ...(column.cellComponentParams && column.cellComponentParams),
+            //     tableApi,
+            //     theme,
+            //     themeOverrides,
+            //   },
+            // }),
+          } satisfies DataTableColumn)
+      ),
+  ]);
+
   return {
     columnDefs,
     defaultColumnDef: DEFAULT_COL_DEF,
+    columnDefs2,
   };
 }

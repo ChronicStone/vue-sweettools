@@ -29,6 +29,8 @@ export function useQueryState(
       : selected.value.length
   );
 
+  const selectedKeys = ref<number[]>([]);
+
   const topViewportOffset = !persistency
     ? ref<number>(0)
     : useStorage<number>(
@@ -119,6 +121,7 @@ export function useQueryState(
     isLoading,
     data,
     selected,
+    selectedKeys,
     selectAll,
     nbSelected,
     sortState,

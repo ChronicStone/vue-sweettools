@@ -10,6 +10,7 @@ const schema = buildTableSchema<{
   valid: boolean;
 }>({
   remote: false,
+  searchQuery: ["firstName", "lastName"],
   filters: [booleanFilter("valid", "Valid")],
   columns: [
     {
@@ -20,11 +21,12 @@ const schema = buildTableSchema<{
     {
       label: "Valid",
       key: "valid",
-      render: (value) => (value ? "YES" : "NO"),
+      render: (row) => (row.valid ? "YES" : "NO"),
     },
   ],
+  rowActions: [{ icon: "mdi:eye", tooltip: "Open" }],
   datasource: async () =>
-    Array.from({ length: 10 }, (_, i) => ({
+    Array.from({ length: 1000 }, (_, i) => ({
       firstName: `First name ${i}`,
       lastName: `Last name ${i}`,
       valid: i % 2 === 0,

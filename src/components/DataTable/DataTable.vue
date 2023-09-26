@@ -17,7 +17,7 @@ import {
   SelectionChangedEvent,
   SortChangedEvent,
 } from "ag-grid-community";
-import { NSpin, NCard, GlobalThemeOverrides } from "naive-ui";
+import { NSpin, NDataTable, NCard, GlobalThemeOverrides } from "naive-ui";
 import { AgGridVue } from "ag-grid-vue3";
 import { computed, ref, watch } from "vue";
 import { ComputedRef } from "vue";
@@ -73,6 +73,7 @@ const {
   isLoading,
   selectAll,
   selected,
+  selectedKeys,
   nbSelected,
   sortState,
   filterState,
@@ -113,7 +114,7 @@ const mappedActions = useDropdownActions(
   }
 );
 
-const { columnDefs, defaultColumnDef } = useGridColumns(
+const { columnDefs, columnDefs2, defaultColumnDef } = useGridColumns(
   {
     isRemote: _remote,
     columns: _columns,
@@ -258,7 +259,16 @@ watch(
     </template>
 
     <div ref="gridContainer" class="flex flex-col gap-0">
-      <NSpin :show="isLoading">
+      <NDataTable
+        v-model:checked-row-keys="selectedKeys"
+        :columns="columnDefs2"
+        :loading="isLoading"
+        :data="data"
+        flex-height
+        class="h-[40vh]"
+        :theme-overrides="{ borderRadius: '0', borderColor: 'transparent' }"
+      />
+      <!-- <NSpin :show="isLoading">
         <AgGridVue
           ref="gridRef"
           class="ag-theme-material w-full h-[56vh]"
@@ -283,7 +293,7 @@ watch(
           @row-drag-end="handleRowDrag"
           @grid-ready="handleGridInitialization"
         />
-      </NSpin>
+      </NSpin> -->
     </div>
 
     <template #action>
