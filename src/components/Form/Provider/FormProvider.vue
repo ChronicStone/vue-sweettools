@@ -9,17 +9,20 @@ import {
   InferSharedStoreData,
 } from "@/types/form/form";
 import { Narrowable } from "@/types/utils";
+import { onBeforeRouteLeave } from "vue-router";
 
 const formInstances = ref<FormInstance[]>([]);
 const showModalOverlay = ref<boolean>(false);
 const modalOverlayRef = ref<HTMLElement>();
 
-provide(FORM_INJECTION_KEY, {
+const FORM_API = {
   createForm,
   destroyAll: () => (formInstances.value = []),
   formInstances: computed(() => formInstances.value),
-});
+} as const;
 
+defineExpose(FORM_API);
+provide(FORM_INJECTION_KEY, FORM_API);
 provide(MODAL_OVERLAY_INJECTION_KEY, {
   modalOverlayRef,
   show: () => (showModalOverlay.value = true),
@@ -77,6 +80,10 @@ function submitForm(
   closeForm(formId);
   onSubmit(Object.assign({}, formState));
 }
+
+useRouter().beforeEach(() => {
+  FORM_API.destroyAll();
+});
 </script>
 
 <template>

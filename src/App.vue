@@ -6,9 +6,13 @@ import {
   NNotificationProvider,
   darkTheme,
 } from "naive-ui";
+import { ComponentInternalInstance } from "vue";
 import { RouterView } from "vue-router";
 
 const { isDark } = useDarkMode();
+
+const providerRef = ref<InstanceType<typeof FormProvider>>();
+providerRef.value?.destroyAll();
 </script>
 
 <template>
