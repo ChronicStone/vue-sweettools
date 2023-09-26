@@ -9,6 +9,7 @@ import {
   NScrollbar,
   NTooltip,
   useNotification,
+  NSwitch,
 } from "naive-ui";
 import { useRouteQuery } from "@vueuse/router";
 
@@ -18,6 +19,7 @@ const formRef = ref<FormRefInstance>();
 
 const sampleHeaderRef = ref<HTMLElement>();
 const { height } = useElementSize(sampleHeaderRef);
+const { isDark } = useDarkMode();
 
 async function printInlineData(index: number) {
   const data = formRef.value?.$data;
@@ -135,7 +137,10 @@ function inspectFormState() {
       :content-style="{ padding: 0 }"
     >
       <template #header>
-        <h1 class="text-xl font-bold">FORM SAMPLES</h1>
+        <div class="flex items-center gap-1 justify-between">
+          <h1 class="text-xl font-bold">FORM SAMPLES</h1>
+          <NSwitch v-model:value="isDark" />
+        </div>
       </template>
 
       <NScrollbar :style="{ maxHeight: `calc(100vh - 80px)` }">

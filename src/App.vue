@@ -4,12 +4,18 @@ import {
   NDialogProvider,
   NConfigProvider,
   NNotificationProvider,
+  darkTheme,
 } from "naive-ui";
 import { RouterView } from "vue-router";
+
+const { isDark } = useDarkMode();
 </script>
 
 <template>
-  <NConfigProvider :theme-overrides="themeOverrides">
+  <NConfigProvider
+    :theme-overrides="themeOverrides"
+    :theme="isDark ? darkTheme : null"
+  >
     <NNotificationProvider>
       <FormProvider>
         <NDialogProvider>

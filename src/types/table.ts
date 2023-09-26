@@ -87,10 +87,13 @@ export interface Column<
   key?: Key;
   hide?: boolean;
   filter?: TableFilter;
+  minWidth?: number | string;
+  maxWidth?: number | string;
+  fixed?: "left" | "right";
   width?: number | string;
   sortable?: boolean;
   resizable?: boolean;
-  render?: (value: any, row: T) => VNodeChild | string;
+  render?: (row: T) => VNodeChild | string;
   cellComponent?: DefineComponent<any, any, any>;
   cellComponentParams?: GenericObject;
   condition?: () => boolean;
