@@ -1,4 +1,4 @@
-import { ObjectField } from "@/types/form/fields";
+import { ObjectField, GroupField } from "@/types/form/fields";
 import { FieldInstance } from "@/types/form/instance";
 import { GenericObject } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
@@ -70,12 +70,18 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
                     : field?.label ?? field.key
                 )
               : (libConfig.getProp("textOverrides.requiredMessage") as string),
-            field.type === "checkbox" ? (value: boolean) => !!value : required
+            field.type === "checkbox"
+              ? (value: boolean) => !!value
+              : field.type === "group" &&
+                field.applyTransformToRequired &&
+                typeof field.transform === "function"
+              ? (value: any) => !!field.transform?.(value)
+              : required
           );
 
-        if (field.type === "object") {
+        if (field.type === "object" || field.type === "group") {
           const newRules = await mapFormFules(
-            (field as ObjectField).fields,
+            (field as ObjectField | GroupField).fields,
             state,
             [...parentKey, field.key]
           );

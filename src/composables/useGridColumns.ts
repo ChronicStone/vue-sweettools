@@ -1,11 +1,13 @@
 import { ComputedRef, Ref, computed } from "vue";
 import { Column, FetchParams, TableApi, TableRowAction } from "@/types/table";
 
+import ColumnHeaderRenderer from "@/components/DataTable/CellRenderers/ColumnHeaderRenderer.vue";
 import SelectionHeaderRenderer from "@/components/DataTable/CellRenderers/SelectionHeaderRenderer.vue";
 import ActionsCellRenderer from "@/components/DataTable/CellRenderers/ActionsCellRenderer.vue";
 import JsxCellRenderer from "@/components/DataTable/CellRenderers/JsxCellRenderer.vue";
 import ComponentCellRenderer from "@/components/DataTable/CellRenderers/ComponentCellRenderer.vue";
 import { GenericObject } from "@/types/utils";
+import { ColDef } from "ag-grid-community";
 import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 
 const DEFAULT_COL_DEF = {
@@ -27,18 +29,16 @@ type AgGridConfigParams = {
   selected: Ref<Array<Record<string, any>>>;
   nbSelected: ComputedRef<number>;
   fetchParams: Readonly<Ref<FetchParams>>;
+  tableApi: Ref<TableApi | undefined>;
+  theme: ComputedRef<GlobalTheme | null>;
+  themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>;
+  draggable: ComputedRef<boolean>;
 };
 
-export function useGridColumns(
-  params: AgGridConfigParams,
-  tableApi: Ref<TableApi | undefined>,
-  theme: ComputedRef<GlobalTheme | null>,
-  themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>,
-  draggable: ComputedRef<boolean>
-) {
+export function useGridColumns(params: AgGridConfigParams) {
   const { permissionValidator } = useGlobalConfig();
   const columnDefs = computed(() => [
-    ...(draggable.value
+    ...(params.draggable.value
       ? [
           {
             rowDrag: true,
@@ -64,8 +64,8 @@ export function useGridColumns(
             cellRendererParams: {
               _rowActions: params.rowActions.value,
               permissionValidator: permissionValidator.value,
-              tableApi: tableApi,
-              theme,
+              tableApi: params.tableApi,
+              theme: params.theme,
               themeOverrides,
             },
             width: 80 + params.rowActions.value.length * 20,
@@ -82,12 +82,18 @@ export function useGridColumns(
         hide: column.hide ?? false,
         resizable: column.resizable ?? true,
         sortable: column.sortable ?? true,
+        // headerComponent: ColumnHeaderRenderer,
+        // headerComponentParams: {
+        //   tableApi: params.tableApi,
+        //   theme: params.theme,
+        //   themeOverrides,
+        // },
         ...(column.render && {
           cellRenderer: JsxCellRenderer,
           cellRendererParams: {
             _cellRenderer: column.render,
-            tableApi,
-            theme,
+            tableApi: params.tableApi,
+            theme: params.theme,
             themeOverrides,
           },
         }),
@@ -96,8 +102,8 @@ export function useGridColumns(
           cellRendererParams: {
             _cellRenderer: column.cellComponent,
             ...(column.cellComponentParams && column.cellComponentParams),
-            tableApi,
-            theme,
+            tableApi: params.tableApi,
+            theme: params.theme,
             themeOverrides,
           },
         }),

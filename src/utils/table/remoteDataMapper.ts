@@ -14,15 +14,6 @@ export async function remoteDataMapper(
   docs: any[];
   rawDocs: any[];
 }> {
-  console.log("remoteDataMapper", {
-    searchQuery,
-    page,
-    limit,
-    sortKey,
-    sortOrder,
-    query,
-    fullReload,
-  });
   try {
     let output = fullReload
       ? (await datasource({

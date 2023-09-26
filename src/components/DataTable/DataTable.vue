@@ -113,23 +113,21 @@ const mappedActions = useDropdownActions(
   }
 );
 
-const { columnDefs, defaultColumnDef } = useGridColumns(
-  {
-    isRemote: _remote,
-    columns: _columns,
-    enableSelection: _enableSelection,
-    rowActions: _rowActions,
-    setGlobalSelection,
-    selectAll,
-    selected,
-    nbSelected,
-    fetchParams,
-  },
+const { columnDefs, defaultColumnDef } = useGridColumns({
+  isRemote: _remote,
+  columns: _columns,
+  enableSelection: _enableSelection,
+  rowActions: _rowActions,
+  setGlobalSelection,
+  selectAll,
+  selected,
+  nbSelected,
+  fetchParams,
   tableApi,
   theme,
-  _themeOverrides,
-  _draggable
-);
+  themeOverrides: _themeOverrides,
+  draggable: _draggable,
+});
 
 tableApi.value = {
   refreshData: () => resolveGridData(true),

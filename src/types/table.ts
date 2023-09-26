@@ -3,6 +3,7 @@ import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 import { ComputedRef, DefineComponent, Ref, VNodeChild } from "vue";
 import { DeepRequired, GenericObject, NestedPaths } from "@/types/utils";
 import { AppTypes } from "./lib";
+import { Column as AgGridColum } from "ag-grid-community";
 
 export type FilterMatchMode =
   | "arrayContains"
@@ -231,6 +232,7 @@ export type HeaderRendererParams<T = GenericObject> = {
   tableApi: Ref<TableApi<T>>;
   theme: ComputedRef<GlobalTheme | null>;
   themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>;
+  column: AgGridColum;
 };
 
 export interface GridContent {
