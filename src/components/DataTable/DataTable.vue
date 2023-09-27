@@ -61,6 +61,7 @@ const _panelFilters = computed(() => props.filters);
 const _staticFilters = computed(() => props.staticFilters);
 const _draggable = computed(() => props.draggable);
 const _defaultSort = computed(() => props.sort);
+const _searchQuery = computed(() => props.searchQuery);
 
 const gridApi = ref<GridApi>();
 const columnApi = ref<ColumnApi>();
@@ -113,23 +114,22 @@ const mappedActions = useDropdownActions(
   }
 );
 
-const { columnDefs, defaultColumnDef } = useGridColumns(
-  {
-    isRemote: _remote,
-    columns: _columns,
-    enableSelection: _enableSelection,
-    rowActions: _rowActions,
-    setGlobalSelection,
-    selectAll,
-    selected,
-    nbSelected,
-    fetchParams,
-  },
+const { columnDefs, defaultColumnDef } = useGridColumns({
+  isRemote: _remote,
+  columns: _columns,
+  enableSelection: _enableSelection,
+  rowActions: _rowActions,
+  setGlobalSelection,
+  selectAll,
+  selected,
+  nbSelected,
+  fetchParams,
   tableApi,
   theme,
-  _themeOverrides,
-  _draggable
-);
+  themeOverrides: _themeOverrides,
+  draggable: _draggable,
+  searchQuery: _searchQuery,
+});
 
 tableApi.value = {
   refreshData: () => resolveGridData(true),
@@ -252,6 +252,7 @@ watch(
         :enable-search-query="searchQuery.length > 0"
         :resolve-grid-data="() => resolveGridData(true)"
         :table-key="tableKey"
+        :tooltip-show-delay="100"
       >
         <slot />
       </TableHeader>

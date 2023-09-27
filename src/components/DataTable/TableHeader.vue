@@ -51,7 +51,11 @@ function getAnimationColor(opacity: number) {
       </span>
     </div>
     <div class="flex flex-col gap-4 !md:flex-row !md:items-center !md:gap-3">
-      <SearchQueryInput v-model:search-query="_searchQuery" focus-sync />
+      <SearchQueryInput
+        v-if="enableSearchQuery"
+        v-model:search-query="_searchQuery"
+        focus-sync
+      />
 
       <n-dropdown
         v-if="dropdownActions?.length"

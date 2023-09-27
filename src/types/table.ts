@@ -3,6 +3,7 @@ import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 import { ComputedRef, DefineComponent, Ref, VNodeChild } from "vue";
 import { DeepRequired, GenericObject, NestedPaths } from "@/types/utils";
 import { AppTypes } from "./lib";
+import { Column as AgGridColum } from "ag-grid-community";
 
 export type FilterMatchMode =
   | "arrayContains"
@@ -87,10 +88,13 @@ export interface Column<
   key?: Key;
   hide?: boolean;
   filter?: TableFilter;
+  minWidth?: number | string;
+  maxWidth?: number | string;
+  fixed?: "left" | "right";
   width?: number | string;
   sortable?: boolean;
   resizable?: boolean;
-  render?: (value: any, row: T) => VNodeChild | string;
+  render?: (row: T) => VNodeChild | string;
   cellComponent?: DefineComponent<any, any, any>;
   cellComponentParams?: GenericObject;
   condition?: () => boolean;
@@ -228,6 +232,7 @@ export type HeaderRendererParams<T = GenericObject> = {
   tableApi: Ref<TableApi<T>>;
   theme: ComputedRef<GlobalTheme | null>;
   themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>;
+  column: AgGridColum;
 };
 
 export interface GridContent {

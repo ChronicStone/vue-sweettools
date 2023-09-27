@@ -20,11 +20,7 @@ const fieldValue = computed({
     v-bind="context.inputProps.value"
     :loading="context._evalOptions.value"
     filterable
-    :disabled="
-      (context.condition.value == false &&
-        context.conditionEffect.value == 'disable') ||
-      parentDisabled
-    "
+    :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
     @blur="validator?.$touch"
   />

@@ -2,24 +2,32 @@
 import DataTable from "@/components/DataTable/DataTable.vue";
 import { ref } from "vue";
 import { NCheckbox, NConfigProvider, darkTheme } from "naive-ui";
+import { booleanFilter } from "..";
 
-const schema = buildTableSchema<{ firstName: string; lastName: string }>({
+const schema = buildTableSchema<{
+  firstName: string;
+  lastName: string;
+  valid: boolean;
+}>({
   remote: false,
+  filters: [booleanFilter("valid", "Valid")],
   columns: [
     {
       label: "First name",
       key: "firstName",
-      render: (value) => {
-        console.log("render");
-        return value;
-      },
     },
     { label: "Last name", key: "lastName" },
+    {
+      label: "Valid",
+      key: "valid",
+      render: (value) => (value ? "YES" : "NO"),
+    },
   ],
   datasource: async () =>
-    Array.from({ length: 1 }, (_, i) => ({
+    Array.from({ length: 10 }, (_, i) => ({
       firstName: `First name ${i}`,
       lastName: `Last name ${i}`,
+      valid: i % 2 === 0,
     })),
 });
 

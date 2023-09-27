@@ -29,7 +29,7 @@ export function preRenderStringContent(content: string | VNodeChild) {
     : content;
 }
 
-function extractTextFromVNode(
+export function extractTextFromVNode(
   vNode: VNodeNormalizedChildren | string
 ): string[] {
   const extractedText: string[] = [];
