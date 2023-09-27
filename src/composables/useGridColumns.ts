@@ -33,6 +33,7 @@ type AgGridConfigParams = {
   theme: ComputedRef<GlobalTheme | null>;
   themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>;
   draggable: ComputedRef<boolean>;
+  searchQuery: ComputedRef<string[]>;
 };
 
 export function useGridColumns(params: AgGridConfigParams) {
@@ -76,7 +77,12 @@ export function useGridColumns(params: AgGridConfigParams) {
       .filter(Boolean)
       .filter((column) => column?.condition?.() ?? true)
       .map((column) => ({
-        headerName: column.label,
+        headerName: params.searchQuery.value.includes(column.key)
+          ? `${column.label}  🔎`
+          : column.label,
+        ...(params.searchQuery.value.includes(column.key) && {
+          headerTooltip: "Column filterable through quick search",
+        }),
         field: column.key,
         width: column.width,
         hide: column.hide ?? false,

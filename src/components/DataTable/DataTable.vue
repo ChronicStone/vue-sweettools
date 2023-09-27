@@ -61,6 +61,7 @@ const _panelFilters = computed(() => props.filters);
 const _staticFilters = computed(() => props.staticFilters);
 const _draggable = computed(() => props.draggable);
 const _defaultSort = computed(() => props.sort);
+const _searchQuery = computed(() => props.searchQuery);
 
 const gridApi = ref<GridApi>();
 const columnApi = ref<ColumnApi>();
@@ -127,6 +128,7 @@ const { columnDefs, defaultColumnDef } = useGridColumns({
   theme,
   themeOverrides: _themeOverrides,
   draggable: _draggable,
+  searchQuery: _searchQuery,
 });
 
 tableApi.value = {
@@ -250,6 +252,7 @@ watch(
         :enable-search-query="searchQuery.length > 0"
         :resolve-grid-data="() => resolveGridData(true)"
         :table-key="tableKey"
+        :tooltip-show-delay="100"
       >
         <slot />
       </TableHeader>
