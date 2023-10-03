@@ -80,10 +80,6 @@ function submitForm(
   closeForm(formId);
   onSubmit(Object.assign({}, formState));
 }
-
-useRouter().beforeEach(() => {
-  FORM_API.destroyAll();
-});
 </script>
 
 <template>

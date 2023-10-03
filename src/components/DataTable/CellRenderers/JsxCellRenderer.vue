@@ -8,7 +8,6 @@
       :theme-overrides="params.themeOverrides.value ?? null"
     >
       <div :style="{ width: `${width}px` }">
-        <!-- @vue-expect-error -->
         <Component :is="RenderedCell" />
       </div>
     </NConfigProvider>
