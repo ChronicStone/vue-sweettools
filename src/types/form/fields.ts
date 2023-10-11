@@ -76,8 +76,8 @@ export interface TextFieldProps {
   minLength?: number;
   maxLength?: number;
   showCharacterCount?: boolean;
-  prefix?: string;
-  suffix?: string;
+  prefix?: string | (() => VNodeChild);
+  suffix?: string | (() => VNodeChild);
   mask?: string | MaskOptions;
 }
 
@@ -268,6 +268,8 @@ export interface NumberFieldParams {
   min?: number;
   max?: number;
   step?: number;
+  prefix?: string | (() => VNodeChild);
+  suffix?: string | (() => VNodeChild);
 }
 
 export interface NumberField<

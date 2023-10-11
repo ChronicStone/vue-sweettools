@@ -49,6 +49,7 @@ declare global {
   const effectScope: typeof import('vue')['effectScope']
   const exportExcel: typeof import('./utils/excel/excel')['exportExcel']
   const extendRef: typeof import('@vueuse/core')['extendRef']
+  const extractTextFromVNode: typeof import('./utils/renderVNode.tsx')['extractTextFromVNode']
   const formatDateToISOstring: typeof import('./utils/formatDate')['formatDateToISOstring']
   const formatFileExtension: typeof import('./utils/general/format')['formatFileExtension']
   const generateInportSchemaRefFile: typeof import('./utils/excel/excel')['generateInportSchemaRefFile']
@@ -404,6 +405,7 @@ declare module 'vue' {
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly exportExcel: UnwrapRef<typeof import('./utils/excel/excel')['exportExcel']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
+    readonly extractTextFromVNode: UnwrapRef<typeof import('./utils/renderVNode.tsx')['extractTextFromVNode']>
     readonly formatDateToISOstring: UnwrapRef<typeof import('./utils/formatDate')['formatDateToISOstring']>
     readonly formatFileExtension: UnwrapRef<typeof import('./utils/general/format')['formatFileExtension']>
     readonly generateInportSchemaRefFile: UnwrapRef<typeof import('./utils/excel/excel')['generateInportSchemaRefFile']>

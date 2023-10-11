@@ -94,7 +94,7 @@ const errorMessage = computed(() => {
             _field.value,
             fieldContext
           )} has invalid properties`;
-    else return "hehe"; // $validator.value.$errors[0]?.$message;
+    else return $validator.value.$errors[0]?.$message;
   }
 });
 

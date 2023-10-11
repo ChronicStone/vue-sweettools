@@ -20,5 +20,13 @@ const fieldValue = computed({
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
     @blur="validator?.$touch"
-  />
+  >
+    <template v-if="context.inputProps.value.prefix" #prefix>
+      <component :is="renderVNode(context.inputProps.value.prefix)" />
+    </template>
+
+    <template v-if="context.inputProps.value.suffix" #suffix>
+      <component :is="renderVNode(context.inputProps.value.suffix)" />
+    </template>
+  </NInputNumber>
 </template>

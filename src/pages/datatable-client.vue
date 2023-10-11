@@ -9,8 +9,11 @@ const schema = buildTableSchema<{
   lastName: string;
   valid: boolean;
 }>({
-  remote: false,
+  tableKey: "someKey",
+  persistency: "localStorage",
+  remote: true,
   filters: [booleanFilter("valid", "Valid")],
+  searchQuery: ["firstName", "lastName"],
   columns: [
     {
       label: "First name",
@@ -20,15 +23,17 @@ const schema = buildTableSchema<{
     {
       label: "Valid",
       key: "valid",
-      render: (value) => (value ? "YES" : "NO"),
+      render: (value) => value.toString(),
     },
   ],
-  datasource: async () =>
-    Array.from({ length: 10 }, (_, i) => ({
+  datasource: async (t) => {
+    console.log("searchPareams", t);
+    return Array.from({ length: 10 }, (_, i) => ({
       firstName: `First name ${i}`,
       lastName: `Last name ${i}`,
       valid: i % 2 === 0,
-    })),
+    }));
+  },
 });
 
 const dark = ref(false);
