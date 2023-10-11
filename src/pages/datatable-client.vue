@@ -11,15 +11,20 @@ const schema = buildTableSchema<{
 }>({
   tableKey: "someKey",
   persistency: "localStorage",
-  remote: true,
+  remote: false,
   filters: [booleanFilter("valid", "Valid")],
   searchQuery: ["firstName", "lastName"],
   columns: [
     {
-      label: "First name",
-      key: "firstName",
+      label: "User",
+      children: [
+        {
+          label: "First name",
+          key: "firstName",
+        },
+        { label: "Last name", key: "lastName" },
+      ],
     },
-    { label: "Last name", key: "lastName" },
     {
       label: "Valid",
       key: "valid",
@@ -27,8 +32,7 @@ const schema = buildTableSchema<{
     },
   ],
   datasource: async (t) => {
-    console.log("searchPareams", t);
-    return Array.from({ length: 10 }, (_, i) => ({
+    return Array.from({ length: 64 }, (_, i) => ({
       firstName: `First name ${i}`,
       lastName: `Last name ${i}`,
       valid: i % 2 === 0,

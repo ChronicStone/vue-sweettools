@@ -453,6 +453,10 @@ export interface GroupField<
   >;
 }
 
+export interface ObjectFieldParams {
+  frameless?: boolean;
+}
+
 export interface ObjectField<
   FieldKey extends Narrowable = string,
   StoreData extends Record<string, unknown> = Record<string, unknown>
@@ -463,6 +467,9 @@ export interface ObjectField<
   fields: FormField<FieldKey, StoreData>[];
   collapsible?: boolean;
   collapsed?: boolean;
+  fieldParam?:
+    | ObjectFieldParams
+    | ((deps: Dependencies, virtualDeps: StoreData) => ObjectFieldParams);
 }
 
 export interface _ArrayField<
@@ -475,6 +482,24 @@ export interface _ArrayField<
   collapsible?: boolean;
   collapsed?: boolean;
   headerTemplate?: (item: Record<string, any>, index: number) => string;
+}
+
+export interface ArrayCustomActionApi {
+  getValue(key: string): unknown;
+  setValue(key: string, value: unknown): void;
+}
+
+export interface ArrayFieldParams {
+  actions?: Record<"delete" | "moveUp" | "moveDown", boolean>;
+  customActions?: Array<{
+    label: string;
+    icon: string;
+    condition?: (
+      deps: Record<string, unknown>,
+      value: Record<string, unknown>
+    ) => boolean;
+    action: (rowApi: ArrayCustomActionApi) => void;
+  }>;
 }
 
 export type ArrayVariantField<

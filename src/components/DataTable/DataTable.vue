@@ -364,8 +364,16 @@ watch(
     background: v-bind("themeVars.modalColor") !important;
   }
 
-  .ag-header .ag-header-cell {
+  .ag-header .ag-header-cell,
+  .ag-header-group-cell-label {
     font-weight: 900 !important;
+  }
+
+  .ag-header-cell {
+    border-right: 1px solid v-bind("borderColor");
+  }
+  .ag-header-group-cell {
+    border-right: 1px solid v-bind("borderColor");
   }
 
   .ag-header-cell:hover {

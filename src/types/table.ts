@@ -80,6 +80,12 @@ export interface FilterState {
   [key: string]: string | number | boolean | any[] | object;
 }
 
+export interface ColumnGroup<T extends GenericObject = GenericObject> {
+  label: string;
+  children: Array<Column<T> | ColumnGroup<T>>;
+  condition?: () => boolean;
+}
+
 export interface Column<
   T extends GenericObject = GenericObject,
   Key = NestedPaths<DeepRequired<T>>
@@ -268,7 +274,7 @@ export interface DataTableSchema<
   remote: Remote;
   draggable?: boolean;
   datasource: DataSource<TData, Remote>;
-  columns: Column<TData>[];
+  columns: Array<Column<TData> | ColumnGroup<TData>>;
   optimizeQuery?: OptimizedQueryField[];
   tableKey?: string;
   staticFilters?: StaticFilter[];
