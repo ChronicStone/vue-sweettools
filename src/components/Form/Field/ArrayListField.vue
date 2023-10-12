@@ -73,12 +73,15 @@ const {
           </template>
           <template #header-extra>
             <div class="flex items-center gap-1.5">
-              <NTooltip v-if="baseActions.items[index].deleteItem">
+              <NTooltip>
                 <template #trigger>
-                  <mdi:trash
-                    class="text-black dark:text-white hover:text-red-400 cursor-pointer"
+                  <NButton
+                    text
+                    :disabled="!baseActions.items[index].deleteItem"
                     @click.prevent="removeItem(index)"
-                  />
+                  >
+                    <mdi:trash />
+                  </NButton>
                 </template>
                 Delete item
               </NTooltip>

@@ -61,23 +61,23 @@ function buildItemControls(
       label: "Delete item",
       icon: renderIcon("mdi:trash"),
       props: { onClick: () => removeItem(index) },
-      show: baseActions.value.items[index].deleteItem,
+      disabled: !baseActions.value.items[index].deleteItem,
     },
     {
       key: "moveLeft",
       label: "Move item left",
       icon: renderIcon("mdi:arrow-left"),
-      disabled: index - 1 < 0,
+      disabled: !baseActions.value.items[index].moveUp,
       props: { onClick: () => moveItem(index, "left") },
-      show: baseActions.value.items[index].moveUp,
+      show: index > 0,
     },
     {
       key: "moveRight",
       label: "Move item right",
       icon: renderIcon("mdi:arrow-right"),
-      disabled: index + 1 >= itemsLength,
+      disabled: !baseActions.value.items[index].moveDown,
       props: { onClick: () => moveItem(index, "right") },
-      show: baseActions.value.items[index].moveDown,
+      show: index + 1 < itemsLength,
     },
   ];
 }
@@ -87,7 +87,13 @@ function buildItemControls(
   <NCollapseTransition :show="!collapsed">
     <NCard content-style="padding: 0;">
       <div v-if="!fieldValue?.length" class="w-full p-4">
-        <NButton dashed type="primary" class="w-full" @click="addItem">
+        <NButton
+          dashed
+          type="primary"
+          class="w-full"
+          :disabled="!baseActions.addItem"
+          @click="addItem"
+        >
           <template #icon><mdi-plus /></template>
           Create item
         </NButton>
@@ -107,7 +113,13 @@ function buildItemControls(
         :on-update:value="(index: number) => (activeTab = index)"
       >
         <template #suffix>
-          <NButton secondary type="primary" class="mr-2" @click="addItem">
+          <NButton
+            :disabled="!baseActions.addItem"
+            secondary
+            type="primary"
+            class="mr-2"
+            @click="addItem"
+          >
             <template #icon><mdi-plus /></template>
           </NButton>
         </template>

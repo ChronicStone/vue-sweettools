@@ -16,20 +16,27 @@ const { sample, formData } = defineFormSchemaSample({
     fields: [
       {
         label: "Array reactive",
-        type: "array-tabs",
+        type: "array-list",
         key: "array",
         actions: {
           moveDown: false,
           moveUp: false,
           deleteItem: (value) => Object.values(value).every((v) => !v),
+          addItem: (items) => {
+            console.log("items", items);
+            return items.length < 3;
+          },
           custom: [
             {
               label: "Custom action",
               icon: "mdi:plus",
               action: (api) => {
-                api.setValue("$parent.0.item", "HAHAHA");
+                api.setValue(`$parent.${api.index}.item2`, "HAHAHA");
                 nextTick(() =>
-                  console.log("item", api.getValue("$parent.0.item2"))
+                  console.log(
+                    "item",
+                    api.getValue(`$parent.${api.index}.item2`)
+                  )
                 );
               },
             },
