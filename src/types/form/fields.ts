@@ -482,24 +482,38 @@ export interface _ArrayField<
   collapsible?: boolean;
   collapsed?: boolean;
   headerTemplate?: (item: Record<string, any>, index: number) => string;
+  actions?: {
+    [key in "deleteItem" | "moveUp" | "moveDown"]?:
+      | boolean
+      | ((
+          value: Record<string, unknown>,
+          dependencies: Record<string, unknown>
+        ) => boolean);
+  } & {
+    addItem?:
+      | boolean
+      | ((
+          values: Array<Record<string, unknown>>,
+          deps: Record<string, unknown>
+        ) => boolean);
+    custom?: Array<{
+      label: string;
+      icon: string;
+      condition?: (
+        value: Record<string, unknown>,
+        deps: Record<string, unknown>
+      ) => boolean;
+      action: (rowApi: ArrayCustomActionApi) => void;
+    }>;
+  };
 }
 
 export interface ArrayCustomActionApi {
+  index: number;
+  value: Record<string, unknown>;
+  dependencies: Record<string, unknown>;
   getValue(key: string): unknown;
   setValue(key: string, value: unknown): void;
-}
-
-export interface ArrayFieldParams {
-  actions?: Record<"delete" | "moveUp" | "moveDown", boolean>;
-  customActions?: Array<{
-    label: string;
-    icon: string;
-    condition?: (
-      deps: Record<string, unknown>,
-      value: Record<string, unknown>
-    ) => boolean;
-    action: (rowApi: ArrayCustomActionApi) => void;
-  }>;
 }
 
 export type ArrayVariantField<

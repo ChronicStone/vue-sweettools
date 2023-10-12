@@ -36,12 +36,8 @@ const gridSize = useBreakpointStyle(props.field.gridSize ?? "", "grid-cols");
 
 const activeTab = ref<number>(0);
 const tabsInstanceRef = ref<TabsInst>();
-const { addItem, removeItem, moveItem, resolveVariantFields } = useArrayField(
-  _field,
-  fieldValue,
-  activeTab,
-  tabsInstanceRef
-);
+const { addItem, removeItem, moveItem, resolveVariantFields, customActions } =
+  useArrayField(_field, fieldValue, props.context, activeTab, tabsInstanceRef);
 
 function buildItemControls(
   index: number,
@@ -124,7 +120,10 @@ function buildItemControls(
               >
                 <NDropdown
                   trigger="hover"
-                  :options="buildItemControls(index, fieldValue?.length ?? 0)"
+                  :options="[
+                    ...buildItemControls(index, fieldValue?.length ?? 0),
+                    ...(customActions[index] ?? []),
+                  ]"
                 >
                   <NButton quaternary size="small" circle>
                     <template #icon>

@@ -45,6 +45,7 @@ declare module '@vue/runtime-core' {
     'Mdi:chevronLeft': typeof import('~icons/mdi/chevron-left')['default']
     'Mdi:chevronRight': typeof import('~icons/mdi/chevron-right')['default']
     'Mdi:close': typeof import('~icons/mdi/close')['default']
+    'Mdi:dotsHorizontal': typeof import('~icons/mdi/dots-horizontal')['default']
     'Mdi:eye': typeof import('~icons/mdi/eye')['default']
     'Mdi:filterVariant': typeof import('~icons/mdi/filter-variant')['default']
     'Mdi:import': typeof import('~icons/mdi/import')['default']

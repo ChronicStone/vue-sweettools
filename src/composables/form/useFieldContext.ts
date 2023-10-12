@@ -144,14 +144,9 @@ export function useFieldContext(
       (value: unknown) =>
         (field.value.watch as NonNullable<FormField["watch"]>)(value, {
           setValue: (key: string, value: any) =>
-            setPropertyFromPath(
-              state.value,
-              [...(parentKey.value ?? [])],
-              value,
-              key
-            ),
+            propertySetter(key, parentKey.value, state.value, value),
           getValue: (key: string) =>
-            getPropertyFromPath([...(parentKey.value ?? [])], state.value, key),
+            propertyResolver(key, parentKey.value, state.value),
         })
     );
   }
@@ -188,6 +183,7 @@ export function useFieldContext(
     placeholder,
     virtualStore,
     disabled,
+    parentKey,
   };
 }
 

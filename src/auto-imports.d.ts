@@ -107,6 +107,8 @@ declare global {
   const preRenderStringContent: typeof import('./utils/renderVNode.tsx')['preRenderStringContent']
   const preformatFieldDependencies: typeof import('./utils/form/mapFieldDependencies')['preformatFieldDependencies']
   const prettyPrintSchema: typeof import('./samples/utils')['prettyPrintSchema']
+  const propertyResolver: typeof import('./utils/form/setPropertyFromPath')['propertyResolver']
+  const propertySetter: typeof import('./utils/form/setPropertyFromPath')['propertySetter']
   const provide: typeof import('vue')['provide']
   const reactify: typeof import('@vueuse/core')['reactify']
   const reactifyObject: typeof import('@vueuse/core')['reactifyObject']
@@ -464,6 +466,8 @@ declare module 'vue' {
     readonly preRenderStringContent: UnwrapRef<typeof import('./utils/renderVNode.tsx')['preRenderStringContent']>
     readonly preformatFieldDependencies: UnwrapRef<typeof import('./utils/form/mapFieldDependencies')['preformatFieldDependencies']>
     readonly prettyPrintSchema: UnwrapRef<typeof import('./samples/utils')['prettyPrintSchema']>
+    readonly propertyResolver: UnwrapRef<typeof import('./utils/form/setPropertyFromPath')['propertyResolver']>
+    readonly propertySetter: UnwrapRef<typeof import('./utils/form/setPropertyFromPath')['propertySetter']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly reactify: UnwrapRef<typeof import('@vueuse/core')['reactify']>
     readonly reactifyObject: UnwrapRef<typeof import('@vueuse/core')['reactifyObject']>
