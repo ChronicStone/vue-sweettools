@@ -19,6 +19,9 @@ const { sample, formData } = defineFormSchemaSample({
         type: "array-tabs",
         key: "array",
         actions: {
+          moveDown: false,
+          moveUp: false,
+          deleteItem: (value) => Object.values(value).every((v) => !v),
           custom: [
             {
               label: "Custom action",

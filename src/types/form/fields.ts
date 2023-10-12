@@ -487,21 +487,22 @@ export interface _ArrayField<
       | boolean
       | ((
           value: Record<string, unknown>,
-          dependencies: Record<string, unknown>
+          dependencies: Record<string, unknown>,
+          index: number
         ) => boolean);
   } & {
     addItem?:
       | boolean
       | ((
           values: Array<Record<string, unknown>>,
-          deps: Record<string, unknown>
+          dependencies: Record<string, unknown>
         ) => boolean);
     custom?: Array<{
       label: string;
       icon: string;
       condition?: (
         value: Record<string, unknown>,
-        deps: Record<string, unknown>
+        dependencies: Record<string, unknown>
       ) => boolean;
       action: (rowApi: ArrayCustomActionApi) => void;
     }>;

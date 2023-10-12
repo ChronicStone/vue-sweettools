@@ -109,6 +109,35 @@ export function useArrayField(
     if (tabsRef) tabsRef.value?.syncBarPosition();
   }
 
+  const baseActions = computed(() => ({
+    addItem:
+      typeof field.value.actions?.addItem === "function"
+        ? field.value.actions.addItem(
+            fieldValue.value,
+            context.dependencies.value
+          )
+        : field.value.actions?.addItem ?? true,
+    items: fieldValue.value.map((itemValue, index) =>
+      (["deleteItem", "moveUp", "moveDown"] as const).reduce(
+        (acc, actionKey) => ({
+          ...acc,
+          [actionKey]:
+            field.value.actions &&
+            field.value.actions[actionKey] &&
+            typeof field.value.actions[actionKey] !== "undefined" &&
+            typeof field.value.actions[actionKey] === "function"
+              ? (field.value.actions[actionKey] as any)(
+                  itemValue,
+                  context.dependencies.value,
+                  index
+                )
+              : field.value.actions?.[actionKey] ?? true,
+        }),
+        {} as Record<"deleteItem" | "moveUp" | "moveDown", boolean>
+      )
+    ),
+  }));
+
   const customActions = computed<Array<DropdownOption[]>>(() =>
     fieldValue.value?.map((currentVal, index) =>
       (
@@ -152,5 +181,6 @@ export function useArrayField(
     moveItem,
     resolveVariantFields,
     customActions,
+    baseActions,
   };
 }

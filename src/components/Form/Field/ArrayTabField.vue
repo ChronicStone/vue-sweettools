@@ -36,8 +36,20 @@ const gridSize = useBreakpointStyle(props.field.gridSize ?? "", "grid-cols");
 
 const activeTab = ref<number>(0);
 const tabsInstanceRef = ref<TabsInst>();
-const { addItem, removeItem, moveItem, resolveVariantFields, customActions } =
-  useArrayField(_field, fieldValue, props.context, activeTab, tabsInstanceRef);
+const {
+  addItem,
+  removeItem,
+  moveItem,
+  resolveVariantFields,
+  customActions,
+  baseActions,
+} = useArrayField(
+  _field,
+  fieldValue,
+  props.context,
+  activeTab,
+  tabsInstanceRef
+);
 
 function buildItemControls(
   index: number,
@@ -49,6 +61,7 @@ function buildItemControls(
       label: "Delete item",
       icon: renderIcon("mdi:trash"),
       props: { onClick: () => removeItem(index) },
+      show: baseActions.value.items[index].deleteItem,
     },
     {
       key: "moveLeft",
@@ -56,6 +69,7 @@ function buildItemControls(
       icon: renderIcon("mdi:arrow-left"),
       disabled: index - 1 < 0,
       props: { onClick: () => moveItem(index, "left") },
+      show: baseActions.value.items[index].moveUp,
     },
     {
       key: "moveRight",
@@ -63,6 +77,7 @@ function buildItemControls(
       icon: renderIcon("mdi:arrow-right"),
       disabled: index + 1 >= itemsLength,
       props: { onClick: () => moveItem(index, "right") },
+      show: baseActions.value.items[index].moveDown,
     },
   ];
 }
@@ -119,6 +134,12 @@ function buildItemControls(
                 class="flex items-center gap-0 text-xs text-black dark:text-white"
               >
                 <NDropdown
+                  v-if="
+                    [
+                      ...buildItemControls(index, fieldValue?.length ?? 0),
+                      ...(customActions[index] ?? []),
+                    ].length > 0
+                  "
                   trigger="hover"
                   :options="[
                     ...buildItemControls(index, fieldValue?.length ?? 0),

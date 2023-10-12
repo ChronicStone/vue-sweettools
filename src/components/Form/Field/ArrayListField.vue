@@ -39,8 +39,14 @@ const listItemSize = useBreakpointStyle(
   "col"
 );
 
-const { addItem, removeItem, moveItem, customActions, resolveVariantFields } =
-  useArrayField(_field, fieldValue, props.context);
+const {
+  addItem,
+  removeItem,
+  moveItem,
+  customActions,
+  baseActions,
+  resolveVariantFields,
+} = useArrayField(_field, fieldValue, props.context);
 </script>
 
 <template>
@@ -67,7 +73,7 @@ const { addItem, removeItem, moveItem, customActions, resolveVariantFields } =
           </template>
           <template #header-extra>
             <div class="flex items-center gap-1.5">
-              <NTooltip>
+              <NTooltip v-if="baseActions.items[index].deleteItem">
                 <template #trigger>
                   <mdi:trash
                     class="text-black dark:text-white hover:text-red-400 cursor-pointer"
@@ -111,6 +117,7 @@ const { addItem, removeItem, moveItem, customActions, resolveVariantFields } =
       </TransitionGroup>
 
       <NButton
+        v-if="baseActions.addItem"
         style="grid-column: 1 / -1"
         dashed
         type="primary"
