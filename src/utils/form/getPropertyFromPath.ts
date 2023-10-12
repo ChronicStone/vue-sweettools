@@ -21,7 +21,7 @@ export function getPropertyFromPath(
   );
 }
 
-function getPathOffset(key: string) {
+export function getPathOffset(key: string) {
   try {
     if (!key) return 0;
     const offset = key.split(".")[0].split(":").pop();

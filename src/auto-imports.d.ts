@@ -58,6 +58,7 @@ declare global {
   const getColorFormat: typeof import('./utils/manipulateColor')['getColorFormat']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getPathOffset: typeof import('./utils/form/getPropertyFromPath')['getPathOffset']
   const getPropertyFromPath: typeof import('./utils/form/getPropertyFromPath')['getPropertyFromPath']
   const h: typeof import('vue')['h']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
@@ -414,6 +415,7 @@ declare module 'vue' {
     readonly getColorFormat: UnwrapRef<typeof import('./utils/manipulateColor')['getColorFormat']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getPathOffset: UnwrapRef<typeof import('./utils/form/getPropertyFromPath')['getPathOffset']>
     readonly getPropertyFromPath: UnwrapRef<typeof import('./utils/form/getPropertyFromPath')['getPropertyFromPath']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
