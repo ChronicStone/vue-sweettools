@@ -49,6 +49,7 @@ declare global {
   const effectScope: typeof import('vue')['effectScope']
   const exportExcel: typeof import('./utils/excel/excel')['exportExcel']
   const extendRef: typeof import('@vueuse/core')['extendRef']
+  const extractTextFromVNode: typeof import('./utils/renderVNode.tsx')['extractTextFromVNode']
   const formatDateToISOstring: typeof import('./utils/formatDate')['formatDateToISOstring']
   const formatFileExtension: typeof import('./utils/general/format')['formatFileExtension']
   const generateInportSchemaRefFile: typeof import('./utils/excel/excel')['generateInportSchemaRefFile']
@@ -57,6 +58,7 @@ declare global {
   const getColorFormat: typeof import('./utils/manipulateColor')['getColorFormat']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getPathOffset: typeof import('./utils/form/getPropertyFromPath')['getPathOffset']
   const getPropertyFromPath: typeof import('./utils/form/getPropertyFromPath')['getPropertyFromPath']
   const h: typeof import('vue')['h']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
@@ -105,6 +107,8 @@ declare global {
   const preRenderStringContent: typeof import('./utils/renderVNode.tsx')['preRenderStringContent']
   const preformatFieldDependencies: typeof import('./utils/form/mapFieldDependencies')['preformatFieldDependencies']
   const prettyPrintSchema: typeof import('./samples/utils')['prettyPrintSchema']
+  const propertyResolver: typeof import('./utils/form/setPropertyFromPath')['propertyResolver']
+  const propertySetter: typeof import('./utils/form/setPropertyFromPath')['propertySetter']
   const provide: typeof import('vue')['provide']
   const reactify: typeof import('@vueuse/core')['reactify']
   const reactifyObject: typeof import('@vueuse/core')['reactifyObject']
@@ -404,6 +408,7 @@ declare module 'vue' {
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly exportExcel: UnwrapRef<typeof import('./utils/excel/excel')['exportExcel']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
+    readonly extractTextFromVNode: UnwrapRef<typeof import('./utils/renderVNode.tsx')['extractTextFromVNode']>
     readonly formatDateToISOstring: UnwrapRef<typeof import('./utils/formatDate')['formatDateToISOstring']>
     readonly formatFileExtension: UnwrapRef<typeof import('./utils/general/format')['formatFileExtension']>
     readonly generateInportSchemaRefFile: UnwrapRef<typeof import('./utils/excel/excel')['generateInportSchemaRefFile']>
@@ -412,6 +417,7 @@ declare module 'vue' {
     readonly getColorFormat: UnwrapRef<typeof import('./utils/manipulateColor')['getColorFormat']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getPathOffset: UnwrapRef<typeof import('./utils/form/getPropertyFromPath')['getPathOffset']>
     readonly getPropertyFromPath: UnwrapRef<typeof import('./utils/form/getPropertyFromPath')['getPropertyFromPath']>
     readonly h: UnwrapRef<typeof import('vue')['h']>
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
@@ -460,6 +466,8 @@ declare module 'vue' {
     readonly preRenderStringContent: UnwrapRef<typeof import('./utils/renderVNode.tsx')['preRenderStringContent']>
     readonly preformatFieldDependencies: UnwrapRef<typeof import('./utils/form/mapFieldDependencies')['preformatFieldDependencies']>
     readonly prettyPrintSchema: UnwrapRef<typeof import('./samples/utils')['prettyPrintSchema']>
+    readonly propertyResolver: UnwrapRef<typeof import('./utils/form/setPropertyFromPath')['propertyResolver']>
+    readonly propertySetter: UnwrapRef<typeof import('./utils/form/setPropertyFromPath')['propertySetter']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly reactify: UnwrapRef<typeof import('@vueuse/core')['reactify']>
     readonly reactifyObject: UnwrapRef<typeof import('@vueuse/core')['reactifyObject']>

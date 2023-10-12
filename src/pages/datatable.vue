@@ -15,9 +15,6 @@ import { Assessment, AssessmentStatus } from "./types";
 
 const API_BASE_URL = "https://api.dev-vtest.com/api/v2";
 
-const instance = getCurrentInstance();
-console.log(instance);
-
 const dark = ref<boolean>(true);
 const jwtToken = ref<string>();
 

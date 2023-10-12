@@ -144,8 +144,20 @@ export function useFieldContext(
       (value: unknown) =>
         (field.value.watch as NonNullable<FormField["watch"]>)(value, {
           setValue: (key: string, value: any) =>
-            setPropertyFromPath(state.value, key.split("."), value),
-          getValue: (key: string) => getPropertyFromPath(key, state.value),
+            propertySetter(key, parentKey.value, state.value, value),
+          getValue: (key: string) =>
+            propertyResolver(key, parentKey.value, state.value),
+        })
+    );
+  }
+
+  if (typeof field.value.onDependencyChange === "function") {
+    watch(
+      () => JSON.stringify(dependencies.value),
+      () =>
+        field.value.onDependencyChange?.(dependencies.value, {
+          setValue: (value: unknown) => (fieldState.value = value),
+          getValue: () => fieldState.value,
         })
     );
   }
@@ -171,6 +183,7 @@ export function useFieldContext(
     placeholder,
     virtualStore,
     disabled,
+    parentKey,
   };
 }
 

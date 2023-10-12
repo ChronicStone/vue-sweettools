@@ -138,7 +138,9 @@ type ComponentProps<C extends Component> = C extends new (...args: any) => any
 export type ExtractCustomComponentType<
   T extends Component,
   Props = ComponentProps<T>
-> = Props extends { modelValue: any } ? Props["modelValue"] : unknown;
+> = Props extends { modelValue: any } | { modelValue?: any }
+  ? Props["modelValue"]
+  : unknown;
 
 export type FormInfoReturnType<T extends FormField<any, any>> =
   RemoveNeverProps<

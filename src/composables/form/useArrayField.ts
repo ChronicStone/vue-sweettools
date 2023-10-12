@@ -5,17 +5,19 @@ import {
   FormField,
 } from "@/types/form/fields";
 import { mapFieldsInitialState } from "@/utils/form/mapFieldsInitialState";
-import { TabsInst, useDialog } from "naive-ui";
+import { DropdownOption, TabsInst, useDialog } from "naive-ui";
 import { ComputedRef, Ref, WritableComputedRef } from "vue";
 
 export function useArrayField(
   field: ComputedRef<ArrayListField | ArrayTabsField | ArrayVariantField>,
   fieldValue: WritableComputedRef<Array<Record<string, any>>>,
+  context: ReturnType<typeof useFieldContext>,
   activeTab?: Ref<number>,
   tabsRef?: Ref<TabsInst | undefined>
 ) {
   const dialogApi = useDialog();
   const formApi = useFormApi();
+  const { formState } = useFormState();
 
   function resolveVariantFields(item: Record<string, any>) {
     if (field.value.type !== "array-variant") return [];
@@ -107,10 +109,78 @@ export function useArrayField(
     if (tabsRef) tabsRef.value?.syncBarPosition();
   }
 
+  const baseActions = computed(() => ({
+    addItem:
+      typeof field.value.actions?.addItem === "function"
+        ? field.value.actions.addItem(
+            fieldValue.value,
+            context.dependencies.value
+          )
+        : field.value.actions?.addItem ?? true,
+    items: fieldValue.value.map((itemValue, index) =>
+      (["deleteItem", "moveUp", "moveDown"] as const).reduce(
+        (acc, actionKey) => ({
+          ...acc,
+          [actionKey]:
+            field.value.actions &&
+            field.value.actions[actionKey] &&
+            typeof field.value.actions[actionKey] !== "undefined" &&
+            typeof field.value.actions[actionKey] === "function"
+              ? (field.value.actions[actionKey] as any)(
+                  itemValue,
+                  context.dependencies.value,
+                  index
+                )
+              : field.value.actions?.[actionKey] ?? true,
+        }),
+        {} as Record<"deleteItem" | "moveUp" | "moveDown", boolean>
+      )
+    ),
+  }));
+
+  const customActions = computed<Array<DropdownOption[]>>(() =>
+    fieldValue.value?.map((currentVal, index) =>
+      (
+        field.value.actions?.custom?.filter(
+          (action) =>
+            action?.condition?.(currentVal, context.dependencies.value) ?? true
+        ) ?? []
+      ).map((action) => ({
+        key: generateUUID(),
+        label: action.label,
+        icon: renderIcon(action.icon),
+        props: {
+          onClick: () =>
+            action.action({
+              value: currentVal,
+              index,
+              dependencies: context.dependencies.value,
+              getValue: (key: string) =>
+                propertyResolver(
+                  key,
+                  [...context.parentKey.value, (field.value as any).key],
+                  formState.value
+                ),
+
+              setValue: (key: string, value: unknown) =>
+                propertySetter(
+                  key,
+                  [...context.parentKey.value, (field.value as any).key],
+                  formState.value,
+                  value
+                ),
+            }),
+        },
+      }))
+    )
+  );
+
   return {
     addItem,
     removeItem,
     moveItem,
     resolveVariantFields,
+    customActions,
+    baseActions,
   };
 }

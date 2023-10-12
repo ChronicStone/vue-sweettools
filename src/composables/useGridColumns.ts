@@ -1,5 +1,11 @@
 import { ComputedRef, Ref, computed } from "vue";
-import { Column, FetchParams, TableApi, TableRowAction } from "@/types/table";
+import {
+  Column,
+  ColumnGroup,
+  FetchParams,
+  TableApi,
+  TableRowAction,
+} from "@/types/table";
 
 import ColumnHeaderRenderer from "@/components/DataTable/CellRenderers/ColumnHeaderRenderer.vue";
 import SelectionHeaderRenderer from "@/components/DataTable/CellRenderers/SelectionHeaderRenderer.vue";
@@ -7,7 +13,7 @@ import ActionsCellRenderer from "@/components/DataTable/CellRenderers/ActionsCel
 import JsxCellRenderer from "@/components/DataTable/CellRenderers/JsxCellRenderer.vue";
 import ComponentCellRenderer from "@/components/DataTable/CellRenderers/ComponentCellRenderer.vue";
 import { GenericObject } from "@/types/utils";
-import { ColDef } from "ag-grid-community";
+import { ColDef, ColGroupDef } from "ag-grid-community";
 import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 
 const DEFAULT_COL_DEF = {
@@ -21,7 +27,7 @@ const DEFAULT_COL_DEF = {
 
 type AgGridConfigParams = {
   isRemote: ComputedRef<boolean>;
-  columns: ComputedRef<Column<any, any>[]>;
+  columns: ComputedRef<Array<Column<any, any> | ColumnGroup<any>>>;
   enableSelection: ComputedRef<boolean>;
   rowActions: ComputedRef<TableRowAction<GenericObject>[]>;
   setGlobalSelection: (value: boolean) => void;
@@ -35,6 +41,58 @@ type AgGridConfigParams = {
   draggable: ComputedRef<boolean>;
   searchQuery: ComputedRef<string[]>;
 };
+
+function mapColumnsRecursively(
+  column: Column<any, any> | ColumnGroup<any>,
+  params: AgGridConfigParams
+): ColDef | ColGroupDef {
+  if ("children" in column)
+    return {
+      headerName: column.label,
+      children: column.children
+        .filter((c) => c?.condition?.() ?? true)
+        .map((c) => mapColumnsRecursively(c, params)),
+    };
+  else
+    return {
+      headerName: params.searchQuery.value.includes(column.key)
+        ? `${column.label}  🔎`
+        : column.label,
+      ...(params.searchQuery.value.includes(column.key) && {
+        headerTooltip: "Column filterable through quick search",
+      }),
+      field: column.key,
+      ...(column.width && { width: column.width as number }),
+      hide: column.hide ?? false,
+      resizable: column.resizable ?? true,
+      sortable: column.sortable ?? true,
+      // headerComponent: ColumnHeaderRenderer,
+      // headerComponentParams: {
+      //   tableApi: params.tableApi,
+      //   theme: params.theme,
+      //   themeOverrides,
+      // },
+      ...(column.render && {
+        cellRenderer: JsxCellRenderer,
+        cellRendererParams: {
+          _cellRenderer: column.render,
+          tableApi: params.tableApi,
+          theme: params.theme,
+          themeOverrides,
+        },
+      }),
+      ...(column.cellComponent && {
+        cellRenderer: ComponentCellRenderer,
+        cellRendererParams: {
+          _cellRenderer: column.cellComponent,
+          ...(column.cellComponentParams && column.cellComponentParams),
+          tableApi: params.tableApi,
+          theme: params.theme,
+          themeOverrides,
+        },
+      }),
+    };
+}
 
 export function useGridColumns(params: AgGridConfigParams) {
   const { permissionValidator } = useGlobalConfig();
@@ -73,47 +131,9 @@ export function useGridColumns(params: AgGridConfigParams) {
           },
         ]
       : []),
-    ...(params.columns.value ?? [])
-      .filter(Boolean)
-      .filter((column) => column?.condition?.() ?? true)
-      .map((column) => ({
-        headerName: params.searchQuery.value.includes(column.key)
-          ? `${column.label}  🔎`
-          : column.label,
-        ...(params.searchQuery.value.includes(column.key) && {
-          headerTooltip: "Column filterable through quick search",
-        }),
-        field: column.key,
-        width: column.width,
-        hide: column.hide ?? false,
-        resizable: column.resizable ?? true,
-        sortable: column.sortable ?? true,
-        // headerComponent: ColumnHeaderRenderer,
-        // headerComponentParams: {
-        //   tableApi: params.tableApi,
-        //   theme: params.theme,
-        //   themeOverrides,
-        // },
-        ...(column.render && {
-          cellRenderer: JsxCellRenderer,
-          cellRendererParams: {
-            _cellRenderer: column.render,
-            tableApi: params.tableApi,
-            theme: params.theme,
-            themeOverrides,
-          },
-        }),
-        ...(column.cellComponent && {
-          cellRenderer: ComponentCellRenderer,
-          cellRendererParams: {
-            _cellRenderer: column.cellComponent,
-            ...(column.cellComponentParams && column.cellComponentParams),
-            tableApi: params.tableApi,
-            theme: params.theme,
-            themeOverrides,
-          },
-        }),
-      })),
+    ...(params.columns.value ?? []).map((c) =>
+      mapColumnsRecursively(c, params)
+    ),
   ]);
 
   return {

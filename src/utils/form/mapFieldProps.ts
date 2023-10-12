@@ -29,8 +29,6 @@ export function mapFieldProps(
         autosize: fieldProps?.autosize ?? false,
         ...(fieldProps.minLength && { minlength: fieldProps.minLength }),
         ...(fieldProps.maxLength && { maxlength: fieldProps.maxLength }),
-        ...(fieldProps.prefix && { prefix: fieldProps.prefix }),
-        ...(fieldProps.suffix && { suffix: fieldProps.suffix }),
         ...(field.type === "password" && { "show-password-on": "click" }),
         ...(fieldProps.mask && { mask: fieldProps.mask }),
       };
@@ -133,8 +131,6 @@ export function mapFieldProps(
         ...(fieldProps.min && { min: fieldProps.min }),
         ...(fieldProps.max && { max: fieldProps.max }),
         ...(fieldProps.step && { step: fieldProps.step }),
-        ...(fieldProps.prefix && { prefix: fieldProps.prefix }),
-        ...(fieldProps.suffix && { suffix: fieldProps.suffix }),
       };
     case "rating":
       return {

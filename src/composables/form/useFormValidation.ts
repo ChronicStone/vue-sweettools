@@ -70,13 +70,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
                     : field?.label ?? field.key
                 )
               : (libConfig.getProp("textOverrides.requiredMessage") as string),
-            field.type === "checkbox"
-              ? (value: boolean) => !!value
-              : field.type === "group" &&
-                field.applyTransformToRequired &&
-                typeof field.transform === "function"
-              ? (value: any) => !!field.transform?.(value)
-              : required
+            field.type === "checkbox" ? (value: boolean) => !!value : required
           );
 
         if (field.type === "object" || field.type === "group") {

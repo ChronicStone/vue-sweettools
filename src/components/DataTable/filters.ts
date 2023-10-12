@@ -46,6 +46,7 @@ export function booleanFilter(
       { label: "All", value: null },
     ],
     transform: (value: boolean) => (value !== null ? [value] : []),
+    preformat: (value: unknown[]) => (value?.length ? value[0] : null),
   };
 }
 

@@ -23,13 +23,14 @@ const fieldValue = computed({
       :is="_field.component"
       v-model="fieldValue"
       v-bind="{
-        ..._field.fieldParams,
+        ...context.rawInputProps.value,
         dependencies: context.dependencies.value,
         options: context.options,
         evalOptions: context._evalOptions.value,
         evalCondition: context._evalCondition.value,
         validator: validator,
         placeholder: context.placeholder.value,
+        disabled: context.disabled.value,
       }"
     />
   </NCollapseTransition>

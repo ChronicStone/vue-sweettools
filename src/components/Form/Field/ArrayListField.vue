@@ -6,7 +6,13 @@ import {
   _BaseField,
   ArrayVariantField,
 } from "@/types/form/fields";
-import { NCard, NTooltip, NButton, NCollapseTransition } from "naive-ui";
+import {
+  NCard,
+  NTooltip,
+  NButton,
+  NCollapseTransition,
+  NDropdown,
+} from "naive-ui";
 import FieldRenderer from "@/components/Form/Renderer/FieldRenderer.vue";
 
 const emit = defineEmits<FieldComponentEmits>();
@@ -33,10 +39,14 @@ const listItemSize = useBreakpointStyle(
   "col"
 );
 
-const { addItem, removeItem, moveItem, resolveVariantFields } = useArrayField(
-  _field,
-  fieldValue
-);
+const {
+  addItem,
+  removeItem,
+  moveItem,
+  customActions,
+  baseActions,
+  resolveVariantFields,
+} = useArrayField(_field, fieldValue, props.context);
 </script>
 
 <template>
@@ -62,15 +72,29 @@ const { addItem, removeItem, moveItem, resolveVariantFields } = useArrayField(
             </div>
           </template>
           <template #header-extra>
-            <NTooltip>
-              <template #trigger>
-                <mdi:trash
-                  class="text-black dark:text-white hover:text-red-400 cursor-pointer"
-                  @click.prevent="removeItem(index)"
-                />
-              </template>
-              Delete item
-            </NTooltip>
+            <div class="flex items-center gap-1.5">
+              <NTooltip>
+                <template #trigger>
+                  <NButton
+                    text
+                    :disabled="!baseActions.items[index].deleteItem"
+                    @click.prevent="removeItem(index)"
+                  >
+                    <mdi:trash />
+                  </NButton>
+                </template>
+                Delete item
+              </NTooltip>
+              <NDropdown
+                v-if="customActions[index].length"
+                :options="customActions[index]"
+                trigger="hover"
+              >
+                <NButton text>
+                  <mdi:dots-horizontal />
+                </NButton>
+              </NDropdown>
+            </div>
           </template>
 
           <FieldRenderer
@@ -96,6 +120,7 @@ const { addItem, removeItem, moveItem, resolveVariantFields } = useArrayField(
       </TransitionGroup>
 
       <NButton
+        :disabled="!baseActions.addItem"
         style="grid-column: 1 / -1"
         dashed
         type="primary"

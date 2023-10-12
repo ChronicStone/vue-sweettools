@@ -76,8 +76,8 @@ export interface TextFieldProps {
   minLength?: number;
   maxLength?: number;
   showCharacterCount?: boolean;
-  prefix?: string;
-  suffix?: string;
+  prefix?: string | (() => VNodeChild);
+  suffix?: string | (() => VNodeChild);
   mask?: string | MaskOptions;
 }
 
@@ -268,6 +268,8 @@ export interface NumberFieldParams {
   min?: number;
   max?: number;
   step?: number;
+  prefix?: string | (() => VNodeChild);
+  suffix?: string | (() => VNodeChild);
 }
 
 export interface NumberField<
@@ -451,6 +453,10 @@ export interface GroupField<
   >;
 }
 
+export interface ObjectFieldParams {
+  frameless?: boolean;
+}
+
 export interface ObjectField<
   FieldKey extends Narrowable = string,
   StoreData extends Record<string, unknown> = Record<string, unknown>
@@ -461,6 +467,9 @@ export interface ObjectField<
   fields: FormField<FieldKey, StoreData>[];
   collapsible?: boolean;
   collapsed?: boolean;
+  fieldParam?:
+    | ObjectFieldParams
+    | ((deps: Dependencies, virtualDeps: StoreData) => ObjectFieldParams);
 }
 
 export interface _ArrayField<
@@ -473,6 +482,39 @@ export interface _ArrayField<
   collapsible?: boolean;
   collapsed?: boolean;
   headerTemplate?: (item: Record<string, any>, index: number) => string;
+  actions?: {
+    [key in "deleteItem" | "moveUp" | "moveDown"]?:
+      | boolean
+      | ((
+          value: Record<string, unknown>,
+          dependencies: Record<string, unknown>,
+          index: number
+        ) => boolean);
+  } & {
+    addItem?:
+      | boolean
+      | ((
+          values: Array<Record<string, unknown>>,
+          dependencies: Record<string, unknown>
+        ) => boolean);
+    custom?: Array<{
+      label: string;
+      icon: string;
+      condition?: (
+        value: Record<string, unknown>,
+        dependencies: Record<string, unknown>
+      ) => boolean;
+      action: (rowApi: ArrayCustomActionApi) => void;
+    }>;
+  };
+}
+
+export interface ArrayCustomActionApi {
+  index: number;
+  value: Record<string, unknown>;
+  dependencies: Record<string, unknown>;
+  getValue(key: string): unknown;
+  setValue(key: string, value: unknown): void;
 }
 
 export type ArrayVariantField<
@@ -584,6 +626,10 @@ export type _BaseField<
       setValue: (key: string, value: unknown) => void;
       getValue: (key: string) => void;
     }
+  ) => void;
+  onDependencyChange?: (
+    dependencies: Dependencies,
+    api: { setValue: (value: unknown) => void; getValue: () => unknown }
   ) => void;
   ignore?: boolean;
 };
