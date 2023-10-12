@@ -150,6 +150,17 @@ export function useFieldContext(
     );
   }
 
+  if (typeof field.value.onDependencyChange === "function") {
+    watch(
+      () => JSON.stringify(dependencies.value),
+      () =>
+        field.value.onDependencyChange?.(dependencies.value, {
+          setValue: (value: unknown) => (fieldState.value = value),
+          getValue: () => fieldState.value,
+        })
+    );
+  }
+
   const placeholder = computed(() =>
     typeof field.value.placeholder === "function"
       ? field.value.placeholder()

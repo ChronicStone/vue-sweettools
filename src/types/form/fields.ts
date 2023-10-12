@@ -612,6 +612,10 @@ export type _BaseField<
       getValue: (key: string) => void;
     }
   ) => void;
+  onDependencyChange?: (
+    dependencies: Dependencies,
+    api: { setValue: (value: unknown) => void; getValue: () => unknown }
+  ) => void;
   ignore?: boolean;
 };
 
