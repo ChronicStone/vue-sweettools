@@ -21,12 +21,12 @@ const fieldValue = computed({
     :status="validator?.$errors?.length ? 'error' : 'success'"
     @blur="validator?.$touch"
   >
-    <template v-if="context.inputProps.value.prefix" #prefix>
-      <component :is="renderVNode(context.inputProps.value.prefix)" />
+    <template v-if="context.rawInputProps.value.prefix" #prefix>
+      <component :is="renderVNode(context.rawInputProps.value.prefix)" />
     </template>
 
-    <template v-if="context.inputProps.value.suffix" #suffix>
-      <component :is="renderVNode(context.inputProps.value.suffix)" />
+    <template v-if="context.rawInputProps.value.suffix" #suffix>
+      <component :is="renderVNode(context.rawInputProps.value.suffix)" />
     </template>
   </NInputNumber>
 </template>
