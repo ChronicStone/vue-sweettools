@@ -369,11 +369,18 @@ watch(
     font-weight: 900 !important;
   }
 
-  .ag-header-cell {
-    border-right: 1px solid v-bind("borderColor");
-  }
-  .ag-header-group-cell {
-    border-right: 1px solid v-bind("borderColor");
+  .ag-header-group-cell::before,
+  .ag-header-cell::before {
+    content: "";
+    position: absolute;
+    top: 50%; /* Center it vertically */
+    right: 0; /* For a right border */
+    height: 50%; /* Half the height of the container */
+    width: 1px; /* The thickness of the border */
+    background-color: v-bind(
+      "themeVars.borderColor"
+    ); /* The color of the border */
+    transform: translateY(-50%); /* To truly center it vertically */
   }
 
   .ag-header-cell:hover {
