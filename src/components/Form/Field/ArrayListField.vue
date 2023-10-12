@@ -90,9 +90,9 @@ const {
                 :options="customActions[index]"
                 trigger="hover"
               >
-                <mdi:dots-horizontal
-                  class="text-black dark:text-white hover:text-red-400 cursor-pointer"
-                />
+                <NButton text>
+                  <mdi:dots-horizontal />
+                </NButton>
               </NDropdown>
             </div>
           </template>
@@ -120,7 +120,7 @@ const {
       </TransitionGroup>
 
       <NButton
-        v-if="baseActions.addItem"
+        :disabled="!baseActions.addItem"
         style="grid-column: 1 / -1"
         dashed
         type="primary"
