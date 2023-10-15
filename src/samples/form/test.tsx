@@ -22,10 +22,7 @@ const { sample, formData } = defineFormSchemaSample({
           moveDown: false,
           moveUp: false,
           deleteItem: (value) => Object.values(value).every((v) => !v),
-          addItem: (items) => {
-            console.log("items", items);
-            return items.length < 3;
-          },
+          addItem: (items) => items.length < 3,
           custom: [
             {
               label: "Custom action",
@@ -62,6 +59,12 @@ const { sample, formData } = defineFormSchemaSample({
             key: "item3",
             dependencies: [["$parent.item", "item"]],
             options: (deps) => (deps.item ? ["1", "2", "3"] : []),
+          },
+          {
+            label: "Item n",
+            type: "number",
+            key: "item4",
+            fieldParams: { min: 0, max: 10 },
           },
         ],
       },

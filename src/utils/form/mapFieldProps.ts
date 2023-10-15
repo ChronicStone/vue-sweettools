@@ -128,9 +128,10 @@ export function mapFieldProps(
     case "number":
       return {
         "show-button": fieldProps.showIncrementButtons ?? true,
-        ...(fieldProps.min && { min: fieldProps.min }),
-        ...(fieldProps.max && { max: fieldProps.max }),
-        ...(fieldProps.step && { step: fieldProps.step }),
+        ...(typeof fieldProps.min !== "undefined" && { min: fieldProps.min }),
+        ...(typeof fieldProps.max !== "undefined" && { max: fieldProps.max }),
+        ...(typeof fieldProps.step !== "undefined" &&
+          fieldProps.step && { step: fieldProps.step }),
       };
     case "rating":
       return {

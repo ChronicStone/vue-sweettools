@@ -55,23 +55,19 @@ function mapColumnsRecursively(
     };
   else
     return {
-      headerName: params.searchQuery.value.includes(column.key)
-        ? `${column.label}  🔎`
-        : column.label,
-      ...(params.searchQuery.value.includes(column.key) && {
-        headerTooltip: "Column filterable through quick search",
-      }),
       field: column.key,
       ...(column.width && { width: column.width as number }),
       hide: column.hide ?? false,
       resizable: column.resizable ?? true,
       sortable: column.sortable ?? true,
-      // headerComponent: ColumnHeaderRenderer,
-      // headerComponentParams: {
-      //   tableApi: params.tableApi,
-      //   theme: params.theme,
-      //   themeOverrides,
-      // },
+      headerComponent: ColumnHeaderRenderer,
+      headerComponentParams: {
+        tableApi: params.tableApi,
+        theme: params.theme,
+        themeOverrides,
+        searchable: params.searchQuery.value.includes(column.key),
+        label: column.label,
+      },
       ...(column.render && {
         cellRenderer: JsxCellRenderer,
         cellRendererParams: {
@@ -131,9 +127,9 @@ export function useGridColumns(params: AgGridConfigParams) {
           },
         ]
       : []),
-    ...(params.columns.value ?? []).map((c) =>
-      mapColumnsRecursively(c, params)
-    ),
+    ...(params.columns.value ?? [])
+      .filter((c) => c?.condition?.() ?? true)
+      .map((c) => mapColumnsRecursively(c, params)),
   ]);
 
   return {
