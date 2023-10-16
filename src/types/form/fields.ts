@@ -43,6 +43,7 @@ export enum FieldTypes {
   CASCADER = "cascader",
   GROUP = "group",
   ARRAY_VARIANT = "array-variant",
+  COLOR_PICKER = "color-picker",
 }
 
 export type TFieldTypes = `${FieldTypes}`;
@@ -282,6 +283,24 @@ export interface NumberField<
     | ((deps: Dependencies, virtualDeps: StoreData) => NumberFieldParams);
 }
 
+export interface ColorPickerFieldParams {
+  showPreview?: boolean;
+  showAlpha?: boolean;
+  renderLabel?: (color: string | null) => VNodeChild;
+  modes?: Array<"rgb" | "hex" | "hsl" | "hsv">;
+  swatches?: string[];
+  actions?: Array<"clear" | "confirm">;
+}
+
+export interface ColorPickerField<
+  StoreData extends Record<string, unknown> = Record<string, unknown>
+> {
+  type: "color-picker";
+  fieldParams?:
+    | ColorPickerFieldParams
+    | ((deps: Dependencies, virtualDeps: StoreData) => ColorPickerFieldParams);
+}
+
 export interface RatingFieldParams {
   renderIcon?: () => VNodeChild;
   color?: string;
@@ -449,6 +468,7 @@ export interface GroupField<
         | DateField<StoreData>
         | TreeSelectField<StoreData>
         | CascaderField<StoreData>
+        | ColorPickerField<StoreData>
       )
   >;
 }
@@ -644,6 +664,7 @@ export type FormField<
     | PasswordField<StoreData>
     | SelectField<StoreData>
     | NumberField<StoreData>
+    | ColorPickerField<StoreData>
     | SliderField<StoreData>
     | SwitchField<StoreData>
     | RadioField<StoreData>
