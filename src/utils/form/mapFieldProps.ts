@@ -12,6 +12,7 @@ export function mapFieldProps(
   virtualDependencies: Dependencies,
   raw = false
 ) {
+  type _Field = typeof field;
   const fieldProps =
     typeof _fieldProps === "function"
       ? _fieldProps(dependencies, virtualDependencies)
@@ -128,9 +129,10 @@ export function mapFieldProps(
     case "number":
       return {
         "show-button": fieldProps.showIncrementButtons ?? true,
-        ...(fieldProps.min && { min: fieldProps.min }),
-        ...(fieldProps.max && { max: fieldProps.max }),
-        ...(fieldProps.step && { step: fieldProps.step }),
+        ...(typeof fieldProps.min !== "undefined" && { min: fieldProps.min }),
+        ...(typeof fieldProps.max !== "undefined" && { max: fieldProps.max }),
+        ...(typeof fieldProps.step !== "undefined" &&
+          fieldProps.step && { step: fieldProps.step }),
       };
     case "rating":
       return {
@@ -165,8 +167,17 @@ export function mapFieldProps(
           "unchecked-style": fieldProps.uncheckedStyle,
         }),
       };
-    case "radio":
-      return {};
+    case "color-picker":
+      return {
+        "show-preview": fieldProps.showPreview ?? false,
+        "show-alpha": fieldProps.showAlpha ?? true,
+        modes: fieldProps.modes ?? ["hex", "rgb", "hsl"],
+        swatches: fieldProps.swatches ?? [],
+        actions: fieldProps.actions ?? ["confirm", "clear"],
+        ...(fieldProps.renderLabel && {
+          "render-label": fieldProps.renderLabel,
+        }),
+      };
     case "checkbox":
       return {
         "default-checked": fieldProps.defaultChecked ?? false,

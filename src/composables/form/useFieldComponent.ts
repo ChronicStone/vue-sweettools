@@ -24,6 +24,7 @@ import InfoField from "@/components/Form/Field/InfoField.vue";
 import CustomField from "@/components/Form/Field/CustomField.vue";
 import RadioField from "@/components/Form/Field/RadioField.vue";
 import GroupField from "@/components/Form/Field/GroupField.vue";
+import ColorPickerField from "@/components/Form/Field/ColorPickerField.vue";
 
 export function useFieldComponent(field: ComputedRef<FormField>) {
   const FieldComponent = computed(() => {
@@ -42,6 +43,8 @@ export function useFieldComponent(field: ComputedRef<FormField>) {
         return TagField;
       case FieldTypes.NUMBER:
         return NumberField;
+      case FieldTypes.COLOR_PICKER:
+        return ColorPickerField;
       case FieldTypes.DATE:
       case FieldTypes.DATE_RANGE:
       case FieldTypes.DATE_TIME_RANGE:
