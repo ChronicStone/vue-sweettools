@@ -7,7 +7,12 @@ import {
   preformatFieldDependencies,
 } from "@/utils/form/mapFieldDependencies";
 import { mapFieldProps } from "@/utils/form/mapFieldProps";
-import { CascaderOption, SelectOption, TreeSelectOption } from "naive-ui";
+import {
+  CascaderOption,
+  NButton,
+  SelectOption,
+  TreeSelectOption,
+} from "naive-ui";
 import { Ref, ComputedRef, WritableComputedRef } from "vue";
 
 export function useFieldContext(
@@ -75,8 +80,33 @@ export function useFieldContext(
       _evalOptions.value
   );
 
+  async function createOption() {
+    const _field = field.value as SelectField;
+    if (!_field.createOption) return;
+
+    _evalOptions.value = true;
+    const selectOnCreation =
+      typeof _field.createOption === "function"
+        ? true
+        : _field.createOption?.selectOnCreation ?? true;
+    const handler =
+      typeof _field.createOption === "function"
+        ? _field.createOption
+        : _field.createOption!.handler;
+
+    const option = await handler(dependencies.value, virtualStore.value);
+    if (!option) return;
+
+    _options.value = mapOptions([..._options.value, option]);
+    if (selectOnCreation)
+      nextTick(() => (fieldState.value = _options.value.at(-1)!.value));
+    _evalOptions.value = false;
+  }
+
   const _evalOptions = ref<boolean>(false);
-  const options = ref<(CascaderOption | SelectOption | TreeSelectOption)[]>([]);
+  const _options = ref<(CascaderOption | SelectOption | TreeSelectOption)[]>(
+    []
+  );
   watch(
     () => JSON.stringify(dependencies.value),
     async () => {
@@ -85,9 +115,9 @@ export function useFieldContext(
       const _field = field.value as SelectField;
       if (!_field.options) return [];
       else if (Array.isArray(_field.options))
-        options.value = mapOptions(_field.options);
+        _options.value = mapOptions(_field.options);
       else
-        options.value = mapOptions(
+        _options.value = mapOptions(
           Array.isArray((field.value as SelectField).options)
             ? ((field.value as SelectField).options as unknown as (
                 | SelectOption
@@ -100,15 +130,37 @@ export function useFieldContext(
               )({ ...dependencies.value }, { ...virtualStore.value })
             : []
         );
-
       _evalOptions.value = false;
     },
     { immediate: true }
   );
 
+  const OPTION_FACTORY: SelectOption = {
+    render: () => (
+      <div class="p-1">
+        <NButton secondary={true} class="w-full" onClick={() => createOption()}>
+          {{
+            icon: () => <span class="iconify" data-icon="mdi:plus" />,
+            default: () => <span>Create item</span>,
+          }}
+        </NButton>
+      </div>
+    ),
+  };
+
+  const options = computed(() => {
+    return [
+      ..._options.value,
+      ...(field.value.type === "select" &&
+      typeof field.value.createOption !== "undefined"
+        ? [OPTION_FACTORY]
+        : []),
+    ];
+  });
+
   if ("options" in field.value) {
     watch(
-      () => options.value,
+      () => _options.value,
       (fieldOptions: SelectOption[]) => {
         if (_evalOptions.value) return;
         try {
@@ -191,10 +243,12 @@ function mapOptions(
   options: unknown[]
 ): (SelectOption | TreeSelectOption | CascaderOption)[] {
   if (!Array.isArray(options)) return [];
-  if (options.every((option) => ["number", "string"].includes(typeof option)))
-    return options.map((option) => ({
-      label: option,
-      value: option,
-    })) as (SelectOption | TreeSelectOption | CascaderOption)[];
-  else return options as (SelectOption | TreeSelectOption | CascaderOption)[];
+  return options.map((option) =>
+    ["number", "string"].includes(typeof option)
+      ? {
+          label: option,
+          value: option,
+        }
+      : option
+  ) as (SelectOption | TreeSelectOption | CascaderOption)[];
 }

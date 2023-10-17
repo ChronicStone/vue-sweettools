@@ -263,6 +263,27 @@ export interface SelectField<
   fieldParams?:
     | SelectFieldParams
     | ((deps: Dependencies, virtualDeps: StoreData) => SelectFieldParams);
+  createOption?:
+    | ((
+        deps: Dependencies,
+        virtualDeps: StoreData
+      ) =>
+        | _CoreFieldOptions[number]
+        | null
+        | void
+        | Promise<_CoreFieldOptions[number] | null | void>)
+    | {
+        label: string;
+        icon?: string;
+        selectOnCreation?: boolean;
+        handler: (
+          deps: Dependencies
+        ) =>
+          | _CoreFieldOptions[number]
+          | null
+          | void
+          | Promise<_CoreFieldOptions[number] | null | void>;
+      };
 }
 
 export interface NumberFieldParams {
