@@ -1,4 +1,4 @@
-import { SelectField } from "@/types/form/fields";
+import { FieldOptionCreator, SelectField } from "@/types/form/fields";
 import { FormField } from "@/types/form/fields";
 import { GenericObject } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
@@ -81,7 +81,9 @@ export function useFieldContext(
   );
 
   async function createOption() {
-    const _field = field.value as SelectField;
+    const _field = field.value as FormField & {
+      createOption?: FieldOptionCreator;
+    };
     if (!_field.createOption) return;
 
     _evalOptions.value = true;
@@ -95,11 +97,38 @@ export function useFieldContext(
         : _field.createOption!.handler;
 
     const option = await handler(dependencies.value, virtualStore.value);
-    if (!option) return;
+    if (!option) {
+      _evalOptions.value = false;
+      return;
+    }
 
     _options.value = mapOptions([..._options.value, option]);
     if (selectOnCreation)
       nextTick(() => (fieldState.value = _options.value.at(-1)!.value));
+    _evalOptions.value = false;
+  }
+
+  async function resolveOptions() {
+    if (!("options" in field.value)) return [];
+    _evalOptions.value = true;
+    const _field = field.value as SelectField;
+    if (!_field.options) return [];
+    else if (Array.isArray(_field.options))
+      _options.value = mapOptions(_field.options);
+    else
+      _options.value = mapOptions(
+        Array.isArray((field.value as SelectField).options)
+          ? ((field.value as SelectField).options as unknown as (
+              | SelectOption
+              | TreeSelectOption
+              | CascaderOption
+            )[])
+          : typeof (field.value as SelectField).options === "function"
+          ? await (
+              (field.value as SelectField).options as (...args: any[]) => any
+            )({ ...dependencies.value }, { ...virtualStore.value })
+          : []
+      );
     _evalOptions.value = false;
   }
 
@@ -109,51 +138,58 @@ export function useFieldContext(
   );
   watch(
     () => JSON.stringify(dependencies.value),
-    async () => {
-      if (!("options" in field.value)) return [];
-      _evalOptions.value = true;
-      const _field = field.value as SelectField;
-      if (!_field.options) return [];
-      else if (Array.isArray(_field.options))
-        _options.value = mapOptions(_field.options);
-      else
-        _options.value = mapOptions(
-          Array.isArray((field.value as SelectField).options)
-            ? ((field.value as SelectField).options as unknown as (
-                | SelectOption
-                | TreeSelectOption
-                | CascaderOption
-              )[])
-            : typeof (field.value as SelectField).options === "function"
-            ? await (
-                (field.value as SelectField).options as (...args: any[]) => any
-              )({ ...dependencies.value }, { ...virtualStore.value })
-            : []
-        );
-      _evalOptions.value = false;
-    },
+    async () => resolveOptions(),
     { immediate: true }
   );
 
-  const OPTION_FACTORY: SelectOption = {
-    render: () => (
-      <div class="p-1">
-        <NButton secondary={true} class="w-full" onClick={() => createOption()}>
-          {{
-            icon: () => <span class="iconify" data-icon="mdi:plus" />,
-            default: () => <span>Create item</span>,
-          }}
-        </NButton>
-      </div>
-    ),
-  };
+  function selectActionFactory(_field: SelectField) {
+    const createOptionsEnabled = typeof _field.createOption !== "undefined";
+    const allowOptionsRefresh = _field?.allowOptionsRefresh ?? false;
+    return {
+      render: () => (
+        <div
+          class={`p-1 grid gap-2 ${
+            createOptionsEnabled && allowOptionsRefresh
+              ? "grid-cols-2"
+              : "grid-cols-1"
+          }`}
+        >
+          {typeof _field.createOption !== "undefined" && (
+            <NButton
+              class="!w-full"
+              quaternary={true}
+              onClick={() => createOption()}
+            >
+              {{
+                icon: () => <span class="iconify" data-icon="mdi:plus" />,
+                default: () => <span>Create item</span>,
+              }}
+            </NButton>
+          )}
+          {_field?.allowOptionsRefresh && (
+            <NButton
+              class="!w-full"
+              quaternary={true}
+              onClick={() => resolveOptions()}
+            >
+              {{
+                icon: () => <span class="iconify" data-icon="mdi:refresh" />,
+                default: () => <span>Refresh</span>,
+              }}
+            </NButton>
+          )}
+        </div>
+      ),
+    };
+  }
 
   const options = computed(() => {
     return [
       ..._options.value,
-      ...(field.value.type === "select" &&
-      typeof field.value.createOption !== "undefined"
-        ? [OPTION_FACTORY]
+      ...(("createOption" in field.value &&
+        typeof field.value.createOption !== "undefined") ||
+      ("allowRefreshOptions" in field.value && field.value.allowRefreshOptions)
+        ? [selectActionFactory(field.value as SelectField)]
         : []),
     ];
   });

@@ -17,11 +17,12 @@ const { sample, formData } = defineFormSchemaSample({
       {
         label: "Select",
         type: "select",
-        options: () => [1, 2, 3],
+        options: () => [],
         key: "select",
+        allowOptionsRefresh: true,
         createOption: async () => {
-          await sleep(3500);
-          return;
+          await sleep(1000);
+          return "New item " + Date.now();
         },
       },
     ],

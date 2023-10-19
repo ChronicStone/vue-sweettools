@@ -310,6 +310,7 @@ declare global {
   const useSupported: typeof import('@vueuse/core')['useSupported']
   const useSweetform: typeof import('./composables/useSweetform')['useSweetform']
   const useSwipe: typeof import('@vueuse/core')['useSwipe']
+  const useTableActions: typeof import('./composables/useTableActions.tsx')['useTableActions']
   const useTemplateRefsList: typeof import('@vueuse/core')['useTemplateRefsList']
   const useTextDirection: typeof import('@vueuse/core')['useTextDirection']
   const useTextSelection: typeof import('@vueuse/core')['useTextSelection']
@@ -669,6 +670,7 @@ declare module 'vue' {
     readonly useSupported: UnwrapRef<typeof import('@vueuse/core')['useSupported']>
     readonly useSweetform: UnwrapRef<typeof import('./composables/useSweetform')['useSweetform']>
     readonly useSwipe: UnwrapRef<typeof import('@vueuse/core')['useSwipe']>
+    readonly useTableActions: UnwrapRef<typeof import('./composables/useTableActions.tsx')['useTableActions']>
     readonly useTemplateRefsList: UnwrapRef<typeof import('@vueuse/core')['useTemplateRefsList']>
     readonly useTextDirection: UnwrapRef<typeof import('@vueuse/core')['useTextDirection']>
     readonly useTextSelection: UnwrapRef<typeof import('@vueuse/core')['useTextSelection']>
