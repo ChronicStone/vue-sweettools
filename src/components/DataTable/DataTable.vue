@@ -22,6 +22,7 @@ import { AgGridVue } from "ag-grid-vue3";
 import { computed, ref, watch } from "vue";
 import { ComputedRef } from "vue";
 import { BuiltInGlobalTheme } from "naive-ui/es/themes/interface";
+import { useTableActions } from "@/composables/useTableActions";
 
 const props = withDefaults(defineProps<DataTableProps>(), {
   tableKey: () => Date.now().toString(),
@@ -81,6 +82,7 @@ const {
   paginationState,
   topViewportOffset,
   initializeFilterState,
+  resetTableQuery,
 } = useQueryState(
   props.tableKey,
   props.searchQuery,
@@ -102,7 +104,7 @@ const { resolveGridData, localDataStore } = useDataResolver(
   selectAll
 );
 
-const mappedActions = useDropdownActions(
+const mappedActions = useTableActions(
   _actions,
   tableApi,
   fetchParams,
@@ -251,6 +253,7 @@ watch(
         :nb-selected="nbSelected"
         :enable-search-query="searchQuery.length > 0"
         :resolve-grid-data="() => resolveGridData(true)"
+        :reset-table-query="() => resetTableQuery()"
         :table-key="tableKey"
         :tooltip-show-delay="100"
       >
@@ -269,7 +272,6 @@ watch(
           :grid-options="gridOptions"
           row-selection="multiple"
           animate-rows
-          enable-range-selection
           enable-cell-text-selection
           auto-params-refresh
           suppress-pagination-panel
@@ -278,6 +280,8 @@ watch(
           always-show-vertical-scroll
           row-drag-managed
           row-drag-multi-row
+          show-disabled-checkboxes
+          enable-range-selection
           @sort-changed="handleGridSort"
           @selection-changed="handleGridSelection"
           @body-scroll-end="handleGridScrollEnd"

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import FilterPanel from "./FilterPanel.vue";
 import SearchQueryInput from "./SearchQueryInput.vue";
+import ContextMenu from "@/components/Utils/ContextMenu.vue";
 import { NTooltip, NDropdown, NButton, NIcon, useThemeVars } from "naive-ui";
 import { useDropdownActions } from "@/composables/useDropdownActions";
 import { TableFilter } from "@/types/table";
 import { GenericObject } from "@/types/utils";
 import { computed } from "vue";
+import { useTableActions } from "@/composables/useTableActions";
 
 const emit = defineEmits<{
   (e: "update:searchQuery", value: string): void;
@@ -18,9 +20,10 @@ const props = defineProps<{
   enableSearchQuery: boolean;
   searchQuery: string;
   panelFilters: GenericObject;
-  dropdownActions: ReturnType<typeof useDropdownActions>["value"];
+  dropdownActions: ReturnType<typeof useTableActions>["value"];
   filters: TableFilter[];
-  resolveGridData: (...args: any[]) => void;
+  resolveGridData: () => any;
+  resetTableQuery: () => any;
 }>();
 
 const _searchQuery = computed({
@@ -37,6 +40,11 @@ const themeVars = useThemeVars();
 function getAnimationColor(opacity: number) {
   const _color = themeVars.value.primaryColor;
   return computeHslColor(_color, opacity);
+}
+
+function resetAndReloadTable() {
+  props.resetTableQuery();
+  nextTick(() => props.resolveGridData());
 }
 </script>
 
@@ -102,13 +110,23 @@ function getAnimationColor(opacity: number) {
 
       <NTooltip>
         <template #trigger>
-          <NButton secondary type="primary" @click="resolveGridData">
-            <template #icon>
-              <NIcon>
-                <mdi-refresh />
-              </NIcon>
-            </template>
-          </NButton>
+          <ContextMenu
+            :actions="[
+              {
+                label: 'Reset & refresh',
+                icon: 'material-symbols:filter-alt-off-outline',
+                action: resetAndReloadTable,
+              },
+            ]"
+          >
+            <NButton secondary type="primary" @click="resolveGridData">
+              <template #icon>
+                <NIcon>
+                  <mdi-refresh />
+                </NIcon>
+              </template>
+            </NButton>
+          </ContextMenu>
         </template>
         Refresh data
       </NTooltip>
