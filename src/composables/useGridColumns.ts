@@ -8,7 +8,6 @@ import {
 } from "@/types/table";
 
 import ColumnHeaderRenderer from "@/components/DataTable/CellRenderers/ColumnHeaderRenderer.vue";
-import SelectionHeaderRenderer from "@/components/DataTable/CellRenderers/SelectionHeaderRenderer.vue";
 import ActionsCellRenderer from "@/components/DataTable/CellRenderers/ActionsCellRenderer.vue";
 import JsxCellRenderer from "@/components/DataTable/CellRenderers/JsxCellRenderer.vue";
 import ComponentCellRenderer from "@/components/DataTable/CellRenderers/ComponentCellRenderer.vue";
@@ -65,7 +64,7 @@ function mapColumnsRecursively(
       headerComponentParams: {
         tableApi: params.tableApi,
         theme: params.theme,
-        themeOverrides,
+        themeOverrides: params.themeOverrides,
         searchable: params.searchQuery.value.includes(column.key),
         label: column.label,
       },
@@ -75,7 +74,7 @@ function mapColumnsRecursively(
           _cellRenderer: column.render,
           tableApi: params.tableApi,
           theme: params.theme,
-          themeOverrides,
+          themeOverrides: params.themeOverrides,
         },
       }),
       ...(column.cellComponent && {
@@ -85,7 +84,7 @@ function mapColumnsRecursively(
           ...(column.cellComponentParams && column.cellComponentParams),
           tableApi: params.tableApi,
           theme: params.theme,
-          themeOverrides,
+          themeOverrides: params.themeOverrides,
         },
       }),
     };
