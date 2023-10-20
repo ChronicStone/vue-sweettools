@@ -55,6 +55,12 @@ function mapColumnsRecursively(
     };
   else
     return {
+      autoHeight: column?.autoHeight ?? false,
+      autoHeaderHeight: column?.autoHeaderHeight ?? false,
+      pinned: column?.pinned ?? null,
+      onCellClicked: column?.onCellClicked,
+      onCellContextMenu: column?.onCellContextMenu,
+      onCellDoubleClicked: column?.onCellDoubleClicked,
       field: column.key,
       ...(column.width && { width: column.width as number }),
       hide: column.hide ?? false,

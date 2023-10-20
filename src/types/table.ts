@@ -3,7 +3,14 @@ import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 import { ComputedRef, DefineComponent, Ref, VNodeChild } from "vue";
 import { DeepRequired, GenericObject, NestedPaths } from "@/types/utils";
 import { AppTypes } from "./lib";
-import { Column as AgGridColum, ColumnApi, RowNode } from "ag-grid-community";
+import {
+  Column as AgGridColum,
+  CellClickedEvent,
+  CellContextMenuEvent,
+  CellDoubleClickedEvent,
+  ColumnApi,
+  RowNode,
+} from "ag-grid-community";
 import { GridApi } from "@ag-grid-community/core";
 
 export type FilterMatchMode =
@@ -99,12 +106,18 @@ export interface Column<
   // maxWidth?: number | string;
   // fixed?: "left" | "right";
   width?: number | string;
+  autoHeight?: boolean;
+  autoHeaderHeight?: boolean;
+  pinned?: boolean | "left" | "right";
   sortable?: boolean;
   resizable?: boolean;
   render?: (value: any, row: T) => VNodeChild | string;
   cellComponent?: DefineComponent<any, any, any>;
   cellComponentParams?: GenericObject;
   condition?: () => boolean;
+  onCellClicked?: (params: CellClickedEvent<T>) => void;
+  onCellContextMenu?: (params: CellContextMenuEvent<T>) => void;
+  onCellDoubleClicked?: (params: CellDoubleClickedEvent<T>) => void;
 }
 
 // type PickTypeFromPath<
