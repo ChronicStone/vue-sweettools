@@ -104,7 +104,12 @@ export function useFieldContext(
 
     _options.value = mapOptions([..._options.value, option]);
     if (selectOnCreation)
-      nextTick(() => (fieldState.value = _options.value.at(-1)!.value));
+      nextTick(() => {
+        const newVal = _options.value.at(-1)?.value;
+        if (_field.multiple)
+          fieldState.value = [...(fieldState.value as Array<any>), newVal];
+        else fieldState.value = newVal;
+      });
     _evalOptions.value = false;
   }
 
