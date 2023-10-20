@@ -15,6 +15,7 @@ import ComponentCellRenderer from "@/components/DataTable/CellRenderers/Componen
 import { GenericObject } from "@/types/utils";
 import { ColDef, ColGroupDef } from "ag-grid-community";
 import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
+import SelectionCellRenderer from "@/components/DataTable/CellRenderers/SelectionCellRenderer.vue";
 
 const DEFAULT_COL_DEF = {
   sortable: true,
@@ -104,10 +105,16 @@ export function useGridColumns(params: AgGridConfigParams) {
     ...(params.enableSelection.value
       ? [
           {
-            checkboxSelection: true,
+            // checkboxSelection: true,
             headerCheckboxSelection: true,
             resizable: false,
             width: 80,
+            cellRenderer: SelectionCellRenderer,
+            cellRendererParams: {
+              theme: params.theme,
+              themeOverrides: params.themeOverrides,
+              selectAll: params.selectAll,
+            },
           },
         ]
       : []),

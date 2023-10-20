@@ -76,6 +76,7 @@ const { sample, formData } = defineFormSchemaSample({
       { key: "time", label: "Time", type: "time" },
       { key: "datetime", label: "Date time", type: "datetime" },
       { key: "datetimeRange", label: "Date time range", type: "datetimerange" },
+      { key: "color", type: "color-picker", label: "Color" },
       {
         key: "object",
         label: "Object",

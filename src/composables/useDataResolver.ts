@@ -20,7 +20,7 @@ export function useDataResolver(
   const localDataStore = ref<GenericObject[]>();
 
   const resolveGridData = obsoletableFn(
-    async (isObsolete, fullReload: boolean, run = new Date().toISOString()) => {
+    async (isObsolete, fullReload: boolean) => {
       try {
         isLoading.value = true;
         const { docs, totalPages, totalDocs, ...rest } = remote.value

@@ -1,62 +1,59 @@
-import { FetchParams, TableAction, TableApi } from "@/types/table";
-import { GenericObject } from "@/types/utils";
-import { generateUUID } from "@/utils/generateUUID";
-import { renderIcon } from "@/utils/renderIcon";
-import { ComputedRef, Ref } from "vue";
-import { RouteLocationRaw, RouterLink } from "vue-router";
+import {
+  type VNodeChild,
+  type MaybeRefOrGetter,
+  type MaybeRef,
+  toValue,
+} from "vue";
+
+export interface DropdownAction {
+  label: string | (() => VNodeChild);
+  icon?: string;
+  action: () => void;
+  disable?: boolean | (() => boolean);
+  condition?: () => boolean;
+}
+
+export interface MappedDropdownAction {
+  label: string | (() => VNodeChild);
+  icon?: () => VNodeChild;
+  disabled: boolean;
+  hidden: boolean;
+  props: {
+    onClick: () => void;
+  };
+}
+
+type RawActionItems = Array<DropdownAction | { type: "divider" }>;
 
 export function useDropdownActions(
-  actions: ComputedRef<TableAction[]>,
-  tableApi: Ref<TableApi | undefined>,
-  fetchParams: Readonly<Ref<FetchParams>>,
-  data: Ref<Record<string, any>[] | undefined>,
-  selectionState: {
-    nbSelected: Ref<number>;
-    selectAll: Ref<boolean>;
-    selected: Ref<GenericObject[]>;
-  }
+  actions:
+    | RawActionItems
+    | MaybeRefOrGetter<RawActionItems>
+    | MaybeRef<RawActionItems>
 ) {
-  const { permissionValidator } = useGlobalConfig();
   return computed(() =>
-    actions.value
-      .filter(Boolean)
-      .map((action: TableAction) => ({
-        ...(action.icon && { icon: renderIcon(action.icon) }),
-        label: action.link
-          ? () => (
-              <RouterLink to={action.link as RouteLocationRaw}>
-                {action.label}
-              </RouterLink>
-            )
-          : action.label,
-        key: generateUUID(),
-        props: {
-          onClick: () =>
-            action?.action?.({
-              nbSelected: selectionState.nbSelected.value,
-              selectAll: selectionState.selectAll.value,
-              selected: selectionState.selected.value,
-              fetchParams: fetchParams.value,
-              tableApi: tableApi.value as TableApi,
-            }),
-        },
-        _enable: computed(() =>
-          typeof action.condition === "function"
-            ? action.condition(Array.isArray(data.value) ? data.value : [], {
-                nbSelected: selectionState.nbSelected.value,
-                selectAll: selectionState.selectAll.value,
-                selected: selectionState.selected.value,
-                fetchParams: fetchParams.value,
-                tableApi: tableApi.value as TableApi,
-              })
-            : true
-        ),
-        _allowed: computed(() =>
-          action?.permissions?.length
-            ? permissionValidator.value(action.permissions)
-            : true
-        ),
-      }))
-      .filter((action) => action._enable.value && action._allowed.value)
+    toValue(actions)
+      .map((action) => {
+        if ("type" in action)
+          return { type: "divider", hidden: false, key: generateUUID() };
+        else
+          return {
+            key: generateUUID(),
+            label: action.label,
+            ...(action.icon && { icon: renderIcon(action.icon) }),
+            disabled:
+              typeof action.disable === "function"
+                ? action.disable()
+                : action?.disable ?? false,
+            hidden:
+              typeof action.condition === "function"
+                ? !action.condition()
+                : false,
+            props: {
+              onClick: () => action.action(),
+            },
+          };
+      })
+      .filter((action) => !action.hidden)
   );
 }

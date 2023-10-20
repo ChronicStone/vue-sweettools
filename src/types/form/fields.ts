@@ -73,6 +73,31 @@ export type _FieldOptions<
       virtualDependencies: StoreData
     ) => Promise<_CoreFieldOptions>);
 
+export type FieldOptionCreator<
+  StoreData extends Record<string, unknown> = Record<string, unknown>
+> =
+  | ((
+      deps: Dependencies,
+      virtualDeps: StoreData
+    ) =>
+      | _CoreFieldOptions[number]
+      | null
+      | void
+      | Promise<_CoreFieldOptions[number] | null | void>)
+  | {
+      label: string;
+      icon?: string;
+      selectOnCreation?: boolean;
+      revalidateFieldOptions?: Array<string>;
+      handler: (
+        deps: Dependencies
+      ) =>
+        | _CoreFieldOptions[number]
+        | null
+        | void
+        | Promise<_CoreFieldOptions[number] | null | void>;
+    };
+
 export interface TextFieldProps {
   minLength?: number;
   maxLength?: number;
@@ -263,6 +288,8 @@ export interface SelectField<
   fieldParams?:
     | SelectFieldParams
     | ((deps: Dependencies, virtualDeps: StoreData) => SelectFieldParams);
+  createOption?: FieldOptionCreator<StoreData>;
+  allowOptionsRefresh?: boolean;
 }
 
 export interface NumberFieldParams {

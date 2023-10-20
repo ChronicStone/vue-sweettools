@@ -115,6 +115,13 @@ export function useQueryState(
     );
   }
 
+  function resetTableQuery() {
+    paginationState.value.pageIndex = 1;
+    sortState.value = { colId: "", key: "", dir: null };
+    filterState.value.searchQuery = "";
+    initializeFilterState(true);
+  }
+
   return {
     isLoading,
     data,
@@ -127,5 +134,6 @@ export function useQueryState(
     fetchParams,
     topViewportOffset,
     initializeFilterState,
+    resetTableQuery,
   };
 }

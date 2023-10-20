@@ -218,7 +218,7 @@ declare global {
   const useFavicon: typeof import('@vueuse/core')['useFavicon']
   const useFetch: typeof import('@vueuse/core')['useFetch']
   const useFieldComponent: typeof import('./composables/form/useFieldComponent')['useFieldComponent']
-  const useFieldContext: typeof import('./composables/form/useFieldContext')['useFieldContext']
+  const useFieldContext: typeof import('./composables/form/useFieldContext.tsx')['useFieldContext']
   const useFileDialog: typeof import('@vueuse/core')['useFileDialog']
   const useFileSystemAccess: typeof import('@vueuse/core')['useFileSystemAccess']
   const useFocus: typeof import('@vueuse/core')['useFocus']
@@ -310,6 +310,7 @@ declare global {
   const useSupported: typeof import('@vueuse/core')['useSupported']
   const useSweetform: typeof import('./composables/useSweetform')['useSweetform']
   const useSwipe: typeof import('@vueuse/core')['useSwipe']
+  const useTableActions: typeof import('./composables/useTableActions.tsx')['useTableActions']
   const useTemplateRefsList: typeof import('@vueuse/core')['useTemplateRefsList']
   const useTextDirection: typeof import('@vueuse/core')['useTextDirection']
   const useTextSelection: typeof import('@vueuse/core')['useTextSelection']
@@ -577,7 +578,7 @@ declare module 'vue' {
     readonly useFavicon: UnwrapRef<typeof import('@vueuse/core')['useFavicon']>
     readonly useFetch: UnwrapRef<typeof import('@vueuse/core')['useFetch']>
     readonly useFieldComponent: UnwrapRef<typeof import('./composables/form/useFieldComponent')['useFieldComponent']>
-    readonly useFieldContext: UnwrapRef<typeof import('./composables/form/useFieldContext')['useFieldContext']>
+    readonly useFieldContext: UnwrapRef<typeof import('./composables/form/useFieldContext.tsx')['useFieldContext']>
     readonly useFileDialog: UnwrapRef<typeof import('@vueuse/core')['useFileDialog']>
     readonly useFileSystemAccess: UnwrapRef<typeof import('@vueuse/core')['useFileSystemAccess']>
     readonly useFocus: UnwrapRef<typeof import('@vueuse/core')['useFocus']>
@@ -669,6 +670,7 @@ declare module 'vue' {
     readonly useSupported: UnwrapRef<typeof import('@vueuse/core')['useSupported']>
     readonly useSweetform: UnwrapRef<typeof import('./composables/useSweetform')['useSweetform']>
     readonly useSwipe: UnwrapRef<typeof import('@vueuse/core')['useSwipe']>
+    readonly useTableActions: UnwrapRef<typeof import('./composables/useTableActions.tsx')['useTableActions']>
     readonly useTemplateRefsList: UnwrapRef<typeof import('@vueuse/core')['useTemplateRefsList']>
     readonly useTextDirection: UnwrapRef<typeof import('@vueuse/core')['useTextDirection']>
     readonly useTextSelection: UnwrapRef<typeof import('@vueuse/core')['useTextSelection']>

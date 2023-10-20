@@ -78,4 +78,11 @@ props.params.column.addEventListener(
   "sortChanged",
   () => (sortMode.value = props.params.column.getSort() ?? null)
 );
+
+onUnmounted(() =>
+  props.params.column.removeEventListener(
+    "sortChanged",
+    () => (sortMode.value = props.params.column.getSort() ?? null)
+  )
+);
 </script>
