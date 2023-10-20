@@ -54,9 +54,11 @@ export type TypeFromPath<T extends GenericObject, Path extends string> = {
     : never;
 }[Path];
 
-export type DeepRequired<T> = Required<{
-  [P in keyof T]-?: DeepRequired<T[P]>;
-}>;
+export type NonNullableDeep<T> = T extends null | undefined ? never : T;
+
+export type DeepRequired<T> = {
+  [P in keyof T]-?: DeepRequired<NonNullableDeep<T[P]>>;
+};
 
 export type RemoveNeverProps<T> = {
   [K in keyof T as T[K] extends never | undefined ? never : K]: T[K];
