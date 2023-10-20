@@ -88,6 +88,7 @@ export type FieldOptionCreator<
       label: string;
       icon?: string;
       selectOnCreation?: boolean;
+      revalidateFieldOptions?: Array<string>;
       handler: (
         deps: Dependencies
       ) =>

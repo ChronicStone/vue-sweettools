@@ -30,3 +30,18 @@ export function getPathOffset(key: string) {
     return 0;
   }
 }
+
+export function mapRelativeKeyPath(
+  path: string | (string | number)[],
+  key = ""
+) {
+  const offset = getPathOffset(key);
+  return [
+    ...(Array.isArray(path) ? path : path.split("."))
+      .map((pathKey, index, array) =>
+        index < array.length - offset ? pathKey : null
+      )
+      .filter((pathKey) => pathKey != null),
+    ...key.split(".").slice(1),
+  ] as Array<string | number>;
+}

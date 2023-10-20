@@ -80,10 +80,18 @@ export function useFieldContext(
       _evalOptions.value
   );
 
+  const { invalidateFieldOptions, subscribeOptionsInvalidation } =
+    useFormFields();
+
+  const removeSubscription = subscribeOptionsInvalidation(
+    (path) =>
+      [...(parentKey.value ?? []), field.value.key].join(".") === path &&
+      resolveOptions()
+  );
+  onScopeDispose(() => removeSubscription());
+
   async function createOption() {
-    const _field = field.value as FormField & {
-      createOption?: FieldOptionCreator;
-    };
+    const _field = field.value as SelectField;
     if (!_field.createOption) return;
 
     _evalOptions.value = true;
@@ -94,7 +102,7 @@ export function useFieldContext(
     const handler =
       typeof _field.createOption === "function"
         ? _field.createOption
-        : _field.createOption!.handler;
+        : _field.createOption?.handler;
 
     const option = await handler(dependencies.value, virtualStore.value);
     if (!option) {
@@ -111,6 +119,18 @@ export function useFieldContext(
         else fieldState.value = newVal;
       });
     _evalOptions.value = false;
+    const revalidatePaths =
+      typeof _field.createOption === "object"
+        ? _field.createOption.revalidateFieldOptions ?? []
+        : [];
+
+    const mappedPaths = revalidatePaths.map((path) =>
+      path.startsWith("$parent")
+        ? mapRelativeKeyPath([...(parentKey.value ?? [])], path)
+        : mapRelativeKeyPath(path)
+    );
+
+    for (const path of mappedPaths) invalidateFieldOptions(path.join("."));
   }
 
   async function resolveOptions() {

@@ -4,16 +4,7 @@ export function setPropertyFromPath(
   value: any,
   key = ""
 ) {
-  const offset = getPathOffset(key);
-  const properties = [
-    ...(Array.isArray(path) ? path : path.split("."))
-      .map((pathKey, index, array) =>
-        index < array.length - offset ? pathKey : null
-      )
-      .filter((pathKey) => pathKey != null),
-    ...key.split(".").slice(1),
-  ];
-
+  const properties = mapRelativeKeyPath(path, key);
   properties.reduce(
     (o, p, i) =>
       (o[p as string] =

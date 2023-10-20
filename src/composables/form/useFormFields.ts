@@ -56,12 +56,19 @@ const [useProvideFormFields, _useFormFields] = createInjectionState(
         : []
     );
 
+    const {
+      dispatch: invalidateFieldOptions,
+      subscribe: subscribeOptionsInvalidation,
+    } = useEventDispatcher<(keyPath: string) => void>();
+
     return {
       formFields,
       filteredFormFields,
       isMultiStep,
       currentStep,
       formSteps,
+      invalidateFieldOptions,
+      subscribeOptionsInvalidation,
     };
   }
 );
