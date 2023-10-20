@@ -281,7 +281,6 @@ watch(
           row-drag-managed
           row-drag-multi-row
           show-disabled-checkboxes
-          enable-range-selection
           @sort-changed="handleGridSort"
           @selection-changed="handleGridSelection"
           @body-scroll-end="handleGridScrollEnd"

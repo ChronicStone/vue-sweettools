@@ -9,7 +9,7 @@
           class="ag-wrapper ag-input-wrapper ag-checkbox-input-wrapper overflow-visible"
           :class="{
             'ag-checked': rowSelected || params.selectAll.value,
-            'ag-disabled': params.selectAll.value,
+            'ag-disabled cursor-not-allowed': params.selectAll.value,
           }"
         >
           <input
