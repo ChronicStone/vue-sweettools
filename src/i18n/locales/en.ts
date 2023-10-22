@@ -75,5 +75,13 @@ export const en: DeepRequired<LocaleTemplate> = {
       },
     },
   },
-  excelImport: {},
+  excelImport: {
+    downloadReferenceFileButton: "Download reference file",
+    dropFileOrBrowse: "Drop excel file or browse",
+    countInvalidRows: "{count} invalid",
+    countValidRows: "{count} valid",
+    isValidTag: "Is valid",
+    missingValue: "Missing value",
+    value: "Value",
+  },
 };

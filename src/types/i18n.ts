@@ -37,6 +37,7 @@ export type LocaleTemplate = {
       and?: string;
       invalidObjectProperties?: string;
       invalidArrayProperties?: string;
+      [key: string]: string | undefined;
     };
     fields?: {
       array?: {
@@ -72,5 +73,13 @@ export type LocaleTemplate = {
     refreshButtonTooltip?: string;
     refreshAndResetAction?: string;
   };
-  excelImport?: {};
+  excelImport?: {
+    downloadReferenceFileButton?: string;
+    dropFileOrBrowse?: string;
+    countValidRows?: string;
+    countInvalidRows?: string;
+    isValidTag?: string;
+    missingValue?: string;
+    value?: string;
+  };
 };
