@@ -8,6 +8,10 @@ const schema = buildTableSchema<{
   firstName: string;
   lastName: string;
   valid: boolean;
+  user?: {
+    test: string;
+    haha: { hehe: string };
+  } | null;
 }>({
   tableKey: "someKey",
   persistency: "localStorage",

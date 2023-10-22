@@ -4,9 +4,12 @@ declare global {
   const BREAKPOINTS_INJECTION_KEY: typeof import('./config/injectionKeys')['BREAKPOINTS_INJECTION_KEY']
   const DEFAULT_STYLES: typeof import('./composables/form/useFormStyles')['DEFAULT_STYLES']
   const DESCRIPT_POPUP_INJECTION_KEY: typeof import('./config/injectionKeys')['DESCRIPT_POPUP_INJECTION_KEY']
+  const DarkThemeOverrides: typeof import('./config/themeOverrides')['DarkThemeOverrides']
+  const DefaultThemeOverrides: typeof import('./config/themeOverrides')['DefaultThemeOverrides']
   const EffectScope: typeof import('vue')['EffectScope']
   const FORM_INJECTION_KEY: typeof import('./config/injectionKeys')['FORM_INJECTION_KEY']
   const FORM_STYLES_INJECTION_KEY: typeof import('./config/injectionKeys')['FORM_STYLES_INJECTION_KEY']
+  const LightThemeOverrides: typeof import('./config/themeOverrides')['LightThemeOverrides']
   const MODAL_OVERLAY_INJECTION_KEY: typeof import('./config/injectionKeys')['MODAL_OVERLAY_INJECTION_KEY']
   const PLUGIN_CONF_INJECTION_KEY: typeof import('./config/injectionKeys')['PLUGIN_CONF_INJECTION_KEY']
   const arrayToObject: typeof import('./utils/arrayToObject')['arrayToObject']
@@ -76,6 +79,7 @@ declare global {
   const mapFilterInitialState: typeof import('./utils/table/mapFilterInitialState')['mapFilterInitialState']
   const mapFiltersToFormSchema: typeof import('./utils/table/mapFiltersToFormSchema')['mapFiltersToFormSchema']
   const mapQueryFetchParams: typeof import('./utils/table/mapQueryFetchParams')['mapQueryFetchParams']
+  const mapRelativeKeyPath: typeof import('./utils/form/getPropertyFromPath')['mapRelativeKeyPath']
   const mapTableFilters: typeof import('./utils/table/mapQueryFetchParams')['mapTableFilters']
   const markRaw: typeof import('vue')['markRaw']
   const multiCellRenderer: typeof import('./composables/excel/useImportManager.tsx')['multiCellRenderer']
@@ -141,7 +145,6 @@ declare global {
   const syncRef: typeof import('@vueuse/core')['syncRef']
   const syncRefs: typeof import('@vueuse/core')['syncRefs']
   const templateRef: typeof import('@vueuse/core')['templateRef']
-  const themeOverrides: typeof import('./config/themeOverrides')['themeOverrides']
   const throttledRef: typeof import('@vueuse/core')['throttledRef']
   const throttledWatch: typeof import('@vueuse/core')['throttledWatch']
   const toRaw: typeof import('vue')['toRaw']
@@ -211,6 +214,7 @@ declare global {
   const useElementSize: typeof import('@vueuse/core')['useElementSize']
   const useElementVisibility: typeof import('@vueuse/core')['useElementVisibility']
   const useEventBus: typeof import('@vueuse/core')['useEventBus']
+  const useEventDispatcher: typeof import('./composables/useEventDispatcher')['useEventDispatcher']
   const useEventListener: typeof import('@vueuse/core')['useEventListener']
   const useEventSource: typeof import('@vueuse/core')['useEventSource']
   const useExcelReader: typeof import('./composables/excel/useImportController')['useExcelReader']
@@ -364,9 +368,12 @@ declare module 'vue' {
     readonly BREAKPOINTS_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['BREAKPOINTS_INJECTION_KEY']>
     readonly DEFAULT_STYLES: UnwrapRef<typeof import('./composables/form/useFormStyles')['DEFAULT_STYLES']>
     readonly DESCRIPT_POPUP_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['DESCRIPT_POPUP_INJECTION_KEY']>
+    readonly DarkThemeOverrides: UnwrapRef<typeof import('./config/themeOverrides')['DarkThemeOverrides']>
+    readonly DefaultThemeOverrides: UnwrapRef<typeof import('./config/themeOverrides')['DefaultThemeOverrides']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
     readonly FORM_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['FORM_INJECTION_KEY']>
     readonly FORM_STYLES_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['FORM_STYLES_INJECTION_KEY']>
+    readonly LightThemeOverrides: UnwrapRef<typeof import('./config/themeOverrides')['LightThemeOverrides']>
     readonly MODAL_OVERLAY_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['MODAL_OVERLAY_INJECTION_KEY']>
     readonly PLUGIN_CONF_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['PLUGIN_CONF_INJECTION_KEY']>
     readonly arrayToObject: UnwrapRef<typeof import('./utils/arrayToObject')['arrayToObject']>
@@ -436,6 +443,7 @@ declare module 'vue' {
     readonly mapFilterInitialState: UnwrapRef<typeof import('./utils/table/mapFilterInitialState')['mapFilterInitialState']>
     readonly mapFiltersToFormSchema: UnwrapRef<typeof import('./utils/table/mapFiltersToFormSchema')['mapFiltersToFormSchema']>
     readonly mapQueryFetchParams: UnwrapRef<typeof import('./utils/table/mapQueryFetchParams')['mapQueryFetchParams']>
+    readonly mapRelativeKeyPath: UnwrapRef<typeof import('./utils/form/getPropertyFromPath')['mapRelativeKeyPath']>
     readonly mapTableFilters: UnwrapRef<typeof import('./utils/table/mapQueryFetchParams')['mapTableFilters']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
     readonly multiCellRenderer: UnwrapRef<typeof import('./composables/excel/useImportManager.tsx')['multiCellRenderer']>
@@ -501,7 +509,6 @@ declare module 'vue' {
     readonly syncRef: UnwrapRef<typeof import('@vueuse/core')['syncRef']>
     readonly syncRefs: UnwrapRef<typeof import('@vueuse/core')['syncRefs']>
     readonly templateRef: UnwrapRef<typeof import('@vueuse/core')['templateRef']>
-    readonly themeOverrides: UnwrapRef<typeof import('./config/themeOverrides')['themeOverrides']>
     readonly throttledRef: UnwrapRef<typeof import('@vueuse/core')['throttledRef']>
     readonly throttledWatch: UnwrapRef<typeof import('@vueuse/core')['throttledWatch']>
     readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
@@ -571,6 +578,7 @@ declare module 'vue' {
     readonly useElementSize: UnwrapRef<typeof import('@vueuse/core')['useElementSize']>
     readonly useElementVisibility: UnwrapRef<typeof import('@vueuse/core')['useElementVisibility']>
     readonly useEventBus: UnwrapRef<typeof import('@vueuse/core')['useEventBus']>
+    readonly useEventDispatcher: UnwrapRef<typeof import('./composables/useEventDispatcher')['useEventDispatcher']>
     readonly useEventListener: UnwrapRef<typeof import('@vueuse/core')['useEventListener']>
     readonly useEventSource: UnwrapRef<typeof import('@vueuse/core')['useEventSource']>
     readonly useExcelReader: UnwrapRef<typeof import('./composables/excel/useImportController')['useExcelReader']>

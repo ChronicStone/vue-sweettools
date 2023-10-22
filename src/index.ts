@@ -42,10 +42,14 @@ import {
   RemoteTableData,
 } from "./types/table";
 import { renderVNode } from "./utils/renderVNode";
+import * as validators from "@/i18n/utils/validators";
+import { i18n } from "./i18n/plugin";
+import { type I18n } from "vue-i18n";
 export default {
   install: (app: App, config?: SweettoolsPluginConfig) => {
+    const i18nInstance = (app as any).__VUE_I18N__ as I18n;
     app.provide(PLUGIN_CONF_INJECTION_KEY, config);
-    // app.component("DataTable", DataTable);
+    if (!i18nInstance) app.use(i18n);
   },
 };
 
@@ -86,4 +90,5 @@ export {
   buildTableSchema,
   buildGridSchema,
   renderVNode,
+  validators,
 };

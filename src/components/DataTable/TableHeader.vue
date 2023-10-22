@@ -8,6 +8,7 @@ import { TableFilter } from "@/types/table";
 import { GenericObject } from "@/types/utils";
 import { computed } from "vue";
 import { useTableActions } from "@/composables/useTableActions";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 
 const emit = defineEmits<{
   (e: "update:searchQuery", value: string): void;
@@ -25,6 +26,8 @@ const props = defineProps<{
   resolveGridData: () => any;
   resetTableQuery: () => any;
 }>();
+
+const i18n = useTranslations();
 
 const _searchQuery = computed({
   get: () => props.searchQuery,
@@ -55,7 +58,7 @@ function resetAndReloadTable() {
     <div class="flex flex-col gap-1">
       <div><slot /></div>
       <span class="text-sm text-gray-500 font-light dark:text-gray-400">
-        {{ nbSelected }} selected
+        {{ i18n.t("datatable.selectedRows", { count: props.nbSelected }) }}
       </span>
     </div>
     <div class="flex flex-col gap-4 !md:flex-row !md:items-center !md:gap-3">
@@ -113,7 +116,7 @@ function resetAndReloadTable() {
           <ContextMenu
             :actions="[
               {
-                label: 'Reset & refresh',
+                label: i18n.t('datatable.refreshAndResetAction'),
                 icon: 'material-symbols:filter-alt-off-outline',
                 action: resetAndReloadTable,
               },
@@ -128,7 +131,7 @@ function resetAndReloadTable() {
             </NButton>
           </ContextMenu>
         </template>
-        Refresh data
+        {{ i18n.t("datatable.refreshButtonTooltip") }}
       </NTooltip>
     </div>
   </div>

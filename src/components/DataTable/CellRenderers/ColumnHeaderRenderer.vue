@@ -20,7 +20,7 @@
             <template #trigger>
               <mdi:magnify class="text-gray-500" />
             </template>
-            This column is searchable through quick search
+            {{ params.i18n.t("datatable.searchQueryColumnIndicatorTooltip") }}
           </NTooltip>
           <mdi:arrow-up
             v-if="sortMode"
@@ -35,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+import { useTranslations } from "@/i18n/composables/useTranslations";
 import { HeaderRendererParams } from "@/types/table";
 import { useElementSize } from "@vueuse/core";
 import { ColumnState } from "ag-grid-community";
@@ -45,6 +46,7 @@ import { Ref, ref } from "vue";
 interface CellHeaderRendererProps extends HeaderRendererParams {
   label: string | (() => VNodeChild);
   searchable: boolean;
+  i18n: ReturnType<typeof useTranslations>;
 }
 
 const themeVars = useThemeVars();
