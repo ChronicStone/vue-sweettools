@@ -42,7 +42,6 @@ import {
   RemoteTableData,
 } from "./types/table";
 import { renderVNode } from "./utils/renderVNode";
-import * as validators from "@/i18n/utils/validators";
 import { i18n } from "./i18n/plugin";
 import { type I18n } from "vue-i18n";
 export default {
@@ -90,5 +89,5 @@ export {
   buildTableSchema,
   buildGridSchema,
   renderVNode,
-  validators,
+  useLocalizedValidators,
 };

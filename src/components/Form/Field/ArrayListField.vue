@@ -14,7 +14,9 @@ import {
   NDropdown,
 } from "naive-ui";
 import FieldRenderer from "@/components/Form/Renderer/FieldRenderer.vue";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 
+const i18n = useTranslations();
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
@@ -29,7 +31,6 @@ const fieldValue = computed({
 });
 
 const gridSize = useBreakpointStyle(_field.value.gridSize ?? "", "grid-cols");
-
 const listGridSize = useBreakpointStyle(
   _field.value.listGridSize ?? "1",
   "grid-cols"
@@ -68,7 +69,14 @@ const {
                 v-if="_field.headerTemplate"
                 v-html="_field.headerTemplate(fieldValue[index], index)"
               />
-              <span v-else>ITEM {{ index + 1 }}</span>
+              <span v-else class="uppercase">
+                {{
+                  i18n.t("form.fields.array.headerTemplate", {
+                    index: index + 1,
+                    total: fieldValue.length,
+                  })
+                }}
+              </span>
             </div>
           </template>
           <template #header-extra>
@@ -83,7 +91,7 @@ const {
                     <mdi:trash />
                   </NButton>
                 </template>
-                Delete item
+                {{ i18n.t("form.fields.array.deleteItem") }}
               </NTooltip>
               <NDropdown
                 v-if="customActions[index].length"
@@ -131,7 +139,7 @@ const {
         <template #icon>
           <mdi:plus />
         </template>
-        ADD ITEM
+        {{ i18n.t("form.fields.array.createItem") }}
       </NButton>
     </div>
   </NCollapseTransition>

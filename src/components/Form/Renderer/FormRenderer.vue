@@ -12,6 +12,7 @@ import StepsRenderer from "./StepsRenderer.vue";
 import { MaybeRef } from "@vueuse/core";
 import { vTestid } from "@chronicstone/vue-testid";
 import { renderVNode } from "@/utils/renderVNode";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 
 const props = defineProps<{
   schema: FormSchema<any, any, any> & { sharedStore?: FormSharedStore<string> };
@@ -22,6 +23,7 @@ const props = defineProps<{
     | null;
 }>();
 
+const i18n = useTranslations();
 const _formSchema = computed<FormSchema>(() => props.schema);
 const _modalMode = computed<boolean>(() => props.modalMode);
 
@@ -156,7 +158,7 @@ defineExpose<FormRefInstance>({
         type="error"
         @click="closeForm"
       >
-        {{ libConfig.getProp("textOverrides.cancelBtnMessage") }}
+        {{ i18n.t("form.actions.cancelButton") }}
       </NButton>
       <NButton
         v-if="libConfig.getProp('uiConfig.showPrevButton') && isMultiStep"
@@ -169,7 +171,7 @@ defineExpose<FormRefInstance>({
         <template v-if="isMultiStep" #icon>
           <mdi:chevron-left />
         </template>
-        {{ libConfig.getProp("textOverrides.prevBtnMessage") }}
+        {{ i18n.t("form.actions.prevButton") }}
       </NButton>
       <NButton
         v-testid="`${formTestId}#form::submit`"
@@ -191,10 +193,10 @@ defineExpose<FormRefInstance>({
           isMultiStep
             ? `${
                 currentStep === formSteps.length - 1
-                  ? libConfig.getProp("textOverrides.submitBtnMessage")
-                  : libConfig.getProp("textOverrides.nextBtnMessage")
+                  ? i18n.t("form.actions.submitButton")
+                  : i18n.t("form.actions.nextButton")
               }`
-            : libConfig.getProp("textOverrides.submitBtnMessage")
+            : i18n.t("form.actions.submitButton")
         }}
       </NButton>
     </template>

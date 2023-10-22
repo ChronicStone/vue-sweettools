@@ -18,6 +18,7 @@ import {
 } from "naive-ui";
 import FieldRenderer from "@/components/Form/Renderer/FieldRenderer.vue";
 import { renderIcon } from "@/utils/renderIcon";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
@@ -31,6 +32,7 @@ const fieldValue = computed({
   set: (value) => emit("update:modelValue", value),
 });
 
+const i18n = useTranslations();
 const formStyle = useFormStyles();
 const gridSize = useBreakpointStyle(props.field.gridSize ?? "", "grid-cols");
 
@@ -58,14 +60,14 @@ function buildItemControls(
   return [
     {
       key: "delete",
-      label: "Delete item",
+      label: () => i18n.t("form.fields.array.deleteItem"),
       icon: renderIcon("mdi:trash"),
       props: { onClick: () => removeItem(index) },
       disabled: !baseActions.value.items[index].deleteItem,
     },
     {
       key: "moveLeft",
-      label: "Move item left",
+      label: () => i18n.t("form.fields.array.moveItemUp"),
       icon: renderIcon("mdi:arrow-left"),
       disabled: !baseActions.value.items[index].moveUp,
       props: { onClick: () => moveItem(index, "left") },
@@ -73,7 +75,7 @@ function buildItemControls(
     },
     {
       key: "moveRight",
-      label: "Move item right",
+      label: () => i18n.t("form.fields.array.moveItemDown"),
       icon: renderIcon("mdi:arrow-right"),
       disabled: !baseActions.value.items[index].moveDown,
       props: { onClick: () => moveItem(index, "right") },
@@ -95,7 +97,7 @@ function buildItemControls(
           @click="addItem"
         >
           <template #icon><mdi-plus /></template>
-          Create item
+          {{ i18n.t("form.fields.array.createItem") }}
         </NButton>
       </div>
       <NTabs

@@ -1,3 +1,4 @@
+import { useTranslations } from "@/i18n/composables/useTranslations";
 import { FieldOptionCreator, SelectField } from "@/types/form/fields";
 import { FormField } from "@/types/form/fields";
 import { GenericObject } from "@/types/utils";
@@ -22,6 +23,7 @@ export function useFieldContext(
   virtualStore: Ref<Record<string, unknown>>,
   parentKey: ComputedRef<string[]>
 ) {
+  const i18n = useTranslations();
   const fieldId = generateUUID();
   const fieldFullPath = computed(() => [
     ...(parentKey.value ?? []),
@@ -45,22 +47,23 @@ export function useFieldContext(
   );
 
   const inputProps = computed(() =>
-    mapFieldProps(
-      field.value,
-      field.value?.fieldParams ?? {},
-      dependencies.value,
-      virtualStore.value
-    )
+    mapFieldProps({
+      field: field.value,
+      fieldProps: field.value?.fieldParams ?? {},
+      dependencies: dependencies.value,
+      virtualDependencies: virtualStore.value,
+      raw: false,
+    })
   );
 
   const rawInputProps = computed(() =>
-    mapFieldProps(
-      field.value,
-      field.value?.fieldParams ?? {},
-      dependencies.value,
-      virtualStore.value,
-      true
-    )
+    mapFieldProps({
+      field: field.value,
+      fieldProps: field.value?.fieldParams ?? {},
+      dependencies: dependencies.value,
+      virtualDependencies: virtualStore.value,
+      raw: true,
+    })
   );
 
   const _evalCondition = ref<boolean>(false);
@@ -278,7 +281,8 @@ export function useFieldContext(
   const placeholder = computed(() =>
     typeof field.value.placeholder === "function"
       ? field.value.placeholder()
-      : field.value.placeholder
+      : field.value?.placeholder ??
+        i18n.t("form.fields.text.defaultPlaceholder")
   );
 
   return {
