@@ -72,6 +72,7 @@ export type LocaleTemplate = {
     paginationInfo?: string;
     refreshButtonTooltip?: string;
     refreshAndResetAction?: string;
+    noRowsToShow?: string;
   };
   excelImport?: {
     downloadReferenceFileButton?: string;

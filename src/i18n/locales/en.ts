@@ -17,6 +17,7 @@ export const en: DeepRequired<LocaleTemplate> = {
     paginationInfo: "{start}-{end} of {total} rows",
     refreshButtonTooltip: "Refresh",
     refreshAndResetAction: "Reset & refresh",
+    noRowsToShow: "No rows to show",
   },
   form: {
     layout: {

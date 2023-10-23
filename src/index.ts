@@ -46,7 +46,7 @@ import { i18n } from "./i18n/plugin";
 import { type I18n } from "vue-i18n";
 export default {
   install: (app: App, config?: SweettoolsPluginConfig) => {
-    const i18nInstance = (app as any).__VUE_I18N__ as I18n;
+    const i18nInstance = (app as any).__VUE_I18N_SYMBOL__;
     app.provide(PLUGIN_CONF_INJECTION_KEY, config);
     if (!i18nInstance) app.use(i18n);
   },

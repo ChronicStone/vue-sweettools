@@ -87,10 +87,10 @@ const errorMessage = computed(() => {
       fieldContext.fieldFullPath.value.join(".")
     )
       return ["array-tabs", "array-list"].includes(_field.value.type)
-        ? i18n.global.t("form.errors.invalidArrayProperties", {
+        ? i18n.global.t("form.validators.invalidArrayProperties", {
             property: normalizeFieldLabel(_field.value, fieldContext),
           })
-        : i18n.global.t("form.errors.invalidObjectProperties", {
+        : i18n.global.t("form.validators.invalidObjectProperties", {
             property: normalizeFieldLabel(_field.value, fieldContext),
           });
     else return $validator.value.$errors[0]?.$message;

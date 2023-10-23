@@ -284,6 +284,7 @@ watch(
           row-drag-managed
           row-drag-multi-row
           show-disabled-checkboxes
+          :overlay-no-rows-template="i18n.t('datatable.noRowsToShow')"
           @sort-changed="handleGridSort"
           @selection-changed="handleGridSelection"
           @body-scroll-end="handleGridScrollEnd"
