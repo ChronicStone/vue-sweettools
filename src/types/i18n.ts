@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-export type LocaleTemplate = {
+export type SweettoolsLocaleTemplate = {
   form?: {
     layout?: {
-      multiStep?: {
-        stepTitle?: string;
-      };
+      multiStep?: { stepTitle?: string };
     };
     actions?: {
       nextButton?: string;
@@ -55,6 +53,10 @@ export type LocaleTemplate = {
       };
       text?: {
         defaultPlaceholder?: string;
+      };
+      select?: {
+        createItemButton?: string;
+        refreshOptionsButton?: string;
       };
     };
   };

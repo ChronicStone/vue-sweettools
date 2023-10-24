@@ -43,7 +43,7 @@ import {
 } from "./types/table";
 import { renderVNode } from "./utils/renderVNode";
 import { i18n } from "./i18n/plugin";
-import { type I18n } from "vue-i18n";
+import { useLocalizedValidators } from "./composables/form/useLocalizedValidators";
 export default {
   install: (app: App, config?: SweettoolsPluginConfig) => {
     const i18nInstance = (app as any).__VUE_I18N_SYMBOL__;

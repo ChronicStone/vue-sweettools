@@ -89,7 +89,7 @@ export interface FilterState {
 }
 
 export interface ColumnGroup<T extends GenericObject = GenericObject> {
-  label: string;
+  label: string | (() => string);
   children: Array<Column<T> | ColumnGroup<T>>;
   condition?: () => boolean;
 }

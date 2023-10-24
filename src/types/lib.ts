@@ -1,5 +1,5 @@
 import { RouteLocationRaw } from "vue-router";
-import type { LocaleTemplate } from "./i18n";
+import type { SweettoolsLocaleTemplate } from "./i18n";
 export type SweettoolsPluginConfig = {
   form?: {
     textOverrides: {
@@ -22,7 +22,7 @@ export type SweettoolsPluginConfig = {
   i18n?: {
     enable: boolean;
     translations?: {
-      [key: string]: LocaleTemplate;
+      [key: string]: SweettoolsLocaleTemplate;
     };
   };
 };

@@ -1,7 +1,7 @@
-import { LocaleTemplate } from "@/types/i18n";
+import { SweettoolsLocaleTemplate } from "@/types/i18n";
 import { DeepRequired } from "@/types/utils";
 
-export const en: DeepRequired<LocaleTemplate> = {
+export const en: DeepRequired<SweettoolsLocaleTemplate> = {
   datatable: {
     searchQueryPlaceholder: "Search value",
     searchQueryColumnIndicatorTooltip:
@@ -73,6 +73,10 @@ export const en: DeepRequired<LocaleTemplate> = {
       },
       text: {
         defaultPlaceholder: "Enter a value",
+      },
+      select: {
+        refreshOptionsButton: "Refresh",
+        createItemButton: "Create item",
       },
     },
   },

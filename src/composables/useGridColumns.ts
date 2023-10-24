@@ -50,7 +50,8 @@ function mapColumnsRecursively(
 ): ColDef | ColGroupDef {
   if ("children" in column)
     return {
-      headerName: column.label,
+      headerName:
+        typeof column.label === "function" ? column.label() : column.label,
       children: column.children
         .filter((c) => c?.condition?.() ?? true)
         .map((c) => mapColumnsRecursively(c, params)),

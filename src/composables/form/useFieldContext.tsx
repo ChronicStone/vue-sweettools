@@ -173,6 +173,10 @@ export function useFieldContext(
   function selectActionFactory(_field: SelectField) {
     const createOptionsEnabled = typeof _field.createOption !== "undefined";
     const allowOptionsRefresh = _field?.allowOptionsRefresh ?? false;
+    const createOptionLabel =
+      typeof _field.createOption === "function"
+        ? undefined
+        : _field.createOption?.label ?? undefined;
     return {
       render: () => (
         <div
@@ -190,7 +194,12 @@ export function useFieldContext(
             >
               {{
                 icon: () => <span class="iconify" data-icon="mdi:plus" />,
-                default: () => <span>Create item</span>,
+                default: () => (
+                  <span class="uppercase">
+                    {createOptionLabel ??
+                      i18n.t("form.fields.select.createOptionButton")}
+                  </span>
+                ),
               }}
             </NButton>
           )}
@@ -202,7 +211,11 @@ export function useFieldContext(
             >
               {{
                 icon: () => <span class="iconify" data-icon="mdi:refresh" />,
-                default: () => <span>Refresh</span>,
+                default: () => (
+                  <span class="uppercase">
+                    {i18n.t("form.fields.select.refreshOptionsButton")}
+                  </span>
+                ),
               }}
             </NButton>
           )}

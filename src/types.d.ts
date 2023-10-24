@@ -37,7 +37,7 @@ import {
 } from "./composables/excel/useImportController";
 import TExcelReader from "./components/ExcelReader/ExcelReader.vue";
 import { buildGridSchema } from "./composables/buildTableSchema";
-
+import { useLocalizedValidators } from "./composables/form/useLocalizedValidators";
 declare module "@chronicstone/vue-sweettools" {
   export type {
     DataTableSchema,
