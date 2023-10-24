@@ -29,6 +29,7 @@ declare module '@vue/runtime-core' {
     ExcelReader: typeof import('./src/components/ExcelReader/ExcelReader.vue')['default']
     FieldRenderer: typeof import('./src/components/Form/Renderer/FieldRenderer.vue')['default']
     FileField: typeof import('./src/components/Form/Field/FileField.vue')['default']
+    FileViewerProvider: typeof import('./src/components/FileViewer/FileViewerProvider.vue')['default']
     FilterPanel: typeof import('./src/components/DataTable/FilterPanel.vue')['default']
     FormProvider: typeof import('./src/components/Form/Provider/FormProvider.vue')['default']
     FormRenderer: typeof import('./src/components/Form/Renderer/FormRenderer.vue')['default']

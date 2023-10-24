@@ -23,6 +23,7 @@ import { computed, ref, watch } from "vue";
 import { ComputedRef } from "vue";
 import { BuiltInGlobalTheme } from "naive-ui/es/themes/interface";
 import { useTableActions } from "@/composables/useTableActions";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 
 const props = withDefaults(defineProps<DataTableProps>(), {
   tableKey: () => Date.now().toString(),
@@ -39,6 +40,7 @@ const props = withDefaults(defineProps<DataTableProps>(), {
   draggable: false,
 });
 
+const i18n = useTranslations();
 const parentConfigScope = inject<{
   mergedThemeOverridesRef: ComputedRef<GlobalThemeOverrides>;
   mergedThemeRef: ComputedRef<BuiltInGlobalTheme | null>;
@@ -131,6 +133,7 @@ const { columnDefs, defaultColumnDef } = useGridColumns({
   themeOverrides: _themeOverrides,
   draggable: _draggable,
   searchQuery: _searchQuery,
+  i18n,
 });
 
 tableApi.value = {
@@ -281,6 +284,7 @@ watch(
           row-drag-managed
           row-drag-multi-row
           show-disabled-checkboxes
+          :overlay-no-rows-template="i18n.t('datatable.noRowsToShow')"
           @sort-changed="handleGridSort"
           @selection-changed="handleGridSelection"
           @body-scroll-end="handleGridScrollEnd"

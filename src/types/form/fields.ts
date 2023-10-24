@@ -571,7 +571,7 @@ export type ArrayVariantField<
   type: "array-variant";
   variantKey: string;
   variants: Array<{
-    label: string;
+    label: string | (() => VNodeChild);
     key: string | number;
     fields: FormField<FieldKey, StoreData>[];
   }>;

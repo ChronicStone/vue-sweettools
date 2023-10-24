@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useTranslations } from "@/i18n/composables/useTranslations";
 import { FormSchema } from "@/types/form/form";
 import { StepInstance } from "@/types/form/instance";
 import { NButton } from "naive-ui";
@@ -17,6 +18,7 @@ const emit = defineEmits<{
   (e: "submit"): void;
 }>();
 
+const i18n = useTranslations();
 const { getProp } = useGlobalConfig(props.schema);
 </script>
 
@@ -27,7 +29,7 @@ const { getProp } = useGlobalConfig(props.schema);
     type="error"
     @click="emit('close')"
   >
-    {{ getProp("textOverrides.cancelBtnMessage") }}
+    {{ i18n.t("form.actions.cancelButton") }}
   </NButton>
   <NButton
     v-if="getProp('uiConfig.showPrevButton') && isMultiStep"
@@ -36,18 +38,17 @@ const { getProp } = useGlobalConfig(props.schema);
     type="primary"
     @click="emit('previousStep')"
   >
-    {{ getProp("textOverrides.prevBtnMessage") }}
+    {{ i18n.t("form.actions.prevButton") }}
   </NButton>
   <NButton secondary type="primary" @click="emit('submit')"
     >{{
       isMultiStep
         ? `${
             currentStepIndex === formSteps.length - 1
-              ? schema?.submitButtonText ??
-                getProp("textOverrides.submitBtnMessage")
-              : getProp("textOverrides.nextBtnMessage")
+              ? schema?.submitButtonText ?? i18n.t("form.actions.submitButton")
+              : i18n.t("form.actions.nextButton")
           }`
-        : getProp("textOverrides.submitBtnMessage")
+        : i18n.t("form.actions.submitButton")
     }}
   </NButton>
 </template>

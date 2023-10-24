@@ -6,6 +6,7 @@ import { resolveFieldDependencies } from "@/utils/form/resolveFieldDependencies"
 import useVuelidate from "@vuelidate/core";
 import { helpers, required } from "@vuelidate/validators";
 import { ComputedRef, Ref } from "vue";
+import { useLocalizedValidators } from "./useLocalizedValidators";
 
 const [useProvideFormValidation, _useFormValidation] = createInjectionState(
   (
@@ -14,9 +15,10 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
     virtualStore: Ref<Record<string, unknown>>
   ) => {
     const libConfig = useGlobalConfig();
-
     const formRules = ref<GenericObject>({});
     const $validator = useVuelidate(formRules, formState.value);
+
+    const { i18n, required } = useLocalizedValidators();
 
     watch(
       [() => formState.value, () => formFields.value],
@@ -56,21 +58,18 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
 
         if (isRequired)
           fieldRules.required = helpers.withMessage(
-            typeof libConfig.getProp("textOverrides.requiredMessage") ===
-              "function"
-              ? (
-                  libConfig.getProp("textOverrides.requiredMessage") as (
-                    label: string | (() => string)
-                  ) => string
-                )?.(
+            (params) =>
+              i18n.t("form.validators.required", {
+                ...params,
+                property:
                   typeof field.label === "function"
                     ? field
-                        .label(dependencies, virtualStore.value)
-                        ?.toString() ?? ""
-                    : field?.label ?? field.key
-                )
-              : (libConfig.getProp("textOverrides.requiredMessage") as string),
-            field.type === "checkbox" ? (value: boolean) => !!value : required
+                        .label?.(dependencies, virtualStore.value)
+                        ?.toString()
+                        .toLocaleLowerCase()
+                    : field?.label?.toLocaleLowerCase() ?? field.key,
+              }),
+            field.type !== "checkbox" ? required : (value) => !!value
           );
 
         if (field.type === "object" || field.type === "group") {

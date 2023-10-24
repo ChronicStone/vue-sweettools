@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useTranslations } from "@/i18n/composables/useTranslations";
 import { NInput } from "naive-ui";
 import { ref } from "vue";
 
 const emit = defineEmits<{ (e: "update:searchQuery", value: string): void }>();
 const props = defineProps<{ searchQuery: string }>();
 
+const i18n = useTranslations();
 const localValue = ref<string>(props.searchQuery);
 </script>
 
@@ -12,7 +14,7 @@ const localValue = ref<string>(props.searchQuery);
   <NInput
     v-model:value="localValue"
     clearable
-    :placeholder="'Search value'"
+    :placeholder="i18n.t('datatable.searchQueryPlaceholder')"
     :on-change="() => emit('update:searchQuery', localValue)"
   />
 </template>

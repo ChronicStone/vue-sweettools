@@ -44,8 +44,8 @@ const testIdConfig = [
         v-for="(option, index) in context.options.value ?? field.options"
         :key="index"
         class="col-span-1"
-        :value="(option.value as string)"
-        :label="(option.label as string)"
+        :value="((option as any).value as string)"
+        :label="((option as any).label as string)"
         :disabled="disabled"
         @blur="validator?.$touch"
       />

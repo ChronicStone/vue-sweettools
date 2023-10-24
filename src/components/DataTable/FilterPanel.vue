@@ -9,6 +9,7 @@ import { FormRefInstance } from "@/types/form/instance";
 import FormRenderer from "../Form/Renderer/FormRenderer.vue";
 import { FormSchema } from "@/types/form/form";
 import { FormField } from "@/types/form/fields";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 
 const emit = defineEmits<{
   (e: "update:filters", value: GenericObject): void;
@@ -19,6 +20,7 @@ const props = defineProps<{
   filters: GenericObject;
 }>();
 
+const i18n = useTranslations();
 const { width } = useWindowSize();
 const isPanelOpen = ref<boolean>(false);
 
@@ -71,8 +73,12 @@ onKeyPressed("Enter", () => applyFilters());
       </div>
     </template>
     <div class="flex flex-col justify-center items-center">
-      <span>Open filters</span>
-      <span>({{ appliedFiltersCount }}) active</span>
+      <span>{{ i18n.t("datatable.filtersTooltipLabel") }}</span>
+      <span>{{
+        i18n.t("datatable.appliedFiltersCount", {
+          count: appliedFiltersCount,
+        })
+      }}</span>
     </div>
   </NTooltip>
 
@@ -93,7 +99,7 @@ onKeyPressed("Enter", () => applyFilters());
               <mdi:filter-variant />
             </NIcon>
             <span>
-              Filters
+              {{ i18n.t("datatable.filtersPanelTitle") }}
               {{ appliedFiltersCount > 0 ? `(${appliedFiltersCount})` : null }}
             </span>
           </div>
@@ -111,7 +117,7 @@ onKeyPressed("Enter", () => applyFilters());
                   <system-uicons:reset />
                 </n-icon>
               </template>
-              RESET
+              {{ i18n.t("datatable.filtersPanelResetButton") }}
             </NButton>
 
             <NButton type="primary" class="w-full" @click="applyFilters">
@@ -120,7 +126,7 @@ onKeyPressed("Enter", () => applyFilters());
                   <la:search />
                 </n-icon>
               </template>
-              SEARCH
+              {{ i18n.t("datatable.filtersPanelSubmitButton") }}
             </NButton>
           </div>
         </template>

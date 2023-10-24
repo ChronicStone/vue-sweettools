@@ -1,23 +1,32 @@
 <script setup lang="ts">
 import { useIsMobile } from "@/composables/useIsMobile";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 import { GridControls } from "@/types/table";
 import { NSelect, NPagination } from "naive-ui";
 import { computed } from "vue";
 
+const props = defineProps<{ paginationState: GridControls["pagination"] }>();
 const emit = defineEmits<{
   (e: "update:paginationState", value: GridControls["pagination"]): void;
 }>();
 
-const props = defineProps<{
-  paginationState: GridControls["pagination"];
-}>();
-
 const isMobile = useIsMobile();
+const i18n = useTranslations();
 
 const _paginationState = computed({
   get: () => props.paginationState,
   set: (value: GridControls["pagination"]) =>
     emit("update:paginationState", value),
+});
+
+const paginationScope = computed(() => {
+  return {
+    start:
+      _paginationState.value.pageSize * _paginationState.value.pageIndex -
+      (_paginationState.value.pageSize - 1),
+    end: _paginationState.value.pageSize * _paginationState.value.pageIndex,
+    total: _paginationState.value.rowTotalCount,
+  };
 });
 </script>
 
@@ -33,18 +42,15 @@ const _paginationState = computed({
         class="max-w-32"
         placeholder="Page size"
         :options="
-          [50, 100, 250, 500].map((i) => ({ label: `${i} rows`, value: i }))
+          [50, 100, 250, 500].map((i) => ({
+            label: i18n.t('datatable.numberOfDisplayedRows', { count: i }),
+            value: i,
+          }))
         "
       />
       <span>
-        {{
-          _paginationState.pageSize * _paginationState.pageIndex -
-          (_paginationState.pageSize - 1)
-        }}
-        -
-        {{ _paginationState.pageSize * _paginationState.pageIndex }}
-        of {{ _paginationState.rowTotalCount }}</span
-      >
+        {{ i18n.t("datatable.paginationInfo", paginationScope) }}
+      </span>
     </div>
     <div class="w-full flex justify-center !md:justify-end">
       <n-pagination

@@ -17,7 +17,7 @@ providerRef.value?.destroyAll();
 
 <template>
   <NConfigProvider
-    :theme-overrides="themeOverrides"
+    :theme-overrides="isDark ? DarkThemeOverrides : LightThemeOverrides"
     :theme="isDark ? darkTheme : null"
   >
     <NNotificationProvider>

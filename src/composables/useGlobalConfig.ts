@@ -1,8 +1,11 @@
 import { SweettoolsPluginConfig } from "@/types/lib";
 import { FormSchema } from "@/types/form/form";
 import { PLUGIN_CONF_INJECTION_KEY } from "@/config/injectionKeys";
-import { NestedPaths, TypeFromPath } from "@/types/utils";
+import { DeepRequired, NestedPaths, TypeFromPath } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
+import { en } from "@/i18n/locales/en";
+import { SweettoolsLocaleTemplate } from "@/types/i18n";
+import { deepmerge } from "deepmerge-ts";
 
 const DEFAULT_FORM_CONFIG = {
   textOverrides: {
@@ -99,5 +102,12 @@ export function useGlobalConfig(formSchema?: FormSchema) {
     formConfig,
     permissionValidator,
     getProp,
+    i18n: {
+      enable: config?.i18n?.enable ?? true,
+      translations: deepmerge(
+        { en },
+        config?.i18n?.translations ?? {}
+      ) as Record<string, DeepRequired<SweettoolsLocaleTemplate>>,
+    },
   };
 }

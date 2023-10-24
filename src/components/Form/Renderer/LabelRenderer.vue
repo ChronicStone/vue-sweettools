@@ -73,7 +73,6 @@ const collapsible = computed<boolean>(
         }"
         :for="field.key"
       >
-        <!-- @vue-expect-error -->
         <component
           :is="renderVNode(props.field?.label ?? '', dependencies, {})"
         />

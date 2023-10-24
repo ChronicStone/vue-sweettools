@@ -8,7 +8,6 @@ import {
 } from "@/types/table";
 
 import ColumnHeaderRenderer from "@/components/DataTable/CellRenderers/ColumnHeaderRenderer.vue";
-import SelectionHeaderRenderer from "@/components/DataTable/CellRenderers/SelectionHeaderRenderer.vue";
 import ActionsCellRenderer from "@/components/DataTable/CellRenderers/ActionsCellRenderer.vue";
 import JsxCellRenderer from "@/components/DataTable/CellRenderers/JsxCellRenderer.vue";
 import ComponentCellRenderer from "@/components/DataTable/CellRenderers/ComponentCellRenderer.vue";
@@ -16,6 +15,7 @@ import { GenericObject } from "@/types/utils";
 import { ColDef, ColGroupDef } from "ag-grid-community";
 import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 import SelectionCellRenderer from "@/components/DataTable/CellRenderers/SelectionCellRenderer.vue";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 
 const DEFAULT_COL_DEF = {
   sortable: true,
@@ -41,6 +41,7 @@ type AgGridConfigParams = {
   themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>;
   draggable: ComputedRef<boolean>;
   searchQuery: ComputedRef<string[]>;
+  i18n: ReturnType<typeof useTranslations>;
 };
 
 function mapColumnsRecursively(
@@ -49,13 +50,20 @@ function mapColumnsRecursively(
 ): ColDef | ColGroupDef {
   if ("children" in column)
     return {
-      headerName: column.label,
+      headerName:
+        typeof column.label === "function" ? column.label() : column.label,
       children: column.children
         .filter((c) => c?.condition?.() ?? true)
         .map((c) => mapColumnsRecursively(c, params)),
     };
   else
     return {
+      autoHeight: column?.autoHeight ?? false,
+      autoHeaderHeight: column?.autoHeaderHeight ?? false,
+      pinned: column?.pinned ?? null,
+      onCellClicked: column?.onCellClicked,
+      onCellContextMenu: column?.onCellContextMenu,
+      onCellDoubleClicked: column?.onCellDoubleClicked,
       field: column.key,
       ...(column.width && { width: column.width as number }),
       hide: column.hide ?? false,
@@ -65,9 +73,10 @@ function mapColumnsRecursively(
       headerComponentParams: {
         tableApi: params.tableApi,
         theme: params.theme,
-        themeOverrides,
+        themeOverrides: params.themeOverrides,
         searchable: params.searchQuery.value.includes(column.key),
         label: column.label,
+        i18n: params.i18n,
       },
       ...(column.render && {
         cellRenderer: JsxCellRenderer,
@@ -75,7 +84,7 @@ function mapColumnsRecursively(
           _cellRenderer: column.render,
           tableApi: params.tableApi,
           theme: params.theme,
-          themeOverrides,
+          themeOverrides: params.themeOverrides,
         },
       }),
       ...(column.cellComponent && {
@@ -85,7 +94,7 @@ function mapColumnsRecursively(
           ...(column.cellComponentParams && column.cellComponentParams),
           tableApi: params.tableApi,
           theme: params.theme,
-          themeOverrides,
+          themeOverrides: params.themeOverrides,
         },
       }),
     };
@@ -128,7 +137,7 @@ export function useGridColumns(params: AgGridConfigParams) {
               permissionValidator: permissionValidator.value,
               tableApi: params.tableApi,
               theme: params.theme,
-              themeOverrides,
+              themeOverrides: params.themeOverrides,
             },
             width: 80 + params.rowActions.value.length * 20,
           },

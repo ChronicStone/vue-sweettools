@@ -137,6 +137,28 @@ const { sample, formData } = defineFormSchemaSample({
           },
         ],
       },
+      {
+        label: "Array variant",
+        key: "arrayVariant",
+        type: "array-variant",
+        displayMode: "tabs",
+        variantKey: "type",
+        variants: [
+          {
+            key: "type1",
+            label: "Type 1",
+            fields: [
+              { key: "text", label: "Text", type: "text", required: true },
+              {
+                key: "number",
+                label: "Number",
+                type: "number",
+                required: true,
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
 });

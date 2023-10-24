@@ -5,6 +5,7 @@ import LabelRenderer from "./LabelRenderer.vue";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 import { vTestid } from "@chronicstone/vue-testid";
 import { FieldInstance } from "@/types/form/instance";
+import { i18n } from "@/i18n/plugin";
 
 const emit = defineEmits<{ (e: "update:modelValue", value: unknown): void }>();
 const props = withDefaults(
@@ -86,14 +87,12 @@ const errorMessage = computed(() => {
       fieldContext.fieldFullPath.value.join(".")
     )
       return ["array-tabs", "array-list"].includes(_field.value.type)
-        ? `The field ${normalizeFieldLabel(
-            _field.value,
-            fieldContext
-          )} has items with invalid properties`
-        : `The field ${normalizeFieldLabel(
-            _field.value,
-            fieldContext
-          )} has invalid properties`;
+        ? i18n.global.t("form.validators.invalidArrayProperties", {
+            property: normalizeFieldLabel(_field.value, fieldContext),
+          })
+        : i18n.global.t("form.validators.invalidObjectProperties", {
+            property: normalizeFieldLabel(_field.value, fieldContext),
+          });
     else return $validator.value.$errors[0]?.$message;
   }
 });

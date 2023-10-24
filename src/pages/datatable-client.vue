@@ -8,6 +8,10 @@ const schema = buildTableSchema<{
   firstName: string;
   lastName: string;
   valid: boolean;
+  user?: {
+    test: string;
+    haha: { hehe: string };
+  } | null;
 }>({
   tableKey: "someKey",
   persistency: "localStorage",
@@ -45,7 +49,7 @@ const dark = ref(false);
 
 <template>
   <NConfigProvider
-    :theme-overrides="themeOverrides"
+    :theme-overrides="dark ? DarkThemeOverrides : LightThemeOverrides"
     :theme="dark ? darkTheme : null"
   >
     <div class="p-0 lg:p-10">

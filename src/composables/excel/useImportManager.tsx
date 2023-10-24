@@ -1,4 +1,5 @@
 import { Primitive } from "@//types/utils";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 import { ImportSchema } from "@/types/execl";
 import { DataTableColumn, NDataTable, NPopover, NTag } from "naive-ui";
 import { Ref } from "vue";
@@ -7,6 +8,7 @@ const MULTIPLE_SEPARATOR_DEFAULT = ",";
 type GenericObject = Record<Primitive, any>;
 
 export function useImportManager(schema: Ref<ImportSchema<true>>) {
+  const i18n = useTranslations();
   const searchQuery = ref<string>("");
   const rawData = ref<Record<string, string>[]>([]);
   const data = computed(() =>
@@ -44,7 +46,11 @@ export function useImportManager(schema: Ref<ImportSchema<true>>) {
     () =>
       [
         {
-          title: () => <NTag type="primary">IS VALID</NTag>,
+          title: () => (
+            <NTag type="primary" class="uppercase">
+              {i18n.t("excelImport.isValidTag")}
+            </NTag>
+          ),
           key: "__isValid",
           render: (row: Record<string, unknown>) =>
             renderBoolean(validateRow(schema.value, row)),
@@ -59,7 +65,8 @@ export function useImportManager(schema: Ref<ImportSchema<true>>) {
           key: field?.targetKey ?? field.key,
           render: getCellRenderer(
             field?.targetKey ?? (field.key as string),
-            field
+            field,
+            i18n
           ),
           sorter: "default",
         })),
@@ -228,11 +235,12 @@ export function renderBoolean(value: boolean) {
 
 export function getCellRenderer(
   key: string,
-  field: ImportSchema<true>[number]
+  field: ImportSchema<true>[number],
+  i18n: ReturnType<typeof useTranslations>
 ) {
   if (typeof field?.cellRenderer === "function") return field.cellRenderer;
-  if (field?.multiple) return multiCellRenderer(key, field);
-  else return defaultCellRenderer(key, field);
+  if (field?.multiple) return multiCellRenderer(key, field, i18n);
+  else return defaultCellRenderer(key, field, i18n);
 }
 
 export function rowValidityRenderer(isValid: boolean) {
@@ -245,19 +253,25 @@ export function rowValidityRenderer(isValid: boolean) {
 
 export function defaultCellRenderer(
   key: string,
-  schema: ImportSchema<true>[number]
+  schema: ImportSchema<true>[number],
+  i18n: ReturnType<typeof useTranslations>
 ) {
   return (row: Record<string, unknown>) => {
     const isFieldValid = validateField(row[key], schema);
     if (schema.validation.required && !row[key])
-      return <div class="text-red-500">MISSING VALUE</div>;
+      return (
+        <div class="text-red-500 uppercase">
+          {i18n.t("excelImport.missingValue")}
+        </div>
+      );
     return <div class={isFieldValid ? "" : "text-red-500"}>{row[key]}</div>;
   };
 }
 
 export function multiCellRenderer(
   key: string,
-  schema: ImportSchema<true>[number]
+  schema: ImportSchema<true>[number],
+  i18n: ReturnType<typeof useTranslations>
 ) {
   return (row: Record<string, Array<unknown>>) => {
     if (schema.validation.required && !row[key]?.length)
@@ -269,9 +283,13 @@ export function multiCellRenderer(
       __isValid: validateField(item, { ...schema, multiple: false }),
     }));
     const columns: DataTableColumn<{ __isValid: boolean }>[] = [
-      { title: "Value", key: "value" },
+      { title: () => i18n.t("excelImport.value"), key: "value" },
       {
-        title: () => <NTag type="primary">IS VALID</NTag>,
+        title: () => (
+          <NTag type="primary" class="uppercase">
+            {i18n.t("excelImport.isValidTag")}
+          </NTag>
+        ),
         key: "__valid",
         render: (row) => renderBoolean(row.__isValid),
       },

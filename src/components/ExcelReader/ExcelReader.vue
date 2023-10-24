@@ -13,11 +13,13 @@ import { IContent } from "json-as-xlsx";
 import { ImportSchema } from "@/types/execl";
 import { useImportManager } from "@/composables/excel/useImportManager";
 import { exportExcel, generateInportSchemaRefFile } from "@/utils/excel/excel";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 
 const props = defineProps<{ schema: ImportSchema }>();
 const message = useMessage();
 const themeVars = useThemeVars();
 
+const i18n = useTranslations();
 const uploadLabel = ref<HTMLElement>();
 const isHovered = useElementHover(uploadLabel as unknown as HTMLElement);
 const isDragged = ref(false);
@@ -102,8 +104,13 @@ defineExpose({
 <template>
   <NSpin :show="_evalSchema">
     <div class="flex flex-col gap-8">
-      <NButton secondary type="primary" @click="downloadReferenceFile">
-        DOWNLOAD REFERENCE FILE
+      <NButton
+        secondary
+        type="primary"
+        class="uppercase"
+        @click="downloadReferenceFile"
+      >
+        {{ i18n.t("excelImport.downloadReferenceFileButton") }}
       </NButton>
       <label ref="uploadLabel" for="FileDropZone">
         <div
@@ -122,7 +129,7 @@ defineExpose({
         >
           <div class="flex flex-col items-center">
             <mdi:import class="h-8 w-8" />
-            <span>Drop excel file or browse</span>
+            <span>{{ i18n.t("excelImport.dropFileOrBrowse") }}</span>
           </div>
         </div>
       </label>
@@ -139,9 +146,21 @@ defineExpose({
         <div class="flex flex-col gap-4">
           <div class="flex gap-4 justify-between">
             <div>
-              <NTag type="success">{{ validRows?.length }} VALID</NTag>
+              <NTag type="success" class="uppercase">
+                {{
+                  i18n.t("excelImport.countValidRows", {
+                    count: validRows?.length ?? 0,
+                  })
+                }}
+              </NTag>
               <NDivider vertical />
-              <NTag type="error">{{ invalidRows?.length }} INVALID</NTag>
+              <NTag type="error" class="uppercase">
+                {{
+                  i18n.t("excelImport.countInvalidRows", {
+                    count: invalidRows?.length ?? 0,
+                  })
+                }}
+              </NTag>
             </div>
             <div class="flex items-center gap-3">
               <NInput

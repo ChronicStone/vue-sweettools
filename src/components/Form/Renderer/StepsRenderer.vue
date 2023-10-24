@@ -9,12 +9,14 @@ import {
   NEllipsis,
 } from "naive-ui";
 import { computeHslColor } from "@/utils/simulateHslColorOpacity";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 
 const props = defineProps<{
   steps: StepInstance[];
   currentStepIndex: number;
 }>();
 
+const i18n = useTranslations();
 const formStyle = useFormStyles();
 const themeVars = useThemeVars();
 const progressPercent = computed(
@@ -82,8 +84,14 @@ const progressColorMode = computed(() => {
               <span class="iconify" :data-icon="step.icon" />
             </template>
             <span v-if="currentStepIndex !== index">{{ index + 1 }}</span>
-            <span v-else-if="!step.title"> Step {{ index + 1 }} </span>
-            <span v-else>{{ step.title }}</span>
+            <span v-else-if="!step.title">
+              {{
+                i18n.t("form.layout.multiStep.stepTitle", { index: index + 1 })
+              }}
+            </span>
+            <span v-else>
+              <component :is="renderVNode(step.title)" />
+            </span>
           </NEllipsis>
         </NTag>
         <div

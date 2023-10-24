@@ -41,7 +41,7 @@ export interface FormStep<
   FieldKey extends Narrowable = string,
   StoreData extends Record<string, unknown> = Record<string, unknown>
 > {
-  title?: string;
+  title?: string | (() => VNodeChild);
   icon?: string;
   root?: StepKey;
   fields: FormField<FieldKey, StoreData>[];
