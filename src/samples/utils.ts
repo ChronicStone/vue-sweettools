@@ -17,7 +17,9 @@ export function defineFormSchemaSample<
 >(sample: {
   title: string;
   description?: string;
-  schema: TFormSchema & { sharedStore?: Store };
+  schema: TFormSchema & {
+    sharedStore?: Store;
+  };
   data?: Record<string, any>;
 }) {
   return {
