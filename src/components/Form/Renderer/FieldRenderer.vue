@@ -5,7 +5,7 @@ import LabelRenderer from "./LabelRenderer.vue";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 import { vTestid } from "@chronicstone/vue-testid";
 import { FieldInstance } from "@/types/form/instance";
-import { i18n } from "@/i18n/plugin";
+import { useTranslations } from "@/i18n/composables/useTranslations";
 
 const emit = defineEmits<{ (e: "update:modelValue", value: unknown): void }>();
 const props = withDefaults(
@@ -39,6 +39,7 @@ const _field = computed(() => props.field);
 const _parentKey = computed(() => props.parentKey);
 const _multiStep = computed(() => props.multiStep);
 const _stepIndex = computed(() => props.stepIndex);
+const i18n = useTranslations();
 
 const formStyle = useFormStyles();
 const collapsed = ref<boolean>(
@@ -87,10 +88,10 @@ const errorMessage = computed(() => {
       fieldContext.fieldFullPath.value.join(".")
     )
       return ["array-tabs", "array-list"].includes(_field.value.type)
-        ? i18n.global.t("form.validators.invalidArrayProperties", {
+        ? i18n.t("form.validators.invalidArrayProperties", {
             property: normalizeFieldLabel(_field.value, fieldContext),
           })
-        : i18n.global.t("form.validators.invalidObjectProperties", {
+        : i18n.t("form.validators.invalidObjectProperties", {
             property: normalizeFieldLabel(_field.value, fieldContext),
           });
     else return $validator.value.$errors[0]?.$message;
