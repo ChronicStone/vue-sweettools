@@ -667,6 +667,7 @@ export type _BaseField<
         virtualDependencies: StoreData
       ) => ValidationArgs)
     | ValidationArgs;
+  watchOptions?: { deep?: boolean; immediate?: boolean };
   watch?: (
     value: any,
     params: {

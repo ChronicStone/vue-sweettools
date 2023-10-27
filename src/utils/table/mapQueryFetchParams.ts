@@ -58,6 +58,7 @@ export function mapTableFilters(
           required: false,
           params: filter?.params ?? {},
           value,
+          postCondition: filter?.postCondition ?? false,
         },
       ],
     };

@@ -8,7 +8,7 @@ async function resolveAsyncOptions() {
 }
 
 const { sample, formData } = defineFormSchemaSample({
-  title: "Testing sample",
+  title: "Custom actions / Scoped APIs",
   data: {},
   schema: {
     fieldSize: 8,

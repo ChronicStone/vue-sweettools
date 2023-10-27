@@ -276,7 +276,8 @@ export function useFieldContext(
             propertySetter(key, parentKey.value, state.value, value),
           getValue: (key: string) =>
             propertyResolver(key, parentKey.value, state.value),
-        })
+        }),
+      field.value?.watchOptions ?? {}
     );
   }
 

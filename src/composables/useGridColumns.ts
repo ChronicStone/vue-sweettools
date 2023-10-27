@@ -16,6 +16,7 @@ import { ColDef, ColGroupDef } from "ag-grid-community";
 import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 import SelectionCellRenderer from "@/components/DataTable/CellRenderers/SelectionCellRenderer.vue";
 import { useTranslations } from "@/i18n/composables/useTranslations";
+import { RowNode } from "ag-grid-community";
 
 const DEFAULT_COL_DEF = {
   sortable: true,
@@ -42,6 +43,8 @@ type AgGridConfigParams = {
   draggable: ComputedRef<boolean>;
   searchQuery: ComputedRef<string[]>;
   i18n: ReturnType<typeof useTranslations>;
+  lastSelectedNode: Ref<RowNode<any> | null>;
+  setLastSelectedNode: (node: RowNode<any>) => void;
 };
 
 function mapColumnsRecursively(
@@ -122,7 +125,9 @@ export function useGridColumns(params: AgGridConfigParams) {
             cellRendererParams: {
               theme: params.theme,
               themeOverrides: params.themeOverrides,
-              selectAll: params.selectAll,
+              getSelectAll: () => params.selectAll.value,
+              getLastSelectedNode: () => params.lastSelectedNode.value,
+              setLastSelectedNode: params.setLastSelectedNode,
             },
           },
         ]

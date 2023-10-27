@@ -24,6 +24,7 @@ import { ComputedRef } from "vue";
 import { BuiltInGlobalTheme } from "naive-ui/es/themes/interface";
 import { useTableActions } from "@/composables/useTableActions";
 import { useTranslations } from "@/i18n/composables/useTranslations";
+import { RowNode } from "ag-grid-community";
 
 const props = withDefaults(defineProps<DataTableProps>(), {
   tableKey: () => Date.now().toString(),
@@ -71,6 +72,10 @@ const columnApi = ref<ColumnApi>();
 const tableApi = ref<TableApi>();
 const isGridMounted = ref<boolean>(false);
 const gridOptions = ref<GridOptions>();
+
+const lastSelectedNode = ref<RowNode<any> | null>(null);
+const setLastSelectedNode = (node: RowNode<any> | null) =>
+  (lastSelectedNode.value = node);
 
 const {
   data,
@@ -134,6 +139,8 @@ const { columnDefs, defaultColumnDef } = useGridColumns({
   draggable: _draggable,
   searchQuery: _searchQuery,
   i18n,
+  lastSelectedNode: lastSelectedNode as any,
+  setLastSelectedNode,
 });
 
 tableApi.value = {
@@ -285,6 +292,8 @@ watch(
           row-drag-multi-row
           show-disabled-checkboxes
           :overlay-no-rows-template="i18n.t('datatable.noRowsToShow')"
+          row-multi-select-with-click
+          suppress-row-click-selection
           @sort-changed="handleGridSort"
           @selection-changed="handleGridSelection"
           @body-scroll-end="handleGridScrollEnd"

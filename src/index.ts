@@ -48,7 +48,9 @@ export default {
   install: (app: App, config?: SweettoolsPluginConfig) => {
     const i18nInstance = (app as any).__VUE_I18N_SYMBOL__;
     app.provide(PLUGIN_CONF_INJECTION_KEY, config);
-    if (!i18nInstance) app.use(i18n);
+    if (!i18nInstance) {
+      app.use(i18n as any);
+    }
   },
 };
 

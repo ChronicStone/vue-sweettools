@@ -2,8 +2,9 @@ import basic1 from "./basic1";
 import multiStep1 from "./multiStep1";
 import asyncOptionDeps from "./asyncOptDeps";
 import crossFieldValidation from "./crossFieldValidation";
-import testingSample from "./test";
-import playSample from "./play";
+import customArrAction from "./customActions";
+import selectOptCreate from "./selectOptionCreate";
+import play from "./play";
 
 export const formSamples: Array<
   Omit<ReturnType<typeof defineFormSchemaSample>, "formData">
@@ -12,6 +13,7 @@ export const formSamples: Array<
   asyncOptionDeps,
   multiStep1,
   crossFieldValidation,
-  testingSample,
-  playSample,
+  customArrAction,
+  selectOptCreate,
+  play,
 ];
