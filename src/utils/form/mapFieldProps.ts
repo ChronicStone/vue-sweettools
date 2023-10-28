@@ -1,12 +1,13 @@
 import { useTranslations } from "@/i18n/composables/useTranslations";
-import { Dependencies, FormField } from "@/types/form/fields";
+import { Dependencies, ReadonlyFieldApi, FormField } from "@/types/form/fields";
 
 type MapFieldPropsParams = {
   field: FormField;
   fieldProps:
     | Record<string, any>
-    | ((deps?: Dependencies) => Record<string, any>);
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => Record<string, any>);
   dependencies: Dependencies;
+  fieldApi: ReadonlyFieldApi;
   raw?: boolean;
 };
 
@@ -14,11 +15,13 @@ export function mapFieldProps({
   field,
   fieldProps: _fieldProps,
   dependencies,
+  fieldApi,
   raw,
 }: MapFieldPropsParams) {
-  type _Field = typeof field;
   const fieldProps =
-    typeof _fieldProps === "function" ? _fieldProps(dependencies) : _fieldProps;
+    typeof _fieldProps === "function"
+      ? _fieldProps(dependencies, fieldApi)
+      : _fieldProps;
 
   if (raw) return fieldProps;
 

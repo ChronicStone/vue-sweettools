@@ -61,12 +61,19 @@ export type _CoreFieldOptions =
 
 export type _FieldOptions =
   | _CoreFieldOptions
-  | ((dependencies: Dependencies) => _CoreFieldOptions)
-  | ((dependencies: Dependencies) => Promise<_CoreFieldOptions>);
+  | ((
+      dependencies: Dependencies,
+      fieldApi: ReadonlyFieldApi
+    ) => _CoreFieldOptions)
+  | ((
+      dependencies: Dependencies,
+      fieldApi: ReadonlyFieldApi
+    ) => Promise<_CoreFieldOptions>);
 
 export type FieldOptionCreator =
   | ((
-      deps: Dependencies
+      deps: Dependencies,
+      fieldApi: ReadonlyFieldApi
     ) =>
       | _CoreFieldOptions[number]
       | null
@@ -78,7 +85,8 @@ export type FieldOptionCreator =
       selectOnCreation?: boolean;
       revalidateFieldOptions?: Array<string>;
       handler: (
-        deps: Dependencies
+        deps: Dependencies,
+        fieldApi: ReadonlyFieldApi
       ) =>
         | _CoreFieldOptions[number]
         | null
@@ -98,7 +106,9 @@ export interface TextFieldProps {
 export interface TextField {
   type: "text";
   clearable?: boolean;
-  fieldParams?: TextFieldProps | ((deps: Dependencies) => TextFieldProps);
+  fieldParams?:
+    | TextFieldProps
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TextFieldProps);
 }
 
 export interface TreeSelectFieldProps {
@@ -143,7 +153,10 @@ export interface TreeSelectField {
   options: _FieldOptions;
   fieldParams?:
     | TreeSelectFieldProps
-    | ((deps: Dependencies) => TreeSelectFieldProps);
+    | ((
+        deps: Dependencies,
+        fieldApi: ReadonlyFieldApi
+      ) => TreeSelectFieldProps);
 }
 
 export interface CascaderFieldParams {
@@ -189,7 +202,7 @@ export interface CascaderField {
   multiple?: boolean;
   fieldParams?:
     | CascaderFieldParams
-    | ((deps: Dependencies) => CascaderFieldParams);
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => CascaderFieldParams);
 }
 
 export interface TextAreaFieldParams extends TextFieldProps {
@@ -202,7 +215,7 @@ export interface TextAreaField {
   clearable?: boolean;
   fieldParams?:
     | TextAreaFieldParams
-    | ((deps: Dependencies) => TextAreaFieldParams);
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TextAreaFieldParams);
 }
 
 export interface TagFieldParams {
@@ -223,7 +236,9 @@ export interface TagFieldParams {
 
 export interface TagField {
   type: "tag";
-  fieldParams?: TagFieldParams | ((deps: Dependencies) => TagFieldParams);
+  fieldParams?:
+    | TagFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TagFieldParams);
 }
 
 export interface PasswordField extends Omit<TextField, "type" | "pair"> {
@@ -255,7 +270,9 @@ export interface SelectField {
   clearable?: boolean;
   options: _FieldOptions;
   multiple?: boolean;
-  fieldParams?: SelectFieldParams | ((deps: Dependencies) => SelectFieldParams);
+  fieldParams?:
+    | SelectFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SelectFieldParams);
   createOption?: FieldOptionCreator;
   allowOptionsRefresh?: boolean;
 }
@@ -271,7 +288,9 @@ export interface NumberFieldParams {
 export interface NumberField {
   type: "number";
   clearable?: boolean;
-  fieldParams?: NumberFieldParams | ((deps: Dependencies) => NumberFieldParams);
+  fieldParams?:
+    | NumberFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => NumberFieldParams);
 }
 
 export interface ColorPickerFieldParams {
@@ -287,7 +306,10 @@ export interface ColorPickerField {
   type: "color-picker";
   fieldParams?:
     | ColorPickerFieldParams
-    | ((deps: Dependencies) => ColorPickerFieldParams);
+    | ((
+        deps: Dependencies,
+        fieldApi: ReadonlyFieldApi
+      ) => ColorPickerFieldParams);
 }
 
 export interface RatingFieldParams {
@@ -300,7 +322,9 @@ export interface RatingFieldParams {
 
 export interface RatingField {
   type: "rating";
-  fieldParams?: RatingFieldParams | ((deps: Dependencies) => RatingFieldParams);
+  fieldParams?:
+    | RatingFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => RatingFieldParams);
 }
 
 export interface SliderFieldParams {
@@ -330,7 +354,9 @@ export interface SliderFieldParams {
 
 export interface SliderField {
   type: "slider";
-  fieldParams?: SliderFieldParams | ((deps: Dependencies) => SliderFieldParams);
+  fieldParams?:
+    | SliderFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SliderFieldParams);
 }
 
 export interface SwitchFieldParams {
@@ -342,7 +368,9 @@ export interface SwitchFieldParams {
 
 export interface SwitchField {
   type: "switch";
-  fieldParams?: SwitchFieldParams | ((deps: Dependencies) => SwitchFieldParams);
+  fieldParams?:
+    | SwitchFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SwitchFieldParams);
 }
 
 export interface RadioField {
@@ -359,7 +387,7 @@ export interface CheckboxField {
   type: "checkbox";
   fieldParams?:
     | CheckboxFieldParams
-    | ((deps: Dependencies) => CheckboxFieldParams);
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => CheckboxFieldParams);
 }
 
 export interface CheckboxGroupFieldParams {
@@ -396,7 +424,9 @@ export interface TimeFieldParams {
 export interface TimeField {
   type: "time";
   clearable?: boolean;
-  fieldParams?: TimeFieldParams | ((deps: Dependencies) => TimeFieldParams);
+  fieldParams?:
+    | TimeFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TimeFieldParams);
 }
 
 export interface DateFieldParams {
@@ -408,7 +438,9 @@ export interface DateFieldParams {
 export interface DateField {
   type: "date" | "datetime" | "daterange" | "datetimerange" | "month" | "year";
   clearable?: boolean;
-  fieldParams?: DateFieldParams | ((deps: Dependencies) => DateFieldParams);
+  fieldParams?:
+    | DateFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => DateFieldParams);
 }
 
 export interface GroupField<FieldKey extends Narrowable = string> {
@@ -441,7 +473,9 @@ export interface ObjectField<FieldKey extends Narrowable = string> {
   fields: FormField<FieldKey>[];
   collapsible?: boolean;
   collapsed?: boolean;
-  fieldParam?: ObjectFieldParams | ((deps: Dependencies) => ObjectFieldParams);
+  fieldParam?:
+    | ObjectFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => ObjectFieldParams);
 }
 
 export interface _ArrayField<FieldKey extends Narrowable = string> {
@@ -531,7 +565,10 @@ export interface CustomField {
   component: Component;
   fieldParams?:
     | Record<string, unknown>
-    | ((deps: Dependencies) => Record<string, unknown>);
+    | ((
+        deps: Dependencies,
+        fieldApi: ReadonlyFieldApi
+      ) => Record<string, unknown>);
   collapsible?: boolean;
   collapsed?: boolean;
 }
@@ -542,14 +579,19 @@ export type FieldDescription = {
 };
 
 export type FieldApi = {
-  getValue(key: string): unknown;
+  getValue<T = unknown>(key: string): T;
   setValue(key: string, value: unknown): void;
-  getContext(key: string): {
+  getContext(key?: string): {
     options: _CoreFieldOptions;
     required: boolean;
     disabled: boolean;
     dependencies: Dependencies;
   };
+};
+
+export type ReadonlyFieldApi = {
+  getValue: FieldApi["getValue"];
+  getContext: FieldApi["getContext"];
 };
 
 export type _BaseField<FieldKey extends Narrowable = string> = {
@@ -567,7 +609,7 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   description?: string | (() => VNodeChild) | FieldDescription;
   fieldParams?:
     | Record<string, unknown>
-    | ((deps: Dependencies) => Record<string, unknown>);
+    | ((deps: Dependencies, api: ReadonlyFieldApi) => Record<string, unknown>);
   condition?: (dependencies: Dependencies) => Promise<boolean> | boolean;
   preformat?: (value: any) => unknown;
   transform?: (value: any) => unknown;

@@ -9,16 +9,18 @@ const { sample, formData } = defineFormSchemaSample({
         label: "Select obj",
         type: "select",
         key: "select",
-        options: () => [
-          {
-            label: "Item 1",
-            value: { name: "Cyp", id: 1 },
-          },
-          {
-            label: "Item 2",
-            value: { name: "Alice", id: 2 },
-          },
-        ],
+        options: (t, api) => {
+          return [
+            {
+              label: "Item 1",
+              value: { name: "Cyp", id: 1 },
+            },
+            {
+              label: "Item 2",
+              value: { name: "Alice", id: 2 },
+            },
+          ];
+        },
       },
     ],
   },

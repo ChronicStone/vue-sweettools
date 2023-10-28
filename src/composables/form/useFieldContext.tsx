@@ -1,5 +1,10 @@
 import { useTranslations } from "@/i18n/composables/useTranslations";
-import { FieldOptionCreator, SelectField } from "@/types/form/fields";
+import {
+  FieldApi,
+  FieldOptionCreator,
+  SelectField,
+  _CoreFieldOptions,
+} from "@/types/form/fields";
 import { FormField } from "@/types/form/fields";
 import { GenericObject } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
@@ -31,29 +36,23 @@ export function useFieldContext(
   ]);
 
   const { contextMap } = useFormState();
-
-  function getFieldApi() {
+  const setValue: FieldApi["setValue"] = (key, value) =>
+    propertySetter(key, parentKey.value, state.value, value);
+  const getValue: FieldApi["getValue"] = (key) =>
+    propertyResolver(key, parentKey.value, state.value);
+  const getContext: FieldApi["getContext"] = (key) => {
+    const _key = !key ? fieldFullPath.value.join(".") : key;
+    const contextPath = getPropertyFullPath(_key, parentKey.value);
+    const _context = contextMap.value.get(contextPath.join("."));
+    if (!_context)
+      throw new Error(`Context not found for path ${contextPath.join(".")}`);
     return {
-      setValue: (key: string, value: any) =>
-        propertySetter(key, parentKey.value, state.value, value),
-      getValue: (key: string) =>
-        propertyResolver(key, parentKey.value, state.value),
-      getContext: (key: string) => {
-        const contextPath = getPropertyFullPath(key, parentKey.value);
-        const _context = contextMap.value.get(contextPath.join("."));
-        if (!_context)
-          throw new Error(
-            `Context not found for path ${contextPath.join(".")}`
-          );
-        return {
-          options: get(_context._options),
-          disabled: get(_context.disabled),
-          dependencies: get(_context.dependencies),
-          required: get(_context.required),
-        };
-      },
+      options: get(_context._options),
+      disabled: get(_context.disabled),
+      dependencies: get(_context.dependencies),
+      required: get(_context.required),
     };
-  }
+  };
 
   const required = computed(() =>
     typeof field.value.required === "function"
@@ -71,20 +70,22 @@ export function useFieldContext(
     )
   );
 
-  const inputProps = computed(() =>
+  const inputProps = computed<GenericObject>(() =>
     mapFieldProps({
       field: field.value,
       fieldProps: field.value?.fieldParams ?? {},
       dependencies: dependencies.value,
+      fieldApi: { getValue, getContext },
       raw: false,
     })
   );
 
-  const rawInputProps = computed(() =>
+  const rawInputProps = computed<GenericObject>(() =>
     mapFieldProps({
       field: field.value,
       fieldProps: field.value?.fieldParams ?? {},
       dependencies: dependencies.value,
+      fieldApi: { getValue, getContext },
       raw: true,
     })
   );
@@ -129,7 +130,7 @@ export function useFieldContext(
         ? _field.createOption
         : _field.createOption?.handler;
 
-    const option = await handler(dependencies.value);
+    const option = await handler(dependencies.value, { getValue, getContext });
     if (!option) {
       _evalOptions.value = false;
       return;
@@ -176,7 +177,7 @@ export function useFieldContext(
           : typeof (field.value as SelectField).options === "function"
           ? await (
               (field.value as SelectField).options as (...args: any[]) => any
-            )({ ...dependencies.value })
+            )({ ...dependencies.value }, { getValue, getContext })
           : []
       );
     _evalOptions.value = false;
@@ -293,10 +294,11 @@ export function useFieldContext(
     watch(
       () => getPropertyFromPath(fieldFullPath.value, state.value),
       (value: unknown) =>
-        (field.value.watch as NonNullable<FormField["watch"]>)(
-          value,
-          getFieldApi()
-        ),
+        (field.value.watch as NonNullable<FormField["watch"]>)(value, {
+          getValue,
+          setValue,
+          getContext,
+        }),
       field.value?.watchOptions ?? {}
     );
   }
@@ -304,7 +306,12 @@ export function useFieldContext(
   if (typeof field.value.onDependencyChange === "function") {
     watch(
       () => JSON.stringify(dependencies.value),
-      () => field.value.onDependencyChange?.(dependencies.value, getFieldApi())
+      () =>
+        field.value.onDependencyChange?.(dependencies.value, {
+          getValue,
+          setValue,
+          getContext,
+        })
     );
   }
 
@@ -331,7 +338,7 @@ export function useFieldContext(
     placeholder,
     disabled,
     parentKey,
-    getFieldApi,
+    fieldApi: { setValue, getValue, getContext },
   };
 }
 
