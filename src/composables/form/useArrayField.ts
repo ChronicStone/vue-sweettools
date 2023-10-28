@@ -5,6 +5,7 @@ import {
   FormField,
 } from "@/types/form/fields";
 import { mapFieldsInitialState } from "@/utils/form/mapFieldsInitialState";
+import { get } from "@vueuse/core";
 import { DropdownOption, TabsInst, useDialog } from "naive-ui";
 import { ComputedRef, Ref, WritableComputedRef } from "vue";
 
@@ -17,7 +18,7 @@ export function useArrayField(
 ) {
   const dialogApi = useDialog();
   const formApi = useFormApi();
-  const { formState } = useFormState();
+  const { formState, contextMap } = useFormState();
 
   function resolveVariantFields(item: Record<string, any>) {
     if (field.value.type !== "array-variant") return [];
@@ -55,12 +56,12 @@ export function useArrayField(
       if (!variant) return;
       fields = variant.fields;
       value = {
-        ...mapFieldsInitialState({}, fields, {}),
+        ...mapFieldsInitialState({}, fields),
         [field.value.variantKey]: formData.variant,
       };
     } else {
       fields = field.value.fields;
-      value = mapFieldsInitialState({}, fields, {});
+      value = mapFieldsInitialState({}, fields);
     }
 
     if (!Array.isArray(fieldValue.value)) fieldValue.value = [value];
@@ -169,6 +170,23 @@ export function useArrayField(
                   formState.value,
                   value
                 ),
+              getContext: (key: string) => {
+                const contextPath = getPropertyFullPath(key, [
+                  ...context.parentKey.value,
+                  (field.value as any).key,
+                ]);
+                const _context = contextMap.value.get(contextPath.join("."));
+                if (!_context)
+                  throw new Error(
+                    `Context not found for path ${contextPath.join(".")}`
+                  );
+                return {
+                  options: get(_context._options),
+                  disabled: get(_context.disabled),
+                  dependencies: get(_context.dependencies),
+                  required: get(_context.required),
+                };
+              },
             }),
         },
       }))

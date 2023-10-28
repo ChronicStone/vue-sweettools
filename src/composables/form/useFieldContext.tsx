@@ -8,6 +8,7 @@ import {
   preformatFieldDependencies,
 } from "@/utils/form/mapFieldDependencies";
 import { mapFieldProps } from "@/utils/form/mapFieldProps";
+import { get } from "@vueuse/core";
 import {
   CascaderOption,
   NButton,
@@ -20,7 +21,6 @@ export function useFieldContext(
   field: ComputedRef<FormField>,
   fieldState: WritableComputedRef<unknown>,
   state: Ref<GenericObject>,
-  virtualStore: Ref<Record<string, unknown>>,
   parentKey: ComputedRef<string[]>
 ) {
   const i18n = useTranslations();
@@ -30,9 +30,34 @@ export function useFieldContext(
     field.value.key,
   ]);
 
+  const { contextMap } = useFormState();
+
+  function getFieldApi() {
+    return {
+      setValue: (key: string, value: any) =>
+        propertySetter(key, parentKey.value, state.value, value),
+      getValue: (key: string) =>
+        propertyResolver(key, parentKey.value, state.value),
+      getContext: (key: string) => {
+        const contextPath = getPropertyFullPath(key, parentKey.value);
+        const _context = contextMap.value.get(contextPath.join("."));
+        if (!_context)
+          throw new Error(
+            `Context not found for path ${contextPath.join(".")}`
+          );
+        return {
+          options: get(_context._options),
+          disabled: get(_context.disabled),
+          dependencies: get(_context.dependencies),
+          required: get(_context.required),
+        };
+      },
+    };
+  }
+
   const required = computed(() =>
     typeof field.value.required === "function"
-      ? field.value.required(dependencies.value, virtualStore.value)
+      ? field.value.required(dependencies.value)
       : !!field.value.required
   );
 
@@ -51,7 +76,6 @@ export function useFieldContext(
       field: field.value,
       fieldProps: field.value?.fieldParams ?? {},
       dependencies: dependencies.value,
-      virtualDependencies: virtualStore.value,
       raw: false,
     })
   );
@@ -61,7 +85,6 @@ export function useFieldContext(
       field: field.value,
       fieldProps: field.value?.fieldParams ?? {},
       dependencies: dependencies.value,
-      virtualDependencies: virtualStore.value,
       raw: true,
     })
   );
@@ -71,8 +94,7 @@ export function useFieldContext(
     () => field.value?.conditionEffect ?? "hide"
   );
   const condition = computedAsync<boolean>(
-    () =>
-      field.value?.condition?.(dependencies.value, virtualStore.value) ?? true,
+    () => field.value?.condition?.(dependencies.value) ?? true,
     false,
     _evalCondition
   );
@@ -107,7 +129,7 @@ export function useFieldContext(
         ? _field.createOption
         : _field.createOption?.handler;
 
-    const option = await handler(dependencies.value, virtualStore.value);
+    const option = await handler(dependencies.value);
     if (!option) {
       _evalOptions.value = false;
       return;
@@ -154,7 +176,7 @@ export function useFieldContext(
           : typeof (field.value as SelectField).options === "function"
           ? await (
               (field.value as SelectField).options as (...args: any[]) => any
-            )({ ...dependencies.value }, { ...virtualStore.value })
+            )({ ...dependencies.value })
           : []
       );
     _evalOptions.value = false;
@@ -271,12 +293,10 @@ export function useFieldContext(
     watch(
       () => getPropertyFromPath(fieldFullPath.value, state.value),
       (value: unknown) =>
-        (field.value.watch as NonNullable<FormField["watch"]>)(value, {
-          setValue: (key: string, value: any) =>
-            propertySetter(key, parentKey.value, state.value, value),
-          getValue: (key: string) =>
-            propertyResolver(key, parentKey.value, state.value),
-        }),
+        (field.value.watch as NonNullable<FormField["watch"]>)(
+          value,
+          getFieldApi()
+        ),
       field.value?.watchOptions ?? {}
     );
   }
@@ -284,11 +304,7 @@ export function useFieldContext(
   if (typeof field.value.onDependencyChange === "function") {
     watch(
       () => JSON.stringify(dependencies.value),
-      () =>
-        field.value.onDependencyChange?.(dependencies.value, {
-          setValue: (value: unknown) => (fieldState.value = value),
-          getValue: () => fieldState.value,
-        })
+      () => field.value.onDependencyChange?.(dependencies.value, getFieldApi())
     );
   }
 
@@ -302,6 +318,7 @@ export function useFieldContext(
   return {
     _evalCondition,
     _evalOptions,
+    _options,
     fieldId,
     fieldFullPath,
     required,
@@ -312,9 +329,9 @@ export function useFieldContext(
     inputProps,
     rawInputProps,
     placeholder,
-    virtualStore,
     disabled,
     parentKey,
+    getFieldApi,
   };
 }
 
