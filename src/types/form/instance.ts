@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComputedRef } from "vue";
 import { FormField } from "./fields";
-import {
-  FormInferredData,
-  FormSchema,
-  FormSharedStore,
-  FormStep,
-  InferSharedStoreData,
-} from "./form";
+import { FormInferredData, FormSchema, FormStep } from "./form";
 import { GenericObject, Narrowable } from "../utils";
 import type { Validation } from "@vuelidate/core";
 
@@ -22,18 +16,15 @@ export interface FormApi {
   formInstances: ComputedRef<FormInstance[]>;
   destroyAll: () => void;
   createForm<
-    TFormSchema extends FormSchema<StepKey, FieldKey, StoreData>,
+    TFormSchema extends FormSchema<StepKey, FieldKey>,
     StepKey extends Narrowable,
-    FieldKey extends Narrowable,
-    StoreKey extends string,
-    Store extends FormSharedStore<StoreKey>,
-    StoreData extends Record<string, unknown> = InferSharedStoreData<Store>
+    FieldKey extends Narrowable
   >(
-    schema: TFormSchema & { sharedStore?: Store },
+    schema: TFormSchema,
     inputData?: Record<string, unknown>
   ): Promise<{
     isCompleted: boolean;
-    formData: FormInferredData<StoreData, TFormSchema, StepKey, FieldKey>;
+    formData: FormInferredData<TFormSchema, StepKey, FieldKey>;
   }>;
 }
 

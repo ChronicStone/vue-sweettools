@@ -7,12 +7,7 @@ import { GenericObject } from "@/types/utils";
 
 const props = defineProps<{
   description: string | (() => VNodeChild) | FieldDescription;
-  fieldLabel?:
-    | string
-    | ((
-        dependencies: GenericObject,
-        virtualDependencies: GenericObject
-      ) => VNodeChild);
+  fieldLabel?: string | ((dependencies: GenericObject) => VNodeChild);
 }>();
 
 const showDescription = ref<boolean>(false);

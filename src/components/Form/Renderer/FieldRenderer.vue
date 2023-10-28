@@ -55,13 +55,15 @@ const fieldValue = computed({
   set: (value) => emit("update:modelValue", value),
 });
 
-const { formState, virtualStore } = useFormState();
-const fieldContext = useFieldContext(
-  _field,
-  fieldValue,
-  formState,
-  virtualStore,
-  _parentKey
+const { formState, contextMap } = useFormState();
+const fieldContext = useFieldContext(_field, fieldValue, formState, _parentKey);
+
+contextMap.value.set(
+  [...props.parentKey, props.field.key].join("."),
+  fieldContext
+);
+onScopeDispose(() =>
+  contextMap.value.delete([...props.parentKey, props.field.key].join("."))
 );
 
 const $globalValidation = useFormValidation();

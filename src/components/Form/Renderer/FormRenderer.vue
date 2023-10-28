@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/prop-name-casing -->
 <script setup lang="ts">
 import { NButton } from "naive-ui";
-import { FormSchema, FormSharedStore } from "@/types/form/form";
+import { FormSchema } from "@/types/form/form";
 import FieldRenderer from "./FieldRenderer.vue";
 import {
   FieldInstance,
@@ -15,7 +15,7 @@ import { renderVNode } from "@/utils/renderVNode";
 import { useTranslations } from "@/i18n/composables/useTranslations";
 
 const props = defineProps<{
-  schema: FormSchema<any, any, any> & { sharedStore?: FormSharedStore<string> };
+  schema: FormSchema<any, any>;
   data?: Record<string, unknown>;
   modalMode?: boolean;
   _resolve?:
@@ -33,20 +33,15 @@ const libConfig = useGlobalConfig(props.schema);
 const { formFields, filteredFormFields, isMultiStep, formSteps, currentStep } =
   useProvideFormFields(_formSchema);
 
-const { formState, outputFormState, virtualStore, reset } = useProvideFormState(
+const { formState, outputFormState, reset, contextMap } = useProvideFormState(
   formFields,
-  props.data,
-  props.schema.sharedStore
+  props.data
 );
 
 const layoutConf = useProvideFormStyles(props.schema);
 const LayoutContainer = useFormLayout(_modalMode, layoutConf);
 
-const { $validator } = useProvideFormValidation(
-  filteredFormFields,
-  formState,
-  virtualStore
-);
+const { $validator } = useProvideFormValidation(filteredFormFields, formState);
 
 function updateRootFieldValue(field: FieldInstance, value: unknown) {
   if (field._stepRoot) formState.value[field._stepRoot][field.key] = value;

@@ -30,18 +30,15 @@ provide(MODAL_OVERLAY_INJECTION_KEY, {
 });
 
 function createForm<
-  TFormSchema extends FormSchema<StepKey, FieldKey, StoreData>,
+  TFormSchema extends FormSchema<StepKey, FieldKey>,
   StepKey extends Narrowable,
-  FieldKey extends Narrowable,
-  StoreKey extends string,
-  Store extends FormSharedStore<StoreKey>,
-  StoreData extends Record<string, unknown> = InferSharedStoreData<Store>
+  FieldKey extends Narrowable
 >(
-  formSchema: TFormSchema & { sharedStore?: Store },
+  formSchema: TFormSchema,
   inputData?: Record<string, unknown>
 ): Promise<{
   isCompleted: boolean;
-  formData: FormInferredData<StoreData, TFormSchema, StepKey, FieldKey>;
+  formData: FormInferredData<TFormSchema, StepKey, FieldKey>;
 }> {
   const _id = generateUUID();
   return new Promise((resolve) => {
@@ -54,7 +51,6 @@ function createForm<
         resolve({
           isCompleted,
           formData: formData as unknown as FormInferredData<
-            StoreData,
             TFormSchema,
             StepKey,
             FieldKey

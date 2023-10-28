@@ -11,25 +11,17 @@ const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
 const _field = computed(() => props.field as InfoField);
-const { virtualStore } = useFormState();
 
 function renderInfoContent(
   content: InfoField["content"],
-  dependencies: GenericObject,
-  virtualDependencies: GenericObject
+  dependencies: GenericObject
 ) {
-  return renderVNode(content ?? "", dependencies, virtualDependencies);
+  return renderVNode(content ?? "", dependencies);
 }
 </script>
 
 <template>
   <component
-    :is="
-      renderInfoContent(
-        _field.content,
-        context.dependencies.value,
-        virtualStore
-      )
-    "
+    :is="renderInfoContent(_field.content, context.dependencies.value)"
   />
 </template>

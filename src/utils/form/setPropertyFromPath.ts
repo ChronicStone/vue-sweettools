@@ -35,3 +35,11 @@ export function propertyResolver(
     return getPropertyFromPath([...(parentKey ?? [])], state, target);
   else return getPropertyFromPath(target, state);
 }
+
+export function getPropertyFullPath(
+  key: string,
+  parentKey: (string | number)[]
+) {
+  if (key.startsWith("$parent")) return mapRelativeKeyPath(parentKey, key);
+  else return mapRelativeKeyPath(key);
+}

@@ -38,31 +38,27 @@ interface BaseFormSchema {
 
 export interface FormStep<
   StepKey extends Narrowable = string,
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
+  FieldKey extends Narrowable = string
 > {
   title?: string | (() => VNodeChild);
   icon?: string;
   root?: StepKey;
-  fields: FormField<FieldKey, StoreData>[];
+  fields: FormField<FieldKey>[];
 }
 
-export type SimpleFormSchema<
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> = BaseFormSchema & {
-  fields: FormField<FieldKey, StoreData>[];
-};
+export type SimpleFormSchema<FieldKey extends Narrowable = string> =
+  BaseFormSchema & {
+    fields: FormField<FieldKey>[];
+  };
 
 export type SteppedFormSchema<
   StepKey extends Narrowable = "",
-  FieldKey extends Narrowable = "",
-  StoreData extends Record<string, unknown> = Record<string, unknown>
+  FieldKey extends Narrowable = ""
 > = BaseFormSchema & {
   showPreviousButton?: boolean;
   previousButtonText?: string;
   nextButtonText?: string;
-  steps: FormStep<StepKey, FieldKey, StoreData>[];
+  steps: FormStep<StepKey, FieldKey>[];
   showStepper?: boolean;
   stepperLayout?: "full" | "compact" | string;
 };
@@ -107,7 +103,7 @@ type ResolveFormType<
   : string;
 
 export type ExtractVariantType<
-  Variants extends ArrayVariantField<any, any>["variants"],
+  Variants extends ArrayVariantField<any>["variants"],
   VKey extends string
 > = {
   [K in Variants[number] as K["key"]]: {
@@ -142,40 +138,36 @@ export type ExtractCustomComponentType<
   ? Props["modelValue"]
   : unknown;
 
-export type FormInfoReturnType<T extends FormField<any, any>> =
-  RemoveNeverProps<
-    UnionToIntersection<
-      | {
-          [K in T as K extends {
-            condition: (...args: any) => any;
-            conditionEffect?: "hide" | undefined;
-          }
-            ? never
-            : K["key"]]: K["ignore"] extends true ? never : ResolveFormType<K>;
+export type FormInfoReturnType<T extends FormField<any>> = RemoveNeverProps<
+  UnionToIntersection<
+    | {
+        [K in T as K extends {
+          condition: (...args: any) => any;
+          conditionEffect?: "hide" | undefined;
         }
-      | {
-          [K in T as K extends {
-            condition: (...args: any) => any;
-            conditionEffect?: "hide" | undefined;
-          }
-            ? K["key"]
-            : never]?: K["ignore"] extends true ? never : ResolveFormType<K>;
+          ? never
+          : K["key"]]: K["ignore"] extends true ? never : ResolveFormType<K>;
+      }
+    | {
+        [K in T as K extends {
+          condition: (...args: any) => any;
+          conditionEffect?: "hide" | undefined;
         }
-    >
-  >;
+          ? K["key"]
+          : never]?: K["ignore"] extends true ? never : ResolveFormType<K>;
+      }
+  >
+>;
 
 export type FormSchema<
   StepKey extends Narrowable = string,
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> =
-  | SimpleFormSchema<FieldKey, StoreData>
-  | SteppedFormSchema<StepKey, FieldKey, StoreData>;
+  FieldKey extends Narrowable = string
+> = SimpleFormSchema<FieldKey> | SteppedFormSchema<StepKey, FieldKey>;
 
 export type ExtractFieldsFromSteps<
   StepKey extends Narrowable,
   FieldKey extends Narrowable,
-  TStep extends FormStep<StepKey, FieldKey, any>
+  TStep extends FormStep<StepKey, FieldKey>
 > = ExtractSharedRoot<
   RemoveNeverProps<
     UnionToIntersection<
@@ -202,13 +194,12 @@ type ExtractSharedRoot<T> = T extends { ___$$sharedRoot___: infer R }
   : T;
 
 export type FormInferredData<
-  StoreData extends Record<string, unknown>,
-  TFormSchema extends FormSchema<StepKey, FieldKey, StoreData>,
+  TFormSchema extends FormSchema<StepKey, FieldKey>,
   StepKey extends Narrowable,
   FieldKey extends Narrowable
-> = TFormSchema extends SimpleFormSchema<FieldKey, StoreData>
+> = TFormSchema extends SimpleFormSchema<FieldKey>
   ? ExpandRecursively<FormInfoReturnType<TFormSchema["fields"][number]>>
-  : TFormSchema extends SteppedFormSchema<StepKey, FieldKey, StoreData>
+  : TFormSchema extends SteppedFormSchema<StepKey, FieldKey>
   ? ExpandRecursively<
       ExtractFieldsFromSteps<StepKey, FieldKey, TFormSchema["steps"][number]>
     >

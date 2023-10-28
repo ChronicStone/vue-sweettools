@@ -6,76 +6,31 @@ import {
   mapFieldsInitialState,
   mapFieldsOutputState,
 } from "@/utils/form/mapFieldsInitialState";
-import {
-  mapFieldDependencies,
-  preformatFieldDependencies,
-} from "@/utils/form/mapFieldDependencies";
 
 const [useProvideFormState, _useFormState] = createInjectionState(
   (
     fields: ComputedRef<Array<FormField & { _stepRoot?: string }>>,
-    formData: Record<string, unknown> | undefined,
-    storeConfig: FormSharedStore<string> | undefined
+    formData: Record<string, unknown> | undefined
   ) => {
     const formState = ref<{ [key: string]: any }>(
-      mapFieldsInitialState(formData ?? {}, fields.value, {})
+      mapFieldsInitialState(formData ?? {}, fields.value)
     );
     const outputFormState = computed(() =>
-      mapFieldsOutputState(
-        { ...formState.value },
-        fields.value,
-        virtualStore.value
-      )
+      mapFieldsOutputState({ ...formState.value }, fields.value)
     );
 
     function reset(clear = false) {
       formState.value = mapFieldsInitialState(
         clear ? {} : formData ?? {},
-        fields.value,
-        virtualStore.value
+        fields.value
       );
     }
 
-    const virtualStore = asyncComputed<Record<string, unknown>>(async () => {
-      if (!storeConfig?.length) return {};
-      return (
-        await Promise.all(
-          (storeConfig ?? []).map(async (item) => ({
-            key: item.key,
-            value:
-              typeof item.value === "function"
-                ? await item.value(
-                    mapFieldDependencies(
-                      preformatFieldDependencies(
-                        item?.dependencies ?? [],
-                        formState.value
-                      )
-                    )
-                  )
-                : item.value,
-          }))
-        )
-      ).reduce((acc, item) => ({ ...acc, [item.key]: item.value }), {});
+    const contextMap = ref<Map<string, ReturnType<typeof useFieldContext>>>(
+      new Map()
+    );
 
-      // .reduce(async (acc, item) => {
-      //   return {
-      //     ...acc,
-      //     [item.key]: "hehe",
-      //     // typeof item.value === "function"
-      //     //   ? await item.value(
-      //     //       mapFieldDependencies(
-      //     //         preformatFieldDependencies(
-      //     //           item?.dependencies ?? [],
-      //     //           formState.value
-      //     //         )
-      //     //       )
-      //     //     )
-      //     //   : item.value,
-      //   };
-      // }, {});
-    }, {});
-
-    return { formState, outputFormState, virtualStore, reset };
+    return { formState, outputFormState, contextMap, reset };
   }
 );
 

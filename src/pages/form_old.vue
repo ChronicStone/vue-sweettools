@@ -96,16 +96,6 @@ const depsSchema = buildFormSchema({
   testId: "formDemo",
   title: "Hello test",
   fullScreen: "true",
-  sharedStore: [
-    { key: "options", value: () => ["haha", "hoho"] },
-    { key: "options2", value: () => ["haha", "hoho"] },
-    {
-      key: "sync",
-      dependencies: ["syncVal"],
-      value: (deps: Record<string, unknown>) =>
-        (deps?.syncVal ?? "N/A") as string,
-    },
-  ],
   fields: [
     {
       type: "text",

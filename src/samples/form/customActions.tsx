@@ -44,7 +44,9 @@ const { sample, formData } = defineFormSchemaSample({
             label: "Item",
             type: "text",
             key: "item",
-            watch(value, { setValue }) {
+            watch(value, { setValue, getContext }) {
+              const context = getContext("$parent.item3");
+              console.log("context", context);
               setValue("$parent.item2", value);
             },
           },

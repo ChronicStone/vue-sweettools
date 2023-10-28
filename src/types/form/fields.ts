@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Primitive } from "./../utils";
-import { GenericObject } from "@/types/utils";
 import { Validation, ValidationArgs } from "@vuelidate/core";
 import {
   CascaderOption,
@@ -60,25 +59,14 @@ export type _CoreFieldOptions =
   | readonly TreeSelectOption[]
   | readonly CascaderOption[];
 
-export type _FieldOptions<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> =
+export type _FieldOptions =
   | _CoreFieldOptions
-  | ((
-      dependencies: Dependencies,
-      virtualDependencies: StoreData
-    ) => _CoreFieldOptions)
-  | ((
-      dependencies: Dependencies,
-      virtualDependencies: StoreData
-    ) => Promise<_CoreFieldOptions>);
+  | ((dependencies: Dependencies) => _CoreFieldOptions)
+  | ((dependencies: Dependencies) => Promise<_CoreFieldOptions>);
 
-export type FieldOptionCreator<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> =
+export type FieldOptionCreator =
   | ((
-      deps: Dependencies,
-      virtualDeps: StoreData
+      deps: Dependencies
     ) =>
       | _CoreFieldOptions[number]
       | null
@@ -107,14 +95,10 @@ export interface TextFieldProps {
   mask?: string | MaskOptions;
 }
 
-export interface TextField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface TextField {
   type: "text";
   clearable?: boolean;
-  fieldParams?:
-    | TextFieldProps
-    | ((deps: Dependencies, virtualDeps: StoreData) => TextFieldProps);
+  fieldParams?: TextFieldProps | ((deps: Dependencies) => TextFieldProps);
 }
 
 export interface TreeSelectFieldProps {
@@ -152,16 +136,14 @@ export interface TreeSelectFieldProps {
   filterMenuProps?: Record<string, any>;
 }
 
-export interface TreeSelectField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface TreeSelectField {
   type: "tree-select";
   clearable?: boolean;
   multiple?: boolean;
-  options: _FieldOptions<StoreData>;
+  options: _FieldOptions;
   fieldParams?:
     | TreeSelectFieldProps
-    | ((deps: Dependencies, virtualDeps: StoreData) => TreeSelectFieldProps);
+    | ((deps: Dependencies) => TreeSelectFieldProps);
 }
 
 export interface CascaderFieldParams {
@@ -200,16 +182,14 @@ export interface CascaderFieldParams {
   filterMenuProps?: Record<string, unknown>;
 }
 
-export interface CascaderField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface CascaderField {
   type: "cascader";
   clearable?: boolean;
-  options: _FieldOptions<StoreData>;
+  options: _FieldOptions;
   multiple?: boolean;
   fieldParams?:
     | CascaderFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => CascaderFieldParams);
+    | ((deps: Dependencies) => CascaderFieldParams);
 }
 
 export interface TextAreaFieldParams extends TextFieldProps {
@@ -217,14 +197,12 @@ export interface TextAreaFieldParams extends TextFieldProps {
   showCount?: boolean;
 }
 
-export interface TextAreaField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface TextAreaField {
   type: "textarea";
   clearable?: boolean;
   fieldParams?:
     | TextAreaFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => TextAreaFieldParams);
+    | ((deps: Dependencies) => TextAreaFieldParams);
 }
 
 export interface TagFieldParams {
@@ -243,18 +221,12 @@ export interface TagFieldParams {
     | ((tag: { label: string; value: string }, index: number) => VNodeChild);
 }
 
-export interface TagField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface TagField {
   type: "tag";
-  fieldParams?:
-    | TagFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => TagFieldParams);
+  fieldParams?: TagFieldParams | ((deps: Dependencies) => TagFieldParams);
 }
 
-export interface PasswordField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> extends Omit<TextField<StoreData>, "type" | "pair"> {
+export interface PasswordField extends Omit<TextField, "type" | "pair"> {
   type: "password";
   clearable?: boolean;
 }
@@ -278,17 +250,13 @@ export interface SelectFieldParams {
   virtualScroll?: boolean;
 }
 
-export interface SelectField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface SelectField {
   type: "select";
   clearable?: boolean;
-  options: _FieldOptions<StoreData>;
+  options: _FieldOptions;
   multiple?: boolean;
-  fieldParams?:
-    | SelectFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => SelectFieldParams);
-  createOption?: FieldOptionCreator<StoreData>;
+  fieldParams?: SelectFieldParams | ((deps: Dependencies) => SelectFieldParams);
+  createOption?: FieldOptionCreator;
   allowOptionsRefresh?: boolean;
 }
 
@@ -300,14 +268,10 @@ export interface NumberFieldParams {
   suffix?: string | (() => VNodeChild);
 }
 
-export interface NumberField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface NumberField {
   type: "number";
   clearable?: boolean;
-  fieldParams?:
-    | NumberFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => NumberFieldParams);
+  fieldParams?: NumberFieldParams | ((deps: Dependencies) => NumberFieldParams);
 }
 
 export interface ColorPickerFieldParams {
@@ -319,13 +283,11 @@ export interface ColorPickerFieldParams {
   actions?: Array<"clear" | "confirm">;
 }
 
-export interface ColorPickerField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface ColorPickerField {
   type: "color-picker";
   fieldParams?:
     | ColorPickerFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => ColorPickerFieldParams);
+    | ((deps: Dependencies) => ColorPickerFieldParams);
 }
 
 export interface RatingFieldParams {
@@ -336,13 +298,9 @@ export interface RatingFieldParams {
   allowHalf?: boolean;
 }
 
-export interface RatingField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface RatingField {
   type: "rating";
-  fieldParams?:
-    | RatingFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => RatingFieldParams);
+  fieldParams?: RatingFieldParams | ((deps: Dependencies) => RatingFieldParams);
 }
 
 export interface SliderFieldParams {
@@ -370,13 +328,9 @@ export interface SliderFieldParams {
   marks?: { [markValue: number]: string };
 }
 
-export interface SliderField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface SliderField {
   type: "slider";
-  fieldParams?:
-    | SliderFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => SliderFieldParams);
+  fieldParams?: SliderFieldParams | ((deps: Dependencies) => SliderFieldParams);
 }
 
 export interface SwitchFieldParams {
@@ -386,20 +340,14 @@ export interface SwitchFieldParams {
   uncheckedValue?: string | boolean | number;
 }
 
-export interface SwitchField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface SwitchField {
   type: "switch";
-  fieldParams?:
-    | SwitchFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => SwitchFieldParams);
+  fieldParams?: SwitchFieldParams | ((deps: Dependencies) => SwitchFieldParams);
 }
 
-export interface RadioField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface RadioField {
   type: "radio";
-  options: _FieldOptions<StoreData>;
+  options: _FieldOptions;
 }
 
 export interface CheckboxFieldParams {
@@ -407,13 +355,11 @@ export interface CheckboxFieldParams {
   uncheckedValue?: string | boolean | number;
 }
 
-export interface CheckboxField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface CheckboxField {
   type: "checkbox";
   fieldParams?:
     | CheckboxFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => CheckboxFieldParams);
+    | ((deps: Dependencies) => CheckboxFieldParams);
 }
 
 export interface CheckboxGroupFieldParams {
@@ -421,17 +367,12 @@ export interface CheckboxGroupFieldParams {
   maxChecked?: number;
 }
 
-export interface CheckboxGroupField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface CheckboxGroupField {
   type: "checkbox-group";
-  options: _FieldOptions<StoreData>;
+  options: _FieldOptions;
   fieldParams?:
     | CheckboxGroupFieldParams
-    | ((
-        deps: CheckboxGroupFieldParams,
-        virtualDeps: StoreData
-      ) => CheckboxGroupFieldParams);
+    | ((deps: CheckboxGroupFieldParams) => CheckboxGroupFieldParams);
 }
 
 export interface TimeFieldParams {
@@ -452,14 +393,10 @@ export interface TimeFieldParams {
   secondStep?: number;
 }
 
-export interface TimeField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface TimeField {
   type: "time";
   clearable?: boolean;
-  fieldParams?:
-    | TimeFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => TimeFieldParams);
+  fieldParams?: TimeFieldParams | ((deps: Dependencies) => TimeFieldParams);
 }
 
 export interface DateFieldParams {
@@ -468,34 +405,27 @@ export interface DateFieldParams {
   separator?: string;
 }
 
-export interface DateField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface DateField {
   type: "date" | "datetime" | "daterange" | "datetimerange" | "month" | "year";
   clearable?: boolean;
-  fieldParams?:
-    | DateFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => DateFieldParams);
+  fieldParams?: DateFieldParams | ((deps: Dependencies) => DateFieldParams);
 }
 
-export interface GroupField<
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface GroupField<FieldKey extends Narrowable = string> {
   type: "group";
   gridSize?: number | string;
   fields: Array<
-    Omit<_BaseField<FieldKey, StoreData>, "label"> &
+    Omit<_BaseField<FieldKey>, "label"> &
       (
-        | TextField<StoreData>
-        | PasswordField<StoreData>
-        | SelectField<StoreData>
-        | NumberField<StoreData>
-        | TimeField<StoreData>
-        | DateField<StoreData>
-        | TreeSelectField<StoreData>
-        | CascaderField<StoreData>
-        | ColorPickerField<StoreData>
+        | TextField
+        | PasswordField
+        | SelectField
+        | NumberField
+        | TimeField
+        | DateField
+        | TreeSelectField
+        | CascaderField
+        | ColorPickerField
       )
   >;
 }
@@ -504,28 +434,20 @@ export interface ObjectFieldParams {
   frameless?: boolean;
 }
 
-export interface ObjectField<
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface ObjectField<FieldKey extends Narrowable = string> {
   type: "object";
   extraProperties?: boolean;
   gridSize?: number | string;
-  fields: FormField<FieldKey, StoreData>[];
+  fields: FormField<FieldKey>[];
   collapsible?: boolean;
   collapsed?: boolean;
-  fieldParam?:
-    | ObjectFieldParams
-    | ((deps: Dependencies, virtualDeps: StoreData) => ObjectFieldParams);
+  fieldParam?: ObjectFieldParams | ((deps: Dependencies) => ObjectFieldParams);
 }
 
-export interface _ArrayField<
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface _ArrayField<FieldKey extends Narrowable = string> {
   extraProperties?: boolean;
   gridSize?: number | string;
-  fields: FormField<FieldKey, StoreData>[];
+  fields: FormField<FieldKey>[];
   collapsible?: boolean;
   collapsed?: boolean;
   headerTemplate?: (item: Record<string, any>, index: number) => string;
@@ -562,18 +484,19 @@ export interface ArrayCustomActionApi {
   dependencies: Record<string, unknown>;
   getValue(key: string): unknown;
   setValue(key: string, value: unknown): void;
+  getContext: FieldApi["getContext"];
 }
 
-export type ArrayVariantField<
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> = Omit<_ArrayField<FieldKey, StoreData>, "fields"> & {
+export type ArrayVariantField<FieldKey extends Narrowable = string> = Omit<
+  _ArrayField<FieldKey>,
+  "fields"
+> & {
   type: "array-variant";
   variantKey: string;
   variants: Array<{
     label: string | (() => VNodeChild);
     key: string | number;
-    fields: FormField<FieldKey, StoreData>[];
+    fields: FormField<FieldKey>[];
   }>;
 } & (
     | {
@@ -586,40 +509,29 @@ export type ArrayVariantField<
       }
   );
 
-export interface ArrayListField<
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> extends _ArrayField<FieldKey, StoreData> {
+export interface ArrayListField<FieldKey extends Narrowable = string>
+  extends _ArrayField<FieldKey> {
   type: "array-list";
   listGridSize?: number | string;
   listItemSize?: number | string;
 }
 
-export interface ArrayTabsField<
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> extends _ArrayField<FieldKey, StoreData> {
+export interface ArrayTabsField<FieldKey extends Narrowable = string>
+  extends _ArrayField<FieldKey> {
   type: "array-tabs";
 }
 
-export interface InfoField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface InfoField {
   type: "info";
-  content: (
-    dependencies: Dependencies,
-    virtualDependencies: StoreData
-  ) => VNodeChild | string;
+  content: (dependencies: Dependencies) => VNodeChild | string;
 }
 
-export interface CustomField<
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface CustomField {
   type: "custom-component";
   component: Component;
   fieldParams?:
     | Record<string, unknown>
-    | ((deps: Dependencies, virtualDeps: StoreData) => Record<string, unknown>);
+    | ((deps: Dependencies) => Record<string, unknown>);
   collapsible?: boolean;
   collapsed?: boolean;
 }
@@ -629,89 +541,73 @@ export type FieldDescription = {
   content: string | (() => VNodeChild);
 };
 
-export type _BaseField<
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> = {
-  label?:
-    | string
-    | ((
-        dependencies: Dependencies,
-        virtualDependencies: StoreData
-      ) => VNodeChild | string);
+export type FieldApi = {
+  getValue(key: string): unknown;
+  setValue(key: string, value: unknown): void;
+  getContext(key: string): {
+    options: _CoreFieldOptions;
+    required: boolean;
+    disabled: boolean;
+    dependencies: Dependencies;
+  };
+};
+
+export type _BaseField<FieldKey extends Narrowable = string> = {
+  label?: string | ((dependencies: Dependencies) => VNodeChild | string);
   key: FieldKey;
   placeholder?: string | (() => string);
   dependencies?: (string | [string, string])[];
-  required?:
-    | boolean
-    | ((dependencies: Dependencies, virtualDependencies: StoreData) => boolean);
+  required?: boolean | ((dependencies: Dependencies) => boolean);
   size?: number | string;
   gridSize?: number | string;
   default?: unknown;
-  fields?: FormField<FieldKey, StoreData>[];
+  fields?: FormField<FieldKey>[];
   conditionEffect?: "disable" | "hide";
   labelPosition?: "left" | "top";
   description?: string | (() => VNodeChild) | FieldDescription;
   fieldParams?:
     | Record<string, unknown>
-    | ((deps: Dependencies, virtualDeps: StoreData) => Record<string, unknown>);
-  condition?: (
-    dependencies: Dependencies,
-    virtualDependencies: StoreData
-  ) => Promise<boolean> | boolean;
+    | ((deps: Dependencies) => Record<string, unknown>);
+  condition?: (dependencies: Dependencies) => Promise<boolean> | boolean;
   preformat?: (value: any) => unknown;
   transform?: (value: any) => unknown;
   validators?:
-    | ((
-        dependencies: Dependencies,
-        virtualDependencies: StoreData
-      ) => ValidationArgs)
+    | ((dependencies: Dependencies) => ValidationArgs)
     | ValidationArgs;
   watchOptions?: { deep?: boolean; immediate?: boolean };
-  watch?: (
-    value: any,
-    params: {
-      setValue: (key: string, value: unknown) => void;
-      getValue: (key: string) => void;
-    }
-  ) => void;
-  onDependencyChange?: (
-    dependencies: Dependencies,
-    api: { setValue: (value: unknown) => void; getValue: () => unknown }
-  ) => void;
+  watch?: (value: any, params: FieldApi) => void;
+  onDependencyChange?: (dependencies: Dependencies, api: FieldApi) => void;
   ignore?: boolean;
 };
 
-export type FormField<
-  FieldKey extends Narrowable = string,
-  StoreData extends Record<string, unknown> = Record<string, unknown>
-> = _BaseField<FieldKey, StoreData> &
-  (
-    | TextField<StoreData>
-    | TextAreaField<StoreData>
-    | PasswordField<StoreData>
-    | SelectField<StoreData>
-    | NumberField<StoreData>
-    | ColorPickerField<StoreData>
-    | SliderField<StoreData>
-    | SwitchField<StoreData>
-    | RadioField<StoreData>
-    | CheckboxField<StoreData>
-    | CheckboxGroupField<StoreData>
-    | TimeField<StoreData>
-    | DateField<StoreData>
-    | ObjectField<FieldKey, StoreData>
-    | ArrayListField<FieldKey, StoreData>
-    | ArrayTabsField<FieldKey, StoreData>
-    | InfoField<StoreData>
-    | CustomField<StoreData>
-    | TreeSelectField<StoreData>
-    | CascaderField<StoreData>
-    | RatingField<StoreData>
-    | TagField<StoreData>
-    | GroupField<FieldKey, StoreData>
-    | ArrayVariantField<FieldKey, StoreData>
-  );
+export type FormField<FieldKey extends Narrowable = string> =
+  _BaseField<FieldKey> &
+    (
+      | TextField
+      | TextAreaField
+      | PasswordField
+      | SelectField
+      | NumberField
+      | ColorPickerField
+      | SliderField
+      | SwitchField
+      | RadioField
+      | CheckboxField
+      | CheckboxGroupField
+      | TimeField
+      | DateField
+      | ObjectField<FieldKey>
+      | ArrayListField<FieldKey>
+      | ArrayTabsField<FieldKey>
+      | InfoField
+      | CustomField
+      | TreeSelectField
+      | CascaderField
+      | RatingField
+      | TagField
+      | GroupField<FieldKey>
+      | ArrayVariantField<FieldKey>
+    );
 
 export type FieldContext = ReturnType<typeof useFieldContext>;
 

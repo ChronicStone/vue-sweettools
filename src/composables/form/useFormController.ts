@@ -3,29 +3,22 @@ import {
   FormInferredData,
   FormSchema,
   FormSharedStore,
-  InferSharedStoreData,
 } from "@/types/form/form";
 import { FormRefInstance } from "@/types/form/instance";
 import { Narrowable } from "@/types/utils";
 import { ComputedRef, Ref } from "vue";
-import { O } from "ts-toolbelt";
 
 export function useFormController<
-  TFormSchema extends FormSchema<StepKey, FieldKey, StoreData>,
+  TFormSchema extends FormSchema<StepKey, FieldKey>,
   StepKey extends Narrowable,
-  FieldKey extends Narrowable,
-  StoreKey extends string,
-  Store extends FormSharedStore<StoreKey>,
-  StoreData extends Record<string, unknown> = InferSharedStoreData<Store>
+  FieldKey extends Narrowable
 >(
   formRef: Ref<FormRefInstance | undefined>,
-  schema: TFormSchema & { sharedStore?: Store }
+  schema: TFormSchema
 ): {
   schema: TFormSchema;
   validate(): Promise<boolean> | (() => boolean);
-  formData: ComputedRef<
-    FormInferredData<StoreData, TFormSchema, StepKey, FieldKey>
-  >;
+  formData: ComputedRef<FormInferredData<TFormSchema, StepKey, FieldKey>>;
   nextStep: () => Promise<boolean>;
   previousStep: () => void;
   currentStep: ComputedRef<number>;
@@ -38,7 +31,7 @@ export function useFormController<
       return (await formRef.value?.$validate()) ?? false;
     },
     formData: computed(() => formRef.value?.$data ?? {}) as ComputedRef<
-      FormInferredData<StoreData, TFormSchema, StepKey, FieldKey>
+      FormInferredData<TFormSchema, StepKey, FieldKey>
     >,
     nextStep: async () => {
       return (await formRef.value?.nextStep?.()) ?? false;
@@ -55,24 +48,18 @@ export function useFormController<
 }
 
 export function buildFormSchema<
-  TFormSchema extends FormSchema<StepKey, FieldKey, StoreData>,
+  TFormSchema extends FormSchema<StepKey, FieldKey>,
   StepKey extends Narrowable,
-  FieldKey extends Narrowable,
-  StoreKey extends string,
-  Store extends FormSharedStore<StoreKey>,
-  StoreData extends Record<string, unknown> = InferSharedStoreData<Store>
->(schema: TFormSchema & { sharedStore?: Store }) {
+  FieldKey extends Narrowable
+>(schema: TFormSchema) {
   return schema;
 }
 
 export function buildFormSchemaDist<
-  TFormSchema extends FormSchema<StepKey, FieldKey, StoreData>,
+  TFormSchema extends FormSchema<StepKey, FieldKey>,
   StepKey extends Narrowable,
-  FieldKey extends Narrowable,
-  StoreKey extends string,
-  Store extends FormSharedStore<StoreKey>,
-  StoreData extends Record<string, unknown> = InferSharedStoreData<Store>
->(schema: TFormSchema & { sharedStore?: Store }) {
+  FieldKey extends Narrowable
+>(schema: TFormSchema) {
   return schema;
 }
 

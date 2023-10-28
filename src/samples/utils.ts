@@ -8,24 +8,18 @@ import { Narrowable } from "@/types/utils";
 import { Equal, Expect } from "hotscript/dist/internals/helpers";
 
 export function defineFormSchemaSample<
-  TFormSchema extends FormSchema<StepKey, FieldKey, StoreData>,
+  TFormSchema extends FormSchema<StepKey, FieldKey>,
   StepKey extends Narrowable,
-  FieldKey extends Narrowable,
-  StoreKey extends string,
-  Store extends FormSharedStore<StoreKey>,
-  StoreData extends Record<string, unknown> = InferSharedStoreData<Store>
+  FieldKey extends Narrowable
 >(sample: {
   title: string;
   description?: string;
-  schema: TFormSchema & {
-    sharedStore?: Store;
-  };
+  schema: TFormSchema;
   data?: Record<string, any>;
 }) {
   return {
     sample,
     formData: null as unknown as FormInferredData<
-      StoreData,
       TFormSchema,
       StepKey,
       FieldKey

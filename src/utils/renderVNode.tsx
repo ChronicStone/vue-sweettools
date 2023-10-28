@@ -53,10 +53,7 @@ export function normalizeFieldLabel(
   if (!field.label) return field.key;
   if (typeof field.label == "string") return field.label.toLocaleLowerCase();
   else if (typeof field.label == "function") {
-    const _label = field.label(
-      context.dependencies.value,
-      context.virtualStore.value
-    );
+    const _label = field.label(context.dependencies.value);
 
     return typeof _label === "string"
       ? _label

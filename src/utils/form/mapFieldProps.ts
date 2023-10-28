@@ -5,12 +5,8 @@ type MapFieldPropsParams = {
   field: FormField;
   fieldProps:
     | Record<string, any>
-    | ((
-        deps?: Dependencies,
-        virtualDeps?: Dependencies
-      ) => Record<string, any>);
+    | ((deps?: Dependencies) => Record<string, any>);
   dependencies: Dependencies;
-  virtualDependencies: Dependencies;
   raw?: boolean;
 };
 
@@ -18,14 +14,11 @@ export function mapFieldProps({
   field,
   fieldProps: _fieldProps,
   dependencies,
-  virtualDependencies,
   raw,
 }: MapFieldPropsParams) {
   type _Field = typeof field;
   const fieldProps =
-    typeof _fieldProps === "function"
-      ? _fieldProps(dependencies, virtualDependencies)
-      : _fieldProps;
+    typeof _fieldProps === "function" ? _fieldProps(dependencies) : _fieldProps;
 
   if (raw) return fieldProps;
 
