@@ -142,7 +142,14 @@ function buildItemControls(
                   v-if="_field.headerTemplate"
                   v-html="_field.headerTemplate(fieldValue[index], index)"
                 />
-                <span v-else>ITEM {{ index + 1 }}</span>
+                <span v-else>
+                  {{
+                    i18n.t("form.fields.array.headerTemplate", {
+                      index: index + 1,
+                      total: fieldValue.length,
+                    })
+                  }}
+                </span>
               </div>
               <div
                 class="flex items-center gap-0 text-xs text-black dark:text-white"
