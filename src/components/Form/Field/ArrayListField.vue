@@ -15,6 +15,7 @@ import {
 } from "naive-ui";
 import FieldRenderer from "@/components/Form/Renderer/FieldRenderer.vue";
 import { useTranslations } from "@/i18n/composables/useTranslations";
+import { createReusableTemplate } from "@vueuse/core";
 
 const i18n = useTranslations();
 const emit = defineEmits<FieldComponentEmits>();
@@ -48,66 +49,90 @@ const {
   baseActions,
   resolveVariantFields,
 } = useArrayField(_field, fieldValue, props.context);
+
+const [DefineActionsTemplate, ReuseActionsTemplate] = createReusableTemplate<{
+  index: number;
+}>();
+
+const [DefineHeaderTemplate, ReuseHeaderTemplate] = createReusableTemplate<{
+  index: number;
+}>(); // <--- This is the only difference between the two snippets
 </script>
 
 <template>
+  <DefineActionsTemplate v-slot="{ index }">
+    <div class="flex items-center gap-1.5">
+      <NTooltip>
+        <template #trigger>
+          <NButton
+            text
+            :disabled="!baseActions.items[index].deleteItem"
+            @click.prevent="removeItem(index)"
+          >
+            <mdi:trash />
+          </NButton>
+        </template>
+        {{ i18n.t("form.fields.array.deleteItem") }}
+      </NTooltip>
+      <NDropdown
+        v-if="customActions[index].length"
+        :options="customActions[index]"
+        trigger="hover"
+      >
+        <NButton text>
+          <mdi:dots-horizontal />
+        </NButton>
+      </NDropdown>
+    </div>
+  </DefineActionsTemplate>
+
+  <DefineHeaderTemplate v-slot="{ index }">
+    <div
+      :class="{
+        'text-red-500': validator?.[index]?.$errors?.length,
+      }"
+    >
+      <span
+        v-if="_field.headerTemplate"
+        v-html="_field.headerTemplate(fieldValue[index], index)"
+      />
+      <span v-else class="uppercase">
+        {{
+          i18n.t("form.fields.array.headerTemplate", {
+            index: index + 1,
+            total: fieldValue.length,
+          })
+        }}
+      </span>
+    </div>
+  </DefineHeaderTemplate>
+
   <NCollapseTransition :show="!collapsed">
-    <div class="grid gap-4" :style="listGridSize">
+    <component
+      :is="_field.compact ? NCard : 'div'"
+      class="grid gap-4"
+      :style="[listGridSize]"
+      :content-style="`display: grid; grid-gap: 1em; ${listGridSize}`"
+    >
       <TransitionGroup name="list">
-        <NCard
+        <component
+          :is="_field.compact ? 'div' : NCard"
           v-for="(item, index) in fieldValue"
           :key="`${_field.key}.${index}`"
           :style="listItemSize"
+          :class="{ 'flex items-center gap-2 justify-between': _field.compact }"
         >
           <template #header>
-            <div
-              :class="{
-                'text-red-500': validator?.[index]?.$errors?.length,
-              }"
-            >
-              <span
-                v-if="_field.headerTemplate"
-                v-html="_field.headerTemplate(fieldValue[index], index)"
-              />
-              <span v-else class="uppercase">
-                {{
-                  i18n.t("form.fields.array.headerTemplate", {
-                    index: index + 1,
-                    total: fieldValue.length,
-                  })
-                }}
-              </span>
-            </div>
+            <ReuseHeaderTemplate :index="index" />
           </template>
           <template #header-extra>
-            <div class="flex items-center gap-1.5">
-              <NTooltip>
-                <template #trigger>
-                  <NButton
-                    text
-                    :disabled="!baseActions.items[index].deleteItem"
-                    @click.prevent="removeItem(index)"
-                  >
-                    <mdi:trash />
-                  </NButton>
-                </template>
-                {{ i18n.t("form.fields.array.deleteItem") }}
-              </NTooltip>
-              <NDropdown
-                v-if="customActions[index].length"
-                :options="customActions[index]"
-                trigger="hover"
-              >
-                <NButton text>
-                  <mdi:dots-horizontal />
-                </NButton>
-              </NDropdown>
-            </div>
+            <ReuseActionsTemplate :index="index" />
           </template>
 
           <FieldRenderer
             :key="index"
             v-model="fieldValue[index]"
+            class="!w-full"
             :field="{
               ..._field,
               fields:
@@ -124,7 +149,9 @@ const {
             :item-index="index"
             :show-error="false"
           />
-        </NCard>
+
+          <ReuseActionsTemplate v-if="_field.compact" :index="index" />
+        </component>
       </TransitionGroup>
 
       <NButton
@@ -141,7 +168,7 @@ const {
         </template>
         {{ i18n.t("form.fields.array.createItem") }}
       </NButton>
-    </div>
+    </component>
   </NCollapseTransition>
 </template>
 

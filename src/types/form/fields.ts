@@ -540,6 +540,7 @@ export type ArrayVariantField<FieldKey extends Narrowable = string> = Omit<
         displayMode: "list";
         listGridSize?: number | string;
         listItemSize?: number | string;
+        compact?: boolean;
       }
   );
 
@@ -548,6 +549,7 @@ export interface ArrayListField<FieldKey extends Narrowable = string>
   type: "array-list";
   listGridSize?: number | string;
   listItemSize?: number | string;
+  compact?: boolean;
 }
 
 export interface ArrayTabsField<FieldKey extends Narrowable = string>
@@ -583,7 +585,6 @@ export type FieldApi = {
   setValue(key: string, value: unknown): void;
   setValue(value: unknown): void;
   getContext(key?: string): {
-    options: _CoreFieldOptions;
     options: (SelectOption | TreeSelectOption | CascaderOption)[];
     required: boolean;
     disabled: boolean;

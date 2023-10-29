@@ -21,6 +21,7 @@ const props = withDefaults(
     stepIndex?: number;
     showError?: boolean;
     renderLabel?: boolean;
+    class?: string;
   }>(),
   {
     parentKey: () => [],
@@ -32,6 +33,7 @@ const props = withDefaults(
     parentType: null,
     groupLength: 0,
     renderLabel: true,
+    class: "",
   }
 );
 
@@ -119,10 +121,13 @@ const fieldKey = computed(() =>
       v-if="parentType !== 'group' || renderLabel === true"
       v-testid="[`${formTestId}#field::${fieldKey}::wrapper`]"
       class="flex flex-col gap-2"
-      :class="{
-        'flex-col': (field?.labelPosition ?? 'top') === 'top',
-        'flex-row items-center': (field?.labelPosition ?? 'top') === 'left',
-      }"
+      :class="[
+        {
+          'flex-col': (field?.labelPosition ?? 'top') === 'top',
+          'flex-row items-center': (field?.labelPosition ?? 'top') === 'left',
+        },
+        props.class,
+      ]"
       :style="field.size ? fieldSize : formStyle?.fieldSize.value"
     >
       <LabelRenderer

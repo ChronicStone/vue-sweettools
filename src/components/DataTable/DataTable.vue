@@ -313,6 +313,10 @@ watch(
 @import "ag-grid-community/styles/ag-grid.min.css";
 @import "ag-grid-community/styles/ag-theme-material.min.css";
 
+.ag-body-viewport-wrapper.ag-layout-normal {
+  overflow-x: scroll;
+}
+
 .ag-theme-material {
   --ag-foreground-color: v-bind("themeVars.textColorBase");
   --ag-background-color: v-bind("themeVars.modalColor");

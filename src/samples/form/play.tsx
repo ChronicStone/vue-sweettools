@@ -1,26 +1,25 @@
 const { sample, formData } = defineFormSchemaSample({
-  title: "Custom actions / Scoped APIs",
+  title: "Playground",
   data: {},
   schema: {
-    fieldSize: 8,
     gridSize: 8,
     fields: [
       {
-        label: "Select obj",
-        type: "select",
-        key: "select",
-        options: (t, api) => {
-          return [
-            {
-              label: "Item 1",
-              value: { name: "Cyp", id: 1 },
-            },
-            {
-              label: "Item 2",
-              value: { name: "Alice", id: 2 },
-            },
-          ];
-        },
+        label: "Array list",
+        type: "array-list",
+        key: "arrayList",
+        collapsible: false,
+        compact: true,
+        size: 8,
+        fields: [
+          {
+            key: "firstName",
+            label: "First Name",
+            type: "text",
+            required: true,
+          },
+          { key: "lastName", label: "Last Name", type: "text" },
+        ],
       },
     ],
   },
