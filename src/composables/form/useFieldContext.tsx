@@ -36,8 +36,21 @@ export function useFieldContext(
   ]);
 
   const { contextMap } = useFormState();
-  const setValue: FieldApi["setValue"] = (key, value) =>
-    propertySetter(key, parentKey.value, state.value, value);
+  const setValue: FieldApi["setValue"] = (...args: any[]) => {
+    if (typeof args[0] !== "undefined" && typeof args[1] !== "undefined") {
+      const key = args[0] as string;
+      const value = args[1] as unknown;
+      propertySetter(key, parentKey.value, state.value, value);
+    } else {
+      const value = args[0] as unknown;
+      propertySetter(
+        fieldFullPath.value.join("."),
+        parentKey.value,
+        state.value,
+        value
+      );
+    }
+  };
   const getValue: FieldApi["getValue"] = (key) =>
     propertyResolver(key, parentKey.value, state.value);
   const getContext: FieldApi["getContext"] = (key) => {

@@ -581,8 +581,10 @@ export type FieldDescription = {
 export type FieldApi = {
   getValue<T = unknown>(key: string): T;
   setValue(key: string, value: unknown): void;
+  setValue(value: unknown): void;
   getContext(key?: string): {
     options: _CoreFieldOptions;
+    options: (SelectOption | TreeSelectOption | CascaderOption)[];
     required: boolean;
     disabled: boolean;
     dependencies: Dependencies;
