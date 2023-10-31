@@ -31,6 +31,7 @@
     "@vueuse/core": "latest",
     "ag-grid-community": "latest",
     "ag-grid-vue3": "latest",
+    "dayjs": "^1.11.10",
     "deepmerge-ts": "^4.3.0",
     "json-as-xlsx": "^2.5.3",
     "maska": "^2.1.7",

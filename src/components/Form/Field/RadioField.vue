@@ -12,7 +12,7 @@ const fieldValue = computed({
 });
 
 const options = computed(() => {
-  return (props.context.options ?? []) as unknown as Array<{
+  return (props.context.options.value ?? []) as unknown as Array<{
     label: string | (() => VNodeChild);
     value: string | number | boolean | undefined;
   }>;
@@ -41,7 +41,7 @@ const options = computed(() => {
         v-bind="context.inputProps.value"
         @blur="validator?.$touch"
       >
-        {{ renderVNode(option.label) }}
+        {{ option.label }}
       </NRadio>
     </div>
   </NRadioGroup>

@@ -3,6 +3,10 @@ import { Expect, Equal } from "hotscript/dist/internals/helpers";
 const { sample, formData } = defineFormSchemaSample({
   title: "Basic form - field types",
   description: "This form shows all the available field types.",
+  data: {
+    datetime: Date.now(),
+    date: new Date().toDateString(),
+  },
   schema: {
     title: "Basic form - field types",
     fullScreen: true,
@@ -72,10 +76,16 @@ const { sample, formData } = defineFormSchemaSample({
         options: () =>
           Array.from({ length: 64 }, (_, i) => `Option ${i}` as const),
       },
-      { type: "date", key: "date", label: "Date" },
+      {
+        type: "date",
+        key: "date",
+        label: "Date",
+        fieldParams: { format: "d MMM yyyy" },
+      },
       { key: "time", label: "Time", type: "time" },
       { key: "datetime", label: "Date time", type: "datetime" },
       { key: "datetimeRange", label: "Date time range", type: "datetimerange" },
+      { key: "month", label: "Date time range", type: "year" },
       { key: "color", type: "color-picker", label: "Color" },
       {
         key: "object",

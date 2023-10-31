@@ -245,7 +245,11 @@ function inspectFormState() {
           }"
         >
           <div :key="activeSampleId" class="flex flex-col gap-6 h-full">
-            <FormRenderer ref="formRef" :schema="activeSample.schema" />
+            <FormRenderer
+              ref="formRef"
+              :schema="activeSample.schema"
+              :data="activeSample.data ?? {}"
+            />
             <div class="flex items-center gap-4 w-full">
               <template v-if="isSampleMultiStep">
                 <NButton
