@@ -560,6 +560,7 @@ export interface ArrayTabsField<FieldKey extends Narrowable = string>
 export interface InfoField {
   type: "info";
   content: (dependencies: Dependencies) => VNodeChild | string;
+  content: (dependencies: Dependencies, api: FieldApi) => VNodeChild | string;
 }
 
 export interface CustomField {

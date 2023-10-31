@@ -36,7 +36,12 @@ watch(
       @before-enter="disableOverflow = true"
       @after-appear="disableOverflow = false"
     >
-      <div :key="_currentStep" class="grid" style="grid-template-rows: 1fr">
+      <div
+        v-if="true"
+        :key="_currentStep"
+        class="grid"
+        style="grid-template-rows: 1fr"
+      >
         <form
           ref="formRef"
           class="h-full grid gap-4 overflow-visible text-left transition-all ease-in-out duration-150"
