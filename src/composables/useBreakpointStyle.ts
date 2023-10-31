@@ -63,8 +63,7 @@ export function useBreakpointStyle<TKey extends TransformKey>(
 
   const currentBreakpointVal = computed(() => {
     const currentBreakpoint =
-      reactiveBreakpoints.value.find(({ value }: any) => value?.value)?.key ??
-      "sm";
+      reactiveBreakpoints.find(({ value }: any) => value?.value)?.key ?? "sm";
     return transformKey
       ? computeStyleModifier(breakpointStyle[currentBreakpoint], transformKey)
       : breakpointStyle[currentBreakpoint];
