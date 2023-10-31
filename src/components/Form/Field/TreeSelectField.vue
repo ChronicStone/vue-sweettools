@@ -6,7 +6,13 @@ const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
 const fieldValue = computed({
-  get: () => props.modelValue,
+  get: () =>
+    props.modelValue as
+      | string
+      | number
+      | (string | number)[]
+      | null
+      | undefined,
   set: (value) => emit("update:modelValue", value),
 });
 </script>

@@ -1,3 +1,5 @@
+import TestInput from "@/components/Utils/TestInput.vue";
+
 const { sample, formData } = defineFormSchemaSample({
   title: "Playground",
   data: {},
@@ -6,20 +8,21 @@ const { sample, formData } = defineFormSchemaSample({
     fields: [
       {
         label: "Array list",
-        type: "array-list",
-        key: "arrayList",
-        collapsible: false,
-        compact: true,
+        type: "text",
+        key: "text",
+        required: true,
         size: 8,
-        fields: [
-          {
-            key: "firstName",
-            label: "First Name",
-            type: "text",
-            required: true,
-          },
-          { key: "lastName", label: "Last Name", type: "text" },
-        ],
+      },
+      {
+        label: "Files",
+        type: "upload",
+        key: "upload",
+        required: true,
+        size: 8,
+        multiple: true,
+        fieldParams: {
+          listType: "image-card",
+        },
       },
     ],
   },

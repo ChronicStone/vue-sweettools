@@ -1,8 +1,19 @@
 <script setup lang="ts">
 import { Validation } from "@vuelidate/core";
+import {
+  NUpload,
+  NUploadDragger,
+  NIcon,
+  UploadCustomRequestOptions,
+} from "naive-ui";
 
-const emit = defineEmits<{ (e: "update:modelValue", value: string): void }>();
-const props = defineProps<{ modelValue: string; validator: Validation }>();
+const emit = defineEmits<{
+  (e: "update:modelValue", value: string | null): void;
+}>();
+const props = defineProps<{
+  modelValue: string | null;
+  validator: Validation;
+}>();
 
 const modelValue = computed({
   get: () => props.modelValue,
@@ -13,12 +24,37 @@ watch(
   () => modelValue.value,
   () => props.validator?.$touch()
 );
+
+function uploadRequest(options: UploadCustomRequestOptions) {
+  console.log(options);
+  options.onFinish();
+}
+
+const fileList = ref([]);
 </script>
 
 <template>
-  <input
-    v-model="modelValue"
-    class="p-2 border-4 border-solid w-full"
-    :class="{ 'border-red-500': validator.$errors?.length }"
-  />
+  <div class="w-full">
+    <n-upload
+      directory-dnd
+      :max="1"
+      :custom-request="uploadRequest"
+      list-type="image-card"
+      class="w-full"
+    >
+      <!-- <n-upload-dragger>
+        <div style="margin-bottom: 12px">
+          <n-icon size="48" :depth="3">
+            <mdi:upload />
+          </n-icon>
+        </div>
+        <n-text style="font-size: 16px">
+          Click or drag a file to this area to upload
+        </n-text>
+        <n-p depth="3" style="margin: 8px 0 0 0">
+          Allowed extensions: .zip, .rar, .7z
+        </n-p>
+      </n-upload-dragger> -->
+    </n-upload>
+  </div>
 </template>

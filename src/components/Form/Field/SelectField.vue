@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { FieldComponentEmits, FieldComponentProps } from "@/types/form/fields";
 import { NSelect } from "naive-ui";
+import { Value } from "naive-ui/es/select/src/interface";
 
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
 const fieldValue = computed({
-  get: () => props.modelValue,
+  get: () => props.modelValue as Value | null | undefined,
   set: (value) => emit("update:modelValue", value),
 });
 </script>

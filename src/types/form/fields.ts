@@ -1,17 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Primitive } from "./../utils";
-import { Validation, ValidationArgs } from "@vuelidate/core";
-import {
+import type { Primitive } from "./../utils";
+import type { Validation, ValidationArgs } from "@vuelidate/core";
+import type {
   CascaderOption,
   SelectGroupOption,
   SelectOption,
   TreeSelectOption,
   InputProps,
+  UploadCustomRequestOptions,
+  UploadFileInfo,
+  ImageGroupProps,
+  UploadSettledFileInfo,
 } from "naive-ui";
-import { SelectBaseOption } from "naive-ui/es/select/src/interface";
-import { Component, VNode, VNodeChild } from "vue";
-import { Narrowable } from "../utils";
-import { MaskOptions } from "maska";
+import type { SelectBaseOption } from "naive-ui/es/select/src/interface";
+import type { Component, VNode, VNodeChild } from "vue";
+import type { Narrowable } from "../utils";
+import type { MaskOptions } from "maska";
+import { FileInfo } from "naive-ui/es/upload/src/interface";
 
 export enum FieldTypes {
   TEXT = "text",
@@ -43,6 +48,7 @@ export enum FieldTypes {
   GROUP = "group",
   ARRAY_VARIANT = "array-variant",
   COLOR_PICKER = "color-picker",
+  UPLOAD = "upload",
 }
 
 export type TFieldTypes = `${FieldTypes}`;
@@ -443,6 +449,73 @@ export interface DateField {
     | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => DateFieldParams);
 }
 
+export type UploadFieldParams = {
+  abstract?: boolean;
+  accept?: string;
+  action?: string;
+  customRequest?: (options: UploadCustomRequestOptions) => void;
+  data?: object | ((opts: { file: UploadFileInfo }) => object);
+  headers?: object | ((opts: { file: UploadFileInfo }) => object);
+  inputProps?: Record<string, unknown>;
+  defaultFileList?: UploadFileInfo[];
+  uploadOnSelection?: boolean;
+  allowDirectory?: boolean;
+  fileListStyle?: string | Record<string, string>;
+  imageGroupProps?: ImageGroupProps;
+  isErrorState?: (xhr: XMLHttpRequest) => boolean;
+  max?: number;
+  method?: "POST" | "PUT" | "PATCH";
+  responseType?: "arraybuffer" | "blob" | "document" | "json" | "text";
+  renderFileIcon?: (file: UploadSettledFileInfo) => VNodeChild;
+  shouldUseThumbnailUrl?: (file: UploadSettledFileInfo) => boolean;
+  showCancelButton?: boolean;
+  showDownloadButton?: boolean;
+  showRemoveButton?: boolean;
+  showPreviewButton?: boolean;
+  showRetryButton?: boolean;
+  showFileList?: boolean;
+  beforeUpload?: (data: {
+    file: UploadFileInfo;
+    fileList: UploadFileInfo[];
+  }) => boolean | Promise<boolean>;
+  onChange?: (options: {
+    file: UploadFileInfo;
+    fileList: Array<UploadFileInfo>;
+    event?: Event;
+  }) => void;
+  onError?: (options: {
+    file: UploadFileInfo;
+    event?: ProgressEvent;
+  }) => UploadFileInfo | void;
+  onFinish?: (options: {
+    file: UploadFileInfo;
+    event?: Event;
+  }) => UploadFileInfo | undefined;
+  onDownload?: (file: FileInfo) => void;
+  onPreview?: (file: FileInfo) => void;
+  onRemove?: (options: {
+    file: UploadFileInfo;
+    fileList: Array<UploadFileInfo>;
+  }) => Promise<boolean> | boolean | any;
+} & (
+  | {
+      enableDragDrop?: false;
+      listType?: "text" | "image" | "image-card";
+    }
+  | {
+      enableDragDrop?: true;
+      listType?: "text" | "image";
+    }
+);
+
+export interface UploadField {
+  type: "upload";
+  multiple?: boolean;
+  fieldParams?:
+    | UploadFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => UploadFieldParams);
+}
+
 export interface GroupField<FieldKey extends Narrowable = string> {
   type: "group";
   gridSize?: number | string;
@@ -559,7 +632,6 @@ export interface ArrayTabsField<FieldKey extends Narrowable = string>
 
 export interface InfoField {
   type: "info";
-  content: (dependencies: Dependencies) => VNodeChild | string;
   content: (dependencies: Dependencies, api: FieldApi) => VNodeChild | string;
 }
 
@@ -651,6 +723,7 @@ export type FormField<FieldKey extends Narrowable = string> =
       | CascaderField
       | RatingField
       | TagField
+      | UploadField
       | GroupField<FieldKey>
       | ArrayVariantField<FieldKey>
     );

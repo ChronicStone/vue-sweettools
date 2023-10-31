@@ -1,5 +1,10 @@
 import { useTranslations } from "@/i18n/composables/useTranslations";
-import { Dependencies, ReadonlyFieldApi, FormField } from "@/types/form/fields";
+import {
+  Dependencies,
+  ReadonlyFieldApi,
+  FormField,
+  UploadFieldParams,
+} from "@/types/form/fields";
 
 type MapFieldPropsParams = {
   field: FormField;
@@ -251,6 +256,45 @@ export function mapFieldProps({
         ...(fieldProps.onCreate && { "on-create": fieldProps.onCreate }),
         ...(fieldProps.inputProps && { "input-props": fieldProps.inputProps }),
         ...(fieldProps.renderTag && { "input-props": fieldProps.renderTag }),
+      };
+    case "upload":
+      return {
+        abstract: fieldProps.abstract ?? false,
+        accept: fieldProps.accept ?? undefined,
+        action: fieldProps.action ?? undefined,
+        "create-thumbnail-url": fieldProps.createThumbnailUrl ?? undefined,
+        "custom-request": fieldProps.customRequest ?? undefined,
+        data: fieldProps.data ?? undefined,
+        "default-file-list": fieldProps.defaultFileList ?? [],
+        "default-upload": fieldProps.uploadOnSelection ?? true,
+        directory: fieldProps.allowDirectory ?? false,
+        "directory-dnd": fieldProps.enableDragDrop ?? false,
+        "file-list-style": fieldProps.fileListStyle ?? {},
+        headers: fieldProps.headers ?? undefined,
+        "input-props": fieldProps.inputProps ?? undefined,
+        "image-group-props": fieldProps.imageGroupProps ?? undefined,
+        max: fieldProps.max ?? undefined,
+        method: fieldProps.method ?? undefined,
+        multiple: field.multiple ?? false,
+        "list-type": fieldProps.listType ?? "text",
+        "render-icon": fieldProps.renderFileIcon ?? undefined,
+        "response-type": fieldProps.responseType ?? undefined,
+        "should-use-thumbnail-url":
+          fieldProps.shouldUseThumbnailUrl ?? undefined,
+        "show-trigger": true,
+        "show-cancel-button": fieldProps.showCancelButton ?? true,
+        "show-download-button": fieldProps.showDownloadButton ?? true,
+        "show-file-list": fieldProps.showFileList ?? true,
+        "show-preview-button": fieldProps.showPreviewButton ?? true,
+        "show-remove-button": fieldProps.showRemoveButton ?? true,
+        "show-retry-button": fieldProps.showRetryButton ?? true,
+        ...(fieldProps.onChange && { "on-change": fieldProps.onChange }),
+        ...(fieldProps.onPreview && { "on-preview": fieldProps.onPreview }),
+        ...(fieldProps.onRemove && { "on-remove": fieldProps.onRemove }),
+        ...(fieldProps.onDownload && { "on-download": fieldProps.onDownload }),
+        ...(fieldProps.beforeUpload && {
+          "on-before-upload": fieldProps.beforeUpload,
+        }),
       };
     case "object":
     case "array-list":

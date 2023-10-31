@@ -25,6 +25,7 @@ import CustomField from "@/components/Form/Field/CustomField.vue";
 import RadioField from "@/components/Form/Field/RadioField.vue";
 import GroupField from "@/components/Form/Field/GroupField.vue";
 import ColorPickerField from "@/components/Form/Field/ColorPickerField.vue";
+import UploadField from "@/components/Form/Field/UploadField.vue";
 
 export function useFieldComponent(field: ComputedRef<FormField>) {
   const FieldComponent = computed(() => {
@@ -80,6 +81,8 @@ export function useFieldComponent(field: ComputedRef<FormField>) {
         return RadioField;
       case FieldTypes.GROUP:
         return GroupField;
+      case FieldTypes.UPLOAD:
+        return UploadField;
       default:
         return TextField;
     }

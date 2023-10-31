@@ -1,14 +1,20 @@
 <script setup lang="ts">
 import { vTestid } from "@chronicstone/vue-testid";
-import { FieldComponentEmits, FieldComponentProps } from "@/types/form/fields";
+import {
+  FieldComponentEmits,
+  FieldComponentProps,
+  TextField,
+} from "@/types/form/fields";
 import { MaskOptions, vMaska } from "maska";
 import { NInput } from "naive-ui";
 
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
+const _field = computed(() => props.field as TextField);
+
 const fieldValue = computed({
-  get: () => props.modelValue,
+  get: () => props.modelValue as string | [string, string] | null | undefined,
   set: (value) => emit("update:modelValue", value),
 });
 
@@ -43,7 +49,7 @@ const testIdConfig = [
     v-testid="testIdConfig"
     :style="group ? { width: `${size} !important` } : {}"
     :class="{ fieldError: validator?.$errors?.length }"
-    :type="field.type"
+    :type="_field.type"
     v-bind="fieldProps"
     :placeholder="context.placeholder.value"
     :disabled="

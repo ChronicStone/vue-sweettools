@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { FieldComponentEmits, FieldComponentProps } from "@/types/form/fields";
 import { NCascader } from "naive-ui";
+import { Value } from "naive-ui/es/cascader/src/interface";
 
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 
 const fieldValue = computed({
-  get: () => props.modelValue,
+  get: () => props.modelValue as Value | null | undefined,
   set: (value) => emit("update:modelValue", value),
 });
 </script>
@@ -16,7 +17,7 @@ const fieldValue = computed({
     v-model:value="fieldValue"
     :style="group ? { width: `${size} !important` } : {}"
     :placeholder="context.placeholder.value"
-    :options="context.options.value"
+    :options="(context.options.value as any)"
     v-bind="context.inputProps.value"
     :loading="context._evalOptions.value"
     :disabled="disabled"

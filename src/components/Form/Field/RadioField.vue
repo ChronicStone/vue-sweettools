@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { FieldComponentEmits, FieldComponentProps } from "@/types/form/fields";
 import { NRadio, NRadioGroup } from "naive-ui";
+import { VNodeChild } from "vue";
 
 const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
@@ -8,6 +9,13 @@ const props = defineProps<FieldComponentProps>();
 const fieldValue = computed({
   get: () => props.modelValue as string | number | boolean | null | undefined,
   set: (value) => emit("update:modelValue", value),
+});
+
+const options = computed(() => {
+  return (props.context.options ?? []) as unknown as Array<{
+    label: string | (() => VNodeChild);
+    value: string | number | boolean | undefined;
+  }>;
 });
 </script>
 
@@ -21,7 +29,7 @@ const fieldValue = computed({
   >
     <div class="gap-4 flex flex-wrap justify-start">
       <NRadio
-        v-for="({ label, value }, optionId) in context.options.value"
+        v-for="(option, optionId) in options"
         :key="optionId"
         :style="
           optionId ===
@@ -29,11 +37,11 @@ const fieldValue = computed({
             ? 'margin-right: auto;'
             : ''
         "
-        :value="value"
+        :value="option.value"
         v-bind="context.inputProps.value"
         @blur="validator?.$touch"
       >
-        {{ label }}
+        {{ renderVNode(option.label) }}
       </NRadio>
     </div>
   </NRadioGroup>
