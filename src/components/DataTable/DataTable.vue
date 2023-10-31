@@ -370,7 +370,7 @@ watch(
     border-top: none;
     min-height: 55px;
     font-weight: 300;
-    font-family: "Lato";
+    font-family: v-bind("themeVars.fontFamily");
   }
 
   .ag-row-hover,
