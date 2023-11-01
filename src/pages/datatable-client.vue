@@ -2,7 +2,7 @@
 import DataTable from "@/components/DataTable/DataTable.vue";
 import { ref } from "vue";
 import { NCheckbox, NConfigProvider, darkTheme } from "naive-ui";
-import { booleanFilter } from "..";
+import { booleanFilter, textFilter } from "..";
 
 const schema = buildTableSchema<{
   firstName: string;
@@ -15,8 +15,11 @@ const schema = buildTableSchema<{
 }>({
   tableKey: "someKey",
   persistency: "localStorage",
-  remote: false,
-  filters: [booleanFilter("valid", "Valid")],
+  remote: true,
+  filters: [
+    booleanFilter("valid", "Valid"),
+    textFilter("firstName", "First name", "contains"),
+  ],
   searchQuery: ["firstName", "lastName"],
   columns: [
     {
@@ -36,11 +39,17 @@ const schema = buildTableSchema<{
     },
   ],
   datasource: async (t) => {
-    return Array.from({ length: 64 }, (_, i) => ({
-      firstName: `First name ${i}`,
-      lastName: `Last name ${i}`,
-      valid: i % 2 === 0,
-    }));
+    console.info("run resolver", t);
+    await new Promise((r) => setTimeout(r, 2000));
+    return {
+      totalDocs: 5000,
+      totalPages: 10,
+      docs: Array.from({ length: 64 }, (_, i) => ({
+        firstName: `First name ${i}`,
+        lastName: `Last name ${i}`,
+        valid: i % 2 === 0,
+      })),
+    };
   },
 });
 

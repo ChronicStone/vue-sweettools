@@ -98,7 +98,8 @@ export function useQueryState(
       () => filterState.value,
       () => staticFilters.value,
     ],
-    () => fetchParams.trigger()
+    () => fetchParams.trigger(),
+    { deep: true }
   );
 
   function initializeFilterState(clearMode: boolean) {
