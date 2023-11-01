@@ -80,6 +80,7 @@ export default defineConfig({
       "tinycolor2",
       "util",
       "xlsx",
+      "date-fns",
     ],
   },
   build: {
@@ -89,7 +90,7 @@ export default defineConfig({
       fileName: (format) => `vue-sweettools.${format}.js`,
     },
     rollupOptions: {
-      external: ["vue", "naive-ui"],
+      external: ["vue", "naive-ui", "date-fns"],
       output: {
         globals: {
           vue: "Vue",
