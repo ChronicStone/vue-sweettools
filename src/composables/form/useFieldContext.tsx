@@ -1,24 +1,22 @@
 import { useTranslations } from "@/i18n/composables/useTranslations";
-import {
+import type {
+  FormField,
   FieldApi,
-  FieldOptionCreator,
   SelectField,
   _CoreFieldOptions,
 } from "@/types/form/fields";
-import { FormField } from "@/types/form/fields";
-import { GenericObject } from "@/types/utils";
+import type { GenericObject } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 import {
   mapFieldDependencies,
   preformatFieldDependencies,
 } from "@/utils/form/mapFieldDependencies";
 import { mapFieldProps } from "@/utils/form/mapFieldProps";
-import { get } from "@vueuse/core";
 import {
-  CascaderOption,
   NButton,
-  SelectOption,
-  TreeSelectOption,
+  type CascaderOption,
+  type SelectOption,
+  type TreeSelectOption,
 } from "naive-ui";
 import { Ref, ComputedRef, WritableComputedRef } from "vue";
 
@@ -35,41 +33,15 @@ export function useFieldContext(
     field.value.key,
   ]);
 
-  const { contextMap } = useFormState();
-  const setValue: FieldApi["setValue"] = (...args: any[]) => {
-    if (typeof args[0] !== "undefined" && typeof args[1] !== "undefined") {
-      const key = args[0] as string;
-      const value = args[1] as unknown;
-      propertySetter(key, parentKey.value, state.value, value);
-    } else {
-      const value = args[0] as unknown;
-      propertySetter(
-        fieldFullPath.value.join("."),
-        parentKey.value,
-        state.value,
-        value
-      );
-    }
-  };
-  const getValue: FieldApi["getValue"] = (key) =>
-    propertyResolver(key, parentKey.value, state.value);
-  const getContext: FieldApi["getContext"] = (key) => {
-    const _key = !key ? fieldFullPath.value.join(".") : key;
-    const contextPath = getPropertyFullPath(_key, parentKey.value);
-    const _context = contextMap.value.get(contextPath.join("."));
-    if (!_context)
-      throw new Error(`Context not found for path ${contextPath.join(".")}`);
-    return {
-      options: get(_context._options),
-      disabled: get(_context.disabled),
-      dependencies: get(_context.dependencies),
-      required: get(_context.required),
-    };
-  };
+  const { getFieldApi } = useFormState();
+  const fieldApi: FieldApi = getFieldApi(field.value.key, parentKey.value);
 
   const required = computed(() =>
     typeof field.value.required === "function"
-      ? field.value.required(dependencies.value)
+      ? field.value.required(dependencies.value, {
+          getValue: fieldApi.getValue,
+          getOptions: fieldApi.getOptions,
+        })
       : !!field.value.required
   );
 
@@ -88,7 +60,10 @@ export function useFieldContext(
       field: field.value,
       fieldProps: field.value?.fieldParams ?? {},
       dependencies: dependencies.value,
-      fieldApi: { getValue, getContext },
+      fieldApi: {
+        getValue: fieldApi.getValue,
+        getOptions: fieldApi.getOptions,
+      },
       raw: false,
     })
   );
@@ -98,7 +73,10 @@ export function useFieldContext(
       field: field.value,
       fieldProps: field.value?.fieldParams ?? {},
       dependencies: dependencies.value,
-      fieldApi: { getValue, getContext },
+      fieldApi: {
+        getValue: fieldApi.getValue,
+        getOptions: fieldApi.getOptions,
+      },
       raw: true,
     })
   );
@@ -108,7 +86,11 @@ export function useFieldContext(
     () => field.value?.conditionEffect ?? "hide"
   );
   const condition = computedAsync<boolean>(
-    () => field.value?.condition?.(dependencies.value) ?? true,
+    () =>
+      field.value?.condition?.(dependencies.value, {
+        getValue: fieldApi.getValue,
+        getOptions: fieldApi.getOptions,
+      }) ?? true,
     false,
     _evalCondition
   );
@@ -143,7 +125,10 @@ export function useFieldContext(
         ? _field.createOption
         : _field.createOption?.handler;
 
-    const option = await handler(dependencies.value, { getValue, getContext });
+    const option = await handler(dependencies.value, {
+      getValue: fieldApi.getValue,
+      getOptions: fieldApi.getOptions,
+    });
     if (!option) {
       _evalOptions.value = false;
       return;
@@ -190,7 +175,13 @@ export function useFieldContext(
           : typeof (field.value as SelectField).options === "function"
           ? await (
               (field.value as SelectField).options as (...args: any[]) => any
-            )({ ...dependencies.value }, { getValue, getContext })
+            )(
+              { ...dependencies.value },
+              {
+                getValue: fieldApi.getValue,
+                getOptions: fieldApi.getOptions,
+              }
+            )
           : []
       );
     _evalOptions.value = false;
@@ -308,9 +299,9 @@ export function useFieldContext(
       () => getPropertyFromPath(fieldFullPath.value, state.value),
       (value: unknown) =>
         (field.value.watch as NonNullable<FormField["watch"]>)(value, {
-          getValue,
-          setValue,
-          getContext,
+          getValue: fieldApi.getValue,
+          setValue: fieldApi.setValue,
+          getOptions: fieldApi.getOptions,
         }),
       field.value?.watchOptions ?? {}
     );
@@ -321,9 +312,9 @@ export function useFieldContext(
       () => JSON.stringify(dependencies.value),
       () =>
         field.value.onDependencyChange?.(dependencies.value, {
-          getValue,
-          setValue,
-          getContext,
+          getValue: fieldApi.getValue,
+          setValue: fieldApi.setValue,
+          getOptions: fieldApi.getOptions,
         })
     );
   }
@@ -351,7 +342,7 @@ export function useFieldContext(
     placeholder,
     disabled,
     parentKey,
-    fieldApi: { setValue, getValue, getContext },
+    fieldApi,
   };
 }
 

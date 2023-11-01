@@ -439,6 +439,8 @@ export interface DateFieldParams {
   dateDisabled?: (current: number) => boolean;
   timeDisabled?: (current: number) => boolean;
   separator?: string;
+  format?: string;
+  valueFormat?: string;
 }
 
 export interface DateField {
@@ -591,7 +593,7 @@ export interface ArrayCustomActionApi {
   dependencies: Record<string, unknown>;
   getValue(key: string): unknown;
   setValue(key: string, value: unknown): void;
-  getContext: FieldApi["getContext"];
+  getOptions: FieldApi["getOptions"];
 }
 
 export type ArrayVariantField<FieldKey extends Narrowable = string> = Omit<
@@ -657,17 +659,19 @@ export type FieldApi = {
   getValue<T = unknown>(key: string): T;
   setValue(key: string, value: unknown): void;
   setValue(value: unknown): void;
-  getContext(key?: string): {
-    options: (SelectOption | TreeSelectOption | CascaderOption)[];
-    required: boolean;
-    disabled: boolean;
-    dependencies: Dependencies;
-  };
+  getOptions<
+    T extends SelectOption | TreeSelectOption | CascaderOption =
+      | SelectOption
+      | TreeSelectOption
+      | CascaderOption
+  >(
+    key?: string
+  ): T[];
 };
 
 export type ReadonlyFieldApi = {
   getValue: FieldApi["getValue"];
-  getContext: FieldApi["getContext"];
+  getOptions: FieldApi["getOptions"];
 };
 
 export type _BaseField<FieldKey extends Narrowable = string> = {
@@ -675,7 +679,9 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   key: FieldKey;
   placeholder?: string | (() => string);
   dependencies?: (string | [string, string])[];
-  required?: boolean | ((dependencies: Dependencies) => boolean);
+  required?:
+    | boolean
+    | ((dependencies: Dependencies, api: ReadonlyFieldApi) => boolean);
   size?: number | string;
   gridSize?: number | string;
   default?: unknown;
@@ -686,11 +692,14 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   fieldParams?:
     | Record<string, unknown>
     | ((deps: Dependencies, api: ReadonlyFieldApi) => Record<string, unknown>);
-  condition?: (dependencies: Dependencies) => Promise<boolean> | boolean;
+  condition?: (
+    dependencies: Dependencies,
+    api: ReadonlyFieldApi
+  ) => Promise<boolean> | boolean;
   preformat?: (value: any) => unknown;
   transform?: (value: any) => unknown;
   validators?:
-    | ((dependencies: Dependencies) => ValidationArgs)
+    | ((dependencies: Dependencies, api: ReadonlyFieldApi) => ValidationArgs)
     | ValidationArgs;
   watchOptions?: { deep?: boolean; immediate?: boolean };
   watch?: (value: any, params: FieldApi) => void;

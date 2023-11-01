@@ -1,4 +1,4 @@
-import { ObjectField, GroupField } from "@/types/form/fields";
+import { ObjectField, GroupField, FieldApi } from "@/types/form/fields";
 import { FieldInstance } from "@/types/form/instance";
 import { GenericObject } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
@@ -11,7 +11,8 @@ import { useLocalizedValidators } from "./useLocalizedValidators";
 const [useProvideFormValidation, _useFormValidation] = createInjectionState(
   (
     formFields: ComputedRef<Array<FieldInstance>>,
-    formState: Ref<GenericObject>
+    formState: Ref<GenericObject>,
+    getFieldApi: (key: string, parentKey: string[]) => FieldApi
   ) => {
     const libConfig = useGlobalConfig();
     const formRules = ref<GenericObject>({});
@@ -40,8 +41,11 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
           state
         );
         const dependencies = resolveFieldDependencies(field, state, parentKey);
+        const { getValue, getOptions } = getFieldApi(field.key, parentKey);
 
-        const condition = (await field?.condition?.(dependencies)) ?? true;
+        const condition =
+          (await field?.condition?.(dependencies, { getValue, getOptions })) ??
+          true;
         if (!condition && (field?.conditionEffect ?? "hide") === "hide")
           continue;
 
@@ -51,7 +55,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
 
         const isRequired =
           typeof field.required === "function"
-            ? field.required(dependencies)
+            ? field.required(dependencies, { getValue, getOptions })
             : field?.required ?? false;
 
         if (isRequired)
@@ -124,7 +128,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
         if (typeof field?.validators === "function")
           fieldRules = {
             ...fieldRules,
-            ...field.validators(dependencies),
+            ...field.validators(dependencies, { getValue, getOptions }),
           };
         if (typeof field?.validators === "object")
           fieldRules = { ...fieldRules, ...field.validators };

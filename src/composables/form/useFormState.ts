@@ -1,11 +1,13 @@
-import { _FieldOptions } from "@/types/form/fields";
-import { FormSharedStore } from "@/types/form/form";
+import { FieldApi, _FieldOptions } from "@/types/form/fields";
 import { ComputedRef } from "vue";
 import { FormField } from "@/types/form/fields";
 import {
   mapFieldsInitialState,
   mapFieldsOutputState,
 } from "@/utils/form/mapFieldsInitialState";
+import { get } from "@vueuse/core";
+import { SelectOption, TreeSelectOption, CascaderOption } from "naive-ui";
+import { VNodeChild } from "vue";
 
 const [useProvideFormState, _useFormState] = createInjectionState(
   (
@@ -30,7 +32,50 @@ const [useProvideFormState, _useFormState] = createInjectionState(
       new Map()
     );
 
-    return { formState, outputFormState, contextMap, reset };
+    function getFieldApi(key: string, parentKey: string[]): FieldApi {
+      const fieldFullPath = [...parentKey, key];
+      const getValue: FieldApi["getValue"] = (key) =>
+        propertyResolver(key, parentKey, formState.value);
+
+      const setValue: FieldApi["setValue"] = (...args: any[]) => {
+        if (typeof args[0] !== "undefined" && typeof args[1] !== "undefined") {
+          const key = args[0] as string;
+          const value = args[1] as unknown;
+          propertySetter(key, parentKey, formState.value, value);
+        } else {
+          const value = args[0] as unknown;
+          propertySetter(
+            fieldFullPath.join("."),
+            parentKey,
+            formState.value,
+            value
+          );
+        }
+      };
+
+      const getOptions: FieldApi["getOptions"] = <
+        T extends SelectOption | TreeSelectOption | CascaderOption =
+          | SelectOption
+          | TreeSelectOption
+          | CascaderOption
+      >(
+        key?: string
+      ) => {
+        const _key = !key ? fieldFullPath.join(".") : key;
+        const contextPath = getPropertyFullPath(_key, parentKey);
+        const _context = contextMap.value.get(contextPath.join("."));
+        if (!_context)
+          throw new Error(
+            `Context not found for path ${contextPath.join(".")}`
+          );
+
+        return _context._options.value as T[];
+      };
+
+      return { getValue, setValue, getOptions };
+    }
+
+    return { formState, outputFormState, contextMap, getFieldApi, reset };
   }
 );
 

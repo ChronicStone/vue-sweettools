@@ -243,8 +243,8 @@ export type CellRendererParams<T = GenericObject> = {
   data: GenericObject;
   eGridCell: HTMLElement;
   tableApi: Ref<TableApi<T>>;
-  theme: ComputedRef<GlobalTheme | null>;
-  themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>;
+  getTheme: () => GlobalTheme | null;
+  getThemeOverrides: () => GlobalThemeOverrides | undefined;
   api: GridApi;
   columnApi: ColumnApi;
   node: RowNode;
@@ -253,8 +253,8 @@ export type CellRendererParams<T = GenericObject> = {
 export type HeaderRendererParams<T = GenericObject> = {
   eGridHeader: HTMLElement;
   tableApi: Ref<TableApi<T>>;
-  theme: ComputedRef<GlobalTheme | null>;
-  themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>;
+  getTheme: () => GlobalTheme | null;
+  getThemeOverrides: () => GlobalThemeOverrides | undefined;
   column: AgGridColum;
   api: GridApi;
   columnApi: ColumnApi;
