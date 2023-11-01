@@ -11,6 +11,8 @@ const emit = defineEmits<FieldComponentEmits>();
 const props = defineProps<FieldComponentProps>();
 const field = computed(() => props.field as DateField);
 
+const { displayFormat, valueFormat } = useLocalizedDateFormat();
+
 const fieldValue = computed({
   get: () => props.modelValue as FormattedValue | null | undefined,
   set: (value) => emit("update:modelValue", value),
@@ -20,20 +22,11 @@ const value = ref<FormattedValue | null | undefined>(
   parseInput(fieldValue.value)
 );
 
-const formats = {
-  date: "yyyy-MM-dd",
-  datetime: "yyyy-MM-dd HH:mm:ss",
-  daterange: "yyyy-MM-dd",
-  datetimerange: "yyyy-MM-dd HH:mm:ss",
-  month: "yyyy-MM",
-  year: "yyyy",
-};
-
 function parseInput(value: any) {
   try {
     const _format =
       (props.context.inputProps.value?.format as string) ??
-      formats[field.value.type];
+      displayFormat.value[field.value.type];
     if (!value) return null;
     const val = Array.isArray(value)
       ? [
@@ -41,27 +34,56 @@ function parseInput(value: any) {
           format(new Date(value[1]), _format),
         ]
       : format(new Date(value), _format);
-    console.info(val);
     return val as FormattedValue;
   } catch (err) {
+    console.info("failed parsing input", {
+      format:
+        props.context.rawInputProps.value?.format ??
+        displayFormat.value[field.value.type],
+      value,
+      err,
+    });
     return null;
   }
 }
 
 function parseOutput(value: FormattedValue | null | undefined) {
-  if (value) {
+  try {
+    const _format = (value: string) =>
+      !value
+        ? null
+        : format(
+            new Date(value),
+            (props.context.rawInputProps.value?.valueFormat as string) ??
+              (props.context.rawInputProps.value?.format as string) ??
+              valueFormat.value[field.value.type]
+          );
+    if (Array.isArray(value))
+      return [_format(value[0]), _format(value[1])] as FormattedValue;
+    if (!value) return null;
+    return _format(value);
+  } catch (err) {
+    console.info("failed parsing output", {
+      format:
+        props.context.rawInputProps.value?.format ??
+        props.context.rawInputProps.value?.valueFormat ??
+        valueFormat.value[field.value.type],
+      value,
+      err,
+    });
     return value;
-  } else {
-    return null;
   }
 }
 
 watch(
   () => value.value,
-  (v) => {
-    console.info(v);
-    fieldValue.value = parseOutput(v);
-  }
+  (v) => (fieldValue.value = parseOutput(v)),
+  { immediate: true }
+);
+
+watch(
+  () => fieldValue.value,
+  (v) => v !== parseOutput(value.value) && (value.value = parseInput(v))
 );
 </script>
 
@@ -71,7 +93,11 @@ watch(
     :style="group ? { width: `${size} !important` } : {}"
     :placeholder="context.placeholder.value"
     :type="field.type"
-    v-bind="context.inputProps.value"
+    v-bind="{
+      ...context.inputProps.value,
+      format: (props.context.inputProps.value?.format as string) ??
+      displayFormat[field.type]
+    }"
     update-value-on-close
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"

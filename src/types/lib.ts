@@ -1,5 +1,8 @@
 import { RouteLocationRaw } from "vue-router";
-import type { SweettoolsLocaleTemplate } from "./i18n";
+import type {
+  LocaleDateFormatTemplate,
+  SweettoolsLocaleTemplate,
+} from "./i18n";
 export type SweettoolsPluginConfig = {
   form?: {
     textOverrides: {
@@ -21,9 +24,9 @@ export type SweettoolsPluginConfig = {
   permissionValidator?: (keys: Array<string | string[]>) => boolean;
   i18n?: {
     enable: boolean;
-    translations?: {
-      [key: string]: SweettoolsLocaleTemplate;
-    };
+    translations?: { [key: string]: SweettoolsLocaleTemplate };
+    dateDisplayFormat?: { [key: string]: LocaleDateFormatTemplate };
+    dateValueFormat?: { [key: string]: LocaleDateFormatTemplate };
   };
 };
 

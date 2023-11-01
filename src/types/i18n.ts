@@ -86,3 +86,12 @@ export type SweettoolsLocaleTemplate = {
     value?: string;
   };
 };
+
+export type LocaleDateFormatTemplate = {
+  date: string;
+  datetime: string;
+  daterange: string;
+  datetimerange: string;
+  month: string;
+  year: string;
+};
