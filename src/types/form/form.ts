@@ -6,7 +6,12 @@ import {
   RemoveNeverProps,
   UnionToIntersection,
 } from "./../utils";
-import { ArrayVariantField, FormField, _FieldOptions } from "./fields";
+import {
+  ArrayVariantField,
+  FormField,
+  _BaseField,
+  _FieldOptions,
+} from "./fields";
 import { F } from "ts-toolbelt";
 
 export type FormSharedStore<K extends string = string> = Array<{
@@ -77,7 +82,7 @@ type ResolveFormType<
   : K["transform"] extends (value: any) => any
   ? ReturnType<K["transform"]>
   : K extends { component: Component }
-  ? ExtractCustomComponentType<K["component"]>
+  ? ExtractCustomComponentType<K["component"], K["required"]>
   : K extends { options: _FieldOptions }
   ? K extends { multiple: true } | { type: "checkbox-group" }
     ? ExtractOptionsType<K["options"]>[]
@@ -96,7 +101,7 @@ type ResolveFormType<
     : never
   : K extends { type: "array-variant" }
   ? Array<ExtractVariantType<K["variants"], K["variantKey"]>>
-  : K["type"] extends "daterange"
+  : K["type"] extends "daterange" | "datetimerange"
   ? [string, string]
   : K["type"] extends "number" | "slider"
   ? number
@@ -133,9 +138,12 @@ type ComponentProps<C extends Component> = C extends new (...args: any) => any
 
 export type ExtractCustomComponentType<
   T extends Component,
+  Required extends _BaseField["required"],
   Props = ComponentProps<T>
 > = Props extends { modelValue: any } | { modelValue?: any }
-  ? Props["modelValue"]
+  ? Required extends true
+    ? Exclude<Props["modelValue"], undefined | null>
+    : Props["modelValue"]
   : unknown;
 
 export type FormInfoReturnType<T extends FormField<any>> = RemoveNeverProps<

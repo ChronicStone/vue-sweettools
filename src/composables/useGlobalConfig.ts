@@ -4,7 +4,10 @@ import { PLUGIN_CONF_INJECTION_KEY } from "@/config/injectionKeys";
 import { DeepRequired, NestedPaths, TypeFromPath } from "@/types/utils";
 import { getPropertyFromPath } from "@/utils/form/getPropertyFromPath";
 import { en } from "@/i18n/locales/en";
-import { SweettoolsLocaleTemplate } from "@/types/i18n";
+import {
+  LocaleDateFormatTemplate,
+  SweettoolsLocaleTemplate,
+} from "@/types/i18n";
 import { deepmerge } from "deepmerge-ts";
 
 const DEFAULT_FORM_CONFIG = {
@@ -104,6 +107,14 @@ export function useGlobalConfig(formSchema?: FormSchema) {
     getProp,
     i18n: {
       enable: config?.i18n?.enable ?? true,
+      dateDisplayFormat: deepmerge(
+        { en: FORMAT_MAP },
+        config?.i18n?.dateDisplayFormat ?? {}
+      ) as Record<string, LocaleDateFormatTemplate>,
+      dateValueFormat: deepmerge(
+        { en: FORMAT_MAP },
+        config?.i18n?.dateValueFormat ?? {}
+      ) as Record<string, LocaleDateFormatTemplate>,
       translations: deepmerge(
         { en },
         config?.i18n?.translations ?? {}
