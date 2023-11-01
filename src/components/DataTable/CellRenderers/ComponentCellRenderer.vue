@@ -1,9 +1,6 @@
 <template>
   <div :style="{ width: `${width}px` }">
-    <NConfigProvider
-      :theme="params.theme.value"
-      :theme-overrides="params.themeOverrides.value ?? null"
-    >
+    <NConfigProvider :theme="theme" :theme-overrides="themeOverrides ?? null">
       <div :style="{ width: `${width}px` }" class="flex">
         <component :is="params._cellRenderer" v-bind="$props" />
       </div>
@@ -22,6 +19,9 @@ interface CustomCellRendererProps extends CellRendererParams {
 }
 
 const props = defineProps<{ params: CustomCellRendererProps }>();
+const theme = computed(() => props.params.getTheme());
+const themeOverrides = computed(() => props.params.getThemeOverrides());
+
 const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
 const { width } = useElementSize(cellContainerRef as Ref<HTMLElement>);
 </script>

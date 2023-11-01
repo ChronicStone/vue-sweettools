@@ -1,9 +1,6 @@
 <template>
   <div :style="{ width: `${width}px` }">
-    <NConfigProvider
-      :theme="params.theme.value"
-      :theme-overrides="params.themeOverrides.value ?? null"
-    >
+    <NConfigProvider :theme="theme" :theme-overrides="themeOverrides ?? null">
       <div :style="{ width: `${width}px` }" class="flex">
         <div class="flex gap-2 items-center">
           <template v-if="rowActions?.length">
@@ -59,6 +56,9 @@ interface ActionsCellProps extends CellRendererParams {
 }
 
 const props = defineProps<{ params: ActionsCellProps }>();
+const theme = computed(() => props.params.getTheme());
+const themeOverrides = computed(() => props.params.getThemeOverrides());
+
 const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
 const { width } = useElementSize(cellContainerRef as Ref<HTMLDivElement>);
 

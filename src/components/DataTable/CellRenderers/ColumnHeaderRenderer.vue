@@ -4,10 +4,7 @@
     class="flex items-center"
     @click="toggleSort"
   >
-    <NConfigProvider
-      :theme="params.theme.value"
-      :theme-overrides="params.themeOverrides.value ?? null"
-    >
+    <NConfigProvider :theme="theme" :theme-overrides="themeOverrides">
       <div
         :style="{ width: `${width}px` }"
         class="flex items-center gap-2 justify-between"
@@ -51,6 +48,10 @@ interface CellHeaderRendererProps extends HeaderRendererParams {
 
 const themeVars = useThemeVars();
 const props = defineProps<{ params: CellHeaderRendererProps }>();
+
+const theme = computed(() => props.params.getTheme());
+const themeOverrides = computed(() => props.params.getThemeOverrides());
+
 const cellContainerRef = ref<HTMLElement>(props.params.eGridHeader);
 const { width, height } = useElementSize(cellContainerRef as Ref<HTMLElement>);
 

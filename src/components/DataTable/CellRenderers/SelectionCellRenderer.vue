@@ -1,9 +1,6 @@
 <template>
   <div :style="{ width: `${width}px` }">
-    <NConfigProvider
-      :theme="params.theme.value"
-      :theme-overrides="params.themeOverrides.value ?? null"
-    >
+    <NConfigProvider :theme="theme" :theme-overrides="themeOverrides ?? null">
       <div :style="{ width: `${width}px` }">
         <div
           class="ag-wrapper ag-input-wrapper ag-checkbox-input-wrapper overflow-visible"
@@ -41,6 +38,9 @@ interface JsxCellRendererProps extends CellRendererParams {
 const props = defineProps<{ params: JsxCellRendererProps }>();
 const cellContainerRef = ref<HTMLElement>(props.params.eGridCell);
 const { width } = useElementSize(cellContainerRef as Ref<HTMLElement>);
+
+const theme = computed(() => props.params.getTheme());
+const themeOverrides = computed(() => props.params.getThemeOverrides());
 
 const selectAll = computed(props.params.getSelectAll);
 const rowSelected = ref<boolean>(props.params.node.isSelected() ?? false);

@@ -1,9 +1,6 @@
 <template>
   <div :style="{ width: `${width}px` }">
-    <NConfigProvider
-      :theme="params.theme.value"
-      :theme-overrides="params.themeOverrides.value ?? null"
-    >
+    <NConfigProvider :theme="theme" :theme-overrides="themeOverrides ?? null">
       <div :style="{ width: `${width}px` }">
         <NCheckbox
           :checked="selectAll"
@@ -24,6 +21,9 @@ import { HeaderRendererParams } from "@/types/table";
 interface JsxCellRendererProps extends HeaderRendererParams {
   setGlobalSelection: (val: boolean) => void;
 }
+
+const theme = computed(() => props.params.getTheme());
+const themeOverrides = computed(() => props.params.getThemeOverrides());
 
 const props = defineProps<{ params: JsxCellRendererProps }>();
 const cellContainerRef = ref<HTMLElement>(props.params.eGridHeader);
