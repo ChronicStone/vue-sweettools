@@ -2,12 +2,7 @@
 import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
 import { NDialogProvider, NMessageProvider } from "naive-ui";
 import { FormInstance } from "@/types/form/instance";
-import {
-  FormInferredData,
-  FormSchema,
-  FormSharedStore,
-  InferSharedStoreData,
-} from "@/types/form/form";
+import { FormInferredData, FormSchema } from "@/types/form/form";
 import { Narrowable } from "@/types/utils";
 
 const formInstances = ref<FormInstance[]>([]);
@@ -65,15 +60,6 @@ function closeForm(id: string) {
   formInstances.value = formInstances.value.filter(
     (instance) => instance._id !== id
   );
-}
-
-function submitForm(
-  formId: string,
-  formState: Record<string, unknown>,
-  onSubmit: (state: Record<string, unknown>) => void
-) {
-  closeForm(formId);
-  onSubmit(Object.assign({}, formState));
 }
 </script>
 
