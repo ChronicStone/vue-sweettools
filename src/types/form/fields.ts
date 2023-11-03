@@ -443,13 +443,22 @@ export interface DateFieldParams {
   valueFormat?: string;
 }
 
-export interface DateField {
+export type DateField = {
   type: "date" | "datetime" | "daterange" | "datetimerange" | "month" | "year";
   clearable?: boolean;
   fieldParams?:
     | DateFieldParams
     | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => DateFieldParams);
-}
+} & (
+  | {
+      type: "date" | "datetime" | "month" | "year";
+      transform?: (value: string | null) => string;
+    }
+  | {
+      type: "daterange" | "datetimerange";
+      transform?: (value: [string, string] | null) => string[];
+    }
+);
 
 export type UploadFieldParams = {
   abstract?: boolean;
@@ -660,13 +669,16 @@ export type FieldApi = {
   setValue(key: string, value: unknown): void;
   setValue(value: unknown): void;
   getOptions<
-    T extends SelectOption | TreeSelectOption | CascaderOption =
+    T extends
       | SelectOption
       | TreeSelectOption
       | CascaderOption
+      | string
+      | number = SelectOption | TreeSelectOption | CascaderOption,
+    O = T extends string | number ? { label: string; value: T } : T
   >(
     key?: string
-  ): T[];
+  ): O[];
 };
 
 export type ReadonlyFieldApi = {
@@ -702,7 +714,7 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
     | ((dependencies: Dependencies, api: ReadonlyFieldApi) => ValidationArgs)
     | ValidationArgs;
   watchOptions?: { deep?: boolean; immediate?: boolean };
-  watch?: (value: any, params: FieldApi) => void;
+  watch?<T>(value: T, params: FieldApi): void;
   onDependencyChange?: (dependencies: Dependencies, api: FieldApi) => void;
   ignore?: boolean;
 };

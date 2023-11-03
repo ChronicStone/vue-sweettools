@@ -315,7 +315,8 @@ export function useFieldContext(
           getValue: fieldApi.getValue,
           setValue: fieldApi.setValue,
           getOptions: fieldApi.getOptions,
-        })
+        }),
+      { immediate: false }
     );
   }
 

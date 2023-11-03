@@ -11,6 +11,7 @@ declare global {
   const DarkThemeOverrides: typeof import('./config/themeOverrides')['DarkThemeOverrides']
   const DefaultThemeOverrides: typeof import('./config/themeOverrides')['DefaultThemeOverrides']
   const EffectScope: typeof import('vue')['EffectScope']
+  const FORMAT_MAP: typeof import('./config/defaults')['FORMAT_MAP']
   const FORM_INJECTION_KEY: typeof import('./config/injectionKeys')['FORM_INJECTION_KEY']
   const FORM_STYLES_INJECTION_KEY: typeof import('./config/injectionKeys')['FORM_STYLES_INJECTION_KEY']
   const LightThemeOverrides: typeof import('./config/themeOverrides')['LightThemeOverrides']
@@ -270,6 +271,7 @@ declare global {
   const useLastChanged: typeof import('@vueuse/core')['useLastChanged']
   const useLink: typeof import('vue-router')['useLink']
   const useLocalStorage: typeof import('@vueuse/core')['useLocalStorage']
+  const useLocalizedDateFormat: typeof import('./composables/useLocalizedDateFormat')['useLocalizedDateFormat']
   const useLocalizedValidators: typeof import('./composables/form/useLocalizedValidators')['useLocalizedValidators']
   const useMagicKeys: typeof import('@vueuse/core')['useMagicKeys']
   const useManualRefHistory: typeof import('@vueuse/core')['useManualRefHistory']
@@ -396,6 +398,7 @@ declare module 'vue' {
     readonly DarkThemeOverrides: UnwrapRef<typeof import('./config/themeOverrides')['DarkThemeOverrides']>
     readonly DefaultThemeOverrides: UnwrapRef<typeof import('./config/themeOverrides')['DefaultThemeOverrides']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly FORMAT_MAP: UnwrapRef<typeof import('./config/defaults')['FORMAT_MAP']>
     readonly FORM_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['FORM_INJECTION_KEY']>
     readonly FORM_STYLES_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['FORM_STYLES_INJECTION_KEY']>
     readonly LightThemeOverrides: UnwrapRef<typeof import('./config/themeOverrides')['LightThemeOverrides']>
@@ -654,6 +657,7 @@ declare module 'vue' {
     readonly useLastChanged: UnwrapRef<typeof import('@vueuse/core')['useLastChanged']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useLocalStorage: UnwrapRef<typeof import('@vueuse/core')['useLocalStorage']>
+    readonly useLocalizedDateFormat: UnwrapRef<typeof import('./composables/useLocalizedDateFormat')['useLocalizedDateFormat']>
     readonly useLocalizedValidators: UnwrapRef<typeof import('./composables/form/useLocalizedValidators')['useLocalizedValidators']>
     readonly useMagicKeys: UnwrapRef<typeof import('@vueuse/core')['useMagicKeys']>
     readonly useManualRefHistory: UnwrapRef<typeof import('@vueuse/core')['useManualRefHistory']>
@@ -774,6 +778,7 @@ declare module '@vue/runtime-core' {
     readonly DarkThemeOverrides: UnwrapRef<typeof import('./config/themeOverrides')['DarkThemeOverrides']>
     readonly DefaultThemeOverrides: UnwrapRef<typeof import('./config/themeOverrides')['DefaultThemeOverrides']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly FORMAT_MAP: UnwrapRef<typeof import('./config/defaults')['FORMAT_MAP']>
     readonly FORM_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['FORM_INJECTION_KEY']>
     readonly FORM_STYLES_INJECTION_KEY: UnwrapRef<typeof import('./config/injectionKeys')['FORM_STYLES_INJECTION_KEY']>
     readonly LightThemeOverrides: UnwrapRef<typeof import('./config/themeOverrides')['LightThemeOverrides']>
@@ -1032,6 +1037,7 @@ declare module '@vue/runtime-core' {
     readonly useLastChanged: UnwrapRef<typeof import('@vueuse/core')['useLastChanged']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useLocalStorage: UnwrapRef<typeof import('@vueuse/core')['useLocalStorage']>
+    readonly useLocalizedDateFormat: UnwrapRef<typeof import('./composables/useLocalizedDateFormat')['useLocalizedDateFormat']>
     readonly useLocalizedValidators: UnwrapRef<typeof import('./composables/form/useLocalizedValidators')['useLocalizedValidators']>
     readonly useMagicKeys: UnwrapRef<typeof import('@vueuse/core')['useMagicKeys']>
     readonly useManualRefHistory: UnwrapRef<typeof import('@vueuse/core')['useManualRefHistory']>

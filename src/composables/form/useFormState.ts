@@ -7,7 +7,6 @@ import {
 } from "@/utils/form/mapFieldsInitialState";
 import { get } from "@vueuse/core";
 import { SelectOption, TreeSelectOption, CascaderOption } from "naive-ui";
-import { VNodeChild } from "vue";
 
 const [useProvideFormState, _useFormState] = createInjectionState(
   (
@@ -54,22 +53,26 @@ const [useProvideFormState, _useFormState] = createInjectionState(
       };
 
       const getOptions: FieldApi["getOptions"] = <
-        T extends SelectOption | TreeSelectOption | CascaderOption =
+        T extends
           | SelectOption
           | TreeSelectOption
           | CascaderOption
+          | string
+          | number = SelectOption | TreeSelectOption | CascaderOption,
+        O = T extends string | number ? { label: string; value: T } : T
       >(
         key?: string
       ) => {
         const _key = !key ? fieldFullPath.join(".") : key;
         const contextPath = getPropertyFullPath(_key, parentKey);
         const _context = contextMap.value.get(contextPath.join("."));
+
         if (!_context)
           throw new Error(
             `Context not found for path ${contextPath.join(".")}`
           );
 
-        return _context._options.value as T[];
+        return get(_context._options) as O[];
       };
 
       return { getValue, setValue, getOptions };
