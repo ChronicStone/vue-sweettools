@@ -714,7 +714,7 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
     | ((dependencies: Dependencies, api: ReadonlyFieldApi) => ValidationArgs)
     | ValidationArgs;
   watchOptions?: { deep?: boolean; immediate?: boolean };
-  watch?<T>(value: T, params: FieldApi): void;
+  watch?: (value: any, params: FieldApi) => void;
   onDependencyChange?: (dependencies: Dependencies, api: FieldApi) => void;
   ignore?: boolean;
 };

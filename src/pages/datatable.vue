@@ -32,9 +32,20 @@ async function authenticate() {
     jwtToken.value = token;
   }
 }
+export type Person = {
+  fullName?: string;
+  firstName: string;
+  lastName: string;
+  otherName?: string;
+  birthDate?: string;
+  email: string;
+  gender: `${"test" | "test2"}`;
+  mobilePhoneNumber?: string;
+  otherPhoneNumber?: string;
+};
 
-function loadAssessmentData(params: FetchParams) {
-  return axios
+async function loadAssessmentData(params: FetchParams) {
+  const data = await axios
     .post<RemoteTableData<Assessment>>(
       API_BASE_URL + "/assessment/list",
       params,
@@ -47,6 +58,8 @@ function loadAssessmentData(params: FetchParams) {
       }
     )
     .then((res) => res.data);
+
+  return data;
 }
 
 function assessmentStatusFilter<K extends string>(key: K): TableFilter {
@@ -109,21 +122,13 @@ function statusHistoryFilter<K extends string>(key: K): TableFilter {
 }
 const showAll = ref<boolean>(false);
 const schema = computed(() =>
-  buildTableSchema<Assessment>({
+  buildTableSchema({
     remote: true,
-    staticFilters: showAll.value
-      ? []
-      : [
-          {
-            key: "firstName",
-            matchMode: "contains",
-            value: "Axel",
-          },
-        ],
     columns: [
       { label: "First name", key: "firstName", render: (value) => value + "!" },
       { label: "Last name", key: "lastName" },
     ],
+    searchQuery: [],
     rowActions: [
       {
         tooltip: "Test",

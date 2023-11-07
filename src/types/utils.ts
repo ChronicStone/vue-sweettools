@@ -24,25 +24,15 @@ export type Union<
   ? L
   : L | R;
 
-export type NestedPaths<
-  T extends GenericObject,
-  MaxDepth extends number = 45,
-  Prev extends Primitive | undefined = undefined,
-  Path extends Primitive | undefined = undefined,
-  Depth extends 1[] = []
-> = Depth["length"] extends MaxDepth
-  ? never
-  : {
-      [K in keyof T]: T[K] extends GenericObject
-        ? NestedPaths<
-            T[K],
-            MaxDepth,
-            Union<Prev, Path>,
-            Join<Path, K>,
-            [1, ...Depth]
-          >
-        : Union<Union<Prev, Path>, Join<Path, K>>;
-    }[keyof T];
+export type NestedPaths<T> = T extends Array<infer U>
+  ? `${NestedPaths<U>}`
+  : T extends object
+  ? {
+      [K in keyof T & (string | number)]: K extends string
+        ? `${K}` | `${K}.${NestedPaths<T[K]>}`
+        : never;
+    }[keyof T & (string | number)]
+  : never;
 
 export type TypeFromPath<T extends GenericObject, Path extends string> = {
   [K in Path]: K extends keyof T
@@ -93,3 +83,5 @@ type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B
   : 2
   ? true
   : false;
+
+export type MaybePromise<T> = T | Promise<T>;

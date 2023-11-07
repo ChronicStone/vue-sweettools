@@ -29,9 +29,9 @@ const DEFAULT_COL_DEF = {
 
 type AgGridConfigParams = {
   isRemote: ComputedRef<boolean>;
-  columns: ComputedRef<Array<Column<any, any> | ColumnGroup<any>>>;
+  columns: ComputedRef<Array<Column<never, never> | ColumnGroup<never, never>>>;
   enableSelection: ComputedRef<boolean>;
-  rowActions: ComputedRef<TableRowAction<GenericObject>[]>;
+  rowActions: ComputedRef<TableRowAction<never>[]>;
   setGlobalSelection: (value: boolean) => void;
   selectAll: Ref<boolean>;
   selected: Ref<Array<Record<string, any>>>;
@@ -48,7 +48,7 @@ type AgGridConfigParams = {
 };
 
 function mapColumnsRecursively(
-  column: Column<any, any> | ColumnGroup<any>,
+  column: Column | ColumnGroup,
   params: AgGridConfigParams
 ): ColDef | ColGroupDef {
   if ("children" in column)
@@ -77,7 +77,7 @@ function mapColumnsRecursively(
         tableApi: params.tableApi,
         getTheme: () => params.theme.value,
         getThemeOverrides: () => params.themeOverrides.value,
-        searchable: params.searchQuery.value.includes(column.key),
+        searchable: params.searchQuery.value.includes(column.key as unknown as string),
         label: column.label,
         i18n: params.i18n,
       },
@@ -150,7 +150,7 @@ export function useGridColumns(params: AgGridConfigParams) {
       : []),
     ...(params.columns.value ?? [])
       .filter((c) => c?.condition?.() ?? true)
-      .map((c) => mapColumnsRecursively(c, params)),
+      .map((c) => mapColumnsRecursively(c as Column | ColumnGroup, params)),
   ]);
 
   return {

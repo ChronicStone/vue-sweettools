@@ -6,7 +6,7 @@ import { useDropdownActions } from "@/composables/useDropdownActions";
 import { useGridColumns } from "@/composables/useGridColumns";
 import { useGridStyle } from "@/composables/useGridStyle";
 import { useQueryState } from "@/composables/useQueryState";
-import { DataTableProps, TableApi } from "@/types/table";
+import { DataTableProps, TableAction, TableApi } from "@/types/table";
 import {
   BodyScrollEvent,
   ColumnApi,
@@ -112,7 +112,7 @@ const { resolveGridData, localDataStore } = useDataResolver(
 );
 
 const mappedActions = useTableActions(
-  _actions,
+  _actions as unknown as  ComputedRef<TableAction[]>,
   tableApi,
   fetchParams,
   !props.remote ? localDataStore : data,

@@ -4,23 +4,16 @@ import { ref } from "vue";
 import { NCheckbox, NConfigProvider, darkTheme } from "naive-ui";
 import { booleanFilter, textFilter } from "..";
 
-const schema = buildTableSchema<{
-  firstName: string;
-  lastName: string;
-  valid: boolean;
-  user?: {
-    test: string;
-    haha: { hehe: string };
-  } | null;
-}>({
-  tableKey: "someKey",
-  persistency: "localStorage",
+const schema = buildTableSchema({
+  // tableKey: "someKey",
+  // persistency: "localStorage",
   remote: true,
-  filters: [
-    booleanFilter("valid", "Valid"),
-    textFilter("firstName", "First name", "contains"),
-  ],
-  searchQuery: ["firstName", "lastName"],
+  // filters: [
+  //   booleanFilter("valid", "Valid"),
+  //   textFilter("firstName", "First name", "contains"),
+  // ],
+  searchQuery: ["firstName", "param.some.nested.value"],
+  // searchQuery: ["firstName", "lastName"],
   columns: [
     {
       label: "User",
@@ -38,19 +31,21 @@ const schema = buildTableSchema<{
       render: (value) => value.toString(),
     },
   ],
-  datasource: async (t) => {
-    console.info("run resolver", t);
-    await new Promise((r) => setTimeout(r, 2000));
-    return {
-      totalDocs: 5000,
-      totalPages: 10,
-      docs: Array.from({ length: 64 }, (_, i) => ({
-        firstName: `First name ${i}`,
-        lastName: `Last name ${i}`,
-        valid: i % 2 === 0,
-      })),
-    };
-  },
+  datasource: () => ({
+    docs: Array.from({ length: 64 }, (_, i) => ({
+      firstName: `First name ${i}`,
+      lastName: `Last name ${i}`,
+      valid: i % 2 === 0,
+      ...(i % 2 === 0
+        ? {
+            someProp: `Some prop ${i}`,
+            param: { some: { nested: { value: i } } },
+          }
+        : {}),
+    })),
+    totalDocs: 64,
+    totalPages: 1,
+  }),
 });
 
 const dark = ref(false);
