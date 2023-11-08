@@ -1,7 +1,12 @@
 import { FormField } from "@/types/form/fields";
 import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 import { ComputedRef, DefineComponent, Ref, VNodeChild } from "vue";
-import { DeepRequired, GenericObject, NestedPaths } from "@/types/utils";
+import {
+  DeepRequired,
+  GenericObject,
+  MaybePromise,
+  NestedPaths,
+} from "@/types/utils";
 import { AppTypes } from "./lib";
 import {
   Column as AgGridColum,
@@ -88,18 +93,21 @@ export interface FilterState {
   [key: string]: string | number | boolean | any[] | object;
 }
 
-export interface ColumnGroup<T extends GenericObject = GenericObject> {
+export interface ColumnGroup<
+  T extends GenericObject = GenericObject,
+  KeyPaths = any
+> {
   label: string | (() => string);
-  children: Array<Column<T> | ColumnGroup<T>>;
+  children: Array<Column<T, KeyPaths> | ColumnGroup<T, KeyPaths>>;
   condition?: () => boolean;
 }
 
 export interface Column<
   T extends GenericObject = GenericObject,
-  Key = NestedPaths<DeepRequired<T>>
+  KeyPaths = any
 > {
   label: string | (() => VNodeChild);
-  key?: Key;
+  key?: KeyPaths;
   hide?: boolean;
   filter?: TableFilter;
   // minWidth?: number | string;
@@ -175,25 +183,16 @@ export type RemoteTableData<T extends GenericObject> = {
   totalPages: number;
 };
 
-export type DataSource<T, Remote extends boolean = boolean> = (
-  params: FetchParams
-) => Promise<
-  Remote extends true
-    ? {
-        docs: T[];
-        totalDocs: number;
-        totalPages: number;
-      }
-    : Remote extends false
-    ? T[]
-    :
-        | {
-            docs: T[];
-            totalDocs: number;
-            totalPages: number;
-          }
-        | T[]
->;
+export type DataSource<
+  T,
+  Remote extends boolean = boolean
+> = Remote extends true
+  ? (params: FetchParams) => MaybePromise<{
+      docs: T[];
+      totalDocs: number;
+      totalPages: number;
+    }>
+  : () => MaybePromise<T[]>;
 
 export interface TableActionParams<T = GenericObject> {
   nbSelected: number;
@@ -226,7 +225,7 @@ export interface TableApi<T = Record<string, unknown>> {
   ) => boolean;
 }
 
-export type TableRowAction<T> = {
+export type TableRowAction<T = GenericObject> = {
   icon: string | ((params: { rowData: T }) => string);
   tooltip: string | ((params: { rowData: T }) => string);
   action?: (params: { rowData: T; tableApi: TableApi<T> }) => void;
@@ -287,26 +286,37 @@ export interface GridControls {
 }
 
 export interface DataTableSchema<
-  TData extends GenericObject = GenericObject,
-  Remote extends boolean = boolean
+  Remote extends boolean = boolean,
+  Source extends DataSource<GenericObject, Remote> = DataSource<
+    GenericObject,
+    Remote
+  >,
+  TData extends GenericObject = Source extends (
+    ...args: any[]
+  ) => MaybePromise<{
+    docs: Array<infer T extends GenericObject>;
+  }>
+    ? T
+    : Source extends () => MaybePromise<Array<infer T extends GenericObject>>
+    ? T
+    : never,
+  KeyPaths = NestedPaths<TData>
 > {
   remote: Remote;
   draggable?: boolean;
-  datasource: DataSource<TData, Remote>;
-  columns: Array<Column<TData> | ColumnGroup<TData>>;
+  datasource: Source;
+  columns: Array<Column<TData, KeyPaths> | ColumnGroup<TData, KeyPaths>>;
   optimizeQuery?: OptimizedQueryField[];
   tableKey?: string;
   staticFilters?: StaticFilter[];
   filters?: TableFilter[];
-  searchQuery?: Array<NestedPaths<DeepRequired<TData>>>;
+  searchQuery?: Array<KeyPaths>;
   enableSelection?: boolean;
   actions?: TableAction<TData>[];
   rowActions?: TableRowAction<TData>[];
   columnFitMode?: "fit" | "fill";
   persistency?: false | "localStorage" | "sessionStorage";
-  sort?:
-    | NestedPaths<DeepRequired<TData>>
-    | { key: NestedPaths<DeepRequired<TData>>; dir: "asc" | "desc" };
+  sort?: KeyPaths | { key: KeyPaths; dir: "asc" | "desc" };
   onRowDrag?: (params: {
     rows: Array<TData>;
     movedRows: Array<TData>;
@@ -314,15 +324,10 @@ export interface DataTableSchema<
   }) => void;
 }
 
-export interface DataTableProps
-  extends DataTableSchema<{ [key: string]: unknown }> {
+export interface DataTableProps extends DataTableSchema {
   dark?: boolean;
   themeOverrides?: GlobalThemeOverrides;
 }
-
-export type DataTableFactory<T extends GenericObject = GenericObject> = (
-  ...args: any[]
-) => DataTableSchema<T>;
 
 export interface ThemeConfig {
   themeOverrides?: Record<string, any>;
