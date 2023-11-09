@@ -46,8 +46,8 @@ export interface SelectOptions {
   value: any;
 }
 
-export interface OptimizedQueryField {
-  field: string;
+export interface OptimizedQueryField<KeyPath = string> {
+  field: KeyPath;
   externalDocument?: boolean;
 }
 

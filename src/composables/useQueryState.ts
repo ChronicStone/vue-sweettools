@@ -1,22 +1,21 @@
 import { mapFilterInitialState } from "@/utils/table/mapFilterInitialState";
 import { mapQueryFetchParams } from "@/utils/table/mapQueryFetchParams";
-import {
-  DataTableSchema,
+import { useStorage } from "@vueuse/core";
+import { type ComputedRef, computed, ref } from "vue";
+import type { GenericObject } from "@/types/utils";
+import type {
+  DataQueryState,
+  DynamicFilter,
   FetchParams,
-  GridControls,
   OptimizedQueryField,
   StaticFilter,
-  TableFilter,
-} from "./../types/table";
-import { useStorage } from "@vueuse/core";
-import { ComputedRef, computed, ref } from "vue";
-import { GenericObject } from "@/types/utils";
+} from "@/types/shared";
 
 type QueryStateParams = {
   key: string;
   searchQuery: string[];
   optimizeQuery: OptimizedQueryField[];
-  panelFilters: ComputedRef<TableFilter[]>;
+  panelFilters: ComputedRef<DynamicFilter[]>;
   staticFilters: ComputedRef<StaticFilter[]>;
   persistency: undefined | false | "localStorage" | "sessionStorage";
   defaultSort: ComputedRef<
@@ -55,33 +54,33 @@ export function useQueryState({
       );
 
   const sortState = !persistency
-    ? ref<GridControls["sort"]>({ colId: "", key: "", dir: null })
-    : useStorage<GridControls["sort"]>(
+    ? ref<DataQueryState["sort"]>({ colId: "", key: "", dir: null })
+    : useStorage<DataQueryState["sort"]>(
         `${key}__#sortState`,
         { colId: "", key: "", dir: null },
         persistency === "localStorage" ? localStorage : sessionStorage
       );
 
   const paginationState = !persistency
-    ? ref<GridControls["pagination"]>({
+    ? ref<DataQueryState["pagination"]>({
         pageSize: defaultPageSize ?? 50,
         pageIndex: 1,
         pageTotalCount: 1,
         rowTotalCount: 0,
       })
-    : useStorage<GridControls["pagination"]>(
+    : useStorage<DataQueryState["pagination"]>(
         `${key}__#paginationstate`,
         { pageSize: 50, pageIndex: 1, pageTotalCount: 1, rowTotalCount: 0 },
         persistency === "localStorage" ? localStorage : sessionStorage
       );
 
   const filterState = !persistency
-    ? ref<GridControls["filters"]>({
+    ? ref<DataQueryState["filters"]>({
         searchQuery: "",
         panelFilters: {},
         staticFilters: {},
       })
-    : useStorage<GridControls["filters"]>(
+    : useStorage<DataQueryState["filters"]>(
         `${key}__#filtersState`,
         { searchQuery: "", panelFilters: {}, staticFilters: {} },
         persistency === "localStorage" ? localStorage : sessionStorage
@@ -135,7 +134,7 @@ export function useQueryState({
     );
 
     filterState.value.staticFilters = mapFilterInitialState(
-      staticFilters.value as unknown as TableFilter[],
+      staticFilters.value as unknown as DynamicFilter[],
       filterState.value.staticFilters,
       clearMode
     );
@@ -146,6 +145,12 @@ export function useQueryState({
     sortState.value = { colId: "", key: "", dir: null };
     filterState.value.searchQuery = "";
     initializeFilterState(true);
+  }
+
+  function setSort(sort: { key: string; dir: "asc" | "desc" } | null) {
+    sortState.value.colId = sort?.key ?? "";
+    sortState.value.key = sort?.key ?? "";
+    sortState.value.dir = sort?.dir ?? "asc";
   }
 
   return {
@@ -162,5 +167,6 @@ export function useQueryState({
     topViewportOffset,
     initializeFilterState,
     resetTableQuery,
+    setSort,
   };
 }

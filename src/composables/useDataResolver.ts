@@ -1,4 +1,3 @@
-import { DataSource, FetchParams, GridControls } from "@/types/table";
 import { GenericObject } from "@/types/utils";
 import { obsoletableFn } from "@/utils/obsoletableFn";
 import { remoteDataMapper } from "@/utils/table/remoteDataMapper";
@@ -7,12 +6,13 @@ import { GridApi } from "ag-grid-community";
 import { ComputedRef, Ref } from "vue";
 import { watchDebounced } from "@vueuse/core";
 import { QueryState } from "@/types/lib";
+import { DataSource, FetchParams } from "@/types/shared";
 
 type DataResolverParams = {
   remote: ComputedRef<boolean>;
   isLoading: Ref<boolean>;
   data: Ref<GenericObject[]>;
-  datasource: DataSource<GenericObject, boolean>;
+  datasource: DataSource;
   pagination: QueryState["paginationState"];
   fetchParams: QueryState["fetchParams"];
   gridApi?: Ref<GridApi | undefined>;

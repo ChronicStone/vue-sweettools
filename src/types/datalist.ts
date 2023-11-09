@@ -1,34 +1,20 @@
 import { VNodeChild } from "vue";
 import {
-  DeepRequired,
   GenericObject,
   MaybePromise,
   NestedPaths,
   NestedPathsForType,
 } from "./utils";
 import {
+  Action,
+  DataDefaultSort,
+  DataSortOption,
   DataSource,
+  DynamicFilter,
+  OptimizedQueryField,
+  RowAction,
   StaticFilter,
-  TableAction,
-  TableApi,
-  TableFilter,
-} from "./table";
-
-export type DataListApi<
-  T extends GenericObject = GenericObject,
-  KeyPath = any
-> = TableApi<T, KeyPath>;
-export type DataListSortOption<KeyPaths> = {
-  label: string | (() => VNodeChild);
-  key: KeyPaths;
-};
-
-export type DataListRowAction<TData extends GenericObject = GenericObject> = {
-  label: string | (() => VNodeChild);
-  icon?: string;
-  condition?: (data: TData) => boolean;
-  action: (data: TData) => void;
-};
+} from "./shared";
 
 export interface DataListSchema<
   Remote extends boolean = boolean,
@@ -57,50 +43,21 @@ export interface DataListSchema<
   description?: (params: { rowData: TData }) => VNodeChild;
   expandedContent?: (params: { rowData: TData }) => VNodeChild;
   expendable?: (params: { rowData: TData }) => boolean;
+  optimizeQuery?: OptimizedQueryField<PathKeys>[];
   staticFilters?: StaticFilter[];
-  actions?: TableAction<TData, PathKeys>[];
-  rowActions?: DataListRowAction<TData>[];
+  actions?: Action<TData, PathKeys>[];
+  rowActions?: RowAction<TData, PathKeys>[];
   pagination?: boolean;
   selection?: boolean;
-  sortOptions?: DataListSortOption<PathKeys>[];
+  sortOptions?: DataSortOption<PathKeys>[];
   searchQuery?: PathKeys[];
-  filters?: TableFilter[];
-  defaultSort?: PathKeys | { key: PathKeys; dir: "asc" | "desc" };
+  filters?: DynamicFilter[];
+  defaultSort?: DataDefaultSort<PathKeys>;
   persistency?: false | "localStorage" | "sessionStorage";
   listKey?: string;
   defaultPageSize?: number;
   maxHeight?: false | string;
 }
-// & (
-//   | {
-//       persistency?: false;
-//     }
-//   | {
-//       persistency: "localStorage" | "sessionStorage";
-//       listKey: string;
-//     }
-// );
-
-buildListSchema({
-  remote: false,
-  title: ({ rowData }) => rowData.id,
-  searchQuery: ["id", "name"],
-  sortOptions: [{ label: "Name", key: "id" }],
-  datasource: () => [
-    {
-      id: 1,
-      name: "test",
-      age: 12,
-      test: { test: "test" },
-      test2: "test",
-      test3: { test: "test" },
-      test4: { test: { test: "test" } },
-    },
-    { id: 2, name: "test2", age: 12 },
-  ],
-  persistency: "localStorage",
-  listKey: "test",
-});
 
 export function buildListSchema<
   Remote extends boolean,

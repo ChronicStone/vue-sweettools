@@ -209,6 +209,7 @@ declare global {
   const useCycleList: typeof import('@vueuse/core')['useCycleList']
   const useDark: typeof import('@vueuse/core')['useDark']
   const useDarkMode: typeof import('./composables/_internal/useDarkMode')['useDarkMode']
+  const useDataActions: typeof import('./composables/useDataActions')['useDataActions']
   const useDataResolver: typeof import('./composables/useDataResolver')['useDataResolver']
   const useDateFormat: typeof import('@vueuse/core')['useDateFormat']
   const useDebounce: typeof import('@vueuse/core')['useDebounce']
@@ -596,6 +597,7 @@ declare module 'vue' {
     readonly useCycleList: UnwrapRef<typeof import('@vueuse/core')['useCycleList']>
     readonly useDark: UnwrapRef<typeof import('@vueuse/core')['useDark']>
     readonly useDarkMode: UnwrapRef<typeof import('./composables/_internal/useDarkMode')['useDarkMode']>
+    readonly useDataActions: UnwrapRef<typeof import('./composables/useDataActions')['useDataActions']>
     readonly useDataResolver: UnwrapRef<typeof import('./composables/useDataResolver')['useDataResolver']>
     readonly useDateFormat: UnwrapRef<typeof import('@vueuse/core')['useDateFormat']>
     readonly useDebounce: UnwrapRef<typeof import('@vueuse/core')['useDebounce']>
@@ -976,6 +978,7 @@ declare module '@vue/runtime-core' {
     readonly useCycleList: UnwrapRef<typeof import('@vueuse/core')['useCycleList']>
     readonly useDark: UnwrapRef<typeof import('@vueuse/core')['useDark']>
     readonly useDarkMode: UnwrapRef<typeof import('./composables/_internal/useDarkMode')['useDarkMode']>
+    readonly useDataActions: UnwrapRef<typeof import('./composables/useDataActions')['useDataActions']>
     readonly useDataResolver: UnwrapRef<typeof import('./composables/useDataResolver')['useDataResolver']>
     readonly useDateFormat: UnwrapRef<typeof import('@vueuse/core')['useDateFormat']>
     readonly useDebounce: UnwrapRef<typeof import('@vueuse/core')['useDebounce']>

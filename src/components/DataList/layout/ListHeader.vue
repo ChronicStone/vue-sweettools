@@ -1,8 +1,8 @@
 <script setup lang="tsx">
-import FilterPanel from "../DataTable/FilterPanel.vue";
-import SearchQueryInput from "../DataTable/SearchQueryInput.vue";
+import FilterPanel from "./FilterPanel.vue";
+import SearchQueryInput from "./SearchQueryInput.vue";
 import ContextMenu from "@/components/Utils/ContextMenu.vue";
-import FormRenderer from "../Form/Renderer/FormRenderer.vue";
+import FormRenderer from "@/components/Form/Renderer/FormRenderer.vue";
 import {
   NTooltip,
   NDropdown,
@@ -11,16 +11,13 @@ import {
   NSwitch,
   NPopover,
   NBadge,
-  NCheckbox,
   NDivider,
 } from "naive-ui";
-import { TableFilter } from "@/types/table";
-import { GenericObject } from "@/types/utils";
-import { computed } from "vue";
-import { useTableActions } from "@/composables/useTableActions";
 import { useTranslations } from "@/i18n/composables/useTranslations";
-import { DataListSortOption } from "@/types/datalist";
-import { FormRefInstance } from "@/types/form/instance";
+import { useDataActions } from "../composables/useDataActions";
+import type { GenericObject } from "@/types/utils";
+import type { FormRefInstance } from "@/types/form/instance";
+import type { DataSortOption, DynamicFilter } from "@/types/shared";
 
 const { searchQuery, panelFilters, sort, selectAll } = defineModels<{
   selectAll: boolean;
@@ -40,8 +37,8 @@ const props = defineProps<{
   nbSelected: number;
   enableSearchQuery: boolean;
   dropdownActions: ReturnType<typeof useTableActions>["value"];
-  filters: TableFilter[];
-  sortOptions: DataListSortOption<string>[];
+  filters: DynamicFilter[];
+  sortOptions: DataSortOption<string>[];
   sort: { key: string; dir: "asc" | "desc" | null } | null;
   resolveGridData: () => any;
   resetTableQuery: () => any;

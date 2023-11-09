@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { useIsMobile } from "@/composables/useIsMobile";
 import { useTranslations } from "@/i18n/composables/useTranslations";
-import { GridControls } from "@/types/table";
 import { NSelect, NPagination } from "naive-ui";
-import { computed } from "vue";
+import type { DataQueryState } from "@/types/shared";
 
-const props = defineProps<{ paginationState: GridControls["pagination"] }>();
+const props = defineProps<{ paginationState: DataQueryState["pagination"] }>();
 const emit = defineEmits<{
-  (e: "update:paginationState", value: GridControls["pagination"]): void;
+  (e: "update:paginationState", value: DataQueryState["pagination"]): void;
 }>();
 
 const isMobile = useIsMobile();
@@ -15,7 +14,7 @@ const i18n = useTranslations();
 
 const _paginationState = computed({
   get: () => props.paginationState,
-  set: (value: GridControls["pagination"]) =>
+  set: (value: DataQueryState["pagination"]) =>
     emit("update:paginationState", value),
 });
 

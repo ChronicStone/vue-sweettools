@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { DataListSchema } from "@/types/datalist";
-import { DataSource, StaticFilter, TableFilter } from "@/types/table";
-import { GenericObject } from "@/types/utils";
 import { withDefaults } from "unplugin-vue-macros/macros" assert { type: "macro" };
-import ListHeader from "./ListHeader.vue";
-import ListItem from "./ListItem.vue";
-import ListPagination from "./ListPagination.vue";
+import Lazy from "./Lazy.vue";
+import ListHeader from "./layout/ListHeader.vue";
+import ListItem from "./content/ListItem.vue";
+import ListPagination from "./layout/ListPagination.vue";
 import { NEmpty, NSkeleton, NCard, NScrollbar } from "naive-ui";
 import { vAutoAnimate } from "@formkit/auto-animate/vue";
-import Lazy from "./Lazy.vue";
+import { useDataActions } from "./composables/useDataActions";
+import type { DataListSchema } from "@/types/datalist";
+import { useDataApi } from "./composables/useDataApi";
 
 const {
   title,
@@ -51,12 +51,10 @@ const queryState = useQueryState({
   key: `${listKey.value ?? "DEFAULT_LIST"}_LIST_STATE`,
   searchQuery: searchQuery.value,
   optimizeQuery: [],
-  panelFilters: filters as unknown as ComputedRef<TableFilter[]>,
-  staticFilters: staticFilters as unknown as ComputedRef<StaticFilter[]>,
+  panelFilters: filters,
+  staticFilters: staticFilters,
   persistency: persistency.value,
-  defaultSort: defaultSort as unknown as ComputedRef<
-    undefined | string | { key: string; dir: "asc" | "desc" }
-  >,
+  defaultSort: defaultSort,
   defaultPageSize: defaultPageSize.value,
 });
 
@@ -76,21 +74,15 @@ function setGlobalSelection(value: boolean) {
   queryState.selectAll.value = value;
 }
 
-function setListSort(sort: { key: string; dir: "asc" | "desc" } | null) {
-  queryState.sortState.value.colId = sort?.key ?? "";
-  queryState.sortState.value.key = sort?.key ?? "";
-  queryState.sortState.value.dir = sort?.dir ?? "asc";
-}
-
-const mappedActions = useTableActions<"list">({
+const dataApi = useDataApi({ queryState, resolver });
+const lastSelectedRowId = ref<string | null>(null);
+const mappedActions = useDataActions({
   actions,
   fetchParams: queryState.fetchParams,
   data: remote.value ? queryState.data : resolver.localDataStore,
-  internalApi: ref({}) as any,
+  internalApi: dataApi,
   selectionState: queryState,
 });
-
-const lastSelectedRowId = ref<string | null>(null);
 
 watch(
   () => queryState.paginationState.value.pageIndex,
@@ -177,7 +169,7 @@ function handleSelection(
       :reset-table-query="() => queryState.resetTableQuery()"
       :list-key="listKey"
       :tooltip-show-delay="100"
-      @update:sort="setListSort"
+      @update:sort="queryState.setSort"
     >
       <slot />
     </ListHeader>
@@ -263,21 +255,3 @@ function handleSelection(
     />
   </div>
 </template>
-
-<style>
-.list-move,
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
-}
-
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-
-.list-leave-active {
-  position: absolute;
-}
-</style>

@@ -1,5 +1,5 @@
+import { DataSource, FetchParams } from "@/types/shared";
 import { GenericObject } from "@/types/utils";
-import { DataSource, FetchParams } from "@/types/table";
 import { resolveFromStringPath } from "@/utils/resolveFromStringPath";
 
 export async function remoteDataMapper(
