@@ -24,6 +24,7 @@ export function useFormController<
   currentStep: ComputedRef<number>;
   canTriggerNext: ComputedRef<boolean>;
   canTriggerPrevious: ComputedRef<boolean>;
+  reset: (clear?: boolean) => void;
 } {
   return {
     schema,
@@ -44,6 +45,7 @@ export function useFormController<
     canTriggerPrevious: computed(
       () => formRef.value?.canTriggerPrevious?.value ?? false
     ),
+    reset: (clear?: boolean) => formRef.value?.$reset?.(clear),
   };
 }
 

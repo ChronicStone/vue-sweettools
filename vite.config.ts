@@ -1,23 +1,30 @@
 import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
+import Vue from "@vitejs/plugin-vue";
 import path from "path";
 import WindiCSS from "vite-plugin-windicss";
 import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
 import Components from "unplugin-vue-components/vite";
-import vueJsx from "@vitejs/plugin-vue-jsx";
+import VueJsx from "@vitejs/plugin-vue-jsx";
 import PurgeIcons from "vite-plugin-purge-icons";
 import VueTypeImports from "vite-plugin-vue-type-imports";
 import Pages from "vite-plugin-pages";
 import dts from "vite-plugin-dts";
 import AutoImports from "unplugin-auto-import/vite";
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers";
+import VueMacros from "unplugin-vue-macros/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     // VueDevtools(),
-    vue({ reactivityTransform: true }),
+    VueMacros({
+      chainCall: true,
+      plugins: {
+        vue: Vue(),
+        vueJsx: VueJsx(),
+      },
+    }),
     VueTypeImports(),
     WindiCSS(),
     AutoImports({
@@ -48,7 +55,6 @@ export default defineConfig({
     }),
     PurgeIcons(),
     Icons({ autoInstall: true }),
-    vueJsx(),
     dts(),
     Pages(),
   ],

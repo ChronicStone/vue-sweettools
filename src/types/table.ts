@@ -17,6 +17,7 @@ import {
   RowNode,
 } from "ag-grid-community";
 import { GridApi } from "@ag-grid-community/core";
+import { DataListApi } from "./datalist";
 
 export type FilterMatchMode =
   | "arrayContains"
@@ -194,28 +195,43 @@ export type DataSource<
     }>
   : () => MaybePromise<T[]>;
 
-export interface TableActionParams<T = GenericObject> {
+export interface TableActionParams<
+  TType extends "table" | "list" = "table",
+  T extends GenericObject = GenericObject,
+  KeyPath = any
+> {
   nbSelected: number;
   selectAll: boolean;
   selected: T[];
   fetchParams: FetchParams;
-  tableApi: TableApi<T>;
+  tableApi: TType extends "table"
+    ? TableApi<T, KeyPath>
+    : DataListApi<T, KeyPath>;
 }
 
-export interface TableAction<T = GenericObject> {
+export interface TableAction<
+  T extends GenericObject = GenericObject,
+  KeyPath = any,
+  TType extends "table" | "list" = "table",
+  TParams extends TableActionParams<TType, T, KeyPath> = TableActionParams<
+    TType,
+    T,
+    KeyPath
+  >
+> {
   label: string;
   icon: string;
-  action?: (actionParams: TableActionParams<T>) => void;
+  action?: (actionParams: TParams) => void;
   link?: string | AppTypes["routeLocation"];
   permissions?: (AppTypes["permissionKey"] | AppTypes["permissionKey"][])[];
-  condition?: (data: T[], params: TableActionParams<T>) => boolean;
+  condition?: (data: T[], params: TParams) => boolean;
 }
 
-export interface TableApi<T = Record<string, unknown>> {
+export interface TableApi<T = GenericObject, KeyPath = any> {
   refreshData: () => void;
   setSearchQuery: (value: string) => void;
   resetFilters: () => void;
-  setSort: (key: string, dir?: "asc" | "desc" | null) => void;
+  setSort: (key: KeyPath, dir?: "asc" | "desc" | null) => void;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
   updateRow: (selector: (row: T) => boolean, updater: (row: T) => T) => boolean;
@@ -225,10 +241,10 @@ export interface TableApi<T = Record<string, unknown>> {
   ) => boolean;
 }
 
-export type TableRowAction<T = GenericObject> = {
+export type TableRowAction<T = GenericObject, KeyPath = any> = {
   icon: string | ((params: { rowData: T }) => string);
   tooltip: string | ((params: { rowData: T }) => string);
-  action?: (params: { rowData: T; tableApi: TableApi<T> }) => void;
+  action?: (params: { rowData: T; tableApi: TableApi<T, KeyPath> }) => void;
   link?:
     | string
     | AppTypes["routeLocation"]
@@ -302,6 +318,7 @@ export interface DataTableSchema<
     : never,
   KeyPaths = NestedPaths<TData>
 > {
+  rowKey?: KeyPaths;
   remote: Remote;
   draggable?: boolean;
   datasource: Source;
@@ -312,15 +329,15 @@ export interface DataTableSchema<
   filters?: TableFilter[];
   searchQuery?: Array<KeyPaths>;
   enableSelection?: boolean;
-  actions?: TableAction<TData>[];
-  rowActions?: TableRowAction<TData>[];
+  actions?: TableAction<TData, KeyPaths>[];
+  rowActions?: TableRowAction<TData, KeyPaths>[];
   columnFitMode?: "fit" | "fill";
   persistency?: false | "localStorage" | "sessionStorage";
   sort?: KeyPaths | { key: KeyPaths; dir: "asc" | "desc" };
   onRowDrag?: (params: {
     rows: Array<TData>;
     movedRows: Array<TData>;
-    tableApi: TableApi<TData>;
+    tableApi: TableApi<TData, KeyPaths>;
   }) => void;
 }
 

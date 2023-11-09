@@ -34,3 +34,5 @@ export interface AppTypes {
   routeLocation: RouteLocationRaw;
   permissionKey: string;
 }
+
+export type QueryState = ReturnType<typeof useQueryState>;

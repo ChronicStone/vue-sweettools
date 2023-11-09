@@ -13,6 +13,7 @@ import { MaybeRef } from "@vueuse/core";
 import { vTestid } from "@chronicstone/vue-testid";
 import { renderVNode } from "@/utils/renderVNode";
 import { useTranslations } from "@/i18n/composables/useTranslations";
+import { GenericObject } from "@/types/utils";
 
 const props = defineProps<{
   schema: FormSchema<any, any>;

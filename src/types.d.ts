@@ -38,6 +38,8 @@ import {
 import TExcelReader from "./components/ExcelReader/ExcelReader.vue";
 import { buildGridSchema } from "./composables/buildTableSchema";
 import { useLocalizedValidators } from "./composables/form/useLocalizedValidators";
+import { DataListSchema, buildListSchema } from "./types/datalist";
+import TDataList from "./components/DataList/DataList.vue";
 declare module "@chronicstone/vue-sweettools" {
   export type {
     DataTableSchema,
@@ -75,6 +77,8 @@ declare module "@chronicstone/vue-sweettools" {
     Record<string, unknown>
   >;
 
+  export const DataList: typeof TDataList;
+
   export const ExcelReader: typeof TExcelReader;
 
   export {
@@ -92,6 +96,7 @@ declare module "@chronicstone/vue-sweettools" {
     useExcelReader,
     buildTableSchema,
     buildGridSchema,
+    buildListSchema,
     useLocalizedValidators,
   };
 

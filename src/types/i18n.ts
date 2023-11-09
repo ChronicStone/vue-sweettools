@@ -61,6 +61,9 @@ export type SweettoolsLocaleTemplate = {
     };
   };
   datatable?: {
+    sortPanelTitle?: string;
+    saveSort?: string;
+    clearSort?: string;
     searchQueryPlaceholder?: string;
     searchQueryColumnIndicatorTooltip?: string;
     actionsButton?: string;
@@ -75,6 +78,8 @@ export type SweettoolsLocaleTemplate = {
     refreshButtonTooltip?: string;
     refreshAndResetAction?: string;
     noRowsToShow?: string;
+    sortAsc?: string;
+    sortDesc?: string;
   };
   excelImport?: {
     downloadReferenceFileButton?: string;

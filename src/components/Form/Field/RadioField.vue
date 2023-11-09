@@ -17,6 +17,8 @@ const options = computed(() => {
     value: string | number | boolean | undefined;
   }>;
 });
+
+console.log("options", props);
 </script>
 
 <template>
@@ -41,7 +43,7 @@ const options = computed(() => {
         v-bind="context.inputProps.value"
         @blur="validator?.$touch"
       >
-        {{ option.label }}
+        <component :is="renderVNode(option.label ?? '')" />
       </NRadio>
     </div>
   </NRadioGroup>

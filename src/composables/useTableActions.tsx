@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { FetchParams, TableAction, TableApi } from "@/types/table";
 import { GenericObject } from "@/types/utils";
 import { generateUUID } from "@/utils/generateUUID";
@@ -5,23 +6,28 @@ import { renderIcon } from "@/utils/renderIcon";
 import { ComputedRef, Ref } from "vue";
 import { RouteLocationRaw, RouterLink } from "vue-router";
 import { type DropdownOption } from "naive-ui";
+import { QueryState } from "@/types/lib";
+import { DataListApi } from "@/types/datalist";
 
-export function useTableActions(
-  actions: ComputedRef<TableAction[]>,
-  tableApi: Ref<TableApi | undefined>,
-  fetchParams: Readonly<Ref<FetchParams>>,
-  data: Ref<Record<string, any>[] | undefined>,
-  selectionState: {
-    nbSelected: Ref<number>;
-    selectAll: Ref<boolean>;
-    selected: Ref<GenericObject[]>;
-  }
-) {
+export function useTableActions<
+  T extends "table" | "list" = "table",
+  IApi extends TableApi | DataListApi = T extends "table"
+    ? TableApi
+    : DataListApi,
+  TAction extends TableAction = T extends "table"
+    ? TableAction<GenericObject, string, "table">
+    : TableAction<GenericObject, string, "list">
+>(params: {
+  actions: ComputedRef<TAction[]>;
+  internalApi: Ref<IApi | undefined>;
+  fetchParams: QueryState["fetchParams"];
+  data: QueryState["data"];
+  selectionState: Pick<QueryState, "nbSelected" | "selectAll" | "selected">;
+}) {
   const { permissionValidator } = useGlobalConfig();
   return computed(() =>
-    actions.value
-      .filter(Boolean)
-      .map((action: TableAction) => ({
+    params.actions.value
+      .map((action) => ({
         ...(action.icon && { icon: renderIcon(action.icon) }),
         label: action.link
           ? () => (
@@ -34,22 +40,25 @@ export function useTableActions(
         props: {
           onClick: () =>
             action?.action?.({
-              nbSelected: selectionState.nbSelected.value,
-              selectAll: selectionState.selectAll.value,
-              selected: selectionState.selected.value,
-              fetchParams: fetchParams.value,
-              tableApi: tableApi.value as TableApi,
+              nbSelected: params.selectionState.nbSelected.value,
+              selectAll: params.selectionState.selectAll.value,
+              selected: params.selectionState.selected.value,
+              fetchParams: params.fetchParams.value,
+              tableApi: params.internalApi.value!,
             }),
         },
         _enable: computed(() =>
           typeof action.condition === "function"
-            ? action.condition(Array.isArray(data.value) ? data.value : [], {
-                nbSelected: selectionState.nbSelected.value,
-                selectAll: selectionState.selectAll.value,
-                selected: selectionState.selected.value,
-                fetchParams: fetchParams.value,
-                tableApi: tableApi.value as TableApi,
-              })
+            ? action.condition(
+                Array.isArray(params.data.value) ? params.data.value : [],
+                {
+                  nbSelected: params.selectionState.nbSelected.value,
+                  selectAll: params.selectionState.selectAll.value,
+                  selected: params.selectionState.selected.value,
+                  fetchParams: params.fetchParams.value,
+                  tableApi: params.internalApi.value!,
+                }
+              )
             : true
         ),
         _allowed: computed(() =>

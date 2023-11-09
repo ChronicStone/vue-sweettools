@@ -90,38 +90,39 @@ const {
   topViewportOffset,
   initializeFilterState,
   resetTableQuery,
-} = useQueryState(
-  props.tableKey,
-  props.searchQuery,
-  props.optimizeQuery,
-  _panelFilters,
-  _staticFilters,
-  props.persistency,
-  _defaultSort
-);
+} = useQueryState({
+  key: `${props.tableKey ?? "DEFAULT_TABLE"}_TABLE_STATE`,
+  searchQuery: props.searchQuery ?? [],
+  optimizeQuery: props.optimizeQuery ?? [],
+  panelFilters: _panelFilters,
+  staticFilters: _staticFilters,
+  persistency: props.persistency,
+  defaultSort: _defaultSort,
+});
 
-const { resolveGridData, localDataStore } = useDataResolver(
-  _remote,
-  isLoading,
-  data,
-  props.datasource,
-  paginationState,
+const { resolveGridData, localDataStore } = useDataResolver({
+  remote: _remote,
+  datasource: props.datasource,
   fetchParams,
+  pagination: paginationState,
   gridApi,
-  selectAll
-);
+  allSelected: selectAll,
+  data,
+  isLoading,
+  rowKey: props.rowKey,
+});
 
-const mappedActions = useTableActions(
-  _actions as unknown as  ComputedRef<TableAction[]>,
-  tableApi,
+const mappedActions = useTableActions<"table">({
+  actions: _actions,
   fetchParams,
-  !props.remote ? localDataStore : data,
-  {
+  data: props.remote ? data : localDataStore,
+  internalApi: tableApi,
+  selectionState: {
     selectAll,
     selected,
     nbSelected,
-  }
-);
+  },
+});
 
 const { columnDefs, defaultColumnDef } = useGridColumns({
   isRemote: _remote,
@@ -156,18 +157,23 @@ tableApi.value = {
     const rowIndex = data.value.findIndex(rowSelector);
     if (rowIndex === -1) return false;
 
-    data.value[rowIndex] = rowUpdater(data.value[rowIndex]);
+    data.value[rowIndex] = {
+      ...data.value[rowIndex],
+      ...rowUpdater(data.value[rowIndex]),
+    };
     return true;
   },
   updateRows: (rowsSelector, rowsUpdater) => {
     const rowIndexes = data.value.reduce(
-      (acc, curr, index) =>
-        rowsSelector(curr) ? [...(acc as number[]), index] : acc,
-      []
-    ) as number[];
+      (acc, curr, index) => [...acc, ...(rowsSelector(curr) ? [index] : [])],
+      [] as number[]
+    );
 
     for (const index of rowIndexes) {
-      data.value[index] = rowsUpdater(data.value[index]);
+      data.value[index] = {
+        ...data.value[index],
+        ...rowsUpdater(data.value[index]),
+      };
     }
 
     return rowIndexes.length ? true : false;
@@ -211,6 +217,10 @@ function handleRowDrag(params: RowDragEvent) {
     movedRows: params.nodes.map((node) => node.data),
     tableApi: tableApi.value as TableApi,
   });
+}
+
+function getRowId(row: { data: (typeof data.value)[number] }) {
+  return row.data.__$ROW_ID__;
 }
 
 function handleGridInitialization(params: GridReadyEvent) {

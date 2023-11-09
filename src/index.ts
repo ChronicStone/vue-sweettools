@@ -1,6 +1,7 @@
 import ExcelReader from "./components/ExcelReader/ExcelReader.vue";
 import { App } from "vue";
 import DataTable from "./components/DataTable/DataTable.vue";
+import DataList from "./components/DataList/DataList.vue";
 import FormRenderer from "./components/Form/Renderer/FormRenderer.vue";
 import FormProvider from "./components/Form/Provider/FormProvider.vue";
 import DataGrid from "./components/DataGrid/DataGrid.vue";
@@ -27,6 +28,7 @@ import {
 } from "./composables/excel/useImportController";
 import { buildTableSchema } from "./composables/buildTableSchema";
 import { buildGridSchema } from "./composables/buildTableSchema";
+import { buildListSchema } from "./types/datalist";
 import { FormRefInstance } from "./types/form/instance";
 import { Column } from "ag-grid-community";
 import { DataGridSchema } from "./types/datagrid";
@@ -72,6 +74,7 @@ export type {
 
 export {
   DataTable,
+  DataList,
   FormRenderer,
   FormProvider,
   DataGrid,
@@ -85,6 +88,7 @@ export {
   buildFormSchema,
   buildFieldSchema,
   buildMultiFieldSchema,
+  buildListSchema,
   useFormApi,
   buildExcelSchema,
   useExcelReader,

@@ -1,13 +1,14 @@
 import { GenericObject } from "@/types/utils";
-import { FetchParams } from "@/types/table";
+import { DataSource, FetchParams } from "@/types/table";
 import { resolveFromStringPath } from "@/utils/resolveFromStringPath";
-import { resolve } from "path";
 
 export async function remoteDataMapper(
   data: Array<GenericObject>,
-  datasource: (fetchParams: FetchParams) => Promise<any[]>,
+  datasource: DataSource<GenericObject, false>,
   { searchQuery, page, limit, sortKey, sortOrder, query }: FetchParams,
-  fullReload: boolean
+  fullReload: boolean,
+  enablePagination = true,
+  rowKey: string | null = null
 ): Promise<{
   totalDocs: number;
   totalPages: number;
@@ -15,20 +16,18 @@ export async function remoteDataMapper(
   rawDocs: any[];
 }> {
   try {
-    let output = fullReload
-      ? (await datasource({
-          searchQuery,
-          page,
-          limit,
-          sortKey,
-          sortOrder,
-          query,
-        })) || []
-      : data;
-
+    let output: GenericObject[] = [];
+    if (fullReload)
+      output = (await datasource()).map((item) => ({
+        ...item,
+        __$ROW_ID__: rowKey
+          ? propertyResolver(rowKey, [], item) ?? generateUUID()
+          : generateUUID(),
+      }));
+    else output = [...data];
     const rawOutput = [...output];
 
-    if (searchQuery?.value) {
+    if (searchQuery && searchQuery.value) {
       output = output.filter((item) => {
         const keys = Object.keys(item).filter((key) =>
           searchQuery.fields.includes(key)
@@ -39,7 +38,7 @@ export async function remoteDataMapper(
             item[key]
               ?.toString()
               ?.toLowerCase()
-              ?.includes(searchQuery?.value?.toLowerCase())
+              ?.includes(searchQuery.value!.toLowerCase())
           )
             return true;
         return false;
@@ -91,7 +90,7 @@ export async function remoteDataMapper(
     // Process pagination
     const start = (page - 1) * limit;
     const end = start + limit;
-    output = output.slice(start, end);
+    output = enablePagination ? output.slice(start, end) : output;
 
     return { totalDocs, totalPages, docs: output, rawDocs: rawOutput };
   } catch (err) {

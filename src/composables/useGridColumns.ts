@@ -17,6 +17,7 @@ import { GlobalTheme, GlobalThemeOverrides } from "naive-ui";
 import SelectionCellRenderer from "@/components/DataTable/CellRenderers/SelectionCellRenderer.vue";
 import { useTranslations } from "@/i18n/composables/useTranslations";
 import { RowNode } from "ag-grid-community";
+import { QueryState } from "@/types/lib";
 
 const DEFAULT_COL_DEF = {
   sortable: true,
@@ -36,7 +37,7 @@ type AgGridConfigParams = {
   selectAll: Ref<boolean>;
   selected: Ref<Array<Record<string, any>>>;
   nbSelected: ComputedRef<number>;
-  fetchParams: Readonly<Ref<FetchParams>>;
+  fetchParams: QueryState["fetchParams"];
   tableApi: Ref<TableApi | undefined>;
   theme: ComputedRef<GlobalTheme | null>;
   themeOverrides: ComputedRef<GlobalThemeOverrides | undefined>;
@@ -77,7 +78,9 @@ function mapColumnsRecursively(
         tableApi: params.tableApi,
         getTheme: () => params.theme.value,
         getThemeOverrides: () => params.themeOverrides.value,
-        searchable: params.searchQuery.value.includes(column.key as unknown as string),
+        searchable: params.searchQuery.value.includes(
+          column.key as unknown as string
+        ),
         label: column.label,
         i18n: params.i18n,
       },
@@ -150,7 +153,7 @@ export function useGridColumns(params: AgGridConfigParams) {
       : []),
     ...(params.columns.value ?? [])
       .filter((c) => c?.condition?.() ?? true)
-      .map((c) => mapColumnsRecursively(c as Column | ColumnGroup, params)),
+      .map((c) => mapColumnsRecursively(c as Column | ColumnGroup, params)),
   ]);
 
   return {

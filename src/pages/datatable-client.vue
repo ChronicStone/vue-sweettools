@@ -7,11 +7,13 @@ import { booleanFilter, textFilter } from "..";
 const schema = buildTableSchema({
   // tableKey: "someKey",
   // persistency: "localStorage",
-  remote: true,
+  remote: false,
   // filters: [
   //   booleanFilter("valid", "Valid"),
   //   textFilter("firstName", "First name", "contains"),
   // ],
+  persistency: "localStorage",
+  tableKey: "someKey",
   searchQuery: ["firstName", "param.some.nested.value"],
   // searchQuery: ["firstName", "lastName"],
   columns: [
@@ -31,8 +33,8 @@ const schema = buildTableSchema({
       render: (value) => value.toString(),
     },
   ],
-  datasource: () => ({
-    docs: Array.from({ length: 64 }, (_, i) => ({
+  datasource: () =>
+    Array.from({ length: 64 }, (_, i) => ({
       firstName: `First name ${i}`,
       lastName: `Last name ${i}`,
       valid: i % 2 === 0,
@@ -43,9 +45,6 @@ const schema = buildTableSchema({
           }
         : {}),
     })),
-    totalDocs: 64,
-    totalPages: 1,
-  }),
 });
 
 const dark = ref(false);

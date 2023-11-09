@@ -34,6 +34,20 @@ export type NestedPaths<T> = T extends Array<infer U>
     }[keyof T & (string | number)]
   : never;
 
+export type NestedPathsForType<T, P> = T extends Array<infer U>
+  ? NestedPathsForType<U, P>
+  : T extends object
+  ? {
+      [K in keyof T & (string | number)]: K extends string
+        ? T[K] extends P
+          ? `${K}` | `${K}.${NestedPathsForType<T[K], P>}`
+          : T[K] extends object
+          ? `${K}.${NestedPathsForType<T[K], P>}`
+          : never
+        : never;
+    }[keyof T & (string | number)]
+  : never;
+
 export type TypeFromPath<T extends GenericObject, Path extends string> = {
   [K in Path]: K extends keyof T
     ? T[K]

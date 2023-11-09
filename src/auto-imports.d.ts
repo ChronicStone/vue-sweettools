@@ -334,6 +334,7 @@ declare global {
   const useSupported: typeof import('@vueuse/core')['useSupported']
   const useSweetform: typeof import('./composables/useSweetform')['useSweetform']
   const useSwipe: typeof import('@vueuse/core')['useSwipe']
+  const useTableAction: typeof import('./composables/useTableActions')['useTableAction']
   const useTableActions: typeof import('./composables/useTableActions')['useTableActions']
   const useTemplateRefsList: typeof import('@vueuse/core')['useTemplateRefsList']
   const useTextDirection: typeof import('@vueuse/core')['useTextDirection']

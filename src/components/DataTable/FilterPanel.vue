@@ -30,7 +30,7 @@ const filtersSchema = computed(
       gridSize: 8,
       fieldSize: 8,
       fields: mapFiltersToFormSchema(props.filtersSchema) as Array<
-        FormField<Narrowable, Record<string, unknown>>
+        FormField<Narrowable>
       >,
     }) as FormSchema<any, any>
 );
@@ -63,6 +63,10 @@ function resetFilters() {
 }
 
 onKeyPressed("Enter", () => applyFilters());
+
+defineExpose({
+  appliedFiltersCount,
+});
 </script>
 
 <template>
