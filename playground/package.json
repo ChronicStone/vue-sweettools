@@ -10,9 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@chronicstone/vue-sweettools": "..",
     "@vueuse/router": "^10.6.1",
-    "deepmerge-ts": "^5.1.0",
-    "vue-sweettools": ".."
+    "deepmerge-ts": "^5.1.0"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

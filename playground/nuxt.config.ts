@@ -4,8 +4,13 @@ export default defineNuxtConfig({
   pages: true,
   devtools: { enabled: true },
   experimental: { typedPages: true },
-  css: ['vue-sweettools/dist/style.css'],
+  css: ['@chronicstone/vue-sweettools/dist/style.css'],
   imports: {
     dirs: ['/samples', '/samples/**', '/config'],
+  },
+  app: {
+    head: {
+      script: [{ src: 'https://code.iconify.design/1/1.0.0/iconify.min.js' }],
+    },
   },
 })

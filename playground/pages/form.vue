@@ -10,7 +10,7 @@ import {
 } from 'naive-ui'
 import { useRouteQuery } from '@vueuse/router'
 import { useElementSize } from '@vueuse/core'
-import { type FormRefInstance, FormRenderer, useFormApi } from 'vue-sweettools'
+import { type FormRefInstance, FormRenderer, useFormApi } from '@chronicstone/vue-sweettools'
 import { formSamples } from '../samples/form'
 import { prettyPrintSchema } from '../samples/utils'
 

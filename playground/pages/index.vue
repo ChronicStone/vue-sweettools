@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DataTable, booleanFilter, buildTableSchema } from 'vue-sweettools'
+import { DataTable, booleanFilter, buildTableSchema } from '@chronicstone/vue-sweettools'
 
 function loadData() {
   return Array.from({ length: 1000 }, (_, i) => ({
@@ -21,16 +21,15 @@ const schema = buildTableSchema({
   searchQuery: ['name'],
   columns: [
     { label: 'ID', key: 'id' },
-    { label: 'Name', key: 'name',  },
+    { label: 'Name', key: 'name' },
     { label: 'Active', key: 'active', render: rowData => rowData.active ? 'Yes' : 'No' },
-    {
-      label: "Other",
-      key: 'hey',
-      children: [
-        { label: 'Age', key: 'age' },
-        { label: 'Address', key: 'address' },
-      ]
-    }
+    { label: 'Age', key: 'age' },
+    { label: 'Address', key: 'address' },
+  ],
+  rowActions: [
+    { label: 'Test', icon: 'mdi:eye' },
+    // { label: 'Test', icon: 'mdi:pen' },
+
   ],
 })
 </script>
