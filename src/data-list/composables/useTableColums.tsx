@@ -1,7 +1,8 @@
 import type { DataTableColumn as TDataTableColumn } from 'naive-ui'
 import { z } from 'zod'
-import type { DataApi, DataResolverState, FullQueryState } from '../types/shared'
+import type { DataApi, DataResolverState, FullQueryState, RowAction } from '../types/shared'
 import type { DataTableColumn, DataTableColumnGroup } from '../types/datatable'
+import RowActions from '../content/RowActions.vue'
 
 const BASE_CONF_CONF_SCHEMA = z.object({
   label: z.union([z.string(), z.function()]).optional(),
@@ -30,6 +31,7 @@ export function useTableColumns(params: {
   persistency: ComputedRef<false | 'localStorage' | 'sessionStorage'>
   tableKey: ComputedRef<string>
   searchQuery: ComputedRef<string[]>
+  rowActions: ComputedRef<RowAction[]>
 }) {
   const i18n = useTranslations()
   const columnConfig = ref(
@@ -46,14 +48,25 @@ export function useTableColumns(params: {
       ...(params.selection.value
         ? [{ type: 'selection' } satisfies TDataTableColumn]
         : []),
+      ...(params.rowActions.value.length > 0
+        ? [
+          {
+            title: () => renderColumnLabel('Actions'),
+            key: '#actions',
+            sorter: false,
+            render: rowData => <RowActions actions={params.rowActions.value} row-data={rowData} api={params.dataApi} />,
+            width: 60 + params.rowActions.value.length * 20,
+          },
+        ] satisfies TDataTableColumn[]
+        : []),
       ...params.columns.value
         .filter(col => col?.condition?.() ?? true)
         .map(col => mapColumnsRecursively(col, columnConfig.value, { i18n, searchQuery: params.searchQuery.value }))
         .filter(col => col !== null)
         .sort((a, b) => {
-          const aConfig = columnConfig.value.find(c => c.key === (a as any).key)?.order ?? 0
-          const bConfig = columnConfig.value.find(c => c.key === (b as any).key)?.order ?? 0
-          return aConfig - bConfig > 0 ? 1 : -1
+          const aConfig = columnConfig.value.find(c => c.key === (a as any).key)!
+          const bConfig = columnConfig.value.find(c => c.key === (b as any).key)!
+          return sortCols(aConfig, bConfig)
         }),
     ]
   })
@@ -180,7 +193,7 @@ function mapColumnsRecursively(
   }
   if ('children' in column) {
     return {
-      title: () => renderColumnLabel(column.label, true),
+      title: () => renderColumnLabel(column.label),
       key: column.key,
       children: column.children
         .filter(c => c?.condition?.() ?? true)
@@ -190,7 +203,7 @@ function mapColumnsRecursively(
           const aConfig = config?.children.find(c => c.key === (a as any).key)
           const bConfig = config?.children.find(c => c.key === (b as any).key)
 
-          return (aConfig?.order ?? 0) - (bConfig?.order ?? 0)
+          return sortCols(aConfig!, bConfig!)
         }),
       resizable: column.resizable ?? true,
       renderSorterIcon: c => renderColumnIcons(c, false, params.i18n),
@@ -199,9 +212,9 @@ function mapColumnsRecursively(
   }
   else {
     return {
-      title: () => renderColumnLabel(column.label, true),
+      title: () => renderColumnLabel(column.label),
       key: `${column.key}`,
-      width: column.width,
+      width: column.width ?? 200,
       minWidth: column.minWidth,
       maxWidth: column.maxWidth,
       align: column.align,
@@ -221,4 +234,24 @@ function mapColumnsRecursively(
       ), params.i18n),
     } satisfies TDataTableColumn
   }
+}
+
+export function sortCols(a: BaseColConf, b: BaseColConf) {
+  // IF ITEM IS FIXED LEFT, SHOULD BE FIRST
+  // IF ITEM IS FIXED RIGHT, SHOULD BE LAST
+  // OTHERWISE, SORT BY ORDER
+  // IF BOTH ARE FIXED, RESPECT ORDER AS WELL
+  if (a.fixed === 'left' && b.fixed !== 'left')
+    return -1
+  if (a.fixed !== 'left' && b.fixed === 'left')
+    return 1
+  if (a.fixed === 'right' && b.fixed !== 'right')
+    return 1
+  if (a.fixed !== 'right' && b.fixed === 'right')
+    return -1
+  if (a.fixed === 'left' && b.fixed === 'left')
+    return a.order - b.order
+  if (a.fixed === 'right' && b.fixed === 'right')
+    return a.order - b.order
+  return a.order - b.order
 }

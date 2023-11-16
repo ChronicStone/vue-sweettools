@@ -14,7 +14,7 @@ import {
 import type { VNodeChild } from 'vue'
 import tiny from 'tinycolor2'
 import type { BuiltInGlobalTheme } from 'naive-ui/es/themes/interface'
-import type { RowAction } from '../types/shared'
+import type { DataApi, RowAction } from '../types/shared'
 import type { GenericObject } from '@/_shared/types/utils'
 
 const emit = defineEmits<{
@@ -45,6 +45,7 @@ const {
   rowActions,
   enableSelection,
   selectAll,
+  listApi,
 } = definePropsRefs<{
   data: GenericObject
   title: (params: { rowData: GenericObject }) => VNodeChild
@@ -57,6 +58,7 @@ const {
   enableSelection: boolean
   selectAll: boolean
   selected: boolean
+  listApi: DataApi
 }>()
 
 const collapsed = ref<boolean>(true)
@@ -70,10 +72,10 @@ const actions = computed(() =>
         ...(action.icon && { icon: renderIcon(typeof action.icon === 'function' ? action.icon({ rowData: data.value }) : action.icon) }),
         hidden:
           typeof action.condition === 'function'
-            ? !action.condition({ rowData: data.value, tableApi: null as any })
+            ? !action.condition({ rowData: data.value, tableApi: listApi.value })
             : false,
         props: {
-          onClick: () => action?.action?.({ rowData: data.value, tableApi: null as any }),
+          onClick: () => action?.action?.({ rowData: data.value, tableApi: listApi.value }),
         },
       }
     }

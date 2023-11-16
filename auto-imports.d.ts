@@ -21,6 +21,7 @@ declare global {
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
   const booleanExistFilter: typeof import('./src/data-list/utils/filters')['booleanExistFilter']
   const booleanFilter: typeof import('./src/data-list/utils/filters')['booleanFilter']
+  const buildExcelSchema: typeof import('./src/excel-reader/utils/schema')['buildExcelSchema']
   const buildFieldSchema: typeof import('./src/form/composables/useFormController')['buildFieldSchema']
   const buildFormSchema: typeof import('./src/form/composables/useFormController')['buildFormSchema']
   const buildFormSchemaDist: typeof import('./src/form/composables/useFormController')['buildFormSchemaDist']
@@ -49,13 +50,17 @@ declare global {
   const customRef: typeof import('vue')['customRef']
   const debouncedRef: typeof import('@vueuse/core')['debouncedRef']
   const debouncedWatch: typeof import('@vueuse/core')['debouncedWatch']
+  const defaultCellRenderer: typeof import('./src/excel-reader/composables/useImportManager')['defaultCellRenderer']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
+  const exportExcel: typeof import('./src/excel-reader/utils/xlsx')['exportExcel']
   const extendRef: typeof import('@vueuse/core')['extendRef']
   const extractTextFromVNode: typeof import('./src/_shared/utils/render')['extractTextFromVNode']
+  const generateInportSchemaRefFile: typeof import('./src/excel-reader/utils/xlsx')['generateInportSchemaRefFile']
   const generateUUID: typeof import('./src/_shared/utils/uuid')['generateUUID']
+  const getCellRenderer: typeof import('./src/excel-reader/composables/useImportManager')['getCellRenderer']
   const getColorFormat: typeof import('./src/_shared/utils/color')['getColorFormat']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
@@ -82,6 +87,7 @@ declare global {
   const mapRelativeKeyPath: typeof import('./src/_shared/utils/object')['mapRelativeKeyPath']
   const mapTableFilters: typeof import('./src/data-list/utils/query')['mapTableFilters']
   const markRaw: typeof import('vue')['markRaw']
+  const multiCellRenderer: typeof import('./src/excel-reader/composables/useImportManager')['multiCellRenderer']
   const nextTick: typeof import('vue')['nextTick']
   const normalizeFieldLabel: typeof import('./src/_shared/utils/render')['normalizeFieldLabel']
   const obsoletableFn: typeof import('./src/_shared/utils/function')['obsoletableFn']
@@ -122,6 +128,7 @@ declare global {
   const refThrottled: typeof import('@vueuse/core')['refThrottled']
   const refWithControl: typeof import('@vueuse/core')['refWithControl']
   const remoteDataMapper: typeof import('./src/data-list/utils/data')['remoteDataMapper']
+  const renderBoolean: typeof import('./src/excel-reader/composables/useImportManager')['renderBoolean']
   const renderColumnIcons: typeof import('./src/data-list/utils/columns')['renderColumnIcons']
   const renderColumnLabel: typeof import('./src/data-list/utils/columns')['renderColumnLabel']
   const renderIcon: typeof import('./src/_shared/utils/render')['renderIcon']
@@ -130,11 +137,13 @@ declare global {
   const resolveFieldDependencies: typeof import('./src/form/utils/dependencies')['resolveFieldDependencies']
   const resolveRef: typeof import('@vueuse/core')['resolveRef']
   const resolveUnref: typeof import('@vueuse/core')['resolveUnref']
+  const rowValidityRenderer: typeof import('./src/excel-reader/composables/useImportManager')['rowValidityRenderer']
   const selectFilter: typeof import('./src/data-list/utils/filters')['selectFilter']
   const setObjectProperty: typeof import('./src/_shared/utils/object')['setObjectProperty']
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
+  const sortCols: typeof import('./src/data-list/composables/useTableColums')['sortCols']
   const syncRef: typeof import('@vueuse/core')['syncRef']
   const syncRefs: typeof import('@vueuse/core')['syncRefs']
   const templateRef: typeof import('@vueuse/core')['templateRef']
@@ -219,6 +228,7 @@ declare global {
   const useEventDispatcher: typeof import('./src/_shared/composables/useEventDispatcher')['useEventDispatcher']
   const useEventListener: typeof import('@vueuse/core')['useEventListener']
   const useEventSource: typeof import('@vueuse/core')['useEventSource']
+  const useExcelReader: typeof import('./src/excel-reader/composables/useExcelReader')['useExcelReader']
   const useEyeDropper: typeof import('@vueuse/core')['useEyeDropper']
   const useFavicon: typeof import('@vueuse/core')['useFavicon']
   const useFetch: typeof import('@vueuse/core')['useFetch']
@@ -244,6 +254,7 @@ declare global {
   const useI18n: typeof import('vue-i18n')['useI18n']
   const useIdle: typeof import('@vueuse/core')['useIdle']
   const useImage: typeof import('@vueuse/core')['useImage']
+  const useImportManager: typeof import('./src/excel-reader/composables/useImportManager')['useImportManager']
   const useInfiniteScroll: typeof import('@vueuse/core')['useInfiniteScroll']
   const useIntersectionObserver: typeof import('@vueuse/core')['useIntersectionObserver']
   const useInterval: typeof import('@vueuse/core')['useInterval']
@@ -386,6 +397,7 @@ declare module 'vue' {
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
     readonly booleanExistFilter: UnwrapRef<typeof import('./src/data-list/utils/filters')['booleanExistFilter']>
     readonly booleanFilter: UnwrapRef<typeof import('./src/data-list/utils/filters')['booleanFilter']>
+    readonly buildExcelSchema: UnwrapRef<typeof import('./src/excel-reader/utils/schema')['buildExcelSchema']>
     readonly buildFieldSchema: UnwrapRef<typeof import('./src/form/composables/useFormController')['buildFieldSchema']>
     readonly buildFormSchema: UnwrapRef<typeof import('./src/form/composables/useFormController')['buildFormSchema']>
     readonly buildFormSchemaDist: UnwrapRef<typeof import('./src/form/composables/useFormController')['buildFormSchemaDist']>
@@ -414,13 +426,17 @@ declare module 'vue' {
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
     readonly debouncedRef: UnwrapRef<typeof import('@vueuse/core')['debouncedRef']>
     readonly debouncedWatch: UnwrapRef<typeof import('@vueuse/core')['debouncedWatch']>
+    readonly defaultCellRenderer: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['defaultCellRenderer']>
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly exportExcel: UnwrapRef<typeof import('./src/excel-reader/utils/xlsx')['exportExcel']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
     readonly extractTextFromVNode: UnwrapRef<typeof import('./src/_shared/utils/render')['extractTextFromVNode']>
+    readonly generateInportSchemaRefFile: UnwrapRef<typeof import('./src/excel-reader/utils/xlsx')['generateInportSchemaRefFile']>
     readonly generateUUID: UnwrapRef<typeof import('./src/_shared/utils/uuid')['generateUUID']>
+    readonly getCellRenderer: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['getCellRenderer']>
     readonly getColorFormat: UnwrapRef<typeof import('./src/_shared/utils/color')['getColorFormat']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
@@ -447,6 +463,7 @@ declare module 'vue' {
     readonly mapRelativeKeyPath: UnwrapRef<typeof import('./src/_shared/utils/object')['mapRelativeKeyPath']>
     readonly mapTableFilters: UnwrapRef<typeof import('./src/data-list/utils/query')['mapTableFilters']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
+    readonly multiCellRenderer: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['multiCellRenderer']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
     readonly normalizeFieldLabel: UnwrapRef<typeof import('./src/_shared/utils/render')['normalizeFieldLabel']>
     readonly obsoletableFn: UnwrapRef<typeof import('./src/_shared/utils/function')['obsoletableFn']>
@@ -487,6 +504,7 @@ declare module 'vue' {
     readonly refThrottled: UnwrapRef<typeof import('@vueuse/core')['refThrottled']>
     readonly refWithControl: UnwrapRef<typeof import('@vueuse/core')['refWithControl']>
     readonly remoteDataMapper: UnwrapRef<typeof import('./src/data-list/utils/data')['remoteDataMapper']>
+    readonly renderBoolean: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['renderBoolean']>
     readonly renderColumnIcons: UnwrapRef<typeof import('./src/data-list/utils/columns')['renderColumnIcons']>
     readonly renderColumnLabel: UnwrapRef<typeof import('./src/data-list/utils/columns')['renderColumnLabel']>
     readonly renderIcon: UnwrapRef<typeof import('./src/_shared/utils/render')['renderIcon']>
@@ -495,11 +513,13 @@ declare module 'vue' {
     readonly resolveFieldDependencies: UnwrapRef<typeof import('./src/form/utils/dependencies')['resolveFieldDependencies']>
     readonly resolveRef: UnwrapRef<typeof import('@vueuse/core')['resolveRef']>
     readonly resolveUnref: UnwrapRef<typeof import('@vueuse/core')['resolveUnref']>
+    readonly rowValidityRenderer: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['rowValidityRenderer']>
     readonly selectFilter: UnwrapRef<typeof import('./src/data-list/utils/filters')['selectFilter']>
     readonly setObjectProperty: UnwrapRef<typeof import('./src/_shared/utils/object')['setObjectProperty']>
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
+    readonly sortCols: UnwrapRef<typeof import('./src/data-list/composables/useTableColums')['sortCols']>
     readonly syncRef: UnwrapRef<typeof import('@vueuse/core')['syncRef']>
     readonly syncRefs: UnwrapRef<typeof import('@vueuse/core')['syncRefs']>
     readonly templateRef: UnwrapRef<typeof import('@vueuse/core')['templateRef']>
@@ -584,6 +604,7 @@ declare module 'vue' {
     readonly useEventDispatcher: UnwrapRef<typeof import('./src/_shared/composables/useEventDispatcher')['useEventDispatcher']>
     readonly useEventListener: UnwrapRef<typeof import('@vueuse/core')['useEventListener']>
     readonly useEventSource: UnwrapRef<typeof import('@vueuse/core')['useEventSource']>
+    readonly useExcelReader: UnwrapRef<typeof import('./src/excel-reader/composables/useExcelReader')['useExcelReader']>
     readonly useEyeDropper: UnwrapRef<typeof import('@vueuse/core')['useEyeDropper']>
     readonly useFavicon: UnwrapRef<typeof import('@vueuse/core')['useFavicon']>
     readonly useFetch: UnwrapRef<typeof import('@vueuse/core')['useFetch']>
@@ -609,6 +630,7 @@ declare module 'vue' {
     readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
     readonly useIdle: UnwrapRef<typeof import('@vueuse/core')['useIdle']>
     readonly useImage: UnwrapRef<typeof import('@vueuse/core')['useImage']>
+    readonly useImportManager: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['useImportManager']>
     readonly useInfiniteScroll: UnwrapRef<typeof import('@vueuse/core')['useInfiniteScroll']>
     readonly useIntersectionObserver: UnwrapRef<typeof import('@vueuse/core')['useIntersectionObserver']>
     readonly useInterval: UnwrapRef<typeof import('@vueuse/core')['useInterval']>
@@ -745,6 +767,7 @@ declare module '@vue/runtime-core' {
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
     readonly booleanExistFilter: UnwrapRef<typeof import('./src/data-list/utils/filters')['booleanExistFilter']>
     readonly booleanFilter: UnwrapRef<typeof import('./src/data-list/utils/filters')['booleanFilter']>
+    readonly buildExcelSchema: UnwrapRef<typeof import('./src/excel-reader/utils/schema')['buildExcelSchema']>
     readonly buildFieldSchema: UnwrapRef<typeof import('./src/form/composables/useFormController')['buildFieldSchema']>
     readonly buildFormSchema: UnwrapRef<typeof import('./src/form/composables/useFormController')['buildFormSchema']>
     readonly buildFormSchemaDist: UnwrapRef<typeof import('./src/form/composables/useFormController')['buildFormSchemaDist']>
@@ -773,13 +796,17 @@ declare module '@vue/runtime-core' {
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
     readonly debouncedRef: UnwrapRef<typeof import('@vueuse/core')['debouncedRef']>
     readonly debouncedWatch: UnwrapRef<typeof import('@vueuse/core')['debouncedWatch']>
+    readonly defaultCellRenderer: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['defaultCellRenderer']>
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly exportExcel: UnwrapRef<typeof import('./src/excel-reader/utils/xlsx')['exportExcel']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
     readonly extractTextFromVNode: UnwrapRef<typeof import('./src/_shared/utils/render')['extractTextFromVNode']>
+    readonly generateInportSchemaRefFile: UnwrapRef<typeof import('./src/excel-reader/utils/xlsx')['generateInportSchemaRefFile']>
     readonly generateUUID: UnwrapRef<typeof import('./src/_shared/utils/uuid')['generateUUID']>
+    readonly getCellRenderer: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['getCellRenderer']>
     readonly getColorFormat: UnwrapRef<typeof import('./src/_shared/utils/color')['getColorFormat']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
@@ -806,6 +833,7 @@ declare module '@vue/runtime-core' {
     readonly mapRelativeKeyPath: UnwrapRef<typeof import('./src/_shared/utils/object')['mapRelativeKeyPath']>
     readonly mapTableFilters: UnwrapRef<typeof import('./src/data-list/utils/query')['mapTableFilters']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
+    readonly multiCellRenderer: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['multiCellRenderer']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
     readonly normalizeFieldLabel: UnwrapRef<typeof import('./src/_shared/utils/render')['normalizeFieldLabel']>
     readonly obsoletableFn: UnwrapRef<typeof import('./src/_shared/utils/function')['obsoletableFn']>
@@ -846,6 +874,7 @@ declare module '@vue/runtime-core' {
     readonly refThrottled: UnwrapRef<typeof import('@vueuse/core')['refThrottled']>
     readonly refWithControl: UnwrapRef<typeof import('@vueuse/core')['refWithControl']>
     readonly remoteDataMapper: UnwrapRef<typeof import('./src/data-list/utils/data')['remoteDataMapper']>
+    readonly renderBoolean: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['renderBoolean']>
     readonly renderColumnIcons: UnwrapRef<typeof import('./src/data-list/utils/columns')['renderColumnIcons']>
     readonly renderColumnLabel: UnwrapRef<typeof import('./src/data-list/utils/columns')['renderColumnLabel']>
     readonly renderIcon: UnwrapRef<typeof import('./src/_shared/utils/render')['renderIcon']>
@@ -854,11 +883,13 @@ declare module '@vue/runtime-core' {
     readonly resolveFieldDependencies: UnwrapRef<typeof import('./src/form/utils/dependencies')['resolveFieldDependencies']>
     readonly resolveRef: UnwrapRef<typeof import('@vueuse/core')['resolveRef']>
     readonly resolveUnref: UnwrapRef<typeof import('@vueuse/core')['resolveUnref']>
+    readonly rowValidityRenderer: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['rowValidityRenderer']>
     readonly selectFilter: UnwrapRef<typeof import('./src/data-list/utils/filters')['selectFilter']>
     readonly setObjectProperty: UnwrapRef<typeof import('./src/_shared/utils/object')['setObjectProperty']>
     readonly shallowReactive: UnwrapRef<typeof import('vue')['shallowReactive']>
     readonly shallowReadonly: UnwrapRef<typeof import('vue')['shallowReadonly']>
     readonly shallowRef: UnwrapRef<typeof import('vue')['shallowRef']>
+    readonly sortCols: UnwrapRef<typeof import('./src/data-list/composables/useTableColums')['sortCols']>
     readonly syncRef: UnwrapRef<typeof import('@vueuse/core')['syncRef']>
     readonly syncRefs: UnwrapRef<typeof import('@vueuse/core')['syncRefs']>
     readonly templateRef: UnwrapRef<typeof import('@vueuse/core')['templateRef']>
@@ -943,6 +974,7 @@ declare module '@vue/runtime-core' {
     readonly useEventDispatcher: UnwrapRef<typeof import('./src/_shared/composables/useEventDispatcher')['useEventDispatcher']>
     readonly useEventListener: UnwrapRef<typeof import('@vueuse/core')['useEventListener']>
     readonly useEventSource: UnwrapRef<typeof import('@vueuse/core')['useEventSource']>
+    readonly useExcelReader: UnwrapRef<typeof import('./src/excel-reader/composables/useExcelReader')['useExcelReader']>
     readonly useEyeDropper: UnwrapRef<typeof import('@vueuse/core')['useEyeDropper']>
     readonly useFavicon: UnwrapRef<typeof import('@vueuse/core')['useFavicon']>
     readonly useFetch: UnwrapRef<typeof import('@vueuse/core')['useFetch']>
@@ -968,6 +1000,7 @@ declare module '@vue/runtime-core' {
     readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
     readonly useIdle: UnwrapRef<typeof import('@vueuse/core')['useIdle']>
     readonly useImage: UnwrapRef<typeof import('@vueuse/core')['useImage']>
+    readonly useImportManager: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['useImportManager']>
     readonly useInfiniteScroll: UnwrapRef<typeof import('@vueuse/core')['useInfiniteScroll']>
     readonly useIntersectionObserver: UnwrapRef<typeof import('@vueuse/core')['useIntersectionObserver']>
     readonly useInterval: UnwrapRef<typeof import('@vueuse/core')['useInterval']>

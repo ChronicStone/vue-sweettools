@@ -24,6 +24,7 @@ const {
   rowIdKey,
   pagination,
   compact,
+  rowActions,
 } = withDefaults(definePropsRefs<DataTableSchema>(), {
   tableKey: () => 'DEFAULT_LIST',
   filters: () => [],
@@ -97,6 +98,7 @@ const { columnDefs, columnConfig } = useTableColumns({
   persistency,
   tableKey,
   searchQuery,
+  rowActions,
 })
 
 function parseColumnKey(key: string) {
@@ -161,13 +163,13 @@ function handleSortChange(
       flex-height
       class="h-[60vh]"
       :row-key="getRowKey"
-      :scroll-x="1800"
       :size="compact ? 'small' : 'large'"
       :theme-overrides="{ borderRadius: '0' }"
       :on-update:sorter="handleSortChange"
       virtual-scroll
       :single-column="false"
-      :single-line="false"
+      :single-line="true"
+      :scrollbar-props="{ trigger: 'none' }"
     />
 
     <template #action>
@@ -176,9 +178,6 @@ function handleSortChange(
         v-model:pagination-state="queryState.paginationState.value"
         :compact="compact"
       />
-      <pre>
-        {{ columnDefs }}
-      </pre>
     </template>
   </NCard>
 </template>

@@ -6,10 +6,7 @@ import {
   NButton,
   NCheckbox,
   NCollapseTransition,
-  NFormItem,
   NListItem,
-  NPopover,
-  NSelect,
   useThemeVars,
 } from 'naive-ui'
 import { useDrag, useDrop } from 'vue3-dnd'
@@ -88,6 +85,13 @@ const [collect, drag, preview] = useDrag(() => ({
     isDragging: monitor.isDragging(),
   }),
 }))
+
+function setFixed(fixed: 'left' | 'right') {
+  if (column.value.fixed === fixed)
+    column.value.fixed = undefined
+  else
+    column.value.fixed = fixed
+}
 </script>
 
 <template>
@@ -105,7 +109,7 @@ const [collect, drag, preview] = useDrag(() => ({
           <NCheckbox v-model:checked="column.visible" />
           <component :is="renderVNode(column.label) ?? ''" />
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1">
           <NButton
             v-if="collapsible"
             size="tiny"
@@ -121,24 +125,16 @@ const [collect, drag, preview] = useDrag(() => ({
             </template>
           </NButton>
 
-          <NPopover display-directive="show">
-            <template #trigger>
-              <NButton text size="tiny">
-                <material-symbols:settings />
-              </NButton>
+          <NButton size="tiny" secondary :type="column.fixed === 'left' ? 'primary' : 'default'" @click="setFixed('left')">
+            <template #icon>
+              <span class="iconify" data-icon="radix-icons:pin-left" />
             </template>
-            <div class="flex flex-col gap-4">
-              <NFormItem label="Pin column">
-                <NSelect
-                  v-model:value="column.fixed"
-                  size="small"
-                  clearable
-                  placeholder="None"
-                  :options="['left', 'right', undefined].map((item) => ({ label: typeof item === 'string' ? item : 'None', value: item }))"
-                />
-              </NFormItem>
-            </div>
-          </NPopover>
+          </NButton>
+          <NButton size="tiny" secondary :type="column.fixed === 'right' ? 'primary' : 'default'" @click="setFixed('right')">
+            <template #icon>
+              <span class="iconify" data-icon="radix-icons:pin-right" />
+            </template>
+          </NButton>
         </div>
       </div>
     </NListItem>

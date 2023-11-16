@@ -5,6 +5,8 @@ import type {
   InputProps,
   SelectGroupOption,
   SelectOption,
+  SelectRenderLabel,
+  SelectRenderTag,
   TreeSelectOption,
   UploadCustomRequestOptions,
   UploadFileInfo,
@@ -187,11 +189,11 @@ export interface CascaderFieldParams {
   separator?: string
   showPath?: boolean
   virtualScroll?: boolean
-  renderLabel?: (option: CascaderOption, checked: boolean) => VNodeChild
+  renderLabel?: SelectRenderLabel
   renderPrefix?: (option: CascaderOption, checked: boolean) => VNodeChild
   renderSuffix?: (option: CascaderOption, checked: boolean) => VNodeChild
   renderSwitcherIcon?: (option: CascaderOption, checked: boolean) => VNodeChild
-  renderTag?: (option: CascaderOption, checked: boolean) => VNodeChild
+  renderTag?: SelectRenderTag
   filter?: (
     pattern: string,
     option: CascaderOption,

@@ -118,12 +118,6 @@ function handleSelection(
     }
   }
   else {
-    console.log('range', {
-      rowIndex,
-      lastSelectedRowId: lastSelectedRowId.value,
-      rowKey,
-      value,
-    })
     const indexRange = [
       queryState.data.value.findIndex(
         d => d.__$ROW_ID__ === lastSelectedRowId.value,
@@ -233,6 +227,7 @@ function handleSelection(
             :selected="
               queryState.selectedKeys.value.some((i) => i === item.__$ROW_ID__)
             "
+            :list-api="dataApi"
             @update:selected="
               (value, shiftKey) =>
                 handleSelection(value, shiftKey, index, item.__$ROW_ID__)

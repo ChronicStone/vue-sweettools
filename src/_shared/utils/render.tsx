@@ -10,7 +10,7 @@ export function renderVNode<T extends any[]>(r:
 | undefined
 | null
 | ((...args: [...T]) => VNodeChild)
-| unknown, ...args: [...T]): VNodeChild {
+| unknown, ...args: [...T]): VNodeChild | JSX.Element {
   if (typeof r === 'function') {
     const node = r(...args)
     return typeof node === 'string' ? createTextVNode(node) : node
@@ -35,7 +35,7 @@ export function renderIcon(icon: string) {
     )
 }
 
-export function preRenderStringContent(content: string | VNodeChild) {
+export function preRenderStringContent(content: string | VNodeChild | JSX.Element) {
   return typeof content === 'string'
     ? () => <div v-html={content}></div>
     : content

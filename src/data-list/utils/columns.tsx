@@ -1,17 +1,19 @@
-import { NEl, NTooltip } from 'naive-ui'
+import { NTooltip } from 'naive-ui'
 import type { DataTableColumn } from '../types/datatable'
+
+// @ts-expect-error - Not resolved by TS ?
 import MdiMagnify from '~icons/mdi/magnify'
+
+// @ts-expect-error - Not resolved by TS ?
 import MdiArrowUp from '~icons/mdi/arrow-up'
 
 export const ColumnConfigDragTypes = {
   COLUMN: 'column',
 }
 
-export function renderColumnLabel(label: DataTableColumn['label'], _searcheable: boolean) {
+export function renderColumnLabel(label: DataTableColumn['label']) {
   return (
-    <div class="flex items-center w-full justify-between gap-4">
-      <span>{ renderVNode(label) }</span>
-    </div>
+    <div class="text-[12px] py-2 font-semibold">{ renderVNode(label) }</div>
   )
 }
 

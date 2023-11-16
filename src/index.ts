@@ -2,7 +2,7 @@ import 'virtual:uno.css'
 import type { App } from 'vue'
 import { createI18n } from 'vue-i18n'
 import type { AppTypes, SweettoolsPluginConfig } from './_shared/types/lib'
-import type { DynamicFilter, FetchParams, RemoteDataSource, StaticFilter } from './data-list/types/shared'
+import type { ActionParams, DynamicFilter, FetchParams, RemoteDataSource, StaticFilter } from './data-list/types/shared'
 import type { FormRefInstance } from './form/types/instance'
 import DataList from './data-list/DataList.vue'
 import DataTable from './data-list/DataTable.vue'
@@ -16,6 +16,9 @@ import { useFormApi } from './form/composables/useFormApi'
 import { buildGridSchema } from './data-grid/schemaBuilder'
 import { renderVNode } from './_shared/utils/render'
 import { useLocalizedValidators } from './form/composables/useLocalizedValidators'
+import ExcelReader from './excel-reader/components/ExcelReader.vue'
+import { buildExcelSchema } from './excel-reader/utils/schema'
+import { useExcelReader } from './excel-reader/composables/useExcelReader'
 
 export default {
   install: (app: App, config?: SweettoolsPluginConfig) => {
@@ -35,6 +38,7 @@ export type {
   FormRefInstance,
   AppTypes,
   RemoteDataSource,
+  ActionParams,
 }
 
 export {
@@ -43,7 +47,7 @@ export {
   FormRenderer,
   FormProvider,
   DataGrid,
-  //   ExcelReader,
+  ExcelReader,
   textFilter,
   selectFilter,
   booleanExistFilter,
@@ -55,8 +59,8 @@ export {
   buildMultiFieldSchema,
   buildListSchema,
   useFormApi,
-  //   buildExcelSchema,
-  //   useExcelReader,
+  buildExcelSchema,
+  useExcelReader,
   buildTableSchema,
   buildGridSchema,
   renderVNode,

@@ -1,8 +1,8 @@
 {
-  "name": "vue-sweettools",
+  "name": "@chronicstone/vue-sweettools",
   "type": "module",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.7.2-rc5",
+  "private": false,
   "exports": {
     ".": {
       "import": "./dist/vue-sweettools.es.js",

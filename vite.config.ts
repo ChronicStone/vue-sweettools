@@ -39,6 +39,8 @@ export default defineConfig({
         'src/form/utils',
         'src/data-list/composables',
         'src/data-list/utils',
+        'src/excel-reader/composables',
+        'src/excel-reader/utils',
       ],
     }),
     Components({
