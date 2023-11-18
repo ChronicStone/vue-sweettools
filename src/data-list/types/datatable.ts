@@ -3,6 +3,7 @@ import type { VNodeChild } from 'vue'
 import type { EllipsisProps } from 'naive-ui'
 import type {
   Action,
+  DataApi,
   DataDefaultSort,
   DataSortOption,
   DataSource,
@@ -81,8 +82,8 @@ export interface DataTableSchema<
   columns: Array<
     DataTableColumn<TData, PathKeys> | DataTableColumnGroup<TData, PathKeys>
   >
-  expendable?: (rowData: TData) => boolean
-  expandedContent?: (rowData: TData, rowIndex: number) => VNodeChild
+  expandable?: (params: { rowData: TData; tableApi: DataApi }) => boolean
+  expandedContent?: (params: { rowData: TData; tableApi: DataApi }) => VNodeChild
   optimizeQuery?: OptimizedQueryField<PathKeys>[]
   actions?: Action<TData, PathKeys>[]
   rowActions?: RowAction<TData, PathKeys>[]

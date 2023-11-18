@@ -228,6 +228,7 @@ export function mapFieldProps({
     case 'datetime':
     case 'daterange':
     case 'datetimerange':
+    case 'monthrange':
     case 'month':
     case 'year':
       return {

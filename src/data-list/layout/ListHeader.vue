@@ -28,6 +28,7 @@ const props = defineProps<{
   resetTableQuery: () => any
   showSelectAll?: boolean
   compact: boolean
+  resetColumnsConfig?: () => void
 }>()
 
 defineEmits<{
@@ -111,6 +112,7 @@ const showColsConfig = ref<boolean>(false)
     v-if="columnsConfig"
     v-model:columns-config="columnsConfig"
     v-model:show="showColsConfig"
+    :reset-columns-config="resetColumnsConfig!"
   />
   <div
     class="flex flex-col !lg:flex-row !lg:items-center !lg:justify-between w-full gap-4"
@@ -247,10 +249,9 @@ const showColsConfig = ref<boolean>(false)
           {{ i18n.t("datatable.refreshButtonTooltip") }}
         </NTooltip>
 
-        <NTooltip>
+        <NTooltip v-if="columnsConfig">
           <template #trigger>
             <NButton
-              v-if="columnsConfig"
               :size="compact ? 'small' : 'medium'"
               class="!w-full !md:w-auto"
               @click="showColsConfig = true"

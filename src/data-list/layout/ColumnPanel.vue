@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import {
+  NButton,
   NDrawer,
   NDrawerContent,
   NIcon,
 } from 'naive-ui'
 import type { RuntimeColsConfig } from '../composables/useTableColums'
 
+defineProps<{ resetColumnsConfig: () => void }>()
 const i18n = useTranslations()
 const { width } = useWindowSize()
 const { columnsConfig, show } = defineModels<{
@@ -38,6 +40,17 @@ const { columnsConfig, show } = defineModels<{
       </template>
 
       <ColumnConfig v-model:columns="columnsConfig" />
+
+      <template #footer>
+        <div class="flex justify-end">
+          <NButton
+            size="small"
+            @click="resetColumnsConfig()"
+          >
+            {{ i18n.t("datatable.resetColumnsConfig") }}
+          </NButton>
+        </div>
+      </template>
     </NDrawerContent>
   </NDrawer>
 </template>

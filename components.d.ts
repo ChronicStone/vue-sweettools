@@ -67,7 +67,6 @@ declare module 'vue' {
     ObjectField: typeof import('./src/form/components/Field/ObjectField.vue')['default']
     OpenState: typeof import('./src/_shared/components/OpenState.vue')['default']
     RadioField: typeof import('./src/form/components/Field/RadioField.vue')['default']
-    'RadixIcons:pinLeft': typeof import('~icons/radix-icons/pin-left')['default']
     RatingField: typeof import('./src/form/components/Field/RatingField.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

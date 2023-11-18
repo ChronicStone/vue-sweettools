@@ -9,6 +9,7 @@ const {
   description,
   image,
   expandedContent,
+  expandable,
   subtitle,
   remote,
   datasource,
@@ -220,6 +221,7 @@ function handleSelection(
             :subtitle="subtitle"
             :description="description"
             :expanded-content="expandedContent"
+            :expandable="expandable"
             :enable-selection="selection"
             :image="image"
             :row-actions="rowActions"

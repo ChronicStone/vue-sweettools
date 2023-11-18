@@ -10,7 +10,7 @@ export function mapFilterInitialState(
     ? defaultValue
     : ['select', 'checkboxGroup'].includes(type)
         ? []
-        : ['daterange', 'datetimerange'].includes(type)
+        : ['daterange', 'datetimerange', 'monthrange'].includes(type)
             ? [null, null]
             : null
   const state: { [key: string]: any } = {}

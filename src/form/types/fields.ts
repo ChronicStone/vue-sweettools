@@ -33,6 +33,7 @@ export enum FieldTypes {
   DATE = 'date',
   DATE_TIME = 'datetime',
   DATE_RANGE = 'daterange',
+  MONTH_RANGE = 'monthrange',
   DATE_TIME_RANGE = 'datetimerange',
   MONTH = 'month',
   YEAR = 'year',
@@ -445,7 +446,7 @@ export interface DateFieldParams {
 }
 
 export type DateField = {
-  type: 'date' | 'datetime' | 'daterange' | 'datetimerange' | 'month' | 'year'
+  type: 'date' | 'datetime' | 'daterange' | 'monthrange' | 'datetimerange' | 'month' | 'year'
   clearable?: boolean
   fieldParams?:
   | DateFieldParams
@@ -456,7 +457,7 @@ export type DateField = {
     transform?: (value: string | null) => string
   }
   | {
-    type: 'daterange' | 'datetimerange'
+    type: 'daterange' | 'datetimerange' | 'monthrange'
     transform?: (value: [string, string] | null) => string[]
   }
 )

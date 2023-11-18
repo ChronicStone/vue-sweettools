@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NButton, NEl, NTooltip } from 'naive-ui'
+import { NButton, NTooltip } from 'naive-ui'
 import type { DataApi, RowAction } from '../types/shared'
 import type { GenericObject } from '@/_shared/types/utils'
 

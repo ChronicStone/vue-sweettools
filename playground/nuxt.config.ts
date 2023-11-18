@@ -8,9 +8,16 @@ export default defineNuxtConfig({
   imports: {
     dirs: ['/samples', '/samples/**', '/config'],
   },
+  modules: ['@unocss/nuxt'],
   app: {
     head: {
-      script: [{ src: 'https://code.iconify.design/1/1.0.0/iconify.min.js' }],
+      script: [
+        { src: 'https://code.iconify.design/1/1.0.0/iconify.min.js' },
+      ],
+      meta: [
+        { name: 'naive-ui-style' },
+        { name: 'vueuc-style' },
+      ],
     },
   },
 })

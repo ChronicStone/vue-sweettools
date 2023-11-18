@@ -1,7 +1,7 @@
 import type { DataTableColumn as TDataTableColumn } from 'naive-ui'
 import { z } from 'zod'
 import type { DataApi, DataResolverState, FullQueryState, RowAction } from '../types/shared'
-import type { DataTableColumn, DataTableColumnGroup } from '../types/datatable'
+import type { DataTableColumn, DataTableColumnGroup, DataTableSchema } from '../types/datatable'
 import RowActions from '../content/RowActions.vue'
 
 const BASE_CONF_CONF_SCHEMA = z.object({
@@ -32,6 +32,8 @@ export function useTableColumns(params: {
   tableKey: ComputedRef<string>
   searchQuery: ComputedRef<string[]>
   rowActions: ComputedRef<RowAction[]>
+  expandable: ComputedRef<DataTableSchema['expandable']>
+  expandedContent: ComputedRef<DataTableSchema['expandedContent']>
 }) {
   const i18n = useTranslations()
   const columnConfig = ref(
@@ -40,7 +42,7 @@ export function useTableColumns(params: {
       params.persistency.value,
       params.tableKey.value,
       getPersistedColsConfig(params.persistency.value, params.tableKey.value),
-    ).sort((a, b) => a.order - b.order),
+    ).sort(sortCols),
   )
 
   const columnDefs = computed(() => {
@@ -48,12 +50,22 @@ export function useTableColumns(params: {
       ...(params.selection.value
         ? [{ type: 'selection' } satisfies TDataTableColumn]
         : []),
+      ...(params.expandedContent.value
+        ? [
+          {
+            type: 'expand',
+            expandable: rowData => params.expandable?.value?.({ rowData, tableApi: params.dataApi }) ?? true,
+            renderExpand: rowData => params.expandedContent.value?.({ rowData, tableApi: params.dataApi }) ?? '',
+          } satisfies TDataTableColumn,
+          ]
+        : []),
       ...(params.rowActions.value.length > 0
         ? [
           {
             title: () => renderColumnLabel('Actions'),
             key: '#actions',
             sorter: false,
+            // @ts-expect-error - TODO: Fix this
             render: rowData => <RowActions actions={params.rowActions.value} row-data={rowData} api={params.dataApi} />,
             width: 60 + params.rowActions.value.length * 20,
           },
@@ -70,6 +82,15 @@ export function useTableColumns(params: {
         }),
     ]
   })
+
+  function resetColumnsConfig() {
+    columnConfig.value = mapColumnsConfig(
+      params.columns.value,
+      params.persistency.value,
+      params.tableKey.value,
+      null,
+    ).sort(sortCols)
+  }
 
   watch(
     () => columnConfig.value,
@@ -89,7 +110,7 @@ export function useTableColumns(params: {
     { deep: true },
   )
 
-  return { columnDefs, columnConfig }
+  return { columnDefs, columnConfig, resetColumnsConfig }
 }
 
 export function getFlatColumns(
@@ -237,10 +258,6 @@ function mapColumnsRecursively(
 }
 
 export function sortCols(a: BaseColConf, b: BaseColConf) {
-  // IF ITEM IS FIXED LEFT, SHOULD BE FIRST
-  // IF ITEM IS FIXED RIGHT, SHOULD BE LAST
-  // OTHERWISE, SORT BY ORDER
-  // IF BOTH ARE FIXED, RESPECT ORDER AS WELL
   if (a.fixed === 'left' && b.fixed !== 'left')
     return -1
   if (a.fixed !== 'left' && b.fixed === 'left')

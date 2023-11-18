@@ -24,9 +24,10 @@ export function mapFieldsInitialState(
   for (const field of fields) {
     if (field.type === 'info')
       continue
+
     const fieldValue = getObjectProperty(
-      field.key,
-      [...(field._stepRoot ? [field._stepRoot] : []), ...parentKeys],
+      [...(field._stepRoot ? [field._stepRoot] : []), ...parentKeys, field.key].join('.'),
+      [],
       rootState,
     )
 
@@ -121,8 +122,8 @@ export function mapFieldsOutputState(
     if (field.type === 'info')
       continue
     const fieldValue = getObjectProperty(
-      field.key,
-      [...(field._stepRoot ? [field._stepRoot] : []), ...parentKeys],
+      [...(field._stepRoot ? [field._stepRoot] : []), ...parentKeys, field.key].join('.'),
+      [],
       rootState,
     )
     const fieldDependencies = resolveFieldDependencies(
@@ -244,8 +245,8 @@ function getNestedFieldOutput(
       = mode === 'input' ? mapFieldsInitialState : mapFieldsOutputState
 
   const fieldValue = getObjectProperty(
-    [field.key, ...(typeof index === 'number' ? [index.toString()] : [])].join('.'),
-    [...(hasRoot ? [field._stepRoot as string] : [])],
+    [...(hasRoot ? [field._stepRoot as string] : []), field.key, ...(typeof index === 'number' ? [index.toString()] : [])].join('.'),
+    [],
     inputState,
   )
 

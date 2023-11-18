@@ -40,7 +40,7 @@ const {
   description,
   subtitle,
   expandedContent,
-  // expendable,
+  expandable,
   selected,
   rowActions,
   enableSelection,
@@ -53,7 +53,7 @@ const {
   image?: (params: { rowData: GenericObject }) => VNodeChild
   description?: (params: { rowData: GenericObject }) => VNodeChild
   expandedContent?: (params: { rowData: GenericObject }) => VNodeChild
-  expendable?: (params: { rowData: GenericObject }) => boolean
+  expandable?: (params: { rowData: GenericObject }) => boolean
   rowActions?: RowAction<GenericObject>[]
   enableSelection: boolean
   selectAll: boolean
@@ -154,7 +154,7 @@ function handleSelection(event: MouseEvent, value: boolean) {
             class="grid md:flex grid-cols-2 items-center gap-2 w-full md:w-auto"
           >
             <NButton
-              v-if="expandedContent"
+              v-if="expandedContent && (expandable ? expandable({ rowData: data }) : true)"
               class="w-full md:w-auto col-span-1"
               :size="isSmallScreen ? 'medium' : 'small'"
               secondary
@@ -182,7 +182,7 @@ function handleSelection(event: MouseEvent, value: boolean) {
         </div>
       </div>
 
-      <NCollapseTransition :show="!collapsed">
+      <NCollapseTransition v-if="expandedContent && (expandable?.({ rowData: data }) ?? true)" :show="!collapsed">
         <div class="w-full h-auto pt-4 flex flex-col gap-4">
           <NDivider class="!m-0" />
           <Component :is="renderVNode(expandedContent, { rowData: data })" />

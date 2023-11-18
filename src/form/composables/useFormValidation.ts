@@ -36,8 +36,8 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
         if (field.type === 'info')
           continue
         const fieldValue = getObjectProperty(
-          field.key,
-          parentKey,
+          [...parentKey, field.key].join('.'),
+          [],
           state,
         )
         const dependencies = resolveFieldDependencies(field, state, parentKey)

@@ -22,10 +22,12 @@ export function preformatFieldDependencies(
           ? { source: dependency[0], target: dependency[1] }
           : dependency,
     )
-    .map(({ source, target }) => ({
-      key: target,
-      value: getObjectProperty(source, parentKey, formState),
-    }))
+    .map(({ source, target }) => {
+      return ({
+        key: target,
+        value: getObjectProperty(source, parentKey, formState),
+      })
+    })
 }
 
 export function resolveFieldDependencies(

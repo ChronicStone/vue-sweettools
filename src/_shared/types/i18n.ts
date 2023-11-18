@@ -95,6 +95,7 @@ export type LocaleDateFormatTemplate = {
   datetime: string
   daterange: string
   datetimerange: string
+  monthrange: string
   month: string
   year: string
 }

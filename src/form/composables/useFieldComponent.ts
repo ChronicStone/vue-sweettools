@@ -49,6 +49,7 @@ export function useFieldComponent(field: ComputedRef<FormField>) {
       case FieldTypes.DATE_TIME:
       case FieldTypes.YEAR:
       case FieldTypes.MONTH:
+      case FieldTypes.MONTH_RANGE:
         return DateField
       case FieldTypes.TIME:
         return TimeField

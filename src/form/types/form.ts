@@ -99,7 +99,7 @@ type ResolveFormType<
                 : never
               : K extends { type: 'array-variant' }
                 ? Array<ExtractVariantType<K['variants'], K['variantKey']>>
-                : K['type'] extends 'daterange' | 'datetimerange'
+                : K['type'] extends 'daterange' | 'datetimerange' | 'monthrange'
                   ? [string, string]
                   : K['type'] extends 'number' | 'slider'
                     ? number

@@ -42,7 +42,7 @@ export interface DataListSchema<
   image?: (params: { rowData: TData }) => VNodeChild
   description?: (params: { rowData: TData }) => VNodeChild
   expandedContent?: (params: { rowData: TData }) => VNodeChild
-  expendable?: (params: { rowData: TData }) => boolean
+  expandable?: (params: { rowData: TData }) => boolean
   optimizeQuery?: OptimizedQueryField<PathKeys>[]
   staticFilters?: StaticFilter[]
   actions?: Action<TData, PathKeys>[]

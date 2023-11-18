@@ -133,9 +133,10 @@ function inspectFormState() {
   <div class="w-screen h-screen flex">
     <NCard
       segmented
-      class="w-[400px] h-full"
+      class=" h-full"
       :theme-overrides="{ borderRadius: '0px' }"
       :content-style="{ padding: 0 }"
+      style="width: 400px !important"
     >
       <template #header>
         <div class="flex items-center gap-1 justify-between">
