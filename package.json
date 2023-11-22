@@ -19,7 +19,8 @@
   "scripts": {
     "dev:ts": "vite",
     "dev": "vite build --watch",
-    "build": "vue-tsc && vite build",
+    "build": "vite build",
+    "build:tsc": "vue-tsc && vite build",
     "preview": "vite preview",
     "playground:build": "cd playground && npx nuxi build",
     "playground:dev": "cd playground && npx nuxi dev"
