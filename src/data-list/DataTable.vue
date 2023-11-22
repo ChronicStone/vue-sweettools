@@ -227,6 +227,24 @@ watch(() => elementExists.value, (v) => {
 })
 
 watch(() => queryState.paginationState.value.pageIndex, () => tableRef.value?.scrollTo({ top: 0 }))
+
+function setInternalTableSort(sort: {
+  key: string
+  dir: 'asc' | 'desc'
+} | null) {
+  if (!sort)
+    tableRef.value?.clearSorter()
+  else tableRef.value?.sort(sort.key, sort.dir === 'asc' ? 'ascend' : 'descend')
+}
+
+onMounted(() => {
+  if (queryState.sortState.value.key) {
+    setInternalTableSort({
+      key: queryState.sortState.value.key,
+      dir: queryState.sortState.value.dir ?? 'asc',
+    })
+  }
+})
 </script>
 
 <template>
@@ -253,7 +271,10 @@ watch(() => queryState.paginationState.value.pageIndex, () => tableRef.value?.sc
           :list-key="tableKey"
           :compact="compact"
           :reset-columns-config="columnsState.resetColumnsConfig"
-          @update:sort="queryState.setSort"
+          @update:sort="(e) => {
+            queryState.setSort(e)
+            setInternalTableSort(e)
+          }"
         >
           <slot />
         </ListHeader>

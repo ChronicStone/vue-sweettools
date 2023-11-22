@@ -2,7 +2,7 @@
 import { DataTable, booleanFilter, buildTableSchema } from '@chronicstone/vue-sweettools'
 
 async function loadData() {
-  await new Promise(resolve => setTimeout(resolve, 200))
+  await new Promise(resolve => setTimeout(resolve, 2000))
   return Array.from({ length: 200 }, (_, i) => ({
     id: i,
     name: `name ${i}`,

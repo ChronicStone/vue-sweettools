@@ -2,11 +2,11 @@
 import {
   NBadge,
   NButton,
+  NCheckbox,
   NDivider,
   NDropdown,
   NIcon,
   NPopover,
-  NSwitch,
   NTooltip,
 } from 'naive-ui'
 import type { useDataActions } from '../composables/useDataActions'
@@ -29,6 +29,7 @@ const props = defineProps<{
   showSelectAll?: boolean
   compact: boolean
   resetColumnsConfig?: () => void
+  selectedKeys?: (string | number)[]
 }>()
 
 defineEmits<{
@@ -123,7 +124,7 @@ const showColsConfig = ref<boolean>(false)
         class="text-sm text-gray-500 font-light dark:text-gray-400 flex items-center gap-1"
       >
         <template v-if="showSelectAll">
-          <NSwitch v-model:value="selectAll" size="small" />
+          <NCheckbox v-model:checked="selectAll" :indeterminate="!selectAll && !!selectedKeys?.length" size="small" />
           <NDivider vertical />
         </template>
         {{ i18n.t("datatable.selectedRows", { count: props.nbSelected }) }}

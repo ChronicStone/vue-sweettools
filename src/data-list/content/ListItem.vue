@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import type {
   GlobalThemeOverrides,
 } from 'naive-ui'
@@ -14,6 +14,8 @@ import {
 import type { VNodeChild } from 'vue'
 import tiny from 'tinycolor2'
 import type { BuiltInGlobalTheme } from 'naive-ui/es/themes/interface'
+import type { RouteLocationRaw } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import type { DataApi, RowAction } from '../types/shared'
 import type { GenericObject } from '@/_shared/types/utils'
 
@@ -54,7 +56,7 @@ const {
   description?: (params: { rowData: GenericObject }) => VNodeChild
   expandedContent?: (params: { rowData: GenericObject }) => VNodeChild
   expandable?: (params: { rowData: GenericObject }) => boolean
-  rowActions?: RowAction<GenericObject>[]
+  rowActions: RowAction<GenericObject>[]
   enableSelection: boolean
   selectAll: boolean
   selected: boolean
@@ -62,24 +64,41 @@ const {
 }>()
 
 const collapsed = ref<boolean>(true)
-const actions = computed(() =>
-  (rowActions.value ?? []).map((action) => {
-    if ('type' in action) { return { type: 'divider', hidden: false, key: generateUUID() } }
-    else {
-      return {
-        key: generateUUID(),
-        label: action.label,
-        ...(action.icon && { icon: renderIcon(typeof action.icon === 'function' ? action.icon({ rowData: data.value }) : action.icon) }),
-        hidden:
-          typeof action.condition === 'function'
-            ? !action.condition({ rowData: data.value, tableApi: listApi.value })
-            : false,
-        props: {
-          onClick: () => action?.action?.({ rowData: data.value, tableApi: listApi.value }),
-        },
-      }
-    }
-  }),
+const { permissionValidator } = useGlobalConfig()
+const _actions = computed(() =>
+  rowActions.value
+    .map(action => ({
+      ...(action.icon && { icon: renderIcon(typeof action.icon === 'function' ? action.icon({ rowData: data.value }) : action.icon) }),
+      label: action.link
+        ? () => (
+          <RouterLink to={action.link as RouteLocationRaw}>
+            {action.label}
+          </RouterLink>
+          )
+        : action.label,
+      key: generateUUID(),
+      props: {
+        onClick: () =>
+          action?.action?.({
+            rowData: data.value,
+            tableApi: listApi.value,
+          }),
+      },
+      _enable: computed(() =>
+        typeof action.condition === 'function'
+          ? action.condition({
+            rowData: data.value,
+            tableApi: listApi.value,
+          })
+          : true,
+      ),
+      _allowed: computed(() =>
+        action?.permissions?.length
+          ? permissionValidator.value(action.permissions)
+          : true,
+      ),
+    }))
+    .filter(action => action._enable.value && action._allowed.value),
 )
 
 function handleSelection(event: MouseEvent, value: boolean) {
@@ -150,7 +169,7 @@ function handleSelection(event: MouseEvent, value: boolean) {
             <NDivider v-if="!isSmallScreen" vertical class="!m-0" />
           </template>
           <div
-            v-if="expandedContent || actions.length"
+            v-if="expandedContent || _actions.length"
             class="grid md:flex grid-cols-2 items-center gap-2 w-full md:w-auto"
           >
             <NButton
@@ -167,7 +186,7 @@ function handleSelection(event: MouseEvent, value: boolean) {
                 />
               </template>
             </NButton>
-            <NDropdown v-if="actions.length" :options="actions">
+            <NDropdown v-if="_actions.length" :options="_actions">
               <NButton
                 :size="isSmallScreen ? 'medium' : 'small'"
                 class="col-span-1 w-full md:w-auto"

@@ -1,7 +1,7 @@
 {
   "name": "@chronicstone/vue-sweettools",
   "type": "module",
-  "version": "0.7.2-rc21",
+  "version": "0.7.2-rc27",
   "private": false,
   "exports": {
     ".": {
@@ -20,7 +20,9 @@
     "dev:ts": "vite",
     "dev": "vite build --watch",
     "build": "vue-tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "playground:build": "cd playground && npx nuxi build",
+    "playground:dev": "cd playground && npx nuxi dev"
   },
   "dependencies": {
     "@chronicstone/vue-testid": "^0.1.0",

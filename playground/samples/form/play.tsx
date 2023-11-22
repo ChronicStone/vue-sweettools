@@ -18,6 +18,11 @@ const { sample, formData } = defineFormSchemaSample({
         key: 'monthRange',
         type: 'monthrange',
       },
+      {
+        label: 'Month range',
+        key: 'monthRange',
+        type: 'daterange',
+      },
     ],
   },
 })

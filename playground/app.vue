@@ -6,7 +6,7 @@ import {
   darkTheme,
 } from 'naive-ui'
 import { RouterView } from 'vue-router'
-import { FormProvider } from 'vue-sweettools'
+import { FormProvider } from '@chronicstone/vue-sweettools'
 import { DarkThemeOverrides, LightThemeOverrides } from './config/themeOverrides'
 
 const { isDark } = useDarkMode()
