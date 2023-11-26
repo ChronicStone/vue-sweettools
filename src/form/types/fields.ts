@@ -16,6 +16,7 @@ import type { SelectBaseOption } from 'naive-ui/es/select/src/interface'
 import type { Component, VNode, VNodeChild } from 'vue'
 import type { MaskOptions } from 'maska'
 import type { FileInfo } from 'naive-ui/es/upload/src/interface'
+import type { MaybePromise } from 'rollup'
 import type { useFieldContext } from '../composables/useFieldContext'
 import type { Narrowable, Primitive } from '@/_shared/types/utils'
 
@@ -115,8 +116,8 @@ export interface TextField {
   type: 'text'
   clearable?: boolean
   fieldParams?:
-  | TextFieldProps
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TextFieldProps)
+    | TextFieldProps
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TextFieldProps)
 }
 
 export interface TreeSelectFieldProps {
@@ -131,12 +132,12 @@ export interface TreeSelectFieldProps {
   allowCheckingNotLoaded?: boolean
   filterable?: boolean
   placement?:
-  | 'top'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom'
-  | 'bottom-start'
-  | 'bottom-end'
+    | 'top'
+    | 'top-start'
+    | 'top-end'
+    | 'bottom'
+    | 'bottom-start'
+    | 'bottom-end'
   remote?: boolean
   separator?: string
   showPath?: boolean
@@ -160,11 +161,11 @@ export interface TreeSelectField {
   multiple?: boolean
   options: _FieldOptions
   fieldParams?:
-  | TreeSelectFieldProps
-  | ((
-    deps: Dependencies,
-    fieldApi: ReadonlyFieldApi
-  ) => TreeSelectFieldProps)
+    | TreeSelectFieldProps
+    | ((
+      deps: Dependencies,
+      fieldApi: ReadonlyFieldApi
+    ) => TreeSelectFieldProps)
 }
 
 export interface CascaderFieldParams {
@@ -180,12 +181,12 @@ export interface CascaderFieldParams {
   allowCheckingNotLoaded?: boolean
   filterable?: boolean
   placement?:
-  | 'top'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom'
-  | 'bottom-start'
-  | 'bottom-end'
+    | 'top'
+    | 'top-start'
+    | 'top-end'
+    | 'bottom'
+    | 'bottom-start'
+    | 'bottom-end'
   remote?: boolean
   separator?: string
   showPath?: boolean
@@ -209,12 +210,12 @@ export interface CascaderField {
   options: _FieldOptions
   multiple?: boolean
   fieldParams?:
-  | CascaderFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => CascaderFieldParams)
+    | CascaderFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => CascaderFieldParams)
 }
 
 export interface TextAreaFieldParams extends TextFieldProps {
-  autosize?: boolean | { minRows?: number; maxRows?: number }
+  autosize?: boolean | { minRows?: number, maxRows?: number }
   showCount?: boolean
 }
 
@@ -222,8 +223,8 @@ export interface TextAreaField {
   type: 'textarea'
   clearable?: boolean
   fieldParams?:
-  | TextAreaFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TextAreaFieldParams)
+    | TextAreaFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TextAreaFieldParams)
 }
 
 export interface TagFieldParams {
@@ -233,20 +234,20 @@ export interface TagFieldParams {
   tagStyle?: string | Record<string, Primitive>
   onCreate?:
   | ((label: string) => string)
-  | ((label: string) => { label: string; value: string })
+  | ((label: string) => { label: string, value: string })
   rounded?: boolean
   max?: number
   inputProps?: InputProps
   renderTag?:
   | ((tag: string, index: number) => VNodeChild)
-  | ((tag: { label: string; value: string }, index: number) => VNodeChild)
+  | ((tag: { label: string, value: string }, index: number) => VNodeChild)
 }
 
 export interface TagField {
   type: 'tag'
   fieldParams?:
-  | TagFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TagFieldParams)
+    | TagFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TagFieldParams)
 }
 
 export interface PasswordField extends Omit<TextField, 'type' | 'pair'> {
@@ -279,8 +280,8 @@ export interface SelectField {
   options: _FieldOptions
   multiple?: boolean
   fieldParams?:
-  | SelectFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SelectFieldParams)
+    | SelectFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SelectFieldParams)
   createOption?: FieldOptionCreator
   allowOptionsRefresh?: boolean
 }
@@ -297,8 +298,8 @@ export interface NumberField {
   type: 'number'
   clearable?: boolean
   fieldParams?:
-  | NumberFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => NumberFieldParams)
+    | NumberFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => NumberFieldParams)
 }
 
 export interface ColorPickerFieldParams {
@@ -313,11 +314,11 @@ export interface ColorPickerFieldParams {
 export interface ColorPickerField {
   type: 'color-picker'
   fieldParams?:
-  | ColorPickerFieldParams
-  | ((
-    deps: Dependencies,
-    fieldApi: ReadonlyFieldApi
-  ) => ColorPickerFieldParams)
+    | ColorPickerFieldParams
+    | ((
+      deps: Dependencies,
+      fieldApi: ReadonlyFieldApi
+    ) => ColorPickerFieldParams)
 }
 
 export interface RatingFieldParams {
@@ -331,8 +332,8 @@ export interface RatingFieldParams {
 export interface RatingField {
   type: 'rating'
   fieldParams?:
-  | RatingFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => RatingFieldParams)
+    | RatingFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => RatingFieldParams)
 }
 
 export interface SliderFieldParams {
@@ -363,8 +364,8 @@ export interface SliderFieldParams {
 export interface SliderField {
   type: 'slider'
   fieldParams?:
-  | SliderFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SliderFieldParams)
+    | SliderFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SliderFieldParams)
 }
 
 export interface SwitchFieldParams {
@@ -377,8 +378,8 @@ export interface SwitchFieldParams {
 export interface SwitchField {
   type: 'switch'
   fieldParams?:
-  | SwitchFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SwitchFieldParams)
+    | SwitchFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SwitchFieldParams)
 }
 
 export interface RadioField {
@@ -394,8 +395,8 @@ export interface CheckboxFieldParams {
 export interface CheckboxField {
   type: 'checkbox'
   fieldParams?:
-  | CheckboxFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => CheckboxFieldParams)
+    | CheckboxFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => CheckboxFieldParams)
 }
 
 export interface CheckboxGroupFieldParams {
@@ -407,8 +408,8 @@ export interface CheckboxGroupField {
   type: 'checkbox-group'
   options: _FieldOptions
   fieldParams?:
-  | CheckboxGroupFieldParams
-  | ((deps: CheckboxGroupFieldParams) => CheckboxGroupFieldParams)
+    | CheckboxGroupFieldParams
+    | ((deps: CheckboxGroupFieldParams) => CheckboxGroupFieldParams)
 }
 
 export interface TimeFieldParams {
@@ -433,8 +434,8 @@ export interface TimeField {
   type: 'time'
   clearable?: boolean
   fieldParams?:
-  | TimeFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TimeFieldParams)
+    | TimeFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TimeFieldParams)
 }
 
 export interface DateFieldParams {
@@ -449,8 +450,8 @@ export type DateField = {
   type: 'date' | 'datetime' | 'daterange' | 'monthrange' | 'datetimerange' | 'month' | 'year'
   clearable?: boolean
   fieldParams?:
-  | DateFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => DateFieldParams)
+    | DateFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => DateFieldParams)
 } & (
   | {
     type: 'date' | 'datetime' | 'month' | 'year'
@@ -466,9 +467,6 @@ export type UploadFieldParams = {
   abstract?: boolean
   accept?: string
   action?: string
-  customRequest?: (options: UploadCustomRequestOptions) => void
-  data?: object | ((opts: { file: UploadFileInfo }) => object)
-  headers?: object | ((opts: { file: UploadFileInfo }) => object)
   inputProps?: Record<string, unknown>
   defaultFileList?: UploadFileInfo[]
   uploadOnSelection?: boolean
@@ -477,8 +475,6 @@ export type UploadFieldParams = {
   imageGroupProps?: ImageGroupProps
   isErrorState?: (xhr: XMLHttpRequest) => boolean
   max?: number
-  method?: 'POST' | 'PUT' | 'PATCH'
-  responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text'
   renderFileIcon?: (file: UploadSettledFileInfo) => VNodeChild
   shouldUseThumbnailUrl?: (file: UploadSettledFileInfo) => boolean
   showCancelButton?: boolean
@@ -524,9 +520,11 @@ export type UploadFieldParams = {
 export interface UploadField {
   type: 'upload'
   multiple?: boolean
+  output: 'object' | 'url'
+  uploadHandler: (options: UploadCustomRequestOptions, dependencies: Dependencies, api: ReadonlyFieldApi) => MaybePromise<void>
   fieldParams?:
-  | UploadFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => UploadFieldParams)
+    | UploadFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => UploadFieldParams)
 }
 
 export interface GroupField<FieldKey extends Narrowable = string> {
@@ -560,8 +558,8 @@ export interface ObjectField<FieldKey extends Narrowable = string> {
   collapsible?: boolean
   collapsed?: boolean
   fieldParam?:
-  | ObjectFieldParams
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => ObjectFieldParams)
+    | ObjectFieldParams
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => ObjectFieldParams)
 }
 
 export interface _ArrayField<FieldKey extends Narrowable = string> {
@@ -573,19 +571,19 @@ export interface _ArrayField<FieldKey extends Narrowable = string> {
   headerTemplate?: (item: Record<string, any>, index: number) => string
   actions?: {
     [key in 'deleteItem' | 'moveUp' | 'moveDown']?:
-    | boolean
-    | ((
-      value: Record<string, unknown>,
-      dependencies: Record<string, unknown>,
-      index: number
-    ) => boolean);
+      | boolean
+      | ((
+        value: Record<string, unknown>,
+        dependencies: Record<string, unknown>,
+        index: number
+      ) => boolean);
   } & {
     addItem?:
-    | boolean
-    | ((
-      values: Array<Record<string, unknown>>,
-      dependencies: Record<string, unknown>
-    ) => boolean)
+      | boolean
+      | ((
+        values: Array<Record<string, unknown>>,
+        dependencies: Record<string, unknown>
+      ) => boolean)
     custom?: Array<{
       label: string
       icon: string
@@ -652,11 +650,11 @@ export interface CustomField {
   type: 'custom-component'
   component: Component
   fieldParams?:
-  | Record<string, unknown>
-  | ((
-    deps: Dependencies,
-    fieldApi: ReadonlyFieldApi
-  ) => Record<string, unknown>)
+    | Record<string, unknown>
+    | ((
+      deps: Dependencies,
+      fieldApi: ReadonlyFieldApi
+    ) => Record<string, unknown>)
   collapsible?: boolean
   collapsed?: boolean
 }
@@ -677,7 +675,7 @@ export type FieldApi = {
     | CascaderOption
     | string
     | number = SelectOption | TreeSelectOption | CascaderOption,
-    O = T extends string | number ? { label: string; value: T } : T,
+    O = T extends string | number ? { label: string, value: T } : T,
   >(
     key?: string
   ): O[]
@@ -694,8 +692,8 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   placeholder?: string | (() => string)
   dependencies?: (string | [string, string])[]
   required?:
-  | boolean
-  | ((dependencies: Dependencies, api: ReadonlyFieldApi) => boolean)
+    | boolean
+    | ((dependencies: Dependencies, api: ReadonlyFieldApi) => boolean)
   size?: number | string
   gridSize?: number | string
   default?: unknown
@@ -704,8 +702,8 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   labelPosition?: 'left' | 'top'
   description?: string | (() => VNodeChild) | FieldDescription
   fieldParams?:
-  | Record<string, unknown>
-  | ((deps: Dependencies, api: ReadonlyFieldApi) => Record<string, unknown>)
+    | Record<string, unknown>
+    | ((deps: Dependencies, api: ReadonlyFieldApi) => Record<string, unknown>)
   condition?: (
     dependencies: Dependencies,
     api: ReadonlyFieldApi
@@ -715,7 +713,7 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   validators?:
   | ((dependencies: Dependencies, api: ReadonlyFieldApi) => ValidationArgs)
   | ValidationArgs
-  watchOptions?: { deep?: boolean; immediate?: boolean }
+  watchOptions?: { deep?: boolean, immediate?: boolean }
   watch?: (value: any, params: FieldApi) => void
   onDependencyChange?: (dependencies: Dependencies, api: FieldApi) => void
   ignore?: boolean

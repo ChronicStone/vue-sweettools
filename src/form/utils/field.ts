@@ -3,8 +3,8 @@ import type { Dependencies, FormField, ReadonlyFieldApi } from '../types/fields'
 type MapFieldPropsParams = {
   field: FormField
   fieldProps:
-  | Record<string, any>
-  | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => Record<string, any>)
+    | Record<string, any>
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => Record<string, any>)
   dependencies: Dependencies
   fieldApi: ReadonlyFieldApi
   raw?: boolean
@@ -137,7 +137,7 @@ export function mapFieldProps({
         ...(typeof fieldProps.min !== 'undefined' && { min: fieldProps.min }),
         ...(typeof fieldProps.max !== 'undefined' && { max: fieldProps.max }),
         ...(typeof fieldProps.step !== 'undefined'
-          && fieldProps.step && { step: fieldProps.step }),
+        && fieldProps.step && { step: fieldProps.step }),
       }
     case 'rating':
       return {
@@ -259,22 +259,17 @@ export function mapFieldProps({
         'accept': fieldProps.accept ?? undefined,
         'action': fieldProps.action ?? undefined,
         'create-thumbnail-url': fieldProps.createThumbnailUrl ?? undefined,
-        'custom-request': fieldProps.customRequest ?? undefined,
-        'data': fieldProps.data ?? undefined,
         'default-file-list': fieldProps.defaultFileList ?? [],
         'default-upload': fieldProps.uploadOnSelection ?? true,
         'directory': fieldProps.allowDirectory ?? false,
-        'directory-dnd': fieldProps.enableDragDrop ?? false,
+        'directory-dnd': fieldProps.enableDragDrop ?? true,
         'file-list-style': fieldProps.fileListStyle ?? {},
-        'headers': fieldProps.headers ?? undefined,
         'input-props': fieldProps.inputProps ?? undefined,
         'image-group-props': fieldProps.imageGroupProps ?? undefined,
         'max': fieldProps.max ?? undefined,
-        'method': fieldProps.method ?? undefined,
         'multiple': field.multiple ?? false,
-        'list-type': fieldProps.listType ?? 'text',
+        'list-type': fieldProps.listType ?? 'image',
         'render-icon': fieldProps.renderFileIcon ?? undefined,
-        'response-type': fieldProps.responseType ?? undefined,
         'should-use-thumbnail-url':
           fieldProps.shouldUseThumbnailUrl ?? undefined,
         'show-trigger': true,

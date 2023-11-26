@@ -1,6 +1,8 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import type {
+  UploadCustomRequestOptions,
   UploadFileInfo,
+  UploadSettledFileInfo,
 } from 'naive-ui'
 import {
   NIcon,
@@ -9,7 +11,6 @@ import {
   NUpload,
   NUploadDragger,
 } from 'naive-ui'
-import type { SettledFileInfo } from 'naive-ui/es/upload/src/interface'
 import type { FieldComponentEmits, FieldComponentProps, UploadField } from '@/form/types/fields'
 
 const props = defineProps<FieldComponentProps>()
@@ -17,32 +18,55 @@ const emit = defineEmits<FieldComponentEmits>()
 const _field = computed(() => props.field as UploadField)
 
 const fieldValue = computed({
-  get: () => props.modelValue as UploadFileInfo | UploadFileInfo[],
+  get: () => props.modelValue,
   set: value => emit('update:modelValue', value),
 })
 
-const mappedValue = computed(() => {
-  if (_field.value.multiple)
-    return !fieldValue.value ? [] : (fieldValue.value as UploadFileInfo[])
-  else return !fieldValue.value ? [] : ([fieldValue.value] as UploadFileInfo[])
-})
+const fileList = ref<UploadFileInfo[]>(parseInputFileList(fieldValue.value) ?? [])
 
-function onFileListUpdate(fileList: SettledFileInfo[]) {
-  if (_field.value.multiple)
-    fieldValue.value = fileList as UploadFileInfo[]
+function parseInputFileList(value: typeof fieldValue['value']): UploadFileInfo[] | undefined {
+  if (!value)
+    return undefined
+  return ((_field.value.multiple && Array.isArray(value) ? value : [value]) as Array<string | UploadFileInfo>).map(item => typeof item === 'string'
+    ? {
+        id: generateUUID(),
+        name: getFileName(item),
+        status: 'finished',
+        thumbnailUrl: item,
+        url: item,
+      }
+    : item)
+}
 
+watch(() => fileList.value, () => {
+  if (_field.value.output === 'url')
+    fieldValue.value = _field.value.multiple ? fileList.value.map(item => item.url) : fileList.value[0]?.url
   else
-    fieldValue.value = fileList[0] as UploadFileInfo
+    fieldValue.value = _field.value.multiple ? fileList.value : fileList.value[0]
+}, { deep: true })
+
+function getFileName(fileUrl: string) {
+  return fileUrl.split('/').reverse()[0]
+}
+
+function handleFileUpload(options: UploadCustomRequestOptions) {
+  return _field.value.uploadHandler(options, props.context.dependencies, props.context.fieldApi)
+}
+
+function renderFileIcon(file: UploadSettledFileInfo) {
+  return <span class="iconify" data-icon={getFileTypeIcon(file.name)} />
 }
 </script>
 
 <template>
   <NUpload
-    :file-list="mappedValue"
-    :multiple="_field.multiple"
-    :on-update:file-list="onFileListUpdate"
+    v-model:file-list="fileList"
+    :multiple="_field.multiple ?? false"
+    :max="_field.multiple ? undefined : 1"
     v-bind="context.inputProps.value"
     :disabled="context.disabled.value"
+    :custom-request="handleFileUpload"
+    :render-icon="renderFileIcon"
   >
     <NUploadDragger
       v-if="
@@ -58,13 +82,9 @@ function onFileListUpdate(fileList: SettledFileInfo[]) {
       <NText style="font-size: 16px">
         Click or drag a file to this area to upload
       </NText>
-      <NP depth="3" style="margin: 8px 0 0 0">
-        Strictly prohibit from uploading sensitive information. For example,
-        your bank card PIN or your credit card expiry date.
+      <NP v-if="context.inputProps.value.accept" depth="3" style="margin: 8px 0 0 0">
+        Accepted : {{ (context.inputProps.value.accept as string ?? '')?.split(',').join(', ') ?? 'any' }}
       </NP>
     </NUploadDragger>
   </NUpload>
-  <pre>
-    {{ context.inputProps.value }}
-  </pre>
 </template>

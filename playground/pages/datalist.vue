@@ -50,24 +50,32 @@ const schema = buildListSchema({
   ],
   rowActions: [{ label: 'Create', icon: 'mdi:plus', action: () => ({}) }],
   actions: [{ label: 'Create', icon: 'mdi:plus', action: () => ({}) }],
-  title: ({ rowData }) => `${rowData.firstName} ${rowData.lastName}`,
-  subtitle: ({ rowData }) => (
-    <NTag round bordered={false} type={rowData.valid ? 'success' : 'error'}>
-      {rowData.valid ? 'ACTIVE' : 'INACTIVE'}
-    </NTag>
+  content: () => (
+    <div class="flex items-center gap-4 w-full justify-between">
+      <div>
+        Hello
+      </div>
+      <NButton>Haha</NButton>
+    </div>
   ),
-  image: ({ rowData }) => (
-    <NAvatar round={false} size={80} src={rowData.avatar} />
-  ),
+  // title: ({ rowData }) => `${rowData.firstName} ${rowData.lastName}`,
+  // subtitle: ({ rowData }) => (
+  //   <NTag round bordered={false} type={rowData.valid ? 'success' : 'error'}>
+  //     {rowData.valid ? 'ACTIVE' : 'INACTIVE'}
+  //   </NTag>
+  // ),
+  // image: ({ rowData }) => (
+  //   <NAvatar round={false} size={80} src={rowData.avatar} />
+  // ),
   expandedContent: ({ rowData }) => (
     <pre>{JSON.stringify(rowData, null, 4)}</pre>
   ),
-  description: ({ rowData }) => (
-    <div class="flex items-center gap-2">
-      <NTag type="warning">ADMIN</NTag>
-      <NTag type="info">MANAGER</NTag>
-    </div>
-  ),
+  // description: ({ rowData }) => (
+  //   <div class="flex items-center gap-2">
+  //     <NTag type="warning">ADMIN</NTag>
+  //     <NTag type="info">MANAGER</NTag>
+  //   </div>
+  // ),
   datasource: async () => {
     const sleep = (ms: number) =>
       new Promise(resolve => setTimeout(resolve, ms))

@@ -1,4 +1,5 @@
 import type { AllowedComponentProps, Component, VNodeChild, VNodeProps } from 'vue'
+import type { UploadFileInfo } from 'naive-ui'
 import type {
   ArrayVariantField,
   FormField,
@@ -86,8 +87,8 @@ type ResolveFormType<
           ? ExtractOptionsType<K['options']>[]
           : ExtractOptionsType<K['options']>
         : K['type'] extends 'checkbox'
-          ? P extends { uncheckedValue: unknown; checkedValue: unknown }
-            ? P['checkedValue'] | P['uncheckedValue']
+          ? P extends { uncheckedValue: unknown, checkedValue: unknown }
+          ? P['checkedValue'] | P['uncheckedValue']
             : boolean
           : K['type'] extends 'object' | 'group'
             ? K['fields'] extends infer U extends FormField<any>[]
@@ -97,13 +98,18 @@ type ResolveFormType<
               ? K['fields'] extends infer U extends FormField<any>[]
                 ? FormInfoReturnType<U[number]>[]
                 : never
-              : K extends { type: 'array-variant' }
-                ? Array<ExtractVariantType<K['variants'], K['variantKey']>>
-                : K['type'] extends 'daterange' | 'datetimerange' | 'monthrange'
-                  ? [string, string]
-                  : K['type'] extends 'number' | 'slider'
-                    ? number
-                    : string
+              : K['type'] extends 'upload'
+                ? K extends { multiple: true }
+                  ? K extends { output: 'object' } ? Array<UploadFileInfo> : Array<string>
+                  : K extends { output: 'object' } ? UploadFileInfo : string
+                :
+                K extends { type: 'array-variant' }
+                  ? Array<ExtractVariantType<K['variants'], K['variantKey']>>
+                  : K['type'] extends 'daterange' | 'datetimerange' | 'monthrange'
+                    ? [string, string]
+                    : K['type'] extends 'number' | 'slider'
+                      ? number
+                      : string
 
 export type ExtractVariantType<
   Variants extends ArrayVariantField<any>['variants'],

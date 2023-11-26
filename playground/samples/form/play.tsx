@@ -14,14 +14,24 @@ const { sample, formData } = defineFormSchemaSample({
     fieldSize: 8,
     fields: [
       {
-        label: 'Month range',
-        key: 'monthRange',
-        type: 'monthrange',
-      },
-      {
-        label: 'Month range',
-        key: 'monthRange',
-        type: 'daterange',
+        label: 'test',
+        key: 'files',
+        type: 'upload',
+        output: 'object',
+        multiple: true,
+        uploadHandler: (options) => {
+          const file = options.file.file
+          if (!file)
+            return options.onError()
+
+          const fileDataUrl = URL.createObjectURL(file)
+          options.file.url = fileDataUrl
+          options.onFinish()
+        },
+        fieldParams: {
+          enableDragDrop: true,
+          listType: 'image',
+        },
       },
     ],
   },
