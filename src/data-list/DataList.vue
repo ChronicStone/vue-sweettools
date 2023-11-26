@@ -5,12 +5,9 @@ import { vAutoAnimate } from '@formkit/auto-animate/vue'
 import type { DataListSchema } from './types/datalist'
 
 const {
-  title,
-  description,
-  image,
   expandedContent,
   expandable,
-  subtitle,
+  content,
   remote,
   datasource,
   rowActions,
@@ -40,6 +37,7 @@ const {
   actions: () => [],
   selection: true,
   compact: false,
+  rowActions: () => [],
 })
 
 const scrollbarContainerRef = ref<InstanceType<typeof NScrollbar>>()
@@ -218,13 +216,10 @@ function handleSelection(
           <ListItem
             :compact="compact"
             :data="item"
-            :title="title"
-            :subtitle="subtitle"
-            :description="description"
+            :content="content"
             :expanded-content="expandedContent"
             :expandable="expandable"
             :enable-selection="selection"
-            :image="image"
             :row-actions="rowActions"
             :select-all="queryState.selectAll.value"
             :selected="

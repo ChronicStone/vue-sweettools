@@ -57,7 +57,7 @@ const activeControls = computed(
       filters: props.filters.length > 0,
       sort: props.sortOptions.length > 0,
       refresh: true,
-      columns: true,
+      columns: !!columnsConfig.value,
     }).filter(Boolean).length,
 )
 

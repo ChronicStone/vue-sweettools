@@ -1,6 +1,7 @@
 import type { VNodeChild } from 'vue'
 import type {
   Action,
+  DataApi,
   DataDefaultSort,
   DataSortOption,
   DataSource,
@@ -37,11 +38,8 @@ export interface DataListSchema<
   rowIdKey?: KeyablePathKeys
   remote: Remote
   datasource: Source
-  title: (params: { rowData: TData }) => VNodeChild
-  subtitle?: (params: { rowData: TData }) => VNodeChild
-  image?: (params: { rowData: TData }) => VNodeChild
-  description?: (params: { rowData: TData }) => VNodeChild
-  expandedContent?: (params: { rowData: TData }) => VNodeChild
+  content: (params: { rowData: TData; tableApi: DataApi }) => VNodeChild
+  expandedContent?: (params: { rowData: TData; tableApi: DataApi }) => VNodeChild
   expandable?: (params: { rowData: TData }) => boolean
   optimizeQuery?: OptimizedQueryField<PathKeys>[]
   staticFilters?: StaticFilter[]
