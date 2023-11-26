@@ -1,3 +1,4 @@
+import type { Ref } from 'vue'
 import type { ImportInfoReturnType, ImportSchema } from '../types/reader'
 import type ExcelReader from '../components/ExcelReader.vue'
 import type { ExpandRecursively, Narrowable } from '@/_shared/types/utils'

@@ -1,5 +1,5 @@
-import type { VNodeChild } from 'vue'
-import type { Narrowable, RemoveNeverProps, UnionToIntersection } from '@/_shared/types/utils'
+import type { ComputedRef, VNodeChild } from 'vue'
+import type { MaybePromise, Narrowable, RemoveNeverProps, UnionToIntersection } from '@/_shared/types/utils'
 
 export type ImportSchema<
   M extends boolean = false,
@@ -68,4 +68,13 @@ export type ResolveFieldType<T extends ImportSchema<any, any>[number]> =
       ? number
       : T['validation']['enum'] extends Array<any>
         ? T['validation']['enum'][number]
-        : string
+        : T['validation']['enum'] extends () => MaybePromise<Array<any>>
+          ? ReturnType<T['validation']['enum']>[number]
+          : string
+
+export type ExcelInstanceType = {
+  invalidRows: ComputedRef<Record<string, unknown>[]>
+  validRows: ComputedRef<Record<string, unknown>[]>
+  exportInvalidRows: () => void
+  downloadReferenceFile: () => void
+}
