@@ -1,6 +1,10 @@
 import type { DynamicFilter, MappedFilters, StaticFilter } from '../types/shared'
 import type { GenericObject } from '@/_shared/types/utils'
 
+export function getFilterInitialState() {
+
+}
+
 export function mapFilterInitialState(
   filters: DynamicFilter[],
   baseState: GenericObject,
@@ -62,24 +66,19 @@ export function mapTableFilters(
   filters: DynamicFilter[],
   filterState: GenericObject,
 ) {
-  const getDefaultMatchMode = (value: any) =>
-    Array.isArray(value) ? 'arrayContains' : 'contains'
-
-  console.log('mapTabFilt', filterState)
-
   return Object.entries(filterState).reduce((acc, [key, value]) => {
     const filter = filters.find(filter => filter.key === key)
     if (
       !filter
       || (Array.isArray(value) && !value.length)
-      || (!Array.isArray(value) && typeof value === 'undefined')
+      || (!Array.isArray(value) && (typeof value === 'undefined' || value === null))
     )
       return acc
     return {
       ...acc,
       [key]: [
         {
-          matchMode: filter?.matchMode ?? getDefaultMatchMode(value),
+          matchMode: filter?.matchMode ?? 'equals',
           required: false,
           params: filter?.params ?? {} as any,
           value,

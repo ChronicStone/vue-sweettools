@@ -35,7 +35,8 @@ export function selectFilter({
     key,
     options,
     type: 'select',
-    matchMode: multiple ?? true ? 'arrayContains' : 'equals',
+    matchMode: 'equals',
+    ...(multiple ? { arrayLookup: 'OR' } : {}),
   }
 }
 

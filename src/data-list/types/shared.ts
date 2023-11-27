@@ -5,7 +5,6 @@ import type { GenericObject } from '@/_shared/types/utils'
 import type { FormField } from '@/form/types/fields'
 
 export type FilterMatchMode =
-  | 'arrayContains'
   | 'contains'
   | 'between'
   | 'equals'
@@ -18,6 +17,12 @@ export type FilterMatchMode =
   | 'objectStringMap'
   | 'arrayLength'
   | 'objectMatch'
+
+export type ComparatorMatchMode = Extract<FilterMatchMode, 'between' | 'greaterThan' | 'greaterThanOrEqual' | 'lessThan' | 'lessThanOrEqual'>
+
+export type ComparatorParams = {
+  dateMode?: boolean
+}
 
 export type ObjectMapFilterParams = {
   operator: 'AND' | 'OR'
@@ -41,7 +46,10 @@ export type ObjectStringMapFilterParams = {
 }
 
 export type MatchModeCore = ({
-  matchMode: Exclude<FilterMatchMode, 'objectStringMap' | 'objectMatch'>
+  matchMode: Exclude<FilterMatchMode, 'objectStringMap' | 'objectMatch' | ComparatorMatchMode>
+} | {
+  matchMode: ComparatorMatchMode
+  params?: ComparatorParams
 } | {
   matchMode: 'objectStringMap'
   params: ObjectStringMapFilterParams
