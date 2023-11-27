@@ -65,15 +65,15 @@ onScopeDispose(() =>
 const $globalValidation = useFormValidation()
 const $validator = computed(
   () =>
-    getObjectProperty(
-      [
+    getObjectProperty({
+      key: [
         ...(_field.value._stepRoot ? [_field.value._stepRoot] : []),
         ...props.parentKey,
         _field.value.key,
       ].join('.'),
-      [],
-      $globalValidation.$validator.value,
-    ) as Validation,
+      scoped: false,
+      object: $globalValidation.$validator.value,
+    }) as Validation,
 )
 
 const errorMessage = computed(() => {

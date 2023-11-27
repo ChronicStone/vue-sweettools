@@ -12,14 +12,14 @@ export function mapFilterInitialState(
         ? []
         : ['daterange', 'datetimerange', 'monthrange'].includes(type)
             ? [null, null]
-            : null
+            : type === 'radio' ? undefined : null
   const state: { [key: string]: any } = {}
   filters.filter(Boolean).forEach((filter) => {
     baseState[filter.key] && !clearMode
       ? (state[filter.key] = baseState[filter.key])
       : (state[filter.key] = GetInitState(
           (filter as any).inputType,
-          (filter as any).defaultValue,
+          (filter as any).default,
         ))
   })
   return state
@@ -40,7 +40,7 @@ export function mapQueryFetchParams(
 
 function mapStaticFilters(filters: StaticFilter[]) {
   return filters.reduce(
-    (acc, { key, value, matchMode, required, params, postCondition }) => ({
+    (acc, { key, value, matchMode, required, params, postCondition, arrayLookup }) => ({
       ...acc,
       [key]: [
         ...(acc?.[key] ?? []),
@@ -48,8 +48,9 @@ function mapStaticFilters(filters: StaticFilter[]) {
           value,
           matchMode,
           required: required ?? false,
-          params: params ?? {},
+          params: params ?? {} as any,
           postCondition,
+          arrayLookup,
         },
       ],
     }),
@@ -64,12 +65,14 @@ export function mapTableFilters(
   const getDefaultMatchMode = (value: any) =>
     Array.isArray(value) ? 'arrayContains' : 'contains'
 
+  console.log('mapTabFilt', filterState)
+
   return Object.entries(filterState).reduce((acc, [key, value]) => {
     const filter = filters.find(filter => filter.key === key)
     if (
       !filter
-        || (Array.isArray(value) && !value.length)
-        || (!Array.isArray(value) && !value)
+      || (Array.isArray(value) && !value.length)
+      || (!Array.isArray(value) && typeof value === 'undefined')
     )
       return acc
     return {
@@ -78,9 +81,10 @@ export function mapTableFilters(
         {
           matchMode: filter?.matchMode ?? getDefaultMatchMode(value),
           required: false,
-          params: filter?.params ?? {},
+          params: filter?.params ?? {} as any,
           value,
           postCondition: filter?.postCondition ?? false,
+          arrayLookup: filter?.arrayLookup,
         },
       ],
     }

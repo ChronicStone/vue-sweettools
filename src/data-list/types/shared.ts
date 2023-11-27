@@ -9,30 +9,55 @@ export type FilterMatchMode =
   | 'contains'
   | 'between'
   | 'equals'
+  | 'notEquals'
+  | 'greaterThan'
+  | 'greaterThanOrEqual'
+  | 'lessThan'
+  | 'lessThanOrEqual'
   | 'exists'
   | 'objectStringMap'
   | 'arrayLength'
-  | 'arrayContainsObject'
+  | 'objectMatch'
+
+export type ObjectMapFilterParams = {
+  operator: 'AND' | 'OR'
+  properties: Array<{
+    key: string
+    matchMode: Exclude<FilterMatchMode, 'objectStringMap' | 'objectMap'>
+  }>
+}
+
+export type ObjectStringMapFilterParams = {
+  stringMap: Array<
+    | string
+    | {
+      propertyName: string
+      matchMode: Exclude<FilterMatchMode, 'objectStringMap'>
+    }
+    >
+  stringMapSeparator?: string
+  stringMapOperator?: 'AND' | 'OR'
+  dateMode?: boolean
+}
+
+export type MatchModeCore = ({
+  matchMode: Exclude<FilterMatchMode, 'objectStringMap' | 'objectMatch'>
+} | {
+  matchMode: 'objectStringMap'
+  params: ObjectStringMapFilterParams
+} | {
+  matchMode: 'objectMatch'
+  params: ObjectMapFilterParams
+})
 
 export type StaticFilter = {
   key: string
   value: any
   required?: boolean
   postCondition?: boolean
-  matchMode: FilterMatchMode
-  params?: {
-    stringMap?: Array<
-      | string
-      | {
-        propertyName: string
-        matchMode: Omit<FilterMatchMode, 'objectStringMap'>
-      }
-    >
-    stringMapSeparator?: string
-    stringMapOperator?: 'AND' | 'OR'
-    dateMode?: boolean
-  }
-}
+  arrayLookup?: 'AND' | 'OR'
+  params?: Record<string, any>
+} & MatchModeCore
 
 export interface OptimizedQueryField<KeyPath = string> {
   field: KeyPath
@@ -41,28 +66,17 @@ export interface OptimizedQueryField<KeyPath = string> {
 
 export type DynamicFilter = FormField & {
   matchMode?: FilterMatchMode
-  params?: {
-    stringMap?: Array<
-      | string
-      | {
-        propertyName: string
-        matchMode: Omit<FilterMatchMode, 'objectStringMap'>
-      }
-    >
-    stringMapSeparator?: string
-    stringMapOperator?: 'AND' | 'OR'
-    dateMode?: boolean
-  }
+  arrayLookup?: 'AND' | 'OR'
   postCondition?: boolean
-}
+  params?: Record<string, any>
+} & MatchModeCore
 
 export type MappedFilters = {
   value: any
-  matchMode: FilterMatchMode
   required?: boolean | undefined
-  params: DynamicFilter['params']
   postCondition?: boolean
-}
+  arrayLookup?: 'AND' | 'OR'
+} & MatchModeCore
 
 export type FetchParams = {
   page: number
@@ -133,13 +147,13 @@ export type DataApi<T = GenericObject, KeyPath = any> = {
 export type RowAction<T = GenericObject, KeyPath = any> = {
   icon: string | ((params: { rowData: T }) => string)
   label: string | ((params: { rowData: T }) => string)
-  action?: (params: { rowData: T; tableApi: DataApi<T, KeyPath> }) => void
+  action?: (params: { rowData: T, tableApi: DataApi<T, KeyPath> }) => void
   link?:
-  | string
-  | AppTypes['routeLocation']
-  | ((params: { rowData: T }) => AppTypes['routeLocation'])
+    | string
+    | AppTypes['routeLocation']
+    | ((params: { rowData: T }) => AppTypes['routeLocation'])
   permissions?: (AppTypes['permissionKey'] | AppTypes['permissionKey'][])[]
-  condition?: (params: { rowData: T; tableApi: DataApi<T> }) => boolean
+  condition?: (params: { rowData: T, tableApi: DataApi<T> }) => boolean
 }
 
 export type DataSortOption<KeyPaths = any> = {
@@ -149,7 +163,7 @@ export type DataSortOption<KeyPaths = any> = {
 
 export type DataDefaultSort<KeyPaths = any> =
   | KeyPaths
-  | { key: KeyPaths; dir: 'asc' | 'desc' }
+  | { key: KeyPaths, dir: 'asc' | 'desc' }
 
 export type DataQueryState = {
   sort: {

@@ -31,22 +31,34 @@ const [useProvideFormState, _useFormState] = createInjectionState(
     function getFieldApi(key: string, parentKey: string[]): FieldApi {
       const fieldFullPath = [...parentKey, key]
       const getValue: FieldApi['getValue'] = key =>
-        getObjectProperty(key, parentKey, formState.value)
+        getObjectProperty({
+          key: key ?? fieldFullPath.join('.'),
+          object: formState.value,
+          scoped: true,
+          parentKey,
+        })
 
       const setValue: FieldApi['setValue'] = (...args: any[]) => {
         if (typeof args[0] !== 'undefined' && typeof args[1] !== 'undefined') {
           const key = args[0] as string
           const value = args[1] as unknown
-          setObjectProperty(key, parentKey, formState.value, value)
+          setObjectProperty({
+            key,
+            object: formState.value,
+            value,
+            scoped: true,
+            parentKey,
+          })
         }
         else {
           const value = args[0] as unknown
-          setObjectProperty(
-            fieldFullPath.join('.'),
-            parentKey,
-            formState.value,
+          setObjectProperty({
+            key: fieldFullPath.join('.'),
+            object: formState.value,
             value,
-          )
+            scoped: true,
+            parentKey,
+          })
         }
       }
 
@@ -57,7 +69,7 @@ const [useProvideFormState, _useFormState] = createInjectionState(
         | CascaderOption
         | string
         | number = SelectOption | TreeSelectOption | CascaderOption,
-        O = T extends string | number ? { label: string; value: T } : T,
+        O = T extends string | number ? { label: string, value: T } : T,
       >(
           key?: string,
         ) => {
