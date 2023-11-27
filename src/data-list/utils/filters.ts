@@ -55,14 +55,13 @@ export function booleanFilter({
     key,
     label,
     type: 'radio',
-    matchMode: 'arrayContains',
+    matchMode: 'equals',
+    default: undefined,
     options: [
       { label: 'Yes', value: options?.truthyValue ?? true },
       { label: 'No', value: options?.falsyValue ?? false },
-      { label: 'All', value: null },
+      { label: 'All', value: undefined },
     ],
-    transform: (value: boolean) => (value !== null ? [value] : []),
-    preformat: (value: unknown[]) => (value?.length ? value[0] : null),
   }
 }
 

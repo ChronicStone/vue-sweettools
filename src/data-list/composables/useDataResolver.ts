@@ -45,7 +45,11 @@ export function useDataResolver({
             docs: res.docs.map(item => ({
               ...item,
               __$ROW_ID__: rowKey
-                ? getObjectProperty(rowKey, [], item) ?? generateUUID()
+                ? getObjectProperty({
+                  key: rowKey,
+                  object: item,
+                  scoped: false,
+                }) ?? generateUUID()
                 : generateUUID(),
             })),
           }))

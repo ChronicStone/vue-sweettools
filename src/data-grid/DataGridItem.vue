@@ -14,7 +14,11 @@ const fieldColSize = useBreakpointStyle(props.fieldSchema?.fieldColSize ?? '')
 const fieldRowSize = useBreakpointStyle(props.fieldSchema?.fieldRowSize ?? '')
 
 const resolvedValue = computed(() =>
-  getObjectProperty(props.fieldSchema.key, [], props?.data ?? {}),
+  getObjectProperty({
+    key: props.fieldSchema.key,
+    scoped: false,
+    object: props.data ?? {},
+  }),
 )
 </script>
 

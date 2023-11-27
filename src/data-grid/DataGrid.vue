@@ -3,7 +3,6 @@ import { NEmpty } from 'naive-ui'
 import { computed } from 'vue'
 import DataGridItem from './DataGridItem.vue'
 import type { DataGridProps } from './types'
-import type { GenericObject } from '@/_shared/types/utils'
 
 const props = defineProps<DataGridProps>()
 
@@ -36,11 +35,11 @@ const mappedSchema = computed(
       if (!item.condition) { return item }
       else {
         return item.condition({
-          value: getObjectProperty(
-            item.key,
-            [],
-            (props?.data ?? {}) as GenericObject,
-          ),
+          value: getObjectProperty({
+            key: item.key,
+            scoped: false,
+            object: (props?.data ?? {}),
+          }),
           data: props?.data ?? {},
           store: virtualStore.value,
         })

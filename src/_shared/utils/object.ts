@@ -62,28 +62,30 @@ function setPropertyFromPath(
 }
 
 export function setObjectProperty(
-  target: string,
-  parentKey: (string | number)[],
-  state: Record<string, unknown>,
-  value: any,
+  params: {
+    key: string
+    object: Record<string, unknown>
+    value: any
+  }& ({ scoped: false } | { scoped: true, parentKey: (string | number)[] }),
 ) {
-  if (target === '$root')
-    state = value
-  else if (target.includes('$parent'))
-    setPropertyFromPath(state, [...(parentKey ?? [])], value, target)
-  else return setPropertyFromPath(state, target, value)
+  if (params.key === '$root' && params.scoped)
+    Object.assign(params.object, params.value)
+  else if (params.key.includes('$parent') && params.scoped)
+    setPropertyFromPath(params.object, [...(params.parentKey ?? [])], params.value, params.key)
+  else return setPropertyFromPath(params.object, params.key, params.value)
 }
 
 export function getObjectProperty(
-  target: string,
-  parentKey: (string | number)[],
-  state: Record<string, unknown>,
+  params: {
+    key: string
+    object: Record<string, unknown>
+  }& ({ scoped: false } | { scoped: true, parentKey: (string | number)[] }),
 ) {
-  if (target === '$root')
-    return state
-  else if (target.includes('$parent'))
-    return getPropertyFromPath([...(parentKey ?? [])], state, target)
-  else return getPropertyFromPath(target, state)
+  if (params.key === '$root' && params.scoped)
+    return params.object
+  else if (params.key.includes('$parent') && params.scoped)
+    return getPropertyFromPath([...(params.parentKey ?? [])], params.object, params.key)
+  else return getPropertyFromPath(params.key, params.object)
 }
 
 export function getObjectPropertyFullPath(

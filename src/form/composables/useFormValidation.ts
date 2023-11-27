@@ -35,11 +35,12 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
       for (const field of fields) {
         if (field.type === 'info')
           continue
-        const fieldValue = getObjectProperty(
-          [...parentKey, field.key].join('.'),
-          [],
-          state,
-        )
+        const fieldValue = getObjectProperty({
+          key: field.key,
+          object: state,
+          scoped: true,
+          parentKey,
+        })
         const dependencies = resolveFieldDependencies(field, state, parentKey)
         const { getValue, getOptions } = getFieldApi(field.key, parentKey)
 
@@ -136,8 +137,8 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
 
         if (
           typeof field._stepRoot === 'string'
-          && field._stepRoot
-          && !parentKey.length
+            && field._stepRoot
+            && !parentKey.length
         ) {
           if (
             !rules[field._stepRoot]

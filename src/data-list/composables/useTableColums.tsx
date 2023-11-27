@@ -205,7 +205,7 @@ function getPersistedColsConfig(
 function mapColumnsRecursively(
   column: DataTableColumn | DataTableColumnGroup,
   colsConfig: ReturnType<typeof mapColumnsConfig>,
-  params: { i18n: ReturnType<typeof useTranslations>; searchQuery: string[] },
+  params: { i18n: ReturnType<typeof useTranslations>, searchQuery: string[] },
 ): TDataTableColumn {
   const config = colsConfig.find(c => c.key === column.key)
   if (!(config?.visible ?? true)) {
@@ -244,8 +244,12 @@ function mapColumnsRecursively(
       ellipsis: column.ellipsis ?? true,
       ellipsisComponent: column.ellipsisComponent,
       render: (rowData, rowIndex) => column.render?.(rowData, rowIndex)
-        ?? getObjectProperty(column.key, [], rowData)
-        ?? '',
+      ?? getObjectProperty({
+        key: column.key,
+        object: rowData,
+        scoped: false,
+      })
+      ?? '',
       cellProps: column.cellProps,
       colSpan: column.colSpan,
       rowSpan: column.rowSpan,

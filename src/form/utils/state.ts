@@ -25,18 +25,18 @@ export function mapFieldsInitialState(
     if (field.type === 'info')
       continue
 
-    const fieldValue = getObjectProperty(
-      [...(field._stepRoot ? [field._stepRoot] : []), ...parentKeys, field.key].join('.'),
-      [],
-      rootState,
-    )
+    const fieldValue = getObjectProperty({
+      key: [...(field._stepRoot ? [field._stepRoot] : []), ...parentKeys, field.key].join('.'),
+      object: rootState,
+      scoped: false,
+    })
 
     let fieldOutput: unknown = fieldValue
 
     if (
       field.type === 'array-list'
-        || field.type === 'array-tabs'
-        || field.type === 'array-variant'
+      || field.type === 'array-tabs'
+      || field.type === 'array-variant'
     ) {
       fieldOutput = ((fieldValue ?? []) as Array<Record<string, unknown>>).map(
         (itemValue, index) => {
@@ -121,11 +121,11 @@ export function mapFieldsOutputState(
   for (const field of fields) {
     if (field.type === 'info')
       continue
-    const fieldValue = getObjectProperty(
-      [...(field._stepRoot ? [field._stepRoot] : []), ...parentKeys, field.key].join('.'),
-      [],
-      rootState,
-    )
+    const fieldValue = getObjectProperty({
+      key: [...(field._stepRoot ? [field._stepRoot] : []), ...parentKeys, field.key].join('.'),
+      object: rootState,
+      scoped: false,
+    })
     const fieldDependencies = resolveFieldDependencies(
       field,
       rootState,
@@ -142,8 +142,8 @@ export function mapFieldsOutputState(
 
     if (
       field.type === 'array-list'
-        || field.type === 'array-tabs'
-        || field.type === 'array-variant'
+      || field.type === 'array-tabs'
+      || field.type === 'array-variant'
     ) {
       fieldOutput = ((fieldValue ?? []) as Array<Record<string, unknown>>).map(
         (itemValue, index) => {
@@ -244,11 +244,11 @@ function getNestedFieldOutput(
   const executor
       = mode === 'input' ? mapFieldsInitialState : mapFieldsOutputState
 
-  const fieldValue = getObjectProperty(
-    [...(hasRoot ? [field._stepRoot as string] : []), field.key, ...(typeof index === 'number' ? [index.toString()] : [])].join('.'),
-    [],
-    inputState,
-  )
+  const fieldValue = getObjectProperty({
+    key: [...(hasRoot ? [field._stepRoot as string] : []), field.key, ...(typeof index === 'number' ? [index.toString()] : [])].join('.'),
+    object: inputState,
+    scoped: false,
+  })
 
   return executor(
     fieldValue,

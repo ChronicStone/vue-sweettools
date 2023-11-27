@@ -2,7 +2,7 @@ import type { FormField } from '../types/fields'
 import type { GenericObject } from '@/_shared/types/utils'
 
 export function mapFieldDependencies(
-  arrayDependencies: Array<{ key: string; value: unknown }>,
+  arrayDependencies: Array<{ key: string, value: unknown }>,
 ) {
   const dependencies: GenericObject = {}
   for (const { key, value } of arrayDependencies) dependencies[key] = value
@@ -25,7 +25,12 @@ export function preformatFieldDependencies(
     .map(({ source, target }) => {
       return ({
         key: target,
-        value: getObjectProperty(source, parentKey, formState),
+        value: getObjectProperty({
+          key: source,
+          object: formState,
+          scoped: true,
+          parentKey,
+        }),
       })
     })
 }
@@ -46,7 +51,12 @@ export function resolveFieldDependencies(
       )
       .map(({ source, target }) => ({
         key: target,
-        value: getObjectProperty(source, parentKey, state),
+        value: getObjectProperty({
+          key: source,
+          object: state,
+          scoped: true,
+          parentKey,
+        }),
       })),
   )
 }

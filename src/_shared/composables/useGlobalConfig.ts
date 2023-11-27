@@ -97,7 +97,11 @@ export function useGlobalConfig(formSchema?: FormSchema) {
   >(
     key: T,
   ): NonNullable<TypeFromPath<NonNullable<SweettoolsPluginConfig['form']>, T>> {
-    return getObjectProperty(key as string, [], formConfig.value)
+    return getObjectProperty({
+      key,
+      object: formConfig.value,
+      scoped: false,
+    })
   }
 
   return {

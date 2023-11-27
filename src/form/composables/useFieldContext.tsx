@@ -163,9 +163,9 @@ export function useFieldContext(
       _options.value = mapOptions(
         Array.isArray((field.value as SelectField).options)
           ? ((field.value as SelectField).options as unknown as (
-              | SelectOption
-              | TreeSelectOption
-              | CascaderOption
+            | SelectOption
+            | TreeSelectOption
+            | CascaderOption
             )[])
           : typeof (field.value as SelectField).options === 'function'
             ? await (
@@ -220,7 +220,7 @@ export function useFieldContext(
                 default: () => (
                   <span class="uppercase">
                     {createOptionLabel
-                      ?? i18n.t('form.fields.select.createOptionButton')}
+                    ?? i18n.t('form.fields.select.createOptionButton')}
                   </span>
                 ),
               }}
@@ -251,7 +251,7 @@ export function useFieldContext(
     return [
       ..._options.value,
       ...(('createOption' in field.value
-        && typeof field.value.createOption !== 'undefined')
+      && typeof field.value.createOption !== 'undefined')
       || ('allowRefreshOptions' in field.value && field.value.allowRefreshOptions)
         ? [selectActionFactory(field.value as SelectField)]
         : []),
@@ -267,22 +267,24 @@ export function useFieldContext(
         try {
           const optionValues = fieldOptions.map(option => option.value) ?? []
           if (Array.isArray(fieldState.value)) {
-            setObjectProperty(
-              field.value.key,
-              parentKey.value,
-              state.value,
-              fieldState.value.filter((item: any) =>
+            setObjectProperty({
+              key: field.value.key,
+              object: state.value,
+              scoped: true,
+              parentKey: parentKey.value,
+              value: fieldState.value.filter((item: any) =>
                 optionValues.includes(item),
               ),
-            )
+            })
           }
           else if (!optionValues.includes(fieldState.value as string | number)) {
-            setObjectProperty(
-              field.value.key,
-              parentKey.value,
-              state.value,
-              null,
-            )
+            setObjectProperty({
+              key: field.value.key,
+              object: state.value,
+              scoped: true,
+              parentKey: parentKey.value,
+              value: null,
+            })
           }
         }
         catch (err) {
@@ -298,7 +300,7 @@ export function useFieldContext(
 
   if (typeof field.value?.watch === 'function') {
     watch(
-      () => getObjectProperty(fieldFullPath.value.join('.'), [], state.value),
+      () => getObjectProperty({ key: field.value.key, object: state.value, scoped: false }),
       (value: unknown) =>
         (field.value.watch as NonNullable<FormField['watch']>)(value, {
           getValue: fieldApi.getValue,
@@ -326,7 +328,7 @@ export function useFieldContext(
     typeof field.value.placeholder === 'function'
       ? field.value.placeholder()
       : field.value?.placeholder
-        ?? i18n.t('form.fields.text.defaultPlaceholder'),
+      ?? i18n.t('form.fields.text.defaultPlaceholder'),
   )
 
   return {
