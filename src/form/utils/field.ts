@@ -279,13 +279,6 @@ export function mapFieldProps({
         'show-preview-button': fieldProps.showPreviewButton ?? true,
         'show-remove-button': fieldProps.showRemoveButton ?? true,
         'show-retry-button': fieldProps.showRetryButton ?? true,
-        ...(fieldProps.onChange && { 'on-change': fieldProps.onChange }),
-        ...(fieldProps.onPreview && { 'on-preview': fieldProps.onPreview }),
-        ...(fieldProps.onRemove && { 'on-remove': fieldProps.onRemove }),
-        ...(fieldProps.onDownload && { 'on-download': fieldProps.onDownload }),
-        ...(fieldProps.beforeUpload && {
-          'on-before-upload': fieldProps.beforeUpload,
-        }),
       }
     case 'object':
     case 'array-list':

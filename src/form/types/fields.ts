@@ -15,7 +15,6 @@ import type {
 import type { SelectBaseOption } from 'naive-ui/es/select/src/interface'
 import type { Component, VNode, VNodeChild } from 'vue'
 import type { MaskOptions } from 'maska'
-import type { FileInfo } from 'naive-ui/es/upload/src/interface'
 import type { MaybePromise } from 'rollup'
 import type { useFieldContext } from '../composables/useFieldContext'
 import type { Narrowable, Primitive } from '@/_shared/types/utils'
@@ -483,29 +482,6 @@ export type UploadFieldParams = {
   showPreviewButton?: boolean
   showRetryButton?: boolean
   showFileList?: boolean
-  beforeUpload?: (data: {
-    file: UploadFileInfo
-    fileList: UploadFileInfo[]
-  }) => boolean | Promise<boolean>
-  onChange?: (options: {
-    file: UploadFileInfo
-    fileList: Array<UploadFileInfo>
-    event?: Event
-  }) => void
-  onError?: (options: {
-    file: UploadFileInfo
-    event?: ProgressEvent
-  }) => UploadFileInfo | void
-  onFinish?: (options: {
-    file: UploadFileInfo
-    event?: Event
-  }) => UploadFileInfo | undefined
-  onDownload?: (file: FileInfo) => void
-  onPreview?: (file: FileInfo) => void
-  onRemove?: (options: {
-    file: UploadFileInfo
-    fileList: Array<UploadFileInfo>
-  }) => Promise<boolean> | boolean | any
 } & (
   | {
     enableDragDrop?: false
@@ -521,7 +497,13 @@ export interface UploadField {
   type: 'upload'
   multiple?: boolean
   output: 'object' | 'url'
-  uploadHandler: (options: UploadCustomRequestOptions, dependencies: Dependencies, api: ReadonlyFieldApi) => MaybePromise<void>
+  uploadHandler: (options: UploadCustomRequestOptions, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
+  beforeUpload?: (data: { file: UploadFileInfo, fileList: UploadFileInfo[] }, dependencies: Dependencies, api: FieldApi) => MaybePromise<boolean>
+  onFileDownload?: (file: UploadFileInfo, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
+  onFileDelete?: (data: { file: UploadFileInfo, fileList: UploadFileInfo[] }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
+  onFilePreview?: (file: UploadFileInfo, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
+  onUploadFinish?: (data: { file: UploadFileInfo, event?: ProgressEvent }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
+  onUploadError?: (data: { file: UploadFileInfo, event?: ProgressEvent }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
   fieldParams?:
     | UploadFieldParams
     | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => UploadFieldParams)

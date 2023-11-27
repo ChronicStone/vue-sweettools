@@ -39,10 +39,11 @@ function parseInputFileList(value: typeof fieldValue['value']): UploadFileInfo[]
 }
 
 watch(() => fileList.value, () => {
+  const list = fileList.value.filter(item => item.status === 'finished')
   if (_field.value.output === 'url')
-    fieldValue.value = _field.value.multiple ? fileList.value.map(item => item.url) : fileList.value[0]?.url
+    fieldValue.value = _field.value.multiple ? list.map(item => item.url) : list[0]?.url
   else
-    fieldValue.value = _field.value.multiple ? fileList.value : fileList.value[0]
+    fieldValue.value = _field.value.multiple ? list : list[0]
 }, { deep: true })
 
 function getFileName(fileUrl: string) {
@@ -50,11 +51,36 @@ function getFileName(fileUrl: string) {
 }
 
 function handleFileUpload(options: UploadCustomRequestOptions) {
+  console.log(options)
   return _field.value.uploadHandler(options, props.context.dependencies, props.context.fieldApi)
+}
+
+function beforeUpload(data: { file: UploadFileInfo, fileList: UploadFileInfo[] }) {
+  return _field.value.beforeUpload?.(data, props.context.dependencies, props.context.fieldApi)
+}
+
+function onFileDelete(data: { file: UploadFileInfo, fileList: UploadFileInfo[] }) {
+  return _field.value.onFileDelete?.(data, props.context.dependencies, props.context.fieldApi)
+}
+
+function onFileDownload(file: UploadFileInfo) {
+  _field.value.onFileDownload?.(file, props.context.dependencies, props.context.fieldApi)
+}
+
+function onFilePreview(file: UploadFileInfo) {
+  _field.value.onFilePreview?.(file, props.context.dependencies, props.context.fieldApi)
 }
 
 function renderFileIcon(file: UploadSettledFileInfo) {
   return <span class="iconify" data-icon={getFileTypeIcon(file.name)} />
+}
+
+function onUploadFinish(data: { file: UploadFileInfo, event?: ProgressEvent }) {
+  _field.value.onUploadFinish?.(data, props.context.dependencies, props.context.fieldApi)
+}
+
+function onUploadError(data: { file: UploadFileInfo, event?: ProgressEvent }) {
+  _field.value.onUploadError?.(data, props.context.dependencies, props.context.fieldApi)
 }
 </script>
 
@@ -66,6 +92,12 @@ function renderFileIcon(file: UploadSettledFileInfo) {
     v-bind="context.inputProps.value"
     :disabled="context.disabled.value"
     :custom-request="handleFileUpload"
+    :on-before-upload="beforeUpload"
+    :on-remove="onFileDelete"
+    :on-download="onFileDownload"
+    :on-preview="onFilePreview"
+    :on-finish="onUploadFinish"
+    :on-error="onUploadError"
     :render-icon="renderFileIcon"
   >
     <NUploadDragger
