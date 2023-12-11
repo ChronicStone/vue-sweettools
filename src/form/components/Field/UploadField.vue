@@ -52,23 +52,23 @@ function getFileName(fileUrl: string) {
 
 function handleFileUpload(options: UploadCustomRequestOptions) {
   console.log(options)
-  return _field.value.uploadHandler(options, props.context.dependencies, props.context.fieldApi)
+  return _field.value.uploadHandler(options, props.context.dependencies.value, props.context.fieldApi)
 }
 
 function beforeUpload(data: { file: UploadFileInfo, fileList: UploadFileInfo[] }) {
-  return _field.value.beforeUpload?.(data, props.context.dependencies, props.context.fieldApi)
+  return _field.value.beforeUpload?.(data, props.context.dependencies.value, props.context.fieldApi)
 }
 
 function onFileDelete(data: { file: UploadFileInfo, fileList: UploadFileInfo[] }) {
-  return _field.value.onFileDelete?.(data, props.context.dependencies, props.context.fieldApi)
+  return _field.value.onFileDelete?.(data, props.context.dependencies.value, props.context.fieldApi)
 }
 
 function onFileDownload(file: UploadFileInfo) {
-  _field.value.onFileDownload?.(file, props.context.dependencies, props.context.fieldApi)
+  _field.value.onFileDownload?.(file, props.context.dependencies.value, props.context.fieldApi)
 }
 
 function onFilePreview(file: UploadFileInfo) {
-  _field.value.onFilePreview?.(file, props.context.dependencies, props.context.fieldApi)
+  _field.value.onFilePreview?.(file, props.context.dependencies.value, props.context.fieldApi)
 }
 
 function renderFileIcon(file: UploadSettledFileInfo) {
@@ -76,11 +76,11 @@ function renderFileIcon(file: UploadSettledFileInfo) {
 }
 
 function onUploadFinish(data: { file: UploadFileInfo, event?: ProgressEvent }) {
-  _field.value.onUploadFinish?.(data, props.context.dependencies, props.context.fieldApi)
+  _field.value.onUploadFinish?.(data, props.context.dependencies.value, props.context.fieldApi)
 }
 
 function onUploadError(data: { file: UploadFileInfo, event?: ProgressEvent }) {
-  _field.value.onUploadError?.(data, props.context.dependencies, props.context.fieldApi)
+  _field.value.onUploadError?.(data, props.context.dependencies.value, props.context.fieldApi)
 }
 </script>
 
