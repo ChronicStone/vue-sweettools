@@ -78,6 +78,7 @@ const resolver = useDataResolver({
   pagination: queryState.paginationState,
   allSelected: queryState.selectAll,
   data: queryState.data,
+  fullData: queryState.fullData,
   isLoading: queryState.isLoading,
   enablePagination: pagination.value,
   rowKey: rowIdKey.value,
@@ -119,7 +120,7 @@ function getRowKey(row: (typeof queryState)['data']['value'][number]) {
 }
 
 function handleSortChange(
-  value: { columnKey: string; order: SortOrder } | null,
+  value: { columnKey: string, order: SortOrder } | null,
 ) {
   queryState.setSort(
     !value || !value?.order
@@ -237,6 +238,24 @@ function setInternalTableSort(sort: {
   else tableRef.value?.sort(sort.key, sort.dir === 'asc' ? 'ascend' : 'descend')
 }
 
+function updateCheckedRowKeys(
+  keys: Array<string | number>,
+  _: object[],
+  meta: { row: object | undefined, action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll' },
+) {
+  if (meta.action === 'checkAll' || meta.action === 'uncheckAll') {
+    queryState.selectAll.value = meta.action === 'checkAll'
+    queryState.selectedKeys.value = meta.action === 'checkAll' ? queryState.fullData.value.map(item => item.__$ROW_ID__) : []
+  }
+
+  else { queryState.selectedKeys.value = keys }
+  if (meta.action === 'uncheck')
+    queryState.selectAll.value = false
+
+  if (meta.action === 'check' && queryState.selectedKeys.value.length === queryState.fullData.value.length)
+    queryState.selectAll.value = true
+}
+
 onMounted(() => {
   if (queryState.sortState.value.key) {
     setInternalTableSort({
@@ -248,6 +267,7 @@ onMounted(() => {
 </script>
 
 <template>
+  {{ queryState.selectAll.value }}
   <DndProvider :backend="dragDropBackend">
     <NCard
       content-style="padding: 0;"
@@ -284,7 +304,7 @@ onMounted(() => {
         <NDataTable
           :id="tableId"
           ref="tableRef"
-          v-model:checked-row-keys="queryState.selectedKeys.value"
+          :checked-row-keys="queryState.selectedKeys.value"
           :columns="columnsState.columnDefs.value"
           :loading="queryState.isLoading.value"
           :data="queryState.data.value"
@@ -302,6 +322,7 @@ onMounted(() => {
             persistScrollPosition(e)
           }"
           :on-unstable-column-resize="updateScrollbarState"
+          :on-update:checked-row-keys="updateCheckedRowKeys"
         />
       </div>
 

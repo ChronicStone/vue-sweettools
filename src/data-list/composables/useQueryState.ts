@@ -18,7 +18,7 @@ type QueryStateParams = {
   staticFilters: ComputedRef<StaticFilter[]>
   persistency: undefined | false | 'localStorage' | 'sessionStorage'
   defaultSort: ComputedRef<
-    undefined | string | { key: string; dir: 'asc' | 'desc' }
+    undefined | string | { key: string, dir: 'asc' | 'desc' }
   >
   defaultPageSize?: number
 }
@@ -35,7 +35,8 @@ export function useQueryState({
 }: QueryStateParams) {
   const isLoading = ref<boolean>(true)
   const data = ref<(GenericObject & { __$ROW_ID__: string })[]>([])
-  const selected = ref<Record<string, any>[]>([])
+  const fullData = ref<(GenericObject & { __$ROW_ID__: string })[]>([])
+  const selected = computed<Record<string, any>[]>(() => selectedKeys.value.map(key => fullData.value.find(row => row.__$ROW_ID__ === key) as Record<string, any>))
   const selectedKeys = ref<(string | number)[]>([])
   const selectAll = ref<boolean>(false)
   const nbSelected = computed<number>(() =>
@@ -146,7 +147,7 @@ export function useQueryState({
     initializeFilterState(true)
   }
 
-  function setSort(sort: { key: string; dir: 'asc' | 'desc' } | null) {
+  function setSort(sort: { key: string, dir: 'asc' | 'desc' } | null) {
     sortState.value.colId = sort?.key ?? ''
     sortState.value.key = sort?.key ?? ''
     sortState.value.dir = sort?.dir ?? 'asc'
@@ -155,6 +156,7 @@ export function useQueryState({
   return {
     isLoading,
     data,
+    fullData,
     selected,
     selectedKeys,
     selectAll,

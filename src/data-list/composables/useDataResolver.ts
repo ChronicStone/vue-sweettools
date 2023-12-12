@@ -7,6 +7,7 @@ type DataResolverParams = {
   remote: ComputedRef<boolean>
   isLoading: Ref<boolean>
   data: Ref<GenericObject[]>
+  fullData: Ref<GenericObject[]>
   datasource: DataSource
   pagination: FullQueryState['paginationState']
   fetchParams: FullQueryState['fetchParams']
@@ -20,6 +21,7 @@ export function useDataResolver({
   remote,
   isLoading,
   data,
+  fullData,
   datasource,
   pagination,
   fetchParams,
@@ -73,6 +75,8 @@ export function useDataResolver({
         data.value = docs
         pagination.value.pageTotalCount = totalPages
         pagination.value.rowTotalCount = totalDocs
+
+        fullData.value = remote.value ? docs : localDataStore.value
         isLoading.value = false
 
         if (totalPages < pagination.value.pageIndex)
