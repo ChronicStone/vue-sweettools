@@ -6,8 +6,10 @@ import { DndProvider } from 'vue3-dnd'
 import type { DataTableSchema } from './types/datatable'
 
 const tableId = `TABLE_${Date.now()}`
+// const themeVars = useThemeVars()
 
 const {
+  maxHeight,
   tableKey,
   columns,
   expandedContent,
@@ -27,13 +29,15 @@ const {
   pagination,
   compact,
   rowActions,
+  summary,
+  summaryPlacement,
 } = withDefaults(definePropsRefs<DataTableSchema>(), {
   tableKey: () => 'DEFAULT_LIST',
   filters: () => [],
   searchQuery: () => [],
   staticFilters: () => [],
   sortOptions: () => [],
-  maxHeight: 1200,
+  maxHeight: '60vh',
   actions: () => [],
   pagination: true,
   selection: true,
@@ -41,24 +45,13 @@ const {
   rowActions: () => [],
   defaultPageSize: 50,
   compact: false,
-})
-
-onBeforeMount(() => {
-  const flatCols = getFlatColumns(columns.value)
-  // GET COLUMN KEYS THAT ARE DUPLICATED
-  const duplicateKeys = flatCols
-    .map(col => col.key)
-    .filter((key, index, self) => self.indexOf(key) !== index)
-  if (duplicateKeys.length > 0) {
-    console.warn(
-      `Duplicate column keys found: ${duplicateKeys.join(
-        ', ',
-      )}. Please make sure that all column keys are unique.`,
-    )
-  }
+  summaryPlacement: 'top',
 })
 
 const dragDropBackend = useDndBackend()
+const tableWrapperRef = ref<HTMLElement>()
+const tableRef = ref<InstanceType<typeof NDataTable>>()
+const horizontalScrollbarHandleRef = ref<HTMLElement>()
 
 const queryState = useQueryState({
   key: `${tableKey.value ?? 'DEFAULT_LIST'}_LIST_STATE`,
@@ -106,6 +99,33 @@ const columnsState = useTableColumns({
   rowActions,
   expandable,
   expandedContent,
+  summary,
+})
+
+const {
+  tableElementExists,
+  scrollX,
+  scrollbarVisible,
+  teleportActive,
+  xScrollable,
+  isDragScrolling,
+  scrollbarWidth,
+  scrollbarOffset,
+  persistScrollPosition,
+  updateScrollbarState,
+} = useTableScroll({
+  tableId,
+  tableWrapperRef,
+  tableRef,
+  horizontalScrollbarHandleRef,
+  topViewportOffset: queryState.topViewportOffset,
+  paginationState: queryState.paginationState,
+})
+
+const { summaryTableRef, columnGroupDef } = useTableSummary({
+  tableId,
+  columns: columnsState.columnDefs,
+  scrollX,
 })
 
 function parseColumnKey(key: string) {
@@ -131,103 +151,6 @@ function handleSortChange(
         },
   )
 }
-
-const tableWrapperRef = ref<HTMLElement>()
-const tableRef = ref<InstanceType<typeof NDataTable>>()
-const horizontalScrollbarHandleRef = ref<HTMLElement>()
-
-const xScrollable = ref(false)
-const scrollbarVisible = ref(false)
-const teleportActive = ref(false)
-const scrollbarWidth = ref(0)
-const scrollbarOffset = ref(0)
-const isDragScrolling = ref(false)
-const dragScrollStart = ref(0)
-
-const { width } = useWindowSize()
-const hover = useElementHover(tableWrapperRef)
-
-const elementExists = useElementObserver(`#${tableId} .n-data-table-base-table-body`, tableWrapperRef)
-watchDebounced(elementExists, (v) => {
-  if (!v) {
-    teleportActive.value = false
-    return
-  }
-  teleportActive.value = true
-  updateScrollbarState()
-}, { debounce: 100 })
-
-function getTableContentEl() {
-  return (tableRef.value?.$el as HTMLElement).querySelector('.v-vl')
-}
-
-function updateScrollbarState() {
-  if (isDragScrolling.value)
-    return
-  const referenceContainer = document.querySelector(`#${tableId} .v-vl-visible-items`)
-  const target = getTableContentEl()
-  if (!target || !referenceContainer)
-    return
-  const handleSize = (target.clientWidth / referenceContainer.scrollWidth) * target.clientWidth
-  scrollbarWidth.value = handleSize
-  scrollbarOffset.value = (target.scrollLeft / referenceContainer.scrollWidth) * target.clientWidth
-  xScrollable.value = target.scrollWidth > target.clientWidth
-}
-
-watch(() => width.value, updateScrollbarState)
-watch(hover, v => scrollbarVisible.value = v)
-
-const { x } = useMouse()
-
-useEventListener('mouseup', () => isDragScrolling.value = false)
-useEventListener('mousedown', (e) => {
-  if (e.target !== horizontalScrollbarHandleRef.value)
-    return
-
-  dragScrollStart.value = x.value
-  isDragScrolling.value = true
-})
-
-watch(scrollbarOffset, (v) => {
-  const containerWidth = getTableContentEl()?.clientWidth ?? 0
-  const referenceContainer = document.querySelector(`#${tableId} .v-vl-visible-items`)
-  if (!referenceContainer)
-    return
-
-  tableRef.value?.scrollTo({ left: (v / containerWidth) * referenceContainer.scrollWidth })
-})
-
-watch(() => x.value, (xMouse) => {
-  if (!isDragScrolling.value)
-    return
-  const containerWidth = getTableContentEl()?.clientWidth ?? 0
-  const direction = xMouse > dragScrollStart.value ? 'right' : 'left'
-  const distance = Math.abs(xMouse - dragScrollStart.value)
-  scrollbarOffset.value = direction === 'right'
-    ? scrollbarOffset.value + distance > containerWidth - scrollbarWidth.value
-      ? containerWidth - scrollbarWidth.value
-      : scrollbarOffset.value + distance
-    : scrollbarOffset.value - distance < 0
-      ? 0
-      : scrollbarOffset.value - distance
-  dragScrollStart.value = xMouse
-})
-
-const scrollViewportLoaded = ref(false)
-function persistScrollPosition(e: Event) {
-  const target = e.target as HTMLElement
-  const scrollTop = target.scrollTop
-  queryState.topViewportOffset.value = scrollTop
-}
-
-watch(() => elementExists.value, (v) => {
-  if (scrollViewportLoaded.value || !v)
-    return
-  scrollViewportLoaded.value = true
-  tableRef.value?.scrollTo({ top: queryState.topViewportOffset.value })
-})
-
-watch(() => queryState.paginationState.value.pageIndex, () => tableRef.value?.scrollTo({ top: 0 }))
 
 function setInternalTableSort(sort: {
   key: string
@@ -264,10 +187,24 @@ onMounted(() => {
     })
   }
 })
+
+onBeforeMount(() => {
+  const flatCols = getFlatColumns(columns.value)
+  // GET COLUMN KEYS THAT ARE DUPLICATED
+  const duplicateKeys = flatCols
+    .map(col => col.key)
+    .filter((key, index, self) => self.indexOf(key) !== index)
+  if (duplicateKeys.length > 0) {
+    console.warn(
+      `Duplicate column keys found: ${duplicateKeys.join(
+        ', ',
+      )}. Please make sure that all column keys are unique.`,
+    )
+  }
+})
 </script>
 
 <template>
-  {{ queryState.selectAll.value }}
   <DndProvider :backend="dragDropBackend">
     <NCard
       content-style="padding: 0;"
@@ -306,10 +243,11 @@ onMounted(() => {
           ref="tableRef"
           :checked-row-keys="queryState.selectedKeys.value"
           :columns="columnsState.columnDefs.value"
+          :summary-placement="summaryPlacement"
           :loading="queryState.isLoading.value"
           :data="queryState.data.value"
           flex-height
-          class="h-[60vh]"
+          :style="{ height: maxHeight }"
           :row-key="getRowKey"
           :size="compact ? 'small' : 'large'"
           :theme-overrides="{ borderRadius: '0' }"
@@ -335,12 +273,43 @@ onMounted(() => {
       </template>
     </NCard>
 
-    <Teleport v-if="elementExists && teleportActive" :to="`#${tableId} .n-data-table-base-table-body`">
+    <Teleport v-if="tableElementExists && teleportActive" :to="`#${tableId} .n-data-table-base-table-body`">
       <div class="n-scrollbar-rail n-scrollbar-rail--horizontal" data-scrollbar-rail="true" aria-hidden="true" style="z-index: 3;">
         <Transition name="fade">
           <div v-if="(scrollbarVisible && xScrollable) || isDragScrolling" ref="horizontalScrollbarHandleRef" class="n-scrollbar-rail__scrollbar" :style="{ width: `${scrollbarWidth}px`, left: `${scrollbarOffset}px` }" />
         </Transition>
-        x
+      </div>
+    </Teleport>
+
+    <Teleport v-if="tableElementExists && teleportActive" :to="`#${tableId} .n-data-table-wrapper`">
+      <div ref="summaryTableRef" class="overflow-hidden hide-scrollbar">
+        <table :style="{ tableLayout: 'fixed' }" class="border-collapse n-data-table-table">
+          <colgroup>
+            <col v-for="(group, index) in columnGroupDef" :key="index" :style="group.style">
+          </colgroup>
+          <thead class="!p-0 n-data-table-thead">
+            <!-- <tr
+              v-for="(row, index) in (columnsState.columnDefs.value.summary(queryState.data.value))"
+              :key="index"
+              :style="{ borderCollapse: 'collapse', borderSpacing: 0, borderTop: `1px solid ${themeVars.borderColor} !important` }"
+              class="!p-0 n-data-table-tr"
+            >
+              <th
+                v-for="(cell, key) in row"
+                :key="key"
+                :colspan="cell?.colSpan ?? 1"
+                :rowspan="cell?.rowSpan ?? 1"
+                class="n-data-table-th !border-(spacing-0 collapse) !p-3 box-border bg-[var(--n-th-color)] hover:bg-[var(--n-th-color-hover)]"
+                :class="{
+                  'n-data-table-th--fixed-left left-0': cell?.fixed === 'left',
+                  'n-data-table-th--fixed-right right-0': cell?.fixed === 'right',
+                }"
+              >
+                <component :is="() => renderVNode(cell.value)" />
+              </th>
+            </tr> -->
+          </thead>
+        </table>
       </div>
     </Teleport>
   </DndProvider>
@@ -361,5 +330,51 @@ onMounted(() => {
 /* Define the ending state (leave) */
 .fade-enter-to, .fade-leave-from {
   opacity: 1;
+}
+
+.fixed-left {
+  left: 0;
+  position: sticky;
+  z-index: 2;
+}
+
+.fixed-left::after {
+  pointer-events: none;
+  content: "";
+  width: 36px;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  transition: box-shadow .2s var(--n-bezier);
+  right: -36px;
+}
+
+.fixed-right {
+  right: 0;
+  position: sticky;
+  z-index: 2;
+}
+
+.fixed-right::before {
+  pointer-events: none;
+  content: "";
+  width: 36px;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  transition: box-shadow .2s var(--n-bezier);
+  right: -36px;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    overflow-x: auto;
 }
 </style>
