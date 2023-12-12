@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import type { ComparatorParams, DataSource, FetchParams, FilterMatchMode, ObjectMapFilterParams } from '../types/shared'
 import type { GenericObject } from '@/_shared/types/utils'
 
@@ -16,36 +17,46 @@ type T_MATCH_MODE_PROCESSOR = {
   objectMatch: ({ value, filter, params }: { value: any, filter: any, params: ObjectMapFilterParams }) => boolean
 }
 
+const VAL_CHECK = {
+  string: (value: any): value is string => typeof value === 'string',
+  number: (value: any): value is number => typeof value === 'number',
+  boolean: (value: any): value is boolean => typeof value === 'boolean',
+  strNum: (value: any): value is string | number => typeof value === 'string' || typeof value === 'number',
+  strNumBool: (value: any): value is string | number | boolean => typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean',
+  strNumBoolNull: (value: any): value is string | number | boolean | null => typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value === null,
+  object: (value: any): value is GenericObject => {
+    const schema = z.object({})
+    const result = schema.safeParse(value)
+    if (result.success)
+      return true
+    else return false
+  },
+}
+
 const MATCH_MODE_PROCESSOR: T_MATCH_MODE_PROCESSOR = {
-  equals: ({ value, filter }) => filter === value,
-  notEquals: ({ value, filter }) => filter !== value,
+  equals: ({ value, filter }) =>
+    VAL_CHECK.strNumBoolNull(filter)
+    && VAL_CHECK.strNumBoolNull(value)
+    && filter === value,
+  notEquals: ({ value, filter }) =>
+    VAL_CHECK.strNumBoolNull(filter)
+    && VAL_CHECK.strNumBoolNull(value)
+    && filter !== value,
   exists: ({ value, filter }) => filter ? typeof value !== 'undefined' : typeof value === 'undefined',
   contains: ({ value, filter }) => value?.includes(filter),
   greaterThan: ({ value, filter, params }) => params?.dateMode ? new Date(value) > new Date(filter) : value > filter,
   greaterThanOrEqual: ({ value, filter, params }) => params?.dateMode ? new Date(value) >= new Date(filter) : value >= filter,
   lessThan: ({ value, filter, params }) => params?.dateMode ? new Date(value) < new Date(filter) : value < filter,
   lessThanOrEqual: ({ value, filter, params }) => params?.dateMode ? new Date(value) <= new Date(filter) : value <= filter,
-  between: ({ value, filter, params }) => {
-    console.log('between', { value, filter, params })
-    return params?.dateMode ? new Date(value) >= new Date(filter[0]) && new Date(value) <= new Date(filter[1]) : value >= filter[0] && value <= filter[1]
-  },
+  between: ({ value, filter, params }) => params?.dateMode ? new Date(value) >= new Date(filter[0]) && new Date(value) <= new Date(filter[1]) : value >= filter[0] && value <= filter[1],
   objectStringMap: p => !!p,
   arrayLength: ({ value, filter }) => Array.isArray(value) && value.length === filter,
   objectMatch: ({ value, filter, params }) => {
-    return params.properties[params.operator === 'AND' ? 'every' : 'some' as const]((property) => {
-      const val = getObjectProperty({ key: property.key, object: value, scoped: false })
-      const filt = getObjectProperty({ key: property.key, object: filter, scoped: false })
-      console.log('objectMatch', {
-        property,
-        value: { root: value, resolved: val },
-        filter: { root: filter, resolved: filt },
-      })
-      return MATCH_MODE_PROCESSOR[property.matchMode]({
-        value: getObjectProperty({ key: property.key, object: value, scoped: false }),
-        filter: getObjectProperty({ key: property.key, object: filter, scoped: false }),
-        params: {} as any,
-      })
-    })
+    return params.properties[params.operator === 'AND' ? 'every' : 'some' as const](property => MATCH_MODE_PROCESSOR[property.matchMode]({
+      value: getObjectProperty({ key: property.key, object: value, scoped: false }),
+      filter: getObjectProperty({ key: property.key, object: filter, scoped: false }),
+      params: {} as any,
+    }))
   },
 }
 
@@ -60,7 +71,6 @@ function processFilterWithLookup<
   params: P extends { params: infer U } ? U : P extends { params?: infer U } ? U : null
   lookupFrom?: 'value' | 'filter'
 }) {
-  console.info('processFilterWithLookup', params)
   if (!Array.isArray(params.filter) || (params.type === 'between' && validateBetweenPayload(params.filter))) {
     return Array.isArray(params.value)
       ? params.value.some(value =>
@@ -108,6 +118,29 @@ function validateBetweenPayload(payload: any) {
   return Array.isArray(payload) && payload.length === 2 && payload.every((i: any) => !Array.isArray(i))
 }
 
+function processSearchQuery(params: { key: string, object: Record<string, any>, value: string }): boolean {
+  const { key, object, value } = params
+  const keys = key.split('.')
+
+  let current: any = object
+  for (let i = 0; i < keys.length; i++) {
+    if (Array.isArray(current))
+      return current.some(item => processSearchQuery({ key: keys.slice(i).join('.'), object: item, value }))
+
+    else if (current && Object.prototype.hasOwnProperty.call(current, keys[i]))
+      current = current[keys[i]]
+
+    else
+      return false
+  }
+
+  if (Array.isArray(current))
+    return current.some(element => element.toString().toLowerCase().includes(value.toLowerCase()))
+
+  else
+    return current?.toString().toLowerCase().includes(value.toLowerCase()) ?? false
+}
+
 export async function remoteDataMapper(
   data: Array<GenericObject>,
   datasource: DataSource<GenericObject, false>,
@@ -121,18 +154,13 @@ export async function remoteDataMapper(
   docs: any[]
   rawDocs: any[]
 }> {
-  console.log('fetchParams', { searchQuery, page, limit, sortKey, sortOrder, query })
   try {
     let output: GenericObject[] = []
     if (fullReload) {
       output = (await datasource()).map(item => ({
         ...item,
         __$ROW_ID__: rowKey
-          ? getObjectProperty({
-            key: rowKey,
-            object: item,
-            scoped: false,
-          }) ?? generateUUID()
+          ? getObjectProperty({ key: rowKey, object: item, scoped: false }) ?? generateUUID()
           : generateUUID(),
       }))
     }
@@ -141,17 +169,8 @@ export async function remoteDataMapper(
 
     if (searchQuery && searchQuery.value) {
       output = output.filter((item) => {
-        const keys = Object.keys(item).filter(key =>
-          searchQuery.fields.includes(key),
-        )
-        for (const key of keys) {
-          if (
-            item[key]
-            && item[key]
-              ?.toString()
-              ?.toLowerCase()
-              ?.includes(searchQuery.value!.toLowerCase())
-          )
+        for (const key of searchQuery.fields) {
+          if (processSearchQuery({ key, object: item, value: searchQuery.value as string }))
             return true
         }
         return false
