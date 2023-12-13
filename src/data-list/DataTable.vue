@@ -99,6 +99,7 @@ const columnsState = useTableColumns({
   rowActions,
   expandable,
   expandedContent,
+  data: queryState.data,
 })
 
 const {
@@ -280,7 +281,7 @@ onBeforeMount(() => {
       </div>
     </Teleport>
 
-    <Teleport v-if="tableElementExists && teleportActive" :to="`#${tableId} .n-data-table-wrapper`">
+    <Teleport v-if="tableElementExists && teleportActive && summaryRows.length" :to="`#${tableId} .n-data-table-wrapper`">
       <div ref="summaryTableRef" class="overflow-hidden hide-scrollbar">
         <table :style="{ tableLayout: 'fixed' }" class="border-collapse n-data-table-table">
           <colgroup>
@@ -298,7 +299,7 @@ onBeforeMount(() => {
                 :key="key"
                 :colspan="cell?.colSpan ?? 1"
                 :rowspan="cell?.rowSpan ?? 1"
-                class="n-data-table-th !border-(spacing-0 collapse) !p-3 box-border text-[12px] py-2 font-semibold"
+                class="n-data-table-th !border-(spacing-0 collapse) !p-3 box-border py-2 font-semibold"
                 :class="{
                   'n-data-table-th--fixed-left left-0': cell?.fixed === 'left',
                   'n-data-table-th--fixed-right right-0': cell?.fixed === 'right',

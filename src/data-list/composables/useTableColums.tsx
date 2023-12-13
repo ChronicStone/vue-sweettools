@@ -30,6 +30,7 @@ export function useTableColumns(params: {
   persistency: ComputedRef<false | 'localStorage' | 'sessionStorage'>
   tableKey: ComputedRef<string>
   searchQuery: ComputedRef<string[]>
+  data: FullQueryState['data']
   rowActions: ComputedRef<RowAction[]>
   expandable: ComputedRef<DataTableSchema['expandable']>
   expandedContent: ComputedRef<DataTableSchema['expandedContent']>
@@ -44,6 +45,8 @@ export function useTableColumns(params: {
     ).sort(sortCols),
   )
 
+  const { rowsActions, hasActiveRowActions, maxRowActions } = useTableRowActions({ data: params.data, api: params.dataApi, actions: params.rowActions })
+
   const columnDefs = computed(() => [
     ...(params.selection.value
       ? [{ type: 'selection' } satisfies TDataTableColumn]
@@ -57,15 +60,15 @@ export function useTableColumns(params: {
         } satisfies TDataTableColumn,
         ]
       : []),
-    ...(params.rowActions.value.length > 0
+    ...(hasActiveRowActions.value
       ? [
         {
           title: () => renderColumnLabel('Actions'),
           key: '#internal__actions',
           sorter: false,
-          // @ts-expect-error - TODO: Fix this
-          render: rowData => <RowActions actions={params.rowActions.value} row-data={rowData} api={params.dataApi} />,
-          width: 60 + params.rowActions.value.length * 20,
+          // @ts-expect-error - Weird inference issue ??
+          render: (rowData, rowIndex) => <RowActions actions={rowsActions.value?.[rowIndex]?.actions ?? []} row-data={rowData} api={params.dataApi} />,
+          width: 60 + maxRowActions.value * 20,
         },
       ] satisfies TDataTableColumn[]
       : []),

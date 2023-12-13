@@ -1,51 +1,20 @@
 <script setup lang="ts">
 import { NButton, NTooltip } from 'naive-ui'
-import type { DataApi, RowAction } from '../types/shared'
+import type { DataApi } from '../types/shared'
 import type { GenericObject } from '@/_shared/types/utils'
 
-const { actions, api, rowData } = definePropsRefs<{ actions: RowAction[]; api: DataApi; rowData: GenericObject }>()
-
-const { permissionValidator } = useGlobalConfig()
-
-const rowActions = computed(() =>
-  actions.value
-    .map(action => ({
-      ...action,
-      icon:
-        typeof action.icon === 'function'
-          ? action.icon({ rowData: rowData.value })
-          : action.icon,
-      label:
-        typeof action.label === 'function'
-          ? action.label({ rowData: rowData.value })
-          : action.label,
-      ...(action.link && {
-        link:
-          typeof action.link === 'function'
-            ? action.link({ rowData: rowData.value })
-            : action.link,
-      }),
-    }))
-    .filter(
-      action =>
-        action?.condition?.({
-          rowData: rowData.value,
-          tableApi: api.value,
-        }) ?? true,
-    )
-    .filter(action =>
-      !action?.permissions?.length
-        ? true
-        : permissionValidator?.value?.(action.permissions) ?? true,
-    ),
-)
+const { actions, api, rowData } = definePropsRefs<{
+  actions: ReturnType<typeof useTableRowActions>['rowsActions']['value'][number]['actions']
+  api: DataApi
+  rowData: GenericObject
+}>()
 </script>
 
 <template>
   <div class="flex gap-1 items-center h-fit">
-    <template v-if="rowActions.length">
+    <template v-if="actions.length">
       <NTooltip
-        v-for="({ icon, label, link, action }, key) in rowActions"
+        v-for="({ icon, label, link, action }, key) in actions"
         :key="key"
       >
         <template #trigger>
