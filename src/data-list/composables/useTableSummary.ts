@@ -1,8 +1,8 @@
-import type { GenericObject } from '@/_shared/types/utils'
+import type { FullQueryState } from '../types/shared'
 
 export function useTableSummary(params: {
   tableId: string
-  data: Ref<GenericObject[]>
+  queryState: FullQueryState
   columns: ReturnType<typeof useTableColumns>['columnDefs']
   scrollX: Ref<number>
 }) {
@@ -66,7 +66,8 @@ export function useTableSummary(params: {
   const summaryRows = computed(() => Array.from({ length: nbSummaryRows.value }, (_, i) => {
     return flattenedColsDef.value.map((col) => {
       const summary = col.summary?.[i]
-      const value = typeof summary?.value === 'function' ? summary.value(params.data.value) : summary?.value
+      const injectedData = params.queryState.selected.value.length ? params.queryState.selected.value : params.queryState.fullData.value
+      const value = typeof summary?.value === 'function' ? summary.value(injectedData) : summary?.value
       return {
         key: 'key' in col ? col.key : col.type,
         value,

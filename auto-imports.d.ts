@@ -64,10 +64,14 @@ declare global {
   const getColorFormat: typeof import('./src/_shared/utils/color')['getColorFormat']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getDeepestCols: typeof import('./src/data-list/composables/useTableSummary')['getDeepestCols']
+  const getFileTypeIcon: typeof import('./src/_shared/utils/file')['getFileTypeIcon']
+  const getFilterInitialState: typeof import('./src/data-list/utils/query')['getFilterInitialState']
   const getFlatColumns: typeof import('./src/data-list/composables/useTableColums')['getFlatColumns']
   const getObjectProperty: typeof import('./src/_shared/utils/object')['getObjectProperty']
   const getObjectPropertyFullPath: typeof import('./src/_shared/utils/object')['getObjectPropertyFullPath']
   const h: typeof import('vue')['h']
+  const haha: typeof import('./src/excel-reader/composables/useExcelReader')['haha']
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
   const inject: typeof import('vue')['inject']
   const injectLocal: typeof import('@vueuse/core')['injectLocal']
@@ -147,6 +151,8 @@ declare global {
   const syncRef: typeof import('@vueuse/core')['syncRef']
   const syncRefs: typeof import('@vueuse/core')['syncRefs']
   const templateRef: typeof import('@vueuse/core')['templateRef']
+  const test: typeof import('./src/excel-reader/composables/useExcelReader')['test']
+  const testFn: typeof import('./src/excel-reader/composables/useExcelReader')['testFn']
   const textFilter: typeof import('./src/data-list/utils/filters')['textFilter']
   const throttledRef: typeof import('@vueuse/core')['throttledRef']
   const throttledWatch: typeof import('@vueuse/core')['throttledWatch']
@@ -223,6 +229,7 @@ declare global {
   const useDropdownActions: typeof import('./src/_shared/composables/useDropdownActions')['useDropdownActions']
   const useElementBounding: typeof import('@vueuse/core')['useElementBounding']
   const useElementByPoint: typeof import('@vueuse/core')['useElementByPoint']
+  const useElementClone: typeof import('./src/_shared/composables/useElementClone')['useElementClone']
   const useElementHover: typeof import('@vueuse/core')['useElementHover']
   const useElementObserver: typeof import('./src/_shared/composables/useElementObserver')['default']
   const useElementSize: typeof import('@vueuse/core')['useElementSize']
@@ -232,6 +239,7 @@ declare global {
   const useEventListener: typeof import('@vueuse/core')['useEventListener']
   const useEventSource: typeof import('@vueuse/core')['useEventSource']
   const useExcelReader: typeof import('./src/excel-reader/composables/useExcelReader')['useExcelReader']
+  const useExcelSomething: typeof import('./src/excel-reader/composables/useSchemaBuilder')['useExcelSomething']
   const useEyeDropper: typeof import('@vueuse/core')['useEyeDropper']
   const useFavicon: typeof import('@vueuse/core')['useFavicon']
   const useFetch: typeof import('@vueuse/core')['useFetch']
@@ -326,6 +334,10 @@ declare global {
   const useSupported: typeof import('@vueuse/core')['useSupported']
   const useSwipe: typeof import('@vueuse/core')['useSwipe']
   const useTableColumns: typeof import('./src/data-list/composables/useTableColums')['useTableColumns']
+  const useTableRowActions: typeof import('./src/data-list/composables/useRowActions')['useTableRowActions']
+  const useTableScroll: typeof import('./src/data-list/composables/useTableScroll')['useTableScroll']
+  const useTableSroll: typeof import('./src/data-list/composables/useTableScroll')['useTableSroll']
+  const useTableSummary: typeof import('./src/data-list/composables/useTableSummary')['useTableSummary']
   const useTemplateRefsList: typeof import('@vueuse/core')['useTemplateRefsList']
   const useTextDirection: typeof import('@vueuse/core')['useTextDirection']
   const useTextSelection: typeof import('@vueuse/core')['useTextSelection']
@@ -379,6 +391,7 @@ declare global {
 declare global {
   // @ts-ignore
   export type { Component, ComponentPublicInstance, ComputedRef, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, VNode, WritableComputedRef } from 'vue'
+  import('vue')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'
@@ -443,6 +456,9 @@ declare module 'vue' {
     readonly getColorFormat: UnwrapRef<typeof import('./src/_shared/utils/color')['getColorFormat']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getDeepestCols: UnwrapRef<typeof import('./src/data-list/composables/useTableSummary')['getDeepestCols']>
+    readonly getFileTypeIcon: UnwrapRef<typeof import('./src/_shared/utils/file')['getFileTypeIcon']>
+    readonly getFilterInitialState: UnwrapRef<typeof import('./src/data-list/utils/query')['getFilterInitialState']>
     readonly getFlatColumns: UnwrapRef<typeof import('./src/data-list/composables/useTableColums')['getFlatColumns']>
     readonly getObjectProperty: UnwrapRef<typeof import('./src/_shared/utils/object')['getObjectProperty']>
     readonly getObjectPropertyFullPath: UnwrapRef<typeof import('./src/_shared/utils/object')['getObjectPropertyFullPath']>
@@ -602,6 +618,7 @@ declare module 'vue' {
     readonly useDropdownActions: UnwrapRef<typeof import('./src/_shared/composables/useDropdownActions')['useDropdownActions']>
     readonly useElementBounding: UnwrapRef<typeof import('@vueuse/core')['useElementBounding']>
     readonly useElementByPoint: UnwrapRef<typeof import('@vueuse/core')['useElementByPoint']>
+    readonly useElementClone: UnwrapRef<typeof import('./src/_shared/composables/useElementClone')['useElementClone']>
     readonly useElementHover: UnwrapRef<typeof import('@vueuse/core')['useElementHover']>
     readonly useElementObserver: UnwrapRef<typeof import('./src/_shared/composables/useElementObserver')['default']>
     readonly useElementSize: UnwrapRef<typeof import('@vueuse/core')['useElementSize']>
@@ -705,6 +722,9 @@ declare module 'vue' {
     readonly useSupported: UnwrapRef<typeof import('@vueuse/core')['useSupported']>
     readonly useSwipe: UnwrapRef<typeof import('@vueuse/core')['useSwipe']>
     readonly useTableColumns: UnwrapRef<typeof import('./src/data-list/composables/useTableColums')['useTableColumns']>
+    readonly useTableRowActions: UnwrapRef<typeof import('./src/data-list/composables/useRowActions')['useTableRowActions']>
+    readonly useTableScroll: UnwrapRef<typeof import('./src/data-list/composables/useTableScroll')['useTableScroll']>
+    readonly useTableSummary: UnwrapRef<typeof import('./src/data-list/composables/useTableSummary')['useTableSummary']>
     readonly useTemplateRefsList: UnwrapRef<typeof import('@vueuse/core')['useTemplateRefsList']>
     readonly useTextDirection: UnwrapRef<typeof import('@vueuse/core')['useTextDirection']>
     readonly useTextSelection: UnwrapRef<typeof import('@vueuse/core')['useTextSelection']>
@@ -816,6 +836,9 @@ declare module '@vue/runtime-core' {
     readonly getColorFormat: UnwrapRef<typeof import('./src/_shared/utils/color')['getColorFormat']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getDeepestCols: UnwrapRef<typeof import('./src/data-list/composables/useTableSummary')['getDeepestCols']>
+    readonly getFileTypeIcon: UnwrapRef<typeof import('./src/_shared/utils/file')['getFileTypeIcon']>
+    readonly getFilterInitialState: UnwrapRef<typeof import('./src/data-list/utils/query')['getFilterInitialState']>
     readonly getFlatColumns: UnwrapRef<typeof import('./src/data-list/composables/useTableColums')['getFlatColumns']>
     readonly getObjectProperty: UnwrapRef<typeof import('./src/_shared/utils/object')['getObjectProperty']>
     readonly getObjectPropertyFullPath: UnwrapRef<typeof import('./src/_shared/utils/object')['getObjectPropertyFullPath']>
@@ -975,6 +998,7 @@ declare module '@vue/runtime-core' {
     readonly useDropdownActions: UnwrapRef<typeof import('./src/_shared/composables/useDropdownActions')['useDropdownActions']>
     readonly useElementBounding: UnwrapRef<typeof import('@vueuse/core')['useElementBounding']>
     readonly useElementByPoint: UnwrapRef<typeof import('@vueuse/core')['useElementByPoint']>
+    readonly useElementClone: UnwrapRef<typeof import('./src/_shared/composables/useElementClone')['useElementClone']>
     readonly useElementHover: UnwrapRef<typeof import('@vueuse/core')['useElementHover']>
     readonly useElementObserver: UnwrapRef<typeof import('./src/_shared/composables/useElementObserver')['default']>
     readonly useElementSize: UnwrapRef<typeof import('@vueuse/core')['useElementSize']>
@@ -1078,6 +1102,9 @@ declare module '@vue/runtime-core' {
     readonly useSupported: UnwrapRef<typeof import('@vueuse/core')['useSupported']>
     readonly useSwipe: UnwrapRef<typeof import('@vueuse/core')['useSwipe']>
     readonly useTableColumns: UnwrapRef<typeof import('./src/data-list/composables/useTableColums')['useTableColumns']>
+    readonly useTableRowActions: UnwrapRef<typeof import('./src/data-list/composables/useRowActions')['useTableRowActions']>
+    readonly useTableScroll: UnwrapRef<typeof import('./src/data-list/composables/useTableScroll')['useTableScroll']>
+    readonly useTableSummary: UnwrapRef<typeof import('./src/data-list/composables/useTableSummary')['useTableSummary']>
     readonly useTemplateRefsList: UnwrapRef<typeof import('@vueuse/core')['useTemplateRefsList']>
     readonly useTextDirection: UnwrapRef<typeof import('@vueuse/core')['useTextDirection']>
     readonly useTextSelection: UnwrapRef<typeof import('@vueuse/core')['useTextSelection']>

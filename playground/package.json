@@ -14,7 +14,8 @@
     "@unocss/nuxt": "^0.57.4",
     "@vueuse/router": "^10.6.1",
     "date-fns": "^2.30.0",
-    "deepmerge-ts": "^5.1.0"
+    "deepmerge-ts": "^5.1.0",
+    "naive-ui": "^2.35.0"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

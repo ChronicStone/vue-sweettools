@@ -124,7 +124,7 @@ const {
 
 const { summaryTableRef, columnGroupDef, summaryRows } = useTableSummary({
   tableId,
-  data: queryState.data,
+  queryState,
   columns: columnsState.columnDefs,
   scrollX,
 })
