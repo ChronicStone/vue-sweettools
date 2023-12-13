@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { table } from 'node:console'
 import { withDefaults } from 'unplugin-vue-macros/macros' assert { type: 'macro' }
-import { NCard, NDataTable } from 'naive-ui'
+import { NCard, NDataTable, useThemeVars } from 'naive-ui'
 import type { SortOrder } from 'naive-ui/es/data-table/src/interface'
 import { DndProvider } from 'vue3-dnd'
 import type { DataTableSchema } from './types/datatable'
 
 const tableId = `TABLE_${Date.now()}`
-// const themeVars = useThemeVars()
+const themeVars = useThemeVars()
 
 const {
   maxHeight,
@@ -30,7 +31,6 @@ const {
   compact,
   rowActions,
   summary,
-  summaryPlacement,
 } = withDefaults(definePropsRefs<DataTableSchema>(), {
   tableKey: () => 'DEFAULT_LIST',
   filters: () => [],
@@ -52,6 +52,8 @@ const dragDropBackend = useDndBackend()
 const tableWrapperRef = ref<HTMLElement>()
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const horizontalScrollbarHandleRef = ref<HTMLElement>()
+
+const tableInternalId = computed(() => (tableRef.value?.$el as HTMLElement)?.querySelector('thead')?.getAttribute('data-n-id') ?? '')
 
 const queryState = useQueryState({
   key: `${tableKey.value ?? 'DEFAULT_LIST'}_LIST_STATE`,
@@ -122,8 +124,9 @@ const {
   paginationState: queryState.paginationState,
 })
 
-const { summaryTableRef, columnGroupDef } = useTableSummary({
+const { summaryTableRef, columnGroupDef, summaryRows } = useTableSummary({
   tableId,
+  data: queryState.data,
   columns: columnsState.columnDefs,
   scrollX,
 })
@@ -205,6 +208,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
+  {{ tableInternalId }}
   <DndProvider :backend="dragDropBackend">
     <NCard
       content-style="padding: 0;"
@@ -243,7 +247,6 @@ onBeforeMount(() => {
           ref="tableRef"
           :checked-row-keys="queryState.selectedKeys.value"
           :columns="columnsState.columnDefs.value"
-          :summary-placement="summaryPlacement"
           :loading="queryState.isLoading.value"
           :data="queryState.data.value"
           flex-height
@@ -287,9 +290,9 @@ onBeforeMount(() => {
           <colgroup>
             <col v-for="(group, index) in columnGroupDef" :key="index" :style="group.style">
           </colgroup>
-          <thead class="!p-0 n-data-table-thead">
-            <!-- <tr
-              v-for="(row, index) in (columnsState.columnDefs.value.summary(queryState.data.value))"
+          <thead :data-n-id="tableInternalId" class="!p-0 n-data-table-thead">
+            <tr
+              v-for="(row, index) in summaryRows"
               :key="index"
               :style="{ borderCollapse: 'collapse', borderSpacing: 0, borderTop: `1px solid ${themeVars.borderColor} !important` }"
               class="!p-0 n-data-table-tr"
@@ -304,10 +307,12 @@ onBeforeMount(() => {
                   'n-data-table-th--fixed-left left-0': cell?.fixed === 'left',
                   'n-data-table-th--fixed-right right-0': cell?.fixed === 'right',
                 }"
+                :style="cell.fixed === 'left' ? { left: `${cell.fixedMeta.start}px` } : cell.fixed === 'right' ? { right: `${cell.fixedMeta.start}px` } : {}"
+                :data-col-key="cell.key"
               >
                 <component :is="() => renderVNode(cell.value)" />
               </th>
-            </tr> -->
+            </tr>
           </thead>
         </table>
       </div>

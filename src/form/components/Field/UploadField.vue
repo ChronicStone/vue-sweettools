@@ -51,7 +51,6 @@ function getFileName(fileUrl: string) {
 }
 
 function handleFileUpload(options: UploadCustomRequestOptions) {
-  console.log(options)
   return _field.value.uploadHandler(options, props.context.dependencies.value, props.context.fieldApi)
 }
 

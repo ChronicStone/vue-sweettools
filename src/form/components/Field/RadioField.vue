@@ -16,8 +16,6 @@ const options = computed(() => {
     value: string | number | boolean | undefined
   }>
 })
-
-console.log('options', props)
 </script>
 
 <template>

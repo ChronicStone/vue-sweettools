@@ -1,6 +1,6 @@
 import type { z } from 'zod'
 import type { VNodeChild } from 'vue'
-import type { EllipsisProps } from 'naive-ui'
+import type { EllipsisProps, DataTableColumn as NDataTableColumn } from 'naive-ui'
 import type {
   Action,
   DataApi,
@@ -18,6 +18,16 @@ import type {
   NestedPaths,
   NestedPathsForType,
 } from '@/_shared/types/utils'
+
+export type TDataTableColumn = NDataTableColumn & { summary?: ColumnSummary[] }
+
+export type ColumnSummary<
+  Data extends GenericObject = GenericObject,
+> = {
+  value: VNodeChild | ((data: Data[]) => VNodeChild)
+  colSpan?: number
+  rowSpan?: number
+}
 
 export type DataTableColumnGroup<
   Data extends GenericObject = GenericObject,
@@ -55,6 +65,7 @@ export type DataTableColumn<
   align?: 'left' | 'right' | 'center'
   labelAlign?: 'left' | 'right' | 'center'
   resizable?: boolean
+  summary?: ColumnSummary<TData>[]
 }
 
 export interface DataTableSchema<
@@ -82,8 +93,8 @@ export interface DataTableSchema<
   columns: Array<
     DataTableColumn<TData, PathKeys> | DataTableColumnGroup<TData, PathKeys>
   >
-  expandable?: (params: { rowData: TData; tableApi: DataApi }) => boolean
-  expandedContent?: (params: { rowData: TData; tableApi: DataApi }) => VNodeChild
+  expandable?: (params: { rowData: TData, tableApi: DataApi }) => boolean
+  expandedContent?: (params: { rowData: TData, tableApi: DataApi }) => VNodeChild
   optimizeQuery?: OptimizedQueryField<PathKeys>[]
   actions?: Action<TData, PathKeys>[]
   rowActions?: RowAction<TData, PathKeys>[]
@@ -96,7 +107,7 @@ export interface DataTableSchema<
   defaultSort?: DataDefaultSort<PathKeys>
   persistency?: false | 'localStorage' | 'sessionStorage'
   defaultPageSize?: number
-  maxHeight?: false | number
+  maxHeight?: string
   compact?: boolean
 }
 

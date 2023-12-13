@@ -1,7 +1,6 @@
-import type { DataTableColumn as TDataTableColumn } from 'naive-ui'
 import { z } from 'zod'
 import type { DataApi, DataResolverState, FullQueryState, RowAction } from '../types/shared'
-import type { DataTableColumn, DataTableColumnGroup, DataTableSchema } from '../types/datatable'
+import type { DataTableColumn, DataTableColumnGroup, DataTableSchema, TDataTableColumn } from '../types/datatable'
 import RowActions from '../content/RowActions.vue'
 
 const BASE_CONF_CONF_SCHEMA = z.object({
@@ -63,7 +62,7 @@ export function useTableColumns(params: {
       ? [
         {
           title: () => renderColumnLabel('Actions'),
-          key: '#actions',
+          key: '#internal__actions',
           sorter: false,
           // @ts-expect-error - TODO: Fix this
           render: rowData => <RowActions actions={params.rowActions.value} row-data={rowData} api={params.dataApi} />,
@@ -115,13 +114,14 @@ export function useTableColumns(params: {
 export function getFlatColumns(
   columns: Array<DataTableColumn | DataTableColumnGroup>,
   parent: string[] = [],
+  includeGroupParents = true,
 ): Array<(DataTableColumn | DataTableColumnGroup) & { childOf: string[] }> {
   return columns.reduce((acc, curr) => {
     if ('children' in curr) {
       return [
         ...acc,
-        { ...curr, childOf: [...parent, curr.key] },
-        ...getFlatColumns(curr.children, [...parent, curr.key]),
+        ...(includeGroupParents ? [{ ...curr, childOf: [...parent, curr.key] }] : []),
+        ...getFlatColumns(curr.children, [...parent, curr.key], includeGroupParents),
       ]
     }
     else { return [...acc, { ...curr, childOf: parent }] }
@@ -256,6 +256,7 @@ function mapColumnsRecursively(
       renderSorterIcon: c => renderColumnIcons(c, params.searchQuery.includes(
         column.key,
       ), params.i18n),
+      summary: column.summary,
     } satisfies TDataTableColumn
   }
 }
