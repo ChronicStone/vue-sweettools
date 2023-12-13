@@ -67,10 +67,9 @@ export function useTableSummary(params: {
     return flattenedColsDef.value.map((col) => {
       const summary = col.summary?.[i]
       const injectedData = params.queryState.selected.value.length ? params.queryState.selected.value : params.queryState.fullData.value
-      const value = typeof summary?.value === 'function' ? summary.value(injectedData) : summary?.value
       return {
         key: 'key' in col ? col.key : col.type,
-        value,
+        value: () => renderVNode(summary?.value, injectedData),
         colSpan: 1,
         rowSpan: col.summary?.[i]?.rowSpan ?? 1,
         fixed: col.fixed,

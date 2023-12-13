@@ -307,7 +307,7 @@ onBeforeMount(() => {
                 :style="cell.fixed === 'left' ? { left: `${cell.fixedMeta.start}px` } : cell.fixed === 'right' ? { right: `${cell.fixedMeta.start}px` } : {}"
                 :data-col-key="cell.key"
               >
-                <component :is="() => renderVNode(cell.value)" />
+                <component :is="cell.value" />
               </th>
             </tr>
           </thead>

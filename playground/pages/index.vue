@@ -1,5 +1,6 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { DataTable, booleanFilter, buildTableSchema, timeRangeFilter } from '@chronicstone/vue-sweettools'
+import { NButton } from 'naive-ui'
 
 async function loadData() {
   await new Promise(resolve => setTimeout(resolve, 200))
@@ -45,7 +46,7 @@ const schema = buildTableSchema({
     { label: 'Name', key: 'name', summary: [{ value: '21 233' }] },
     { label: 'Balance', key: 'balance', summary: [{ value: rows => rows.reduce((acc, cur) => acc + cur.balance, 0) }] },
     { label: 'Active', key: 'active', render: rowData => rowData.active ? 'Yes' : 'No' },
-    { label: 'Age', key: 'age' },
+    { label: 'Age', key: 'age', summary: [{ value: () => <NButton>Hi</NButton> }] },
     { label: 'Address', key: 'address' },
   ],
   rowActions: [
