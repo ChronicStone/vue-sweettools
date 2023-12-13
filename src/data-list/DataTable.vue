@@ -30,7 +30,6 @@ const {
   pagination,
   compact,
   rowActions,
-  summary,
 } = withDefaults(definePropsRefs<DataTableSchema>(), {
   tableKey: () => 'DEFAULT_LIST',
   filters: () => [],
@@ -45,7 +44,6 @@ const {
   rowActions: () => [],
   defaultPageSize: 50,
   compact: false,
-  summaryPlacement: 'top',
 })
 
 const dragDropBackend = useDndBackend()
@@ -101,7 +99,6 @@ const columnsState = useTableColumns({
   rowActions,
   expandable,
   expandedContent,
-  summary,
 })
 
 const {
@@ -208,7 +205,6 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  {{ tableInternalId }}
   <DndProvider :backend="dragDropBackend">
     <NCard
       content-style="padding: 0;"
@@ -257,7 +253,7 @@ onBeforeMount(() => {
           :on-update:sorter="handleSortChange"
           virtual-scroll
           :single-column="false"
-          :single-line="true"
+          :single-line="false"
           :on-scroll="(e) => {
             updateScrollbarState()
             persistScrollPosition(e)
@@ -302,7 +298,7 @@ onBeforeMount(() => {
                 :key="key"
                 :colspan="cell?.colSpan ?? 1"
                 :rowspan="cell?.rowSpan ?? 1"
-                class="n-data-table-th !border-(spacing-0 collapse) !p-3 box-border bg-[var(--n-th-color)] hover:bg-[var(--n-th-color-hover)]"
+                class="n-data-table-th !border-(spacing-0 collapse) !p-3 box-border text-[12px] py-2 font-semibold"
                 :class="{
                   'n-data-table-th--fixed-left left-0': cell?.fixed === 'left',
                   'n-data-table-th--fixed-right right-0': cell?.fixed === 'right',

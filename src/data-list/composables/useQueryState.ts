@@ -45,6 +45,8 @@ export function useQueryState({
       : selected.value.length || selectedKeys.value.length,
   )
 
+  watch(() => fullData.value, docs => selectedKeys.value = selectAll.value ? docs.map(row => row.__$ROW_ID__) : selectedKeys.value.filter(key => docs.some(row => row.__$ROW_ID__ === key)))
+
   const topViewportOffset = !persistency
     ? ref<number>(0)
     : useStorage<number>(

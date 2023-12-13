@@ -76,7 +76,7 @@ export function useDataResolver({
         pagination.value.pageTotalCount = totalPages
         pagination.value.rowTotalCount = totalDocs
 
-        fullData.value = remote.value ? docs : localDataStore.value
+        fullData.value = remote.value ? docs : (rest as { unpaginatedDocs: GenericObject[] }).unpaginatedDocs
         isLoading.value = false
 
         if (totalPages < pagination.value.pageIndex)

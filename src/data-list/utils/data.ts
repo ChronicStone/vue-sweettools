@@ -153,6 +153,7 @@ export async function remoteDataMapper(
   totalPages: number
   docs: any[]
   rawDocs: any[]
+  unpaginatedDocs: any[]
 }> {
   try {
     let output: GenericObject[] = []
@@ -312,6 +313,7 @@ export async function remoteDataMapper(
       }
     }
 
+    const unpaginatedDocs = output
     const totalDocs = output.length
     const totalPages = Math.ceil(totalDocs / limit)
 
@@ -320,13 +322,14 @@ export async function remoteDataMapper(
     const end = start + limit
     output = enablePagination ? output.slice(start, end) : output
 
-    return { totalDocs, totalPages, docs: output, rawDocs: rawOutput }
+    return { totalDocs, totalPages, docs: output, rawDocs: rawOutput, unpaginatedDocs }
   }
   catch (err) {
     console.error(err)
     return {
       rawDocs: [],
       docs: [],
+      unpaginatedDocs: [],
       totalPages: 0,
       totalDocs: 0,
     }

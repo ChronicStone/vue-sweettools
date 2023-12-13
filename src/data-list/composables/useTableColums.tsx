@@ -33,7 +33,6 @@ export function useTableColumns(params: {
   rowActions: ComputedRef<RowAction[]>
   expandable: ComputedRef<DataTableSchema['expandable']>
   expandedContent: ComputedRef<DataTableSchema['expandedContent']>
-  summary: ComputedRef<DataTableSchema['summary']>
 }) {
   const i18n = useTranslations()
   const columnConfig = ref(
@@ -276,34 +275,3 @@ export function sortCols(a: BaseColConf, b: BaseColConf) {
     return a.order - b.order
   return a.order - b.order
 }
-
-// type SumRow = { [key: string]: { value?: VNodeChild, fixed?: 'left' | 'right', colSpan?: number, rowSpan?: number } }
-
-// function mapSummaryCols(columns: Array<TDataTableColumn & { key: ColumnKey }>, summary: SummaryRowData | SummaryRowData[]): Array<SumRow> {
-//   const summaryArray = Array.isArray(summary) ? summary : [summary]
-//   const result: Array<SumRow> = []
-
-//   summaryArray.forEach((summaryRow) => {
-//     const mappedSummaryRow: SumRow = {}
-//     let skipCount = 0
-//     columns.forEach((column) => {
-//       if (skipCount > 0) {
-//         skipCount--
-//         return
-//       }
-
-//       if (summaryRow[column.key]) {
-//         mappedSummaryRow[column.key] = summaryRow[column.key]
-//         if (column.fixed)
-//           mappedSummaryRow[column.key].fixed = column.fixed
-//         if (summaryRow[column.key].colSpan)
-//           skipCount = (summaryRow?.[column.key]?.colSpan ?? 0) - 1
-//       }
-//       else { mappedSummaryRow[column.key] = { value: '' } }
-//     })
-
-//     result.push(mappedSummaryRow)
-//   })
-
-//   return result
-// }
