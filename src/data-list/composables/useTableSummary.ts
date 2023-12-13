@@ -16,9 +16,9 @@ export function useTableSummary(params: {
       .map((col, colIndex) => ({
         style: col.getAttribute('style') ?? '',
         width: col.getAttribute('style')?.match(/width: (\d+)px/)?.[1] ?? '',
-        column: flattenedColsDefWithGrp.value[colIndex],
+        column: flattenedColsDefWithGrp.value[colIndex] ?? {},
       }))
-      .filter(col => !('children' in col.column)),
+      .filter(col => !('children' in (col?.column ?? {}))),
   )
 
   const leftPinnedColMap = computed(() => {
@@ -26,7 +26,7 @@ export function useTableSummary(params: {
     const map = {} as Record<string, { start: number, end: number }>
 
     for (const colGroupItem of columnGroupDef.value) {
-      if ('key' in colGroupItem.column && colGroupItem.column.fixed === 'left') {
+      if ('key' in (colGroupItem.column) && colGroupItem.column.fixed === 'left') {
         const width = Number.parseInt(colGroupItem.width, 10)
         map[colGroupItem.column.key] = {
           start: currentX,
