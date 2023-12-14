@@ -100,6 +100,10 @@ function handleSelection(event: MouseEvent, value: boolean) {
     return
   emit('update:selected', value, event.shiftKey)
 }
+
+const buttonGridSize = computed(() => {
+  return !_actions.value.length && (expandedContent && (expandable.value ? expandable.value({ rowData: data.value }) : true)) ? 2 : 1
+})
 </script>
 
 <template>
@@ -136,7 +140,10 @@ function handleSelection(event: MouseEvent, value: boolean) {
         <!-- RIGHT CONTAINER -->
         <div
           v-if="expandedContent || _actions.length"
-          class="grid !md:flex grid-cols-2 items-center gap-2 w-full !md:(w-auto ml-auto)"
+          class="grid !md:flex items-center gap-2 w-full !md:(w-auto ml-auto)"
+          :style="{
+            gridTemplateColumns: `repeat(${buttonGridSize}, minmax(0, 1fr))`,
+          }"
         >
           <NDivider v-if="!isSmallScreen" vertical class="!m-0" />
           <NButton

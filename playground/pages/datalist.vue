@@ -67,9 +67,9 @@ const schema = buildListSchema({
   // image: ({ rowData }) => (
   //   <NAvatar round={false} size={80} src={rowData.avatar} />
   // ),
-  expandedContent: ({ rowData }) => (
-    <pre>{JSON.stringify(rowData, null, 4)}</pre>
-  ),
+  // expandedContent: ({ rowData }) => (
+  //   <pre>{JSON.stringify(rowData, null, 4)}</pre>
+  // ),
   // description: ({ rowData }) => (
   //   <div class="flex items-center gap-2">
   //     <NTag type="warning">ADMIN</NTag>
