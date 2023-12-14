@@ -38,8 +38,8 @@ export interface DataListSchema<
   rowIdKey?: KeyablePathKeys
   remote: Remote
   datasource: Source
-  content: (params: { rowData: TData; tableApi: DataApi }) => VNodeChild
-  expandedContent?: (params: { rowData: TData; tableApi: DataApi }) => VNodeChild
+  content: (params: { rowData: TData, tableApi: DataApi }) => VNodeChild
+  expandedContent?: (params: { rowData: TData, tableApi: DataApi }) => VNodeChild
   expandable?: (params: { rowData: TData }) => boolean
   optimizeQuery?: OptimizedQueryField<PathKeys>[]
   staticFilters?: StaticFilter[]
@@ -56,6 +56,7 @@ export interface DataListSchema<
   defaultPageSize?: number
   maxHeight?: false | string
   compact?: boolean
+  frameless?: boolean
 }
 
 export function buildListSchema<

@@ -23,7 +23,7 @@ const props = defineProps<{
   dropdownActions: ReturnType<typeof useDataActions>['value']
   filters: DynamicFilter[]
   sortOptions: DataSortOption<string>[]
-  sort: { key: string; dir: 'asc' | 'desc' | null } | null
+  sort: { key: string, dir: 'asc' | 'desc' | null } | null
   resolveGridData: () => any
   resetTableQuery: () => any
   showSelectAll?: boolean
@@ -35,7 +35,7 @@ const props = defineProps<{
 defineEmits<{
   (e: 'update:searchQuery', value: string): void
   (e: 'update:panelFilters', value: GenericObject): void
-  (e: 'update:sort', value: null | { key: string; dir: 'asc' | 'desc' }): void
+  (e: 'update:sort', value: null | { key: string, dir: 'asc' | 'desc' }): void
 }>()
 
 const { searchQuery, panelFilters, sort, selectAll, columnsConfig }
@@ -44,7 +44,7 @@ const { searchQuery, panelFilters, sort, selectAll, columnsConfig }
     searchQuery: string
     panelFilters: GenericObject
     columnsConfig?: RuntimeColsConfig
-    sort: { key: string; dir: 'asc' | 'desc' } | null
+    sort: { key: string, dir: 'asc' | 'desc' } | null
   }>()
 
 const i18n = useTranslations()
@@ -124,7 +124,7 @@ const showColsConfig = ref<boolean>(false)
         class="text-sm text-gray-500 font-light dark:text-gray-400 flex items-center gap-1"
       >
         <template v-if="showSelectAll">
-          <NCheckbox v-model:checked="selectAll" :indeterminate="!selectAll && !!selectedKeys?.length" size="small" />
+          <NCheckbox v-model:checked="selectAll" :indeterminate="!selectAll && !!selectedKeys?.length" />
           <NDivider vertical />
         </template>
         {{ i18n.t("datatable.selectedRows", { count: props.nbSelected }) }}

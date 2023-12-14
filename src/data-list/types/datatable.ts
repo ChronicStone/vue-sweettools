@@ -109,6 +109,7 @@ export interface DataTableSchema<
   defaultPageSize?: number
   maxHeight?: string
   compact?: boolean
+  frameless?: boolean
 }
 
 export type RuntimeColumnsConfig = z.infer<typeof RUNTIME_COLS_CONFIG_SCHEMA>

@@ -103,13 +103,9 @@ const schema = buildListSchema({
       </NuxtLink>
     </div>
     <div class="p-2 md:p-10">
-      <NCard :content-style="{ padding: '0.2em' }" class="p-4">
-        <DataList v-bind="schema" persistency="localStorage">
-          <h1 class="text-xl font-bold">
-            Users
-          </h1>
-        </DataList>
-      </NCard>
+      <DataList v-bind="schema" persistency="localStorage">
+        Users
+      </DataList>
     </div>
   </NEl>
 </template>

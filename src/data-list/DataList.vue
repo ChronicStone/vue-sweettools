@@ -25,6 +25,7 @@ const {
   selection,
   rowIdKey,
   compact,
+  frameless,
 } = withDefaults(definePropsRefs<DataListSchema>(), {
   listKey: () => 'DEFAULT_LIST',
   title: () => '',
@@ -38,6 +39,7 @@ const {
   selection: true,
   compact: false,
   rowActions: () => [],
+  frameless: false,
 })
 
 const scrollbarContainerRef = ref<InstanceType<typeof NScrollbar>>()
@@ -60,6 +62,7 @@ const resolver = useDataResolver({
   pagination: queryState.paginationState,
   allSelected: queryState.selectAll,
   data: queryState.data,
+  fullData: queryState.fullData,
   isLoading: queryState.isLoading,
   enablePagination: pagination.value,
   rowKey: rowIdKey.value,
@@ -91,13 +94,13 @@ watch(
   },
 )
 
-watch(
-  () => queryState.selectedKeys.value,
-  () =>
-    (queryState.selected.value = resolver.localDataStore.value.filter(d =>
-      queryState.selectedKeys.value.includes(d.__$ROW_ID__),
-    )),
-)
+// watch(
+//   () => queryState.selectedKeys.value,
+//   () =>
+//     (queryState.selected.value = resolver.localDataStore.value.filter(d =>
+//       queryState.selectedKeys.value.includes(d.__$ROW_ID__),
+//     )),
+// )
 function handleSelection(
   value: boolean,
   shiftKey: boolean,
@@ -144,33 +147,39 @@ function handleSelection(
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
-    <ListHeader
-      v-model:select-all="queryState.selectAll.value"
-      v-model:search-query="queryState.filterState.value.searchQuery"
-      v-model:panel-filters="queryState.filterState.value.panelFilters"
-      show-select-all
-      :sort="queryState.sortState.value"
-      :sort-options="sortOptions"
-      :filters="filters"
-      :dropdown-actions="mappedActions"
-      :nb-selected="queryState.nbSelected.value"
-      :enable-search-query="searchQuery.length > 0"
-      :resolve-grid-data="() => resolver.resolveGridData(true)"
-      :reset-table-query="() => queryState.resetTableQuery()"
-      :list-key="listKey"
-      :tooltip-show-delay="100"
-      :compact="compact"
-      :selected-keys="queryState.selectedKeys.value"
-      @update:sort="queryState.setSort"
-    >
-      <slot />
-    </ListHeader>
+  <CardContainer
+    content="list"
+    :frameless="frameless"
+    :compact="compact"
+  >
+    <template #header>
+      <ListHeader
+        v-model:select-all="queryState.selectAll.value"
+        v-model:search-query="queryState.filterState.value.searchQuery"
+        v-model:panel-filters="queryState.filterState.value.panelFilters"
+        show-select-all
+        :sort="queryState.sortState.value"
+        :sort-options="sortOptions"
+        :filters="filters"
+        :dropdown-actions="mappedActions"
+        :nb-selected="queryState.nbSelected.value"
+        :enable-search-query="searchQuery.length > 0"
+        :resolve-grid-data="() => resolver.resolveGridData(true)"
+        :reset-table-query="() => queryState.resetTableQuery()"
+        :list-key="listKey"
+        :tooltip-show-delay="100"
+        :compact="compact"
+        :selected-keys="queryState.selectedKeys.value"
+        @update:sort="queryState.setSort"
+      >
+        <slot />
+      </ListHeader>
+    </template>
 
     <div v-if="queryState.isLoading.value" class="flex flex-col gap-4">
       <NCard v-for="i in 10" :key="i">
         <div
-          class="flex flex-col md:flex-row gap-4 justify-between items-center"
+          class="flex flex-col !md:flex-row gap-4 justify-between items-center"
         >
           <div class="flex items-center gap-4">
             <NSkeleton :sharp="false" style="width: 80px; height: 80px" />
@@ -242,10 +251,12 @@ function handleSelection(
       </div>
     </NScrollbar>
 
-    <ListPagination
-      v-if="pagination"
-      v-model:pagination-state="queryState.paginationState.value"
-      :compact="compact"
-    />
-  </div>
+    <template #footer>
+      <ListPagination
+        v-if="pagination"
+        v-model:pagination-state="queryState.paginationState.value"
+        :compact="compact"
+      />
+    </template>
+  </CardContainer>
 </template>

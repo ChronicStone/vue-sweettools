@@ -10,6 +10,7 @@ declare module 'vue' {
     ActionsRenderer: typeof import('./src/form/components/Renderer/ActionsRenderer.vue')['default']
     ArrayListField: typeof import('./src/form/components/Field/ArrayListField.vue')['default']
     ArrayTabField: typeof import('./src/form/components/Field/ArrayTabField.vue')['default']
+    CardContainer: typeof import('./src/data-list/layout/CardContainer.vue')['default']
     CascaderField: typeof import('./src/form/components/Field/CascaderField.vue')['default']
     CheckboxField: typeof import('./src/form/components/Field/CheckboxField.vue')['default']
     CheckboxGroupField: typeof import('./src/form/components/Field/CheckboxGroupField.vue')['default']

@@ -53,7 +53,7 @@ const appliedFiltersCount = computed(
         value != null
         && value !== ''
         && ((Array.isArray(value) && (value as any)?.length > 0)
-          || !Array.isArray(value))
+        || !Array.isArray(value))
         && props.filtersSchema.some(filter => filter.key === key),
     ).length,
 )

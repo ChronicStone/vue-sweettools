@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { table } from 'node:console'
 import { withDefaults } from 'unplugin-vue-macros/macros' assert { type: 'macro' }
-import { NCard, NDataTable, useThemeVars } from 'naive-ui'
+import { NDataTable, useThemeVars } from 'naive-ui'
 import type { SortOrder } from 'naive-ui/es/data-table/src/interface'
 import { DndProvider } from 'vue3-dnd'
 import type { DataTableSchema } from './types/datatable'
@@ -30,6 +30,7 @@ const {
   pagination,
   compact,
   rowActions,
+  frameless,
 } = withDefaults(definePropsRefs<DataTableSchema>(), {
   tableKey: () => 'DEFAULT_LIST',
   filters: () => [],
@@ -44,6 +45,7 @@ const {
   rowActions: () => [],
   defaultPageSize: 50,
   compact: false,
+  frameless: false,
 })
 
 const dragDropBackend = useDndBackend()
@@ -207,10 +209,10 @@ onBeforeMount(() => {
 
 <template>
   <DndProvider :backend="dragDropBackend">
-    <NCard
-      content-style="padding: 0;"
-      :header-style="{ ...(compact ? { padding: '1em' } : {}) }"
-      :actions-style="{ ...(compact ? { padding: '0em' } : {}) }"
+    <CardContainer
+      content="table"
+      :frameless="frameless"
+      :compact="compact"
     >
       <template #header>
         <ListHeader
@@ -264,14 +266,14 @@ onBeforeMount(() => {
         />
       </div>
 
-      <template #action>
+      <template #footer>
         <ListPagination
           v-if="pagination"
           v-model:pagination-state="queryState.paginationState.value"
           :compact="compact"
         />
       </template>
-    </NCard>
+    </CardContainer>
 
     <Teleport v-if="tableElementExists && teleportActive" :to="`#${tableId} .n-data-table-base-table-body`">
       <div class="n-scrollbar-rail n-scrollbar-rail--horizontal" data-scrollbar-rail="true" aria-hidden="true" style="z-index: 3;">
