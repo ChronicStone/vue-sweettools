@@ -30,6 +30,7 @@ const props = defineProps<{
   compact: boolean
   resetColumnsConfig?: () => void
   selectedKeys?: (string | number)[]
+  enableSelection: boolean
 }>()
 
 defineEmits<{
@@ -121,6 +122,7 @@ const showColsConfig = ref<boolean>(false)
     <div class="flex flex-col gap-2">
       <div><slot /></div>
       <span
+        v-if="enableSelection"
         class="text-sm text-gray-500 font-light dark:text-gray-400 flex items-center gap-1"
       >
         <template v-if="showSelectAll">

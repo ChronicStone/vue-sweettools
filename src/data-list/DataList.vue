@@ -170,6 +170,7 @@ function handleSelection(
         :tooltip-show-delay="100"
         :compact="compact"
         :selected-keys="queryState.selectedKeys.value"
+        :enable-selection="selection"
         @update:sort="queryState.setSort"
       >
         <slot />
