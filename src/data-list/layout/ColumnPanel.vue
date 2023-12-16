@@ -47,7 +47,7 @@ const { columnsConfig, show } = defineModels<{
             size="small"
             @click="resetColumnsConfig()"
           >
-            {{ i18n.t("datatable.resetColumnsConfig") }}
+            {{ i18n.t("datatable.columnsConfigPanelResetButton") }}
           </NButton>
         </div>
       </template>

@@ -23,6 +23,10 @@ export const en: DeepRequired<SweettoolsLocaleTemplate> = {
     sortPanelTitle: 'Sort by',
     sortAsc: 'Sort ascending',
     sortDesc: 'Sort descending',
+    columnsConfigButtonTooltip: 'Columns configuration',
+    columnsConfigPanelTitle: 'Columns configuration',
+    columnsConfigPanelResetButton: 'Reset',
+
   },
   form: {
     layout: {

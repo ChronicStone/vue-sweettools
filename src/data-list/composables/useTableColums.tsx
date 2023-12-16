@@ -121,7 +121,7 @@ export function useTableColumns(params: {
     { deep: true },
   )
 
-  return { columnDefs, columnConfig, resetColumnsConfig }
+  return { columnDefs, columnConfig, hasActiveRowActions, resetColumnsConfig }
 }
 
 export function getFlatColumns(

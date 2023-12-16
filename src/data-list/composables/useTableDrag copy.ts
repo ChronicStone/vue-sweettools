@@ -36,18 +36,24 @@ export function useTableDrag(params: {
       const start = Math.min(oldIndex!, newIndex!)
       const range = Math.max(oldIndex!, newIndex!) - start + 1
       const changedRows = [...params.data.value].splice(start, range)
-      const targetRows = [...changedRows]
 
-      const draggedRow = changedRows.splice(oldIndex! - start, 1)[0]
-      changedRows.splice(newIndex! - start, 0, draggedRow)
+      const draggedRow = [...changedRows].splice(oldIndex! - start, 1)[0]
+      const updatedRows = [...changedRows].splice(newIndex! - start, 0, draggedRow)
       for (let index = start; index < start + range; index++)
-        params.data.value[index] = changedRows[index - start]
+        params.data.value[index] = updatedRows[index - start]
 
-      params.onRowDrag.value?.(unref([...changedRows]))
+      params.onRowDrag.value?.(unref([...updatedRows]))
 
-      const storeStartIndex = params.localStore.value.findIndex(row => row.__$ROW_ID__ === targetRows[0].__$ROW_ID__)
-      for (let index = 0; index < changedRows.length; index++)
-        params.localStore.value[storeStartIndex + index] = changedRows[index]
+      console.log('update::meta', {
+        changedRows,
+        updatedRows,
+        draggedRow,
+      })
+      const storeStartIndex = params.localStore.value.findIndex(row => row.__$ROW_ID__ === changedRows[0].__$ROW_ID__)
+      for (let index = 0; index < updatedRows.length; index++)
+        params.localStore.value[storeStartIndex + index] = updatedRows[index]
+
+      console.log('updated store', storeStartIndex, storeStartIndex + updatedRows.length, params.localStore.value)
     },
   })
 

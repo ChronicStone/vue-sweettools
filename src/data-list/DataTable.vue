@@ -146,6 +146,8 @@ useTableDrag({
   columnsDef: columnsState.columnDefs,
   sortState: queryState.sortState,
   localStore: resolver.localDataStore,
+  selection,
+  hasRowActions: columnsState.hasActiveRowActions,
 })
 
 function parseColumnKey(key: string) {
@@ -310,7 +312,7 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
     </Teleport>
 
     <Teleport v-if="tableElementExists && teleportActive && summaryRows.length" :to="`#${tableId} .n-data-table-wrapper`">
-      <div ref="summaryTableRef" class="overflow-hidden hide-scrollbar">
+      <div ref="summaryTableRef" class="!overflow-hidden hide-scrollbar">
         <table :style="{ tableLayout: 'fixed' }" class="border-collapse n-data-table-table">
           <colgroup>
             <col v-for="(group, index) in columnGroupDef" :key="index" :style="group.style">

@@ -78,6 +78,10 @@ export type SweettoolsLocaleTemplate = {
     noRowsToShow?: string
     sortAsc?: string
     sortDesc?: string
+    columnsConfigButtonTooltip: string
+    columnsConfigPanelTitle: string
+    columnsConfigPanelResetButton: string
+
   }
   excelImport?: {
     downloadReferenceFileButton?: string
