@@ -100,6 +100,8 @@ export interface DataTableSchema<
   rowActions?: RowAction<TData, PathKeys>[]
   selection?: boolean
   pagination?: boolean
+  draggable?: boolean
+  onRowDrag?: (rows: TData[]) => MaybePromise<any>
   sortOptions?: DataSortOption<PathKeys>[]
   searchQuery?: PathKeys[]
   staticFilters?: StaticFilter[]

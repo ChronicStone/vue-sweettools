@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { NEl } from 'naive-ui'
 import type { DataApi, DataResolverState, FullQueryState, RowAction } from '../types/shared'
 import type { DataTableColumn, DataTableColumnGroup, DataTableSchema, TDataTableColumn } from '../types/datatable'
 import RowActions from '../content/RowActions.vue'
@@ -34,6 +35,7 @@ export function useTableColumns(params: {
   rowActions: ComputedRef<RowAction[]>
   expandable: ComputedRef<DataTableSchema['expandable']>
   expandedContent: ComputedRef<DataTableSchema['expandedContent']>
+  draggable: ComputedRef<boolean>
 }) {
   const i18n = useTranslations()
   const columnConfig = ref(
@@ -48,6 +50,15 @@ export function useTableColumns(params: {
   const { rowsActions, hasActiveRowActions, maxRowActions } = useTableRowActions({ data: params.data, api: params.dataApi, actions: params.rowActions })
 
   const columnDefs = computed(() => [
+    ...(params.draggable.value
+      ? [
+          {
+            width: 40,
+            key: '#internal__dragHandle',
+            render: () => <NEl tag="span" class="iconify drag-handle cursor-grab hover:text-[var(--primary-color)] transition-all ease-in-out duration-100" data-icon="material-symbols:drag-handle-rounded" />,
+          },
+        ]
+      : []),
     ...(params.selection.value
       ? [{ type: 'selection' } satisfies TDataTableColumn]
       : []),

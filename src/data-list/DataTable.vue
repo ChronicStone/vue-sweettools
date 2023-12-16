@@ -4,6 +4,7 @@ import { withDefaults } from 'unplugin-vue-macros/macros' assert { type: 'macro'
 import { NDataTable, useThemeVars } from 'naive-ui'
 import type { SortOrder } from 'naive-ui/es/data-table/src/interface'
 import { DndProvider } from 'vue3-dnd'
+import type { HTMLAttributes } from 'vue'
 import type { DataTableSchema } from './types/datatable'
 
 const tableId = `TABLE_${Date.now()}`
@@ -31,6 +32,8 @@ const {
   compact,
   rowActions,
   frameless,
+  draggable,
+  onRowDrag,
 } = withDefaults(definePropsRefs<DataTableSchema>(), {
   tableKey: () => 'DEFAULT_LIST',
   filters: () => [],
@@ -46,6 +49,7 @@ const {
   defaultPageSize: 50,
   compact: false,
   frameless: false,
+  draggable: false,
 })
 
 const dragDropBackend = useDndBackend()
@@ -53,6 +57,7 @@ const tableWrapperRef = ref<HTMLElement>()
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const horizontalScrollbarHandleRef = ref<HTMLElement>()
 
+const tableBody = computed(() => tableRef.value?.$el?.querySelector('.v-vl') as HTMLElement)
 const tableInternalId = computed(() => (tableRef.value?.$el as HTMLElement)?.querySelector('thead')?.getAttribute('data-n-id') ?? '')
 
 const queryState = useQueryState({
@@ -102,6 +107,7 @@ const columnsState = useTableColumns({
   expandable,
   expandedContent,
   data: queryState.data,
+  draggable,
 })
 
 const {
@@ -129,6 +135,17 @@ const { summaryTableRef, columnGroupDef, summaryRows } = useTableSummary({
   queryState,
   columns: columnsState.columnDefs,
   scrollX,
+})
+
+useTableDrag({
+  draggable,
+  onRowDrag,
+  data: queryState.data,
+  tableRef,
+  columnsConfig: columnsState.columnConfig,
+  columnsDef: columnsState.columnDefs,
+  sortState: queryState.sortState,
+  localStore: resolver.localDataStore,
 })
 
 function parseColumnKey(key: string) {
@@ -205,9 +222,12 @@ onBeforeMount(() => {
     )
   }
 })
+
+const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
 </script>
 
 <template>
+  {{ tableBody }}
   <DndProvider :backend="dragDropBackend">
     <CardContainer
       content="table"
@@ -231,6 +251,7 @@ onBeforeMount(() => {
           :list-key="tableKey"
           :compact="compact"
           :reset-columns-config="columnsState.resetColumnsConfig"
+          :enable-selection="selection"
           @update:sort="(e) => {
             queryState.setSort(e)
             setInternalTableSort(e)
@@ -263,6 +284,11 @@ onBeforeMount(() => {
           }"
           :on-unstable-column-resize="updateScrollbarState"
           :on-update:checked-row-keys="updateCheckedRowKeys"
+          :row-props="(row, rowIndex) => ({
+            'data-row-index': rowIndex,
+            'data-row-id': row.__$ROW_ID__,
+            'class': isSelected(row.__$ROW_ID__) ? 'n-data-table-tr--selected' : '',
+          } as HTMLAttributes)"
         />
       </div>
 
@@ -380,5 +406,9 @@ onBeforeMount(() => {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
     overflow-x: auto;
+}
+
+.n-data-table-tr--selected > .n-data-table-td {
+  background: v-bind("themeVars.dividerColor") !important;
 }
 </style>

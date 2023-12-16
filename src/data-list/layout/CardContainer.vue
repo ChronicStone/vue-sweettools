@@ -20,6 +20,7 @@ const { frameless, compact, content } = definePropsRefs<{
     :content-style="{ padding: content === 'list' ? '1em' : 0 }"
     :header-style="{ ...(compact ? { padding: '1em' } : {}) }"
     :actions-style="{ ...(compact ? { padding: '0em' } : {}) }"
+    :segmented="content === 'list'"
   >
     <template #header>
       <slot name="header" />
@@ -27,7 +28,7 @@ const { frameless, compact, content } = definePropsRefs<{
 
     <slot />
 
-    <template #actions>
+    <template #action>
       <slot name="footer" />
     </template>
   </NCard>

@@ -25,6 +25,7 @@ const schema = buildTableSchema({
   tableKey: 'table1',
   persistency: 'localStorage',
   remote: false,
+  draggable: true,
   datasource: loadData,
   maxHeight: '75vh',
   staticFilters: [
