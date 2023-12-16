@@ -26,7 +26,7 @@ export function useTableDrag(params: {
     params.draggable.value,
   ].filter(item => item).length)
 
-  const { start } = useDraggable(tableBodyRef, ref([]), {
+  const { start: startDragRow, pause: pauseRowDrag, resume: resumeRowDrag } = useDraggable(tableBodyRef, ref([]), {
     immediate: false,
     animation: 150,
     handle: '.drag-handle',
@@ -98,11 +98,15 @@ export function useTableDrag(params: {
 
   watchOnce(() => tableBodyRef.value, (el) => {
     if (el && params.draggable.value)
-      start()
+      startDragRow()
+    if (params.sortState.value.key)
+      pauseRowDrag()
   })
 
   watchOnce(() => tableHeaderRef.value, (el) => {
     if (el && params.draggable.value)
       startColDrag()
   })
+
+  watch(() => params.sortState.value.key, hasSort => hasSort ? pauseRowDrag() : resumeRowDrag(), { immediate: true })
 }

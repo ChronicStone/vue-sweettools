@@ -107,6 +107,7 @@ const columnsState = useTableColumns({
   expandable,
   expandedContent,
   data: queryState.data,
+  sortState: queryState.sortState,
   draggable,
 })
 

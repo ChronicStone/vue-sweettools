@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { NEl } from 'naive-ui'
+import { NButton } from 'naive-ui'
 import type { DataApi, DataResolverState, FullQueryState, RowAction } from '../types/shared'
 import type { DataTableColumn, DataTableColumnGroup, DataTableSchema, TDataTableColumn } from '../types/datatable'
 import RowActions from '../content/RowActions.vue'
@@ -32,6 +32,7 @@ export function useTableColumns(params: {
   tableKey: ComputedRef<string>
   searchQuery: ComputedRef<string[]>
   data: FullQueryState['data']
+  sortState: FullQueryState['sortState']
   rowActions: ComputedRef<RowAction[]>
   expandable: ComputedRef<DataTableSchema['expandable']>
   expandedContent: ComputedRef<DataTableSchema['expandedContent']>
@@ -55,7 +56,12 @@ export function useTableColumns(params: {
           {
             width: 40,
             key: '#internal__dragHandle',
-            render: () => <NEl tag="span" class="iconify drag-handle cursor-grab hover:text-[var(--primary-color)] transition-all ease-in-out duration-100" data-icon="material-symbols:drag-handle-rounded" />,
+            render: () => (
+              <NButton text disabled={!!params.sortState.value.key} class={`drag-handle ${!params.sortState.value.key && 'cursor-move'}`}>
+                {{ icon: () => <span class="iconify" data-icon="material-symbols:drag-handle-rounded" /> }}
+              </NButton>
+            ),
+
           },
         ]
       : []),
