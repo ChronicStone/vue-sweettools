@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { definePropsRefs } from 'unplugin-vue-macros/macros'
-import { NList } from 'naive-ui'
+import { useDraggable } from 'vue-draggable-plus'
 import type { RuntimeColsConfig } from '../composables/useTableColums'
 import ColumnConfigGroup from './ColumnConfigGroup.vue'
 
@@ -19,10 +19,25 @@ function moveCard(dragIndex: number, hoverIndex: number) {
     column.order = index
   })
 }
+
+const listRef = ref<HTMLElement>()
+
+const { start } = useDraggable(listRef, columns, {
+  animation: 150,
+  handle: '.drag-handle',
+  filter: '[data-draggable="true"]',
+  onEnd: () => {
+    columns.value.forEach((_, index) => {
+      columns.value[index].order = index
+    })
+  },
+})
+
+onMounted(() => start(listRef.value))
 </script>
 
 <template>
-  <NList hoverable :style="{ paddingLeft: `${3 * (depth + 1)}px` }">
+  <div ref="listRef" hoverable :style="{ paddingLeft: `${3 * (depth + 1)}px` }">
     <ColumnConfigGroup
       v-for="(columnConfig, index) in columns"
       :key="columnConfig.key"
@@ -31,5 +46,5 @@ function moveCard(dragIndex: number, hoverIndex: number) {
       :depth="0"
       @update:order="moveCard"
     />
-  </NList>
+  </div>
 </template>

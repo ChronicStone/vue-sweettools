@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import { NDialogProvider, NMessageProvider } from 'naive-ui'
-import { DndProvider } from 'vue3-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { TouchBackend } from 'react-dnd-touch-backend'
 import type { FormInstance } from '@/form/types/instance'
 import type { Narrowable } from '@/_shared/types/utils'
 import type { FormInferredData, FormSchema } from '@/form/types/form'
-
-const isTouchDevice
-  = 'ontouchstart' in window
-  || navigator.maxTouchPoints > 0
-  || (navigator as any).msMaxTouchPoints > 0
 
 const formInstances = ref<FormInstance[]>([])
 const showModalOverlay = ref<boolean>(false)
@@ -71,38 +63,36 @@ function closeForm(id: string) {
 </script>
 
 <template>
-  <DndProvider :backend="isTouchDevice ? TouchBackend : HTML5Backend">
-    <NDialogProvider>
-      <NMessageProvider>
-        <slot />
+  <NDialogProvider>
+    <NMessageProvider>
+      <slot />
 
-        <div
-          v-if="formInstances.length"
-          id="sweetforms__overlay"
-          style="z-index: 1000"
-          class="fixed left-0 top-0 grid place-items-center w-full h-screen"
-        >
-          <FormRenderer
-            v-for="formInstance in formInstances"
-            :key="formInstance._id"
-            :schema="formInstance.formSchema"
-            :data="formInstance.formData"
-            :_resolve="formInstance._resolve"
-            :modal-mode="true"
-            @close-form="closeForm(formInstance._id)"
-          />
-        </div>
-        <div
-          v-show="showModalOverlay"
-          id="sweetforms__modalContainer"
-          ref="modalOverlayRef"
-          style="z-index: 2000"
-          class="absolute top-0 left-0 h-screen w-full"
-          @click="showModalOverlay = false"
+      <div
+        v-if="formInstances.length"
+        id="sweetforms__overlay"
+        style="z-index: 1000"
+        class="fixed left-0 top-0 grid place-items-center w-full h-screen"
+      >
+        <FormRenderer
+          v-for="formInstance in formInstances"
+          :key="formInstance._id"
+          :schema="formInstance.formSchema"
+          :data="formInstance.formData"
+          :_resolve="formInstance._resolve"
+          :modal-mode="true"
+          @close-form="closeForm(formInstance._id)"
         />
-      </NMessageProvider>
-    </NDialogProvider>
-  </DndProvider>
+      </div>
+      <div
+        v-show="showModalOverlay"
+        id="sweetforms__modalContainer"
+        ref="modalOverlayRef"
+        style="z-index: 2000"
+        class="absolute top-0 left-0 h-screen w-full"
+        @click="showModalOverlay = false"
+      />
+    </NMessageProvider>
+  </NDialogProvider>
 </template>
 
 <style>
