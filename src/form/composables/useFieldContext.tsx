@@ -268,21 +268,19 @@ export function useFieldContext(
           const optionValues = fieldOptions.map(option => option.value) ?? []
           if (Array.isArray(fieldState.value)) {
             setObjectProperty({
-              key: field.value.key,
+              key: fieldFullPath.value.join('.'),
               object: state.value,
-              scoped: true,
-              parentKey: parentKey.value,
-              value: fieldState.value.filter((item: any) =>
+              scoped: false,
+              value: fieldState.value.filter(item =>
                 optionValues.includes(item),
               ),
             })
           }
-          else if (!optionValues.includes(fieldState.value as string | number)) {
+          else if (!optionValues.includes(fieldState.value as string)) {
             setObjectProperty({
-              key: field.value.key,
+              key: fieldFullPath.value.join('.'),
               object: state.value,
-              scoped: true,
-              parentKey: parentKey.value,
+              scoped: false,
               value: null,
             })
           }

@@ -1,5 +1,12 @@
 import { defineFormSchemaSample } from '../utils'
 
+const options = {
+  active: ['Active', 'Inactive'],
+  descriptive: ['Descriptive', 'Non-descriptive'],
+  required: ['Required', 'Optional'],
+  disabled: ['Disabled', 'Enabled'],
+}
+
 const { sample, formData } = defineFormSchemaSample({
   title: 'Playground',
   data: {
@@ -15,16 +22,22 @@ const { sample, formData } = defineFormSchemaSample({
     fieldSize: 8,
     fields: [
       {
-        key: 'text',
-        type: 'text',
-        label: 'Text',
-      },
-      {
-        label: 'Text 2',
-        key: 'text2',
-        type: 'select',
-        dependencies: ['text'],
-        options: deps => !deps.text ? ['hello', 'hey', 'bruh'] : ['a', 'b', 'c'],
+        key: 'products',
+        type: 'array-list',
+        label: 'Products',
+        fields: [
+          {
+            key: 'type',
+            options: () => Object.keys(options),
+            type: 'select',
+          },
+          {
+            key: 'value',
+            type: 'select',
+            dependencies: [['$parent.type', 'type']],
+            options: deps => options[deps.type as keyof typeof options],
+          },
+        ],
       },
 
     ],
