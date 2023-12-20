@@ -5,6 +5,7 @@ const { sample, formData } = defineFormSchemaSample({
   data: {
     array: [
       {
+        id: 1,
         name: 'John',
       },
     ],
@@ -14,25 +15,18 @@ const { sample, formData } = defineFormSchemaSample({
     fieldSize: 8,
     fields: [
       {
-        label: 'test',
-        key: 'files',
-        type: 'upload',
-        output: 'object',
-        multiple: true,
-        uploadHandler: (options) => {
-          const file = options.file.file
-          if (!file)
-            return options.onError()
-
-          const fileDataUrl = URL.createObjectURL(file)
-          options.file.url = fileDataUrl
-          options.onFinish()
-        },
-        fieldParams: {
-          enableDragDrop: true,
-          listType: 'image',
-        },
+        key: 'text',
+        type: 'text',
+        label: 'Text',
       },
+      {
+        label: 'Text 2',
+        key: 'text2',
+        type: 'select',
+        dependencies: ['text'],
+        options: deps => !deps.text ? ['hello', 'hey', 'bruh'] : ['a', 'b', 'c'],
+      },
+
     ],
   },
 })

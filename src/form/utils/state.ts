@@ -1,4 +1,4 @@
-import type { FormField, ReadonlyFieldApi } from '../types/fields'
+import type { FieldApi, FormField } from '../types/fields'
 import { resolveFieldDependencies } from './dependencies'
 import type { GenericObject } from '@/_shared/types/utils'
 
@@ -15,6 +15,7 @@ function appendExtraProperties(
 }
 
 export function mapFieldsInitialState(
+  getFieldApi: (key: string, parentKey: string[]) => FieldApi,
   inputState: Record<string, unknown>,
   fields: Array<FormField & { _stepRoot?: string }> = [],
   parentKeys: string[] = [],
@@ -59,6 +60,7 @@ export function mapFieldsInitialState(
               )
               : {}),
             ...getNestedFieldOutput(
+              getFieldApi,
               'input',
               inputState,
               rootState,
@@ -83,6 +85,7 @@ export function mapFieldsInitialState(
           ? appendExtraProperties(field.fields, fieldValue)
           : {}),
         ...getNestedFieldOutput(
+          getFieldApi,
           'input',
           inputState,
           rootState,
@@ -112,6 +115,7 @@ export function mapFieldsInitialState(
 }
 
 export function mapFieldsOutputState(
+  getFieldApi: (key: string, parentKey: string[]) => FieldApi,
   inputState: Record<string, unknown>,
   fields: Array<FormField & { _stepRoot?: string }> = [],
   parentKeys: string[] = [],
@@ -132,9 +136,10 @@ export function mapFieldsOutputState(
       parentKeys,
     )
 
+    const fieldApi = getFieldApi(field.key, parentKeys)
     const includeField = !field.condition
       ? true
-      : field.condition(fieldDependencies, {} as ReadonlyFieldApi) || field?.conditionEffect !== 'hide'
+      : field.condition(fieldDependencies, fieldApi) || field?.conditionEffect !== 'hide'
 
     if (!includeField)
       continue
@@ -167,6 +172,7 @@ export function mapFieldsOutputState(
               )
               : {}),
             ...getNestedFieldOutput(
+              getFieldApi,
               'output',
               inputState,
               rootState,
@@ -191,6 +197,7 @@ export function mapFieldsOutputState(
           ? appendExtraProperties(field.fields, fieldValue)
           : {}),
         ...getNestedFieldOutput(
+          getFieldApi,
           'output',
           inputState,
           rootState,
@@ -233,6 +240,7 @@ function unwrapProxy(data: Record<string, unknown>) {
 }
 
 function getNestedFieldOutput(
+  getFieldApi: (key: string, parentKey: string[]) => FieldApi,
   mode: 'input' | 'output',
   inputState: Record<string, unknown>,
   rootState: Record<string, unknown>,
@@ -251,6 +259,7 @@ function getNestedFieldOutput(
   })
 
   return executor(
+    getFieldApi,
     fieldValue,
     field.fields,
     [

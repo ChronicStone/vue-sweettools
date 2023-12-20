@@ -11,14 +11,15 @@ const [useProvideFormState, _useFormState] = createInjectionState(
     formData: Record<string, unknown> | undefined,
   ) => {
     const formState = ref<{ [key: string]: any }>(
-      mapFieldsInitialState(formData ?? {}, fields.value),
+      mapFieldsInitialState(getFieldApi, formData ?? {}, fields.value),
     )
     const outputFormState = computed(() =>
-      mapFieldsOutputState({ ...formState.value }, fields.value),
+      mapFieldsOutputState(getFieldApi, { ...formState.value }, fields.value),
     )
 
     function reset(clear = false) {
       formState.value = mapFieldsInitialState(
+        getFieldApi,
         clear ? {} : formData ?? {},
         fields.value,
       )
