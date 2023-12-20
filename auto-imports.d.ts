@@ -222,7 +222,6 @@ declare global {
   const useDevicePixelRatio: typeof import('@vueuse/core')['useDevicePixelRatio']
   const useDevicesList: typeof import('@vueuse/core')['useDevicesList']
   const useDisplayMedia: typeof import('@vueuse/core')['useDisplayMedia']
-  const useDndBackend: typeof import('./src/_shared/composables/useDndBackend')['useDndBackend']
   const useDocumentVisibility: typeof import('@vueuse/core')['useDocumentVisibility']
   const useDraggable: typeof import('@vueuse/core')['useDraggable']
   const useDropZone: typeof import('@vueuse/core')['useDropZone']
@@ -334,6 +333,7 @@ declare global {
   const useSupported: typeof import('@vueuse/core')['useSupported']
   const useSwipe: typeof import('@vueuse/core')['useSwipe']
   const useTableColumns: typeof import('./src/data-list/composables/useTableColums')['useTableColumns']
+  const useTableDrag: typeof import('./src/data-list/composables/useTableDrag')['useTableDrag']
   const useTableRowActions: typeof import('./src/data-list/composables/useRowActions')['useTableRowActions']
   const useTableScroll: typeof import('./src/data-list/composables/useTableScroll')['useTableScroll']
   const useTableSroll: typeof import('./src/data-list/composables/useTableScroll')['useTableSroll']
@@ -611,7 +611,6 @@ declare module 'vue' {
     readonly useDevicePixelRatio: UnwrapRef<typeof import('@vueuse/core')['useDevicePixelRatio']>
     readonly useDevicesList: UnwrapRef<typeof import('@vueuse/core')['useDevicesList']>
     readonly useDisplayMedia: UnwrapRef<typeof import('@vueuse/core')['useDisplayMedia']>
-    readonly useDndBackend: UnwrapRef<typeof import('./src/_shared/composables/useDndBackend')['useDndBackend']>
     readonly useDocumentVisibility: UnwrapRef<typeof import('@vueuse/core')['useDocumentVisibility']>
     readonly useDraggable: UnwrapRef<typeof import('@vueuse/core')['useDraggable']>
     readonly useDropZone: UnwrapRef<typeof import('@vueuse/core')['useDropZone']>
@@ -722,6 +721,7 @@ declare module 'vue' {
     readonly useSupported: UnwrapRef<typeof import('@vueuse/core')['useSupported']>
     readonly useSwipe: UnwrapRef<typeof import('@vueuse/core')['useSwipe']>
     readonly useTableColumns: UnwrapRef<typeof import('./src/data-list/composables/useTableColums')['useTableColumns']>
+    readonly useTableDrag: UnwrapRef<typeof import('./src/data-list/composables/useTableDrag')['useTableDrag']>
     readonly useTableRowActions: UnwrapRef<typeof import('./src/data-list/composables/useRowActions')['useTableRowActions']>
     readonly useTableScroll: UnwrapRef<typeof import('./src/data-list/composables/useTableScroll')['useTableScroll']>
     readonly useTableSummary: UnwrapRef<typeof import('./src/data-list/composables/useTableSummary')['useTableSummary']>
@@ -991,7 +991,6 @@ declare module '@vue/runtime-core' {
     readonly useDevicePixelRatio: UnwrapRef<typeof import('@vueuse/core')['useDevicePixelRatio']>
     readonly useDevicesList: UnwrapRef<typeof import('@vueuse/core')['useDevicesList']>
     readonly useDisplayMedia: UnwrapRef<typeof import('@vueuse/core')['useDisplayMedia']>
-    readonly useDndBackend: UnwrapRef<typeof import('./src/_shared/composables/useDndBackend')['useDndBackend']>
     readonly useDocumentVisibility: UnwrapRef<typeof import('@vueuse/core')['useDocumentVisibility']>
     readonly useDraggable: UnwrapRef<typeof import('@vueuse/core')['useDraggable']>
     readonly useDropZone: UnwrapRef<typeof import('@vueuse/core')['useDropZone']>
@@ -1102,6 +1101,7 @@ declare module '@vue/runtime-core' {
     readonly useSupported: UnwrapRef<typeof import('@vueuse/core')['useSupported']>
     readonly useSwipe: UnwrapRef<typeof import('@vueuse/core')['useSwipe']>
     readonly useTableColumns: UnwrapRef<typeof import('./src/data-list/composables/useTableColums')['useTableColumns']>
+    readonly useTableDrag: UnwrapRef<typeof import('./src/data-list/composables/useTableDrag')['useTableDrag']>
     readonly useTableRowActions: UnwrapRef<typeof import('./src/data-list/composables/useRowActions')['useTableRowActions']>
     readonly useTableScroll: UnwrapRef<typeof import('./src/data-list/composables/useTableScroll')['useTableScroll']>
     readonly useTableSummary: UnwrapRef<typeof import('./src/data-list/composables/useTableSummary')['useTableSummary']>

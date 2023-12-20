@@ -4,6 +4,7 @@ import { withDefaults } from 'unplugin-vue-macros/macros' assert { type: 'macro'
 import { NDataTable, useThemeVars } from 'naive-ui'
 import type { SortOrder } from 'naive-ui/es/data-table/src/interface'
 import type { HTMLAttributes } from 'vue'
+import color from 'tinycolor2'
 import type { DataTableSchema } from './types/datatable'
 
 const tableId = `TABLE_${Date.now()}`
@@ -147,6 +148,14 @@ useTableDrag({
   selection,
   hasRowActions: columnsState.hasActiveRowActions,
 })
+
+const themeColors = computed(() => ({
+  rowSelected: color(themeVars.value.borderColor).darken(10).toString(),
+  rowFocus: {
+    backgroundColor: color(themeVars.value.primaryColor).setAlpha(0.1).toString(),
+    borderColor: color(themeVars.value.primaryColor).setAlpha(0.5).toString(),
+  },
+}))
 
 function parseColumnKey(key: string) {
   const output = key.split('__$COL_ID__').reverse()[0]
@@ -406,6 +415,18 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
 }
 
 .n-data-table-tr--selected > .n-data-table-td {
-  background: v-bind("themeVars.dividerColor") !important;
+  background: v-bind("themeColors.rowSelected") !important;
+}
+
+.n-data-table-td:focus-within {
+  background: v-bind("themeColors.rowFocus.backgroundColor") !important;
+  border-color: v-bind("themeColors.rowFocus.borderColor") !important;
+  border: 1px solid !important;
+}
+
+.n-data-table-td:hover {
+  background-color: v-bind("themeColors.rowFocus.backgroundColor") !important;
+  border-color: v-bind("themeColors.rowFocus.borderColor") !important;
+  border: 1px solid !important;
 }
 </style>

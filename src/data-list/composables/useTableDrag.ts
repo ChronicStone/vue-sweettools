@@ -1,5 +1,5 @@
 import type { NDataTable } from 'naive-ui'
-import type { Ref } from 'vue'
+import type { ComputedRef, Ref } from 'vue'
 import { useDraggable } from 'vue-draggable-plus'
 import type { FullQueryState } from '../types/shared'
 import type { DataTableSchema } from '../types/datatable'
@@ -104,7 +104,7 @@ export function useTableDrag(params: {
   })
 
   watchOnce(() => tableHeaderRef.value, (el) => {
-    if (el && params.draggable.value)
+    if (el)
       startColDrag()
   })
 

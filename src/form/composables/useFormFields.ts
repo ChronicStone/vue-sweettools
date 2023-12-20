@@ -17,14 +17,14 @@ const [useProvideFormFields, _useFormFields] = createInjectionState(
     const formFields = computed<FieldInstance[]>(() =>
       deepRemoveIgnoredFields(
         (formSchema.value as SimpleFormSchema)?.fields
-          ?? (formSchema.value as SteppedFormSchema).steps
-            .map((step, _stepIndex) => step.fields.map(field => ({
-              ...field,
-              _stepIndex,
-              ...(step.root ? { _stepRoot: step.root } : {}),
-            })),
-            )
-            .flat(),
+        ?? (formSchema.value as SteppedFormSchema).steps
+          .map((step, _stepIndex) => step.fields.map(field => ({
+            ...field,
+            _stepIndex,
+            ...(step.root ? { _stepRoot: step.root } : {}),
+          })),
+          )
+          .flat(),
       ),
     )
     const formSteps = ref<StepInstance[]>(

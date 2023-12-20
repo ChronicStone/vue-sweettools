@@ -1,5 +1,5 @@
 import type { z } from 'zod'
-import type { VNodeChild } from 'vue'
+import type { HTMLAttributes, VNodeChild } from 'vue'
 import type { EllipsisProps, DataTableColumn as NDataTableColumn } from 'naive-ui'
 import type {
   Action,
@@ -58,7 +58,7 @@ export type DataTableColumn<
   maxWidth?: number | string
   condition?: () => boolean
   fixed?: 'left' | 'right'
-  cellProps?: (rowData: TData, rowIndex: number) => object
+  cellProps?: (rowData: TData, rowIndex: number) => HTMLAttributes & { [key: `data-${string}`]: string }
   colSpan?: (rowData: object, rowIndex: number) => number
   rowSpan?: (rowData: object, rowIndex: number) => number
   labelRowSpan?: (rowData: object, rowIndex: number) => number
