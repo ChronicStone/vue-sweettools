@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { NavItem } from '@nuxt/content/dist/runtime/types'
+import type { Ref } from 'vue'
 
 const navigation = inject<Ref<NavItem[]>>('navigation')
 </script>

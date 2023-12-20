@@ -1,3 +1,4 @@
+import type { Ref } from 'vue'
 import type { FullQueryState } from '../types/shared'
 
 export function useTableSummary(params: {

@@ -417,16 +417,4 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
 .n-data-table-tr--selected > .n-data-table-td {
   background: v-bind("themeColors.rowSelected") !important;
 }
-
-.n-data-table-td:focus-within {
-  background: v-bind("themeColors.rowFocus.backgroundColor") !important;
-  border-color: v-bind("themeColors.rowFocus.borderColor") !important;
-  border: 1px solid !important;
-}
-
-.n-data-table-td:hover {
-  background-color: v-bind("themeColors.rowFocus.backgroundColor") !important;
-  border-color: v-bind("themeColors.rowFocus.borderColor") !important;
-  border: 1px solid !important;
-}
 </style>

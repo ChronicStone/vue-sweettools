@@ -56,15 +56,16 @@ export function useArrayField(
       )
       if (!variant)
         return
+
       fields = variant.fields
       value = {
-        ...mapFieldsInitialState({}, fields),
+        ...mapFieldsInitialState(getFieldApi, {}, fields),
         [field.value.variantKey]: formData.variant,
       }
     }
     else {
       fields = field.value.fields
-      value = mapFieldsInitialState({}, fields)
+      value = mapFieldsInitialState(getFieldApi, {}, fields)
     }
 
     if (!Array.isArray(fieldValue.value))

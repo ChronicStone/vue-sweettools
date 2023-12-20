@@ -85,7 +85,7 @@ export function useTableColumns(params: {
           sorter: false,
           // @ts-expect-error - Weird inference issue ??
           render: (rowData, rowIndex) => <RowActions actions={rowsActions.value?.[rowIndex]?.actions ?? []} row-data={rowData} api={params.dataApi} />,
-          width: 60 + maxRowActions.value * 20,
+          width: maxRowActions.value * 30 + (maxRowActions.value < 3 ? (90 - maxRowActions.value * 30) : 0) + 16,
         },
       ] satisfies TDataTableColumn[]
       : []),

@@ -51,12 +51,15 @@ const schema = buildTableSchema({
     { label: 'Address', key: 'address' },
   ],
   rowActions: [
-    { label: 'Test', icon: 'mdi:eye', condition: () => false },
-    { label: 'Test', icon: 'mdi:eye', condition: () => false },
-    { label: 'Test', icon: 'mdi:eye', condition: () => false },
-    { label: 'Test', icon: 'mdi:eye', condition: () => false },
-    { label: 'Test', icon: 'mdi:eye', condition: () => true },
-    { label: 'Test', icon: 'mdi:eye', condition: () => true },
+    {
+      label: 'Test',
+      icon: 'mdi:eye',
+    },
+    {
+      label: 'Test',
+      icon: 'mdi:eye',
+    },
+
     // { label: 'Test', icon: 'mdi:pen' },
 
   ],
@@ -64,9 +67,34 @@ const schema = buildTableSchema({
     {
       label: 'Test',
       icon: 'mdi:eye',
-      action: ({ selected }) => {
-        console.info('selected', selected)
-      },
+    },
+    {
+      label: 'Test',
+      icon: 'mdi:eye',
+    },
+    {
+      label: 'Test',
+      icon: 'mdi:eye',
+    },
+    {
+      label: 'Test',
+      icon: 'mdi:eye',
+    },
+    {
+      label: 'Test',
+      icon: 'mdi:eye',
+    },
+    {
+      label: 'Test',
+      icon: 'mdi:eye',
+    },
+    {
+      label: 'Test',
+      icon: 'mdi:eye',
+    },
+    {
+      label: 'Test',
+      icon: 'mdi:eye',
     },
   ],
 })

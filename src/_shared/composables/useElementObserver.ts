@@ -1,3 +1,5 @@
+import type { Ref } from 'vue'
+
 export default function useElementObserver(selector: string, elementRef: Ref<Element | undefined>) {
   const elementExists = ref(false)
 
