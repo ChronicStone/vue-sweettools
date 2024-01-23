@@ -5,12 +5,12 @@ import { NIcon } from 'naive-ui'
 import type { FormField } from '@/form/types/fields'
 
 export function renderVNode<T extends any[]>(r:
-| string
-| number
-| undefined
-| null
-| ((...args: [...T]) => VNodeChild)
-| unknown, ...args: [...T]): VNodeChild | JSX.Element {
+  | string
+  | number
+  | undefined
+  | null
+  | ((...args: [...T]) => VNodeChild)
+  | unknown, ...args: [...T]): VNodeChild {
   if (typeof r === 'function') {
     const node = r(...args)
     return typeof node === 'string' ? createTextVNode(node) : node
@@ -35,7 +35,7 @@ export function renderIcon(icon: string) {
     )
 }
 
-export function preRenderStringContent(content: string | VNodeChild | JSX.Element) {
+export function preRenderStringContent(content: string | VNodeChild) {
   return typeof content === 'string'
     ? () => <div v-html={content}></div>
     : content

@@ -14,7 +14,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
     getFieldApi: (key: string, parentKey: string[]) => FieldApi,
   ) => {
     const formRules = ref<GenericObject>({})
-    const $validator = useVuelidate(formRules, formState.value)
+    const $validator = useVuelidate(formRules, formState)
 
     const { i18n, required } = useLocalizedValidators()
 
@@ -138,7 +138,7 @@ const [useProvideFormValidation, _useFormValidation] = createInjectionState(
         if (
           typeof field._stepRoot === 'string'
             && field._stepRoot
-            && !parentKey.length
+          && !parentKey.length
         ) {
           if (
             !rules[field._stepRoot]

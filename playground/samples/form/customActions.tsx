@@ -1,4 +1,5 @@
 import { helpers, minLength } from '@vuelidate/validators'
+import { nextTick } from 'vue'
 import { defineFormSchemaSample } from '../utils'
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

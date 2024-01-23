@@ -17,15 +17,15 @@ function renderLabel(
   description: typeof props.description,
 ) {
   return renderVNode(
-    (description as { title: string; content: string })?.title ?? fieldLabel,
+    (description as { title: string, content: string })?.title ?? fieldLabel,
   )
 }
 
 function renderContent(description: typeof props.description) {
   return renderVNode(
     preRenderStringContent(
-      (description as { title: string; content: string })?.content
-        ?? description,
+      (description as { title: string, content: string })?.content
+      ?? description,
     ),
   )
 }

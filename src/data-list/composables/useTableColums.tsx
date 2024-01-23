@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { NButton } from 'naive-ui'
+import type { ComputedRef } from 'vue'
 import type { DataApi, DataResolverState, FullQueryState, RowAction } from '../types/shared'
 import type { DataTableColumn, DataTableColumnGroup, DataTableSchema, TDataTableColumn } from '../types/datatable'
 import RowActions from '../content/RowActions.vue'
