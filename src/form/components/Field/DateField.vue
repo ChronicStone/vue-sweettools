@@ -11,8 +11,8 @@ const field = computed(() => props.field as DateField)
 const { displayFormat, valueFormat } = useLocalizedDateFormat()
 
 const fieldValue = computed({
-  get: () => props.modelValue as FormattedValue | null | undefined,
-  set: value => emit('update:modelValue', value),
+  get: () => parseOutput(props.modelValue as FormattedValue | null | undefined),
+  set: value => emit('update:modelValue', parseInput(value)),
 })
 
 const value = ref<FormattedValue | null | undefined>(
@@ -35,13 +35,6 @@ function parseInput(value: any) {
     return val as FormattedValue
   }
   catch (err) {
-    console.info('failed parsing input', {
-      format:
-        props.context.rawInputProps.value?.format
-        ?? displayFormat.value[field.value.type],
-      value,
-      err,
-    })
     return null
   }
 }
@@ -64,33 +57,14 @@ function parseOutput(value: FormattedValue | null | undefined) {
     return _format(value)
   }
   catch (err) {
-    console.info('failed parsing output', {
-      format:
-        props.context.rawInputProps.value?.format
-        ?? props.context.rawInputProps.value?.valueFormat
-        ?? valueFormat.value[field.value.type],
-      value,
-      err,
-    })
     return value
   }
 }
-
-watch(
-  () => value.value,
-  v => (fieldValue.value = parseOutput(v)),
-  { immediate: true },
-)
-
-watch(
-  () => fieldValue.value,
-  v => v !== parseOutput(value.value) && (value.value = parseInput(v)),
-)
 </script>
 
 <template>
   <NDatePicker
-    v-model:formatted-value="value"
+    v-model:formatted-value="fieldValue"
     :style="group ? { width: `${size} !important` } : {}"
     :placeholder="context.placeholder.value"
     :type="field.type"
