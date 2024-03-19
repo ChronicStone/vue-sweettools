@@ -15,9 +15,8 @@ import type {
 import type { SelectBaseOption } from 'naive-ui/es/select/src/interface'
 import type { Component, VNode, VNodeChild } from 'vue'
 import type { MaskOptions } from 'maska'
-import type { MaybePromise } from 'rollup'
 import type { useFieldContext } from '../composables/useFieldContext'
-import type { Narrowable, Primitive } from '@/_shared/types/utils'
+import type { MaybePromise, Narrowable, Primitive } from '@/_shared/types/utils'
 
 export enum FieldTypes {
   TEXT = 'text',
@@ -214,7 +213,7 @@ export interface CascaderField {
 }
 
 export interface TextAreaFieldParams extends TextFieldProps {
-  autosize?: boolean | { minRows?: number, maxRows?: number }
+  autosize?: boolean | { minRows?: number; maxRows?: number }
   showCount?: boolean
 }
 
@@ -233,13 +232,13 @@ export interface TagFieldParams {
   tagStyle?: string | Record<string, Primitive>
   onCreate?:
   | ((label: string) => string)
-  | ((label: string) => { label: string, value: string })
+  | ((label: string) => { label: string; value: string })
   rounded?: boolean
   max?: number
   inputProps?: InputProps
   renderTag?:
   | ((tag: string, index: number) => VNodeChild)
-  | ((tag: { label: string, value: string }, index: number) => VNodeChild)
+  | ((tag: { label: string; value: string }, index: number) => VNodeChild)
 }
 
 export interface TagField {
@@ -498,12 +497,12 @@ export interface UploadField {
   multiple?: boolean
   output: 'object' | 'url'
   uploadHandler: (options: UploadCustomRequestOptions, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
-  beforeUpload?: (data: { file: UploadFileInfo, fileList: UploadFileInfo[] }, dependencies: Dependencies, api: FieldApi) => MaybePromise<boolean>
+  beforeUpload?: (data: { file: UploadFileInfo; fileList: UploadFileInfo[] }, dependencies: Dependencies, api: FieldApi) => MaybePromise<boolean>
   onFileDownload?: (file: UploadFileInfo, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
-  onFileDelete?: (data: { file: UploadFileInfo, fileList: UploadFileInfo[] }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
+  onFileDelete?: (data: { file: UploadFileInfo; fileList: UploadFileInfo[] }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
   onFilePreview?: (file: UploadFileInfo, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
-  onUploadFinish?: (data: { file: UploadFileInfo, event?: ProgressEvent }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
-  onUploadError?: (data: { file: UploadFileInfo, event?: ProgressEvent }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
+  onUploadFinish?: (data: { file: UploadFileInfo; event?: ProgressEvent }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
+  onUploadError?: (data: { file: UploadFileInfo; event?: ProgressEvent }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
   fieldParams?:
     | UploadFieldParams
     | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => UploadFieldParams)
@@ -657,7 +656,7 @@ export type FieldApi = {
     | CascaderOption
     | string
     | number = SelectOption | TreeSelectOption | CascaderOption,
-    O = T extends string | number ? { label: string, value: T } : T,
+    O = T extends string | number ? { label: string; value: T } : T,
   >(
     key?: string
   ): O[]
@@ -695,7 +694,7 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   validators?:
   | ((dependencies: Dependencies, api: ReadonlyFieldApi) => ValidationArgs)
   | ValidationArgs
-  watchOptions?: { deep?: boolean, immediate?: boolean }
+  watchOptions?: { deep?: boolean; immediate?: boolean }
   watch?: (value: any, params: FieldApi) => void
   onDependencyChange?: (dependencies: Dependencies, api: FieldApi) => void
   ignore?: boolean
