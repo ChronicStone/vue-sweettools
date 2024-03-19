@@ -125,7 +125,7 @@ defineExpose<FormRefInstance>({
       <component :is="renderVNode(schema.title)" v-else />
     </template>
 
-    <template v-if="isMultiStep" #stepper>
+    <template v-if="isMultiStep && libConfig.getProp('uiConfig.showStepper')" #stepper>
       <StepsRenderer :steps="formSteps" :current-step-index="currentStep" />
     </template>
 
