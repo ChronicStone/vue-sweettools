@@ -12,6 +12,7 @@ import Dts from 'vite-plugin-dts'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import VueMacros from 'unplugin-vue-macros/vite'
 import Checker from 'vite-plugin-checker'
+import { externalizeDeps } from 'vite-plugin-externalize-deps'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -58,6 +59,7 @@ export default defineConfig({
     Icons({ autoInstall: true }),
     Dts(),
     Checker({}),
+    externalizeDeps(),
   ],
   resolve: {
     alias: {
@@ -69,16 +71,6 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'VueSweetTools',
       fileName: format => `vue-sweettools.${format}.js`,
-    },
-    rollupOptions: {
-      external: ['vue', 'naive-ui', 'date-fns'],
-      output: {
-        globals: {
-          'vue': 'Vue',
-          'naive-ui': 'naive-ui',
-          'date-fns': 'date-fns',
-        },
-      },
     },
   },
 })

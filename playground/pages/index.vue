@@ -59,9 +59,6 @@ const schema = buildTableSchema({
       label: 'Test',
       icon: 'mdi:eye',
     },
-
-    // { label: 'Test', icon: 'mdi:pen' },
-
   ],
   actions: [
     {
