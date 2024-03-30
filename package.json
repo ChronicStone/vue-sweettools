@@ -32,7 +32,7 @@
     "vue": ">=3.3.0"
   },
   "dependencies": {
-    "@chronicstone/vue-testid": "0.1.0",
+    "@chronicstone/vue-testid": "0.1.1",
     "@formkit/auto-animate": "0.8.1",
     "@rushstack/eslint-patch": "1.5.1",
     "@types/tinycolor2": "1.4.6",

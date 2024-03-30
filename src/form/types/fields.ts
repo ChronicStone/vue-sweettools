@@ -737,7 +737,7 @@ export type FieldComponentProps = {
   field: FormField
   context: FieldContext
   parentDisabled: boolean
-  validator: Validation
+  validator?: Validation
   collapsed: boolean
   indent?: number
   parentKey: string[]

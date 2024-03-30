@@ -15,10 +15,6 @@ const fieldValue = computed({
   set: value => emit('update:modelValue', parseInput(value)),
 })
 
-const value = ref<FormattedValue | null | undefined>(
-  parseInput(fieldValue.value),
-)
-
 function parseInput(value: any) {
   try {
     const _format

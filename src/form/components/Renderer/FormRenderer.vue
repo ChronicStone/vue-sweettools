@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { NButton } from 'naive-ui'
 import type { MaybeRef } from 'vue'
+import { vTestid } from '@chronicstone/vue-testid'
 import type { FormSchema } from '@/form/types/form'
 import type { FieldInstance, FormRefInstance } from '@/form/types/instance'
 import { StepStatus } from '@/form/types/instance'
