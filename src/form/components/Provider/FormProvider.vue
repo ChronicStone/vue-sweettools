@@ -71,11 +71,11 @@ function closeForm(id: string) {
       <div
         v-if="formInstances.length"
         id="sweetforms__overlay"
-        style="z-index: 1000"
+        style="z-index: 5000"
         class="fixed left-0 top-0 grid place-items-center w-full h-screen"
       >
         <FormRenderer
-          v-for="formInstance in formInstances"
+          v-for="(formInstance) in formInstances"
           :key="formInstance._id"
           :schema="formInstance.formSchema"
           :data="formInstance.formData"
