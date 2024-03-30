@@ -1,7 +1,7 @@
 import type { MaybePromise } from 'rollup'
 import type { VNodeChild } from 'vue'
 import type { AppTypes } from '@/_shared/types/lib'
-import type { GenericObject } from '@/_shared/types/utils'
+import type { GenericObject, LooseString } from '@/_shared/types/utils'
 import type { FormField } from '@/form/types/fields'
 
 export type FilterMatchMode =
@@ -58,8 +58,8 @@ export type MatchModeCore = ({
   params: ObjectMapFilterParams
 })
 
-export type StaticFilter = {
-  key: string
+export type StaticFilter<KeyPaths extends string = string> = {
+  key: LooseString<KeyPaths>
   value: any
   required?: boolean
   postCondition?: boolean
@@ -155,13 +155,13 @@ export type DataApi<T = GenericObject, KeyPath = any> = {
 export type RowAction<T = GenericObject, KeyPath = any> = {
   icon: string | ((params: { rowData: T }) => string)
   label: string | ((params: { rowData: T }) => string)
-  action?: (params: { rowData: T, tableApi: DataApi<T, KeyPath> }) => void
+  action?: (params: { rowData: T; tableApi: DataApi<T, KeyPath> }) => void
   link?:
     | string
     | AppTypes['routeLocation']
     | ((params: { rowData: T }) => AppTypes['routeLocation'])
   permissions?: (AppTypes['permissionKey'] | AppTypes['permissionKey'][])[]
-  condition?: (params: { rowData: T, tableApi: DataApi<T> }) => boolean
+  condition?: (params: { rowData: T; tableApi: DataApi<T> }) => boolean
 }
 
 export type DataSortOption<KeyPaths = any> = {
@@ -171,7 +171,7 @@ export type DataSortOption<KeyPaths = any> = {
 
 export type DataDefaultSort<KeyPaths = any> =
   | KeyPaths
-  | { key: KeyPaths, dir: 'asc' | 'desc' }
+  | { key: KeyPaths; dir: 'asc' | 'desc' }
 
 export type DataQueryState = {
   sort: {

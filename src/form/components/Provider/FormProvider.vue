@@ -3,6 +3,7 @@ import { NDialogProvider, NMessageProvider } from 'naive-ui'
 import type { FormInstance } from '@/form/types/instance'
 import type { Narrowable } from '@/_shared/types/utils'
 import type { FormInferredData, FormSchema } from '@/form/types/form'
+import { FORM_INJECTION_KEY, MODAL_OVERLAY_INJECTION_KEY } from '@/_shared/config/injectionKeys'
 
 const formInstances = ref<FormInstance[]>([])
 const showModalOverlay = ref<boolean>(false)

@@ -13,15 +13,28 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import VueMacros from 'unplugin-vue-macros/vite'
 import Checker from 'vite-plugin-checker'
 import { externalizeDeps } from 'vite-plugin-externalize-deps'
+import VueRouter from 'unplugin-vue-router/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    // eslint-disable-next-line node/prefer-global/process
+    ...(process.env.NODE_ENV === 'development'
+      ? [VueRouter({
+          dts: './src/_play/typed-router.d.ts',
+          routesFolder: [
+            { src: './src/_play/pages' },
+          ],
+        })]
+      : []),
     VueMacros({
       plugins: {
         vue: Vue(),
         vueJsx: VueJsx(),
+
       },
+      defineProp: true,
+      definePropsRefs: true,
     }),
     UnoCSS(),
     AutoImports({
@@ -30,7 +43,6 @@ export default defineConfig({
         'vue-i18n',
         '@vueuse/core',
       ],
-      dts: 'auto-imports.d.ts',
       vueTemplate: true,
       dirs: [
         'src/_shared/composables',
@@ -72,5 +84,8 @@ export default defineConfig({
       name: 'VueSweetTools',
       fileName: format => `vue-sweettools.${format}.js`,
     },
+  },
+  optimizeDeps: {
+    exclude: ['fsevents', '@vue-macros/*', 'unplugin-vue-define-options/macros'],
   },
 })

@@ -169,7 +169,7 @@ function getRowKey(row: (typeof queryState)['data']['value'][number]) {
 }
 
 function handleSortChange(
-  value: { columnKey: string, order: SortOrder } | null,
+  value: { columnKey: string; order: SortOrder } | null,
 ) {
   queryState.setSort(
     !value || !value?.order
@@ -193,7 +193,7 @@ function setInternalTableSort(sort: {
 function updateCheckedRowKeys(
   keys: Array<string | number>,
   _: object[],
-  meta: { row: object | undefined, action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll' },
+  meta: { row: object | undefined; action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll' },
 ) {
   if (meta.action === 'checkAll' || meta.action === 'uncheckAll') {
     queryState.selectAll.value = meta.action === 'checkAll'

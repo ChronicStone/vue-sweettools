@@ -30,6 +30,6 @@ declare module '@chronicstone/vue-testid' {
     selector: string
     parentScope?: boolean
   } | string>
-  export declare const vTestid: Directive<HTMLElement, TestIdSelector>
+  export const vTestid: Directive<HTMLElement, TestIdSelector>
 
 }

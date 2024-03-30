@@ -70,6 +70,7 @@ function previousStep() {
     return false
   formSteps.value[currentStep.value - 1]._status = StepStatus.IN_PROGRESS
   currentStep.value = currentStep.value - 1
+  return true
 }
 
 function closeForm() {

@@ -1,29 +1,50 @@
 {
+  "vueCompilerOptions": {
+    "plugins": [
+      "@vue-macros/volar/define-options",
+      "@vue-macros/volar/define-models",
+      "@vue-macros/volar/define-props",
+      "@vue-macros/volar/define-props-refs",
+      "@vue-macros/volar/short-vmodel",
+      "@vue-macros/volar/define-slots",
+      "@vue-macros/volar/jsx-directive",
+      "@vue-macros/volar/setup-jsdoc"
+
+      // Choose only one of the following
+      // "@vue-macros/volar/export-expose",
+      // "@vue-macros/volar/export-props",
+      // "@vue-macros/volar/export-render",
+    ]
+    // ...
+  },
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "esnext",
     "jsx": "preserve",
     "jsxImportSource": "vue",
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "lib": ["esnext", "dom"],
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "rootDir": ".",
+    "module": "esnext",
+    "moduleResolution": "Bundler",
     "paths": {
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
-    "types": ["unplugin-vue-macros/macros-global", "vite/client", "./auto-imports.d.ts", "./components.d.ts", "node"],
-    "allowImportingTsExtensions": true,
+    "types": ["unplugin-vue-macros/macros-global", "vite/client", "./auto-imports.d.ts", "./components.d.ts", "node", "unplugin-vue-router/client"],
+    "allowJs": false,
     "strict": true,
-    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noEmit": true,
-    "isolatedModules": true,
-    "skipLibCheck": true
+    "outDir": "dist",
+    "removeComments": false,
+    "sourceMap": false,
+    "esModuleInterop": true,
+    "isolatedModules": false
   },
   "references": [
     {
@@ -34,6 +55,9 @@
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "src/_play/typed-router.d.ts",
+    "src/auto-imports.d.ts",
+    "src/components.d.ts"
   ]
 }

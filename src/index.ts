@@ -19,6 +19,7 @@ import { useLocalizedValidators } from './form/composables/useLocalizedValidator
 import ExcelReader from './excel-reader/components/ExcelReader.vue'
 import { buildExcelSchema } from './excel-reader/utils/schema'
 import { useExcelReader } from './excel-reader/composables/useExcelReader'
+import { PLUGIN_CONF_INJECTION_KEY } from './_shared/config/injectionKeys'
 
 export default {
   install: (app: App, config?: SweettoolsPluginConfig) => {
@@ -39,6 +40,7 @@ export type {
   AppTypes,
   RemoteDataSource,
   ActionParams,
+  SweettoolsPluginConfig,
 }
 
 export {

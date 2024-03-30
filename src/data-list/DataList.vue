@@ -3,6 +3,7 @@ import { withDefaults } from 'unplugin-vue-macros/macros' assert { type: 'macro'
 import { NCard, NEmpty, NScrollbar, NSkeleton } from 'naive-ui'
 import { vAutoAnimate } from '@formkit/auto-animate/vue'
 import type { DataListSchema } from './types/datalist'
+import Lazy from '@/_shared/components/Lazy.vue'
 
 const {
   expandedContent,
