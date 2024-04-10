@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { NDatePicker } from 'naive-ui'
-import type { FormattedValue } from 'naive-ui/es/date-picker/src/interface'
 import { format } from 'date-fns'
 import type { DateField, FieldComponentEmits, FieldComponentProps } from '@/form/types/fields'
 
@@ -11,15 +10,15 @@ const field = computed(() => props.field as DateField)
 const { displayFormat, valueFormat } = useLocalizedDateFormat()
 
 const fieldValue = computed({
-  get: () => parseOutput(props.modelValue as FormattedValue | null | undefined),
-  set: value => emit('update:modelValue', parseInput(value)),
+  get: () => formatDateToTimestamp(props.modelValue),
+  set: value => emit('update:modelValue', formatTimestampToDate(value)),
 })
 
-function parseInput(value: any) {
+function formatTimestampToDate(value: any) {
   try {
     const _format
       = (props.context.inputProps.value?.format as string)
-      ?? displayFormat.value[field.value.type]
+      ?? valueFormat.value[field.value.type]
     if (!value)
       return null
     const val = Array.isArray(value)
@@ -28,26 +27,21 @@ function parseInput(value: any) {
           format(new Date(value[1]), _format),
         ]
       : format(new Date(value), _format)
-    return val as FormattedValue
+    return val
   }
   catch (err) {
     return null
   }
 }
 
-function parseOutput(value: FormattedValue | null | undefined) {
+function formatDateToTimestamp(value: any) {
   try {
-    const _format = (value: string) =>
+    const _format = (value: number) =>
       !value
         ? null
-        : format(
-          new Date(value),
-          (props.context.rawInputProps.value?.valueFormat as string)
-              ?? (props.context.rawInputProps.value?.format as string)
-              ?? valueFormat.value[field.value.type],
-        )
+        : new Date(value).getTime()
     if (Array.isArray(value))
-      return [_format(value[0]), _format(value[1])] as FormattedValue
+      return [_format(value[0]), _format(value[1])]
     if (!value)
       return null
     return _format(value)
@@ -60,7 +54,7 @@ function parseOutput(value: FormattedValue | null | undefined) {
 
 <template>
   <NDatePicker
-    v-model:formatted-value="fieldValue"
+    v-model:value="fieldValue"
     :style="group ? { width: `${size} !important` } : {}"
     :placeholder="context.placeholder.value"
     :type="field.type"

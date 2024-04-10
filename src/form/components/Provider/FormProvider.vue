@@ -71,7 +71,7 @@ function closeForm(id: string) {
       <div
         v-if="formInstances.length"
         id="sweetforms__overlay"
-        style="z-index: 5000"
+        style="z-index: 1000"
         class="fixed left-0 top-0 grid place-items-center w-full h-screen"
       >
         <FormRenderer

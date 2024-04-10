@@ -9,11 +9,14 @@ import {
   useNotification,
 } from 'naive-ui'
 import { useElementSize } from '@vueuse/core'
+import { useRoute, useRouter } from 'vue-router/auto'
 import { formSamples } from '../samples/form'
 import { prettyPrintSchema } from '../samples/utils'
 import { useDarkMode } from '../composables/useDarkMode'
 import { type FormRefInstance, FormRenderer, useFormApi } from '@/index'
 
+const route = useRoute('/form')
+const router = useRouter()
 const formApi = useFormApi()
 const notif = useNotification()
 const formRef = ref<FormRefInstance>()
@@ -46,15 +49,17 @@ async function showModalForm(index: number) {
   })
 }
 
-const querySampleId = ref<string>('')
-//  useRouteQuery('sampleId')
+const querySampleId = ref<string>(route.query?.sampleId as string ?? '')
 const activeSampleId = ref<number>(
   querySampleId.value ? Number(querySampleId.value) : 0,
 )
 
 watch(
   () => activeSampleId.value,
-  val => (querySampleId.value = val.toString()),
+  (val) => {
+    router.replace({ query: { sampleId: val.toString() } })
+    querySampleId.value = val.toString()
+  },
 )
 
 const activeSample = computed(() => formSamples[activeSampleId.value].sample)

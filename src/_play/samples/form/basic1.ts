@@ -3,10 +3,7 @@ import { defineFormSchemaSample } from '../utils'
 const { sample, formData } = defineFormSchemaSample({
   title: 'Basic form - field types',
   description: 'This form shows all the available field types.',
-  data: {
-    datetime: Date.now(),
-    date: new Date().toDateString(),
-  },
+
   schema: {
     title: 'Basic form - field types',
     fullScreen: true,

@@ -34,23 +34,24 @@ function openForm() {
 
 const { sample, formData } = defineFormSchemaSample({
   title: 'Playground',
+  data: {
+    'date-test': new Date(),
+    'daterange-test': [new Date(), new Date().setDate(new Date().getDate() + 7)],
+  },
   schema: {
     gridSize: 8,
     fieldSize: 8,
     fullScreen: true,
     fields: [
       {
-        key: 'products',
-        type: 'info',
-        label: 'Products',
-        content: () => {
-          return (
-            <div onClick={() => openForm()}>
-              OPEN
-            </div>
-          )
-        },
-
+        key: 'date-test',
+        type: 'date',
+        label: 'Date',
+      },
+      {
+        key: 'daterange-test',
+        type: 'daterange',
+        label: 'Date Range',
       },
 
     ],

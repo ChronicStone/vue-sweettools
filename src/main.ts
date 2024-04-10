@@ -13,7 +13,23 @@ async function bootstrap() {
   const app = createApp(App)
 
   app.use(router)
-  app.use(SweettoolsPlugin)
+  app.use(SweettoolsPlugin, {
+    i18n: {
+      enable: true,
+      dateDisplayFormat: {
+        en: {
+          date: 'dd MMM yyyy',
+          time: 'HH:mm',
+          datetime: 'dd MMM yyyy HH:mm',
+          daterange: 'dd MMM yyyy',
+          datetimerange: 'dd MMM yyyy HH:mm',
+          month: 'MMM yyyy',
+          monthrange: 'MMM yyyy',
+          year: 'yyyy',
+        },
+      },
+    },
+  })
 
   await router.isReady()
   app.mount('#app')
