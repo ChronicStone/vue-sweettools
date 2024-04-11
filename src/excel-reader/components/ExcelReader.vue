@@ -13,7 +13,7 @@ import * as XLSX from 'xlsx'
 import type { IContent } from 'json-as-xlsx'
 import type { ImportSchema } from '../types/reader'
 
-const props = defineProps<{ schema: ImportSchema }>()
+const props = defineProps<ImportSchema>()
 const message = useMessage()
 const themeVars = useThemeVars()
 
@@ -40,7 +40,7 @@ function loadFileData(e: DragEvent | Event) {
     >[]
     rawData.value = [...results]
   }
-  reader.readAsArrayBuffer(file)
+  return reader.readAsArrayBuffer(file)
 }
 
 watch(
@@ -49,23 +49,11 @@ watch(
 )
 
 const _evalSchema = ref<boolean>(false)
-const _schema = computedAsync<ImportSchema<true>>(
-  () => {
-    return Promise.all(
-      props.schema.map(async field => ({
-        ...field,
-        validation: {
-          ...field.validation,
-          ...(typeof field.validation.enum !== 'undefined' && {
-            enum:
-              typeof field.validation.enum === 'function'
-                ? await field.validation.enum()
-                : field.validation.enum,
-          }),
-        } as ImportSchema<true>[number]['validation'],
-      })),
-    )
-  },
+const fieldOptions = computedAsync(
+  () => Promise.all(props.fields.map(async field => ({
+    key: field.key,
+    enum: field.enum ? typeof field.enum === 'function' ? await field.enum() : field.enum : [],
+  }))),
   [],
   _evalSchema,
 )
@@ -78,17 +66,20 @@ const {
   invalidRows,
   pagination,
   tableColumns,
-} = useImportManager(_schema)
+} = useImportManager({
+  fieldOptions,
+  fields: computed(() => props.fields),
+})
 
 function exportInvalidRows() {
   return exportExcel(
     invalidRows.value as IContent[],
-    props.schema.map(({ key }) => ({ label: key, value: key })),
+    props.fields.map(({ key }) => ({ label: key, value: key })),
   )
 }
 
 function downloadReferenceFile() {
-  return generateInportSchemaRefFile(props.schema)
+  return generateInportSchemaRefFile(props.fields)
 }
 
 defineExpose({
@@ -179,7 +170,7 @@ defineExpose({
             :columns="tableColumns"
             :data="filteredRows"
             :pagination="pagination"
-            :scroll-x="200 * Object.keys(_schema).length"
+            :scroll-x="200 * fields.length"
             table-layout="auto"
             :max-height="320"
           />

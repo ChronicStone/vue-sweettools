@@ -1,7 +1,7 @@
 {
   "name": "@chronicstone/vue-sweettools",
   "type": "module",
-  "version": "1.0.0-rc30",
+  "version": "1.0.0-rc31",
   "private": false,
   "exports": {
     ".": {

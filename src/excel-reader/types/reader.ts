@@ -1,7 +1,30 @@
 import type { ComputedRef, VNodeChild } from 'vue'
 import type { MaybePromise, Narrowable, RemoveNeverProps, UnionToIntersection } from '@/_shared/types/utils'
 
-export type ImportSchema<
+export type PrimitiveValue = string | boolean | number | null
+
+export type ImportSchemaField<FieldKey extends Narrowable = string> = {
+  key: FieldKey
+  transformKey?: string
+  label: string
+  ignoreOnReference?: boolean
+  multiple?: boolean
+  multipleSeparator?: string
+  required?: boolean
+  matchPattern?: RegExp
+  caseInsensitive?: boolean
+  enum?: (PrimitiveValue)[] | (() => MaybePromise<PrimitiveValue[]>)
+  format?: Array<'trim' | 'lowercase' | 'uppercase' | 'number' | 'date'>
+  transform?: (value: PrimitiveValue) => any
+  example: string
+  cellRenderer?: (value: string | string[], field: ImportSchemaField<FieldKey>) => VNodeChild
+}
+
+export type ImportSchema<FieldKey extends Narrowable = string> = {
+  fields: ImportSchemaField<FieldKey>[]
+}
+
+export type ImportSchema2<
   M extends boolean = false,
   FieldKey extends Narrowable = string,
 > = Array<{
@@ -10,7 +33,7 @@ export type ImportSchema<
   targetKey?: string
   cellRenderer?: (
     value: string | string[],
-    field: ImportSchema<true>[number]
+    field: ImportSchema2<true>[number]
   ) => VNodeChild
   multiple?: boolean
   multipleSeparator?: string
@@ -37,40 +60,57 @@ export interface ExportColumnsSchema {
   value: string | (() => string)
 }
 
-export type ImportInfoReturnType<T extends ImportSchema<any, any>[number]> =
+export type ImportInfoReturnType<T extends ImportSchema<any>['fields'][number]> =
   RemoveNeverProps<
     UnionToIntersection<
       | {
-        [K in T as K['validation']['required'] extends false
+        [K in T as K extends { required?: false }
           ? never
-          : K['targetKey'] extends string
-            ? K['targetKey']
-            : K['key']]: K['multiple'] extends true
+          : K extends { transformKey: string }
+            ? K['transformKey']
+            : K['key']]: K extends { multiple: true }
           ? Array<ResolveFieldType<K>>
           : ResolveFieldType<K>;
       }
       | {
-        [K in T as K['validation']['required'] extends true
+        [K in T as K extends { required: true }
           ? never
-          : K['targetKey'] extends string
-            ? K['targetKey']
-            : K['key']]?: K['multiple'] extends true
+          : K extends { transformKey: string }
+            ? K['transformKey']
+            : K['key']]?: K extends { multiple: true }
           ? Array<ResolveFieldType<K>>
           : ResolveFieldType<K>;
       }
     >
   >
 
-export type ResolveFieldType<T extends ImportSchema<any, any>[number]> =
-  T['format']['transform'] extends (value: any) => any
-    ? ReturnType<T['format']['transform']>
-    : T['format']['number'] extends true
-      ? number
-      : T['validation']['enum'] extends Array<any>
-        ? T['validation']['enum'][number]
-        : T['validation']['enum'] extends () => MaybePromise<Array<any>>
-          ? ReturnType<T['validation']['enum']>[number]
+export type ResolveFieldType<T extends ImportSchemaField<any>> =
+  T extends { transform: (value: any) => any }
+    ? ReturnType<T['transform']>
+    : T extends { enum: any }
+      ? ExtractEnumType<T['enum']>
+      : T extends { format: infer F }
+        ? F extends [...any, infer Type]
+          ? Type extends 'number'
+            ? number
+            : Type extends 'date'
+              ? Date
+              : string
           : string
+        : string
+
+export type ExtractEnumType<
+  T extends ImportSchemaField['enum'],
+  V = T extends Array<unknown>
+    ? T[number]
+    : T extends (...args: any) => Promise<Array<unknown>> | Array<unknown>
+      ? Awaited<ReturnType<T>>[number]
+      : string | number,
+> = V extends { value: unknown }
+  ? V['value']
+  : V extends { key: unknown }
+    ? V['key']
+    : V
 
 export type ExcelInstanceType = {
   invalidRows: ComputedRef<Record<string, unknown>[]>

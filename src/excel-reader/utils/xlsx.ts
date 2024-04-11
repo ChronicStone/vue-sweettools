@@ -1,6 +1,6 @@
 import type { IContent } from 'json-as-xlsx'
 import JsonToXlsx from 'json-as-xlsx'
-import type { ExportColumnsSchema, ImportSchema } from '../types/reader'
+import type { ExportColumnsSchema, ImportSchema, ImportSchemaField } from '../types/reader'
 
 export function exportExcel<T extends IContent>(
   data: T[],
@@ -18,22 +18,22 @@ export function exportExcel<T extends IContent>(
   JsonToXlsx(sheets, { fileName })
 }
 
-export function generateInportSchemaRefFile(schema: ImportSchema) {
+export function generateInportSchemaRefFile(fields: ImportSchemaField[]) {
   const getColumnsRef = () =>
-    schema
+    fields
       .map(field => ({ key: field.key, value: field }))
       .filter(({ value }) => !value.ignoreOnReference)
 
   const mapColumns = () =>
-    getColumnsRef().map(({ key, value: { validation } }) => ({
-      label: `${key} ${validation?.required ? '(*)' : ''}`,
+    getColumnsRef().map(({ key, value }) => ({
+      label: `${key} ${value?.required ? '(*)' : ''}`,
       value: key,
     }))
 
   const mapMinimalExample = () => {
     const row: Record<string, string> = {}
     getColumnsRef()
-      .filter(({ value }) => value?.validation?.required)
+      .filter(({ value }) => value?.required)
       .forEach(({ key, value: { example } }) => (row[key] = example))
     return row
   }
