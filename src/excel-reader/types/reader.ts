@@ -64,7 +64,8 @@ export type ImportInfoReturnType<T extends ImportSchema<any>['fields'][number]> 
   RemoveNeverProps<
     UnionToIntersection<
       | {
-        [K in T as K extends { required?: false }
+        // REQUIRED FALSE OR NOT DEFINED
+        [K in T as K extends { required: false } | { required: undefined }
           ? never
           : K extends { transformKey: string }
             ? K['transformKey']

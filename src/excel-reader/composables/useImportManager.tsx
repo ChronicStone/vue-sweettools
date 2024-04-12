@@ -75,6 +75,7 @@ export function useImportManager({ fields, fieldOptions }: ImportManagerParams) 
             field?.transformKey ?? (field.key as string),
             field,
             i18n,
+            fieldOptions.value,
           ),
           sorter: 'default',
         })),
@@ -219,12 +220,18 @@ function formatRow(_fields: ImportSchemaField[], row: Record<string, string>) {
 
     return {
       ...acc,
-      [field?.transformKey ?? field.key]: formatField(
+      [field?.transformKey ?? field.key]: transformField(formatField(
         _row[field.key],
         field.format,
-      ),
+      ), field.transform),
     }
   }, {} as GenericObject)
+
+  function transformField(value: PrimitiveValue, transform: ImportSchemaField['transform']) {
+    if (!transform)
+      return value
+    return transform(value)
+  }
 
   function formatField(
     value: string,
@@ -247,7 +254,7 @@ function formatRow(_fields: ImportSchemaField[], row: Record<string, string>) {
         updated = new Date(updated?.toString() ?? '')
     })
 
-    return updated
+    return updated as PrimitiveValue
   }
 }
 
@@ -264,12 +271,13 @@ export function getCellRenderer(
   key: string,
   field: ImportSchemaField,
   i18n: ReturnType<typeof useTranslations>,
+  fieldOptions: Array<{ key: string; enum: PrimitiveValue[] }>,
 ) {
   if (typeof field?.cellRenderer === 'function')
     return field.cellRenderer
   if (field?.multiple)
-    return multiCellRenderer(key, field, i18n)
-  else return defaultCellRenderer(key, field, i18n)
+    return multiCellRenderer(key, field, i18n, fieldOptions)
+  else return defaultCellRenderer(key, field, i18n, fieldOptions)
 }
 
 export function rowValidityRenderer(isValid: boolean) {
@@ -284,7 +292,7 @@ export function defaultCellRenderer(
   key: string,
   schema: ImportSchemaField,
   i18n: ReturnType<typeof useTranslations>,
-  fieldOptions: Array<{ key: string; enum: PrimitiveValue[] }> = [],
+  fieldOptions: Array<{ key: string; enum: PrimitiveValue[] }>,
 ) {
   return (row: Record<string, unknown>) => {
     const isFieldValid = validateField(row[key], schema, fieldOptions)
@@ -303,7 +311,7 @@ export function multiCellRenderer(
   key: string,
   schema: ImportSchemaField,
   i18n: ReturnType<typeof useTranslations>,
-  fieldOptions: Array<{ key: string; enum: PrimitiveValue[] }> = [],
+  fieldOptions: Array<{ key: string; enum: PrimitiveValue[] }>,
 ) {
   return (row: Record<string, Array<unknown>>) => {
     if (schema.required && !row[key]?.length)

@@ -1,12 +1,30 @@
 <script setup lang="ts">
 import { ExcelReader, buildExcelSchema, useExcelReader } from '@/index'
 
+async function getItems() {
+  return await Promise.resolve([
+    {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: '',
+      examDate: '2021-12-31',
+    },
+    {
+      firstName: 'Jane',
+      lastName: 'Doe',
+      email: '',
+      examDate: '2021-12-31',
+    },
+  ])
+}
+
 const schema = buildExcelSchema({
   fields: [
     {
       key: 'firstName',
       label: 'First Name',
       example: 'John',
+      enum: () => getItems().then(items => items.map(item => item.firstName)).catch(() => [] as string[]),
     },
     {
       key: 'lastName',
@@ -29,9 +47,6 @@ const schema = buildExcelSchema({
       label: 'Exam Date',
       example: '2021-12-31',
       format: ['number'],
-      transform: (value) => {
-        return new Date(value as string).toISOString().split('T')[0]
-      },
     },
     {
       key: 'examTime',
@@ -51,12 +66,28 @@ const schema = buildExcelSchema({
     {
       key: 'examLocation',
       label: 'Exam Location',
+      enum: ['Jakarta', 'Bandung', 'Surabaya'],
       example: 'Jakarta',
+      required: true,
     },
     {
       key: 'examStatus',
       label: 'Exam Status',
       example: 'Passed',
+      required: false,
+    },
+    {
+      key: 'testTransfo',
+      label: 'Test Transform',
+      required: true,
+      transform: (value) => {
+        const val = (value?.toString() ?? '').split('|').map(v => v.trim()).map((v) => {
+          const [key, value] = v.split(':')
+          return { key, value }
+        })
+        return JSON.stringify(val)
+      },
+      example: 'firstName:Cyp | lastName:THAO',
     },
   ],
 })

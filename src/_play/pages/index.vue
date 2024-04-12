@@ -1,6 +1,10 @@
 <script setup lang="tsx">
 import { NButton } from 'naive-ui'
 import { DataTable, booleanFilter, buildTableSchema, timeRangeFilter } from '@/index'
+import type { FilterBuilderProperty } from '@/data-list/utils/filters'
+import { propertyBuilderFilter } from '@/data-list/utils/filters'
+
+type TableRow = Awaited< ReturnType<typeof loadData>>[number]
 
 async function loadData() {
   await new Promise(resolve => setTimeout(resolve, 200))
@@ -14,9 +18,14 @@ async function loadData() {
     productLine: i === 0 ? [{ productLine: 'Adult', id: i }, { productLine: 'Children', id: i }] : [{ id: i }],
     date: new Date().toISOString(),
     balance: Math.floor(Math.random() * 1000),
+    scores: {
+      math: Math.floor(Math.random() * 100),
+      english: Math.floor(Math.random() * 100),
+      chinese: Math.floor(Math.random() * 100),
+      other: Math.floor(Math.random() * 100),
+    },
   }))
 
-  console.info('items', items)
   return items
 }
 
@@ -40,9 +49,40 @@ const schema = buildTableSchema({
     //   arrayLookup: 'OR',
     // },
   ],
-  filters: [booleanFilter({ key: 'active', label: 'Active' }), timeRangeFilter({ key: 'date', label: 'Date' })],
+  filters: [
+    booleanFilter({ key: 'active', label: 'Active' }),
+    timeRangeFilter({ key: 'date', label: 'Date' }),
+    propertyBuilderFilter({
+      key: 'scores',
+      operator: 'AND',
+      properties: [
+        ...(['math', 'english', 'chinese', 'other'] as const).map(subject => ({
+          key: subject,
+          label: subject,
+          field: {
+            type: 'slider',
+            fieldParams: {
+              min: 0,
+              max: 100,
+              step: 1,
+            },
+          },
+        }) satisfies FilterBuilderProperty),
+      ],
+    }),
+  ],
   searchQuery: ['name'],
   columns: [
+    ...((['math', 'english', 'chinese', 'other'] as const).map(subject => ({
+      label: subject,
+      key: `scores.${subject}` as const,
+      // MIN MAX AVG
+      summary: [
+        { value: (rows: TableRow[]) => `Min: ${Math.min(...rows.map(row => row.scores[subject]))}` },
+        { value: (rows: TableRow[]) => `Max: ${Math.max(...rows.map(row => row.scores[subject]))}` },
+        { value: (rows: TableRow[]) => `Avg: ${rows.reduce((acc, cur) => acc + cur.scores[subject], 0) / rows.length}` },
+      ],
+    }))),
     { label: 'ID', key: 'id', summary: [{ value: 'Total' }] },
     { label: 'Name', key: 'name', summary: [{ value: '21 233' }] },
     { label: 'Balance', key: 'balance', summary: [{ value: rows => rows.reduce((acc, cur) => acc + cur.balance, 0) }] },
