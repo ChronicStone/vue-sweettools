@@ -115,6 +115,7 @@ declare global {
   const pipeMergeObject: typeof import('./src/_shared/utils/object')['pipeMergeObject']
   const preRenderStringContent: typeof import('./src/_shared/utils/render')['preRenderStringContent']
   const preformatFieldDependencies: typeof import('./src/form/utils/dependencies')['preformatFieldDependencies']
+  const propertyBuilderFilter: typeof import('./src/data-list/utils/filters')['propertyBuilderFilter']
   const provide: typeof import('vue')['provide']
   const provideLocal: typeof import('@vueuse/core')['provideLocal']
   const reactify: typeof import('@vueuse/core')['reactify']
@@ -503,6 +504,7 @@ declare module 'vue' {
     readonly pipeMergeObject: UnwrapRef<typeof import('./src/_shared/utils/object')['pipeMergeObject']>
     readonly preRenderStringContent: UnwrapRef<typeof import('./src/_shared/utils/render')['preRenderStringContent']>
     readonly preformatFieldDependencies: UnwrapRef<typeof import('./src/form/utils/dependencies')['preformatFieldDependencies']>
+    readonly propertyBuilderFilter: UnwrapRef<typeof import('./src/data-list/utils/filters')['propertyBuilderFilter']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly provideLocal: UnwrapRef<typeof import('@vueuse/core')['provideLocal']>
     readonly reactify: UnwrapRef<typeof import('@vueuse/core')['reactify']>
@@ -884,6 +886,7 @@ declare module '@vue/runtime-core' {
     readonly pipeMergeObject: UnwrapRef<typeof import('./src/_shared/utils/object')['pipeMergeObject']>
     readonly preRenderStringContent: UnwrapRef<typeof import('./src/_shared/utils/render')['preRenderStringContent']>
     readonly preformatFieldDependencies: UnwrapRef<typeof import('./src/form/utils/dependencies')['preformatFieldDependencies']>
+    readonly propertyBuilderFilter: UnwrapRef<typeof import('./src/data-list/utils/filters')['propertyBuilderFilter']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly provideLocal: UnwrapRef<typeof import('@vueuse/core')['provideLocal']>
     readonly reactify: UnwrapRef<typeof import('@vueuse/core')['reactify']>

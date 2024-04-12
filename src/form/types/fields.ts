@@ -698,6 +698,7 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   watch?: (value: any, params: FieldApi) => void
   onDependencyChange?: (dependencies: Dependencies, api: FieldApi) => void
   ignore?: boolean
+  labelExtra?: () => VNodeChild
 }
 
 export type FormField<FieldKey extends Narrowable = string> =

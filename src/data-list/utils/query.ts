@@ -44,7 +44,7 @@ export function mapQueryFetchParams(
 
 function mapStaticFilters(filters: StaticFilter[]) {
   return filters.reduce(
-    (acc, { key, value, matchMode, required, params, postCondition, arrayLookup }) => ({
+    (acc, { key, value, matchMode, required, params, postCondition, arrayLookup, lookupAtRoot }) => ({
       ...acc,
       [key]: [
         ...(acc?.[key] ?? []),
@@ -55,6 +55,7 @@ function mapStaticFilters(filters: StaticFilter[]) {
           params: params ?? {} as any,
           postCondition,
           arrayLookup,
+          lookupAtRoot,
         },
       ],
     }),
@@ -84,6 +85,7 @@ export function mapTableFilters(
           value,
           postCondition: filter?.postCondition ?? false,
           arrayLookup: filter?.arrayLookup,
+          lookupAtRoot: filter?.lookupAtRoot,
         },
       ],
     }

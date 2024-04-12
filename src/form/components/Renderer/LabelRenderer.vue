@@ -21,7 +21,7 @@ const collapsible = computed<boolean>(
 </script>
 
 <template>
-  <div class="flex gap-2 items-center justify-left">
+  <div class="flex gap-2 items-center justify-between">
     <span
       v-if="field?.label"
       class="m-0 flex gap-2 justify-start items-center group cursor-pointer"
@@ -33,7 +33,7 @@ const collapsible = computed<boolean>(
           'array-tabs',
           'custom-component',
           'array-variant',
-        ].includes(field.type)
+        ].includes(field.type) && collapsible
           ? (collapsed = !collapsed)
           : null
       "
@@ -65,7 +65,7 @@ const collapsible = computed<boolean>(
             'array-tabs',
             'array-variant',
             'custom-component',
-          ].includes(field.type),
+          ].includes(field.type) && collapsible,
         }"
         :for="field.key"
       >
@@ -78,10 +78,13 @@ const collapsible = computed<boolean>(
       </label>
     </span>
 
-    <DescriptionPopup
-      v-if="field.description && (renderDescription ?? true)"
-      :description="field.description"
-      :field-label="field.label ?? ''"
-    />
+    <div class="flex items-center gap-1">
+      <component :is="renderVNode(props.field?.labelExtra)" v-if="field?.labelExtra" />
+      <DescriptionPopup
+        v-if="field.description && (renderDescription ?? true)"
+        :description="field.description"
+        :field-label="field.label ?? ''"
+      />
+    </div>
   </div>
 </template>

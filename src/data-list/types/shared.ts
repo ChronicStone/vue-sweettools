@@ -4,6 +4,8 @@ import type { AppTypes } from '@/_shared/types/lib'
 import type { GenericObject, LooseString } from '@/_shared/types/utils'
 import type { FormField } from '@/form/types/fields'
 
+export type Operator = 'AND' | 'OR' | (() => 'AND' | 'OR')
+
 export type FilterMatchMode =
   | 'contains'
   | 'between'
@@ -18,6 +20,7 @@ export type FilterMatchMode =
   | 'arrayLength'
   | 'objectMatch'
 
+export type NonObjectMatchMode = Exclude<FilterMatchMode, 'objectStringMap' | 'objectMatch'>
 export type ComparatorMatchMode = Extract<FilterMatchMode, 'between' | 'greaterThan' | 'greaterThanOrEqual' | 'lessThan' | 'lessThanOrEqual'>
 
 export type ComparatorParams = {
@@ -30,6 +33,7 @@ export type ObjectMapFilterParams = {
     key: string
     matchMode: Exclude<FilterMatchMode, 'objectStringMap' | 'objectMap'>
   }>
+  transformFilterValue?: (value: any) => any
 }
 
 export type ObjectStringMapFilterParams = {
@@ -55,7 +59,7 @@ export type MatchModeCore = ({
   params: ObjectStringMapFilterParams
 } | {
   matchMode: 'objectMatch'
-  params: ObjectMapFilterParams
+  params: ObjectMapFilterParams | ((value: any) => ObjectMapFilterParams)
 })
 
 export type StaticFilter<KeyPaths extends string = string> = {
@@ -63,8 +67,9 @@ export type StaticFilter<KeyPaths extends string = string> = {
   value: any
   required?: boolean
   postCondition?: boolean
-  arrayLookup?: 'AND' | 'OR'
+  arrayLookup?: Operator
   params?: Record<string, any>
+  lookupAtRoot?: boolean
 } & MatchModeCore
 
 export interface OptimizedQueryField<KeyPath = string> {
@@ -74,16 +79,18 @@ export interface OptimizedQueryField<KeyPath = string> {
 
 export type DynamicFilter = FormField & {
   matchMode?: FilterMatchMode
-  arrayLookup?: 'AND' | 'OR'
+  arrayLookup?: Operator
   postCondition?: boolean
   params?: Record<string, any>
+  lookupAtRoot?: boolean
 } & MatchModeCore
 
 export type MappedFilters = {
   value: any
   required?: boolean | undefined
   postCondition?: boolean
-  arrayLookup?: 'AND' | 'OR'
+  arrayLookup?: Operator
+  lookupAtRoot?: boolean
 } & MatchModeCore
 
 export type FetchParams = {
