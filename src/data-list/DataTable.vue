@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { table } from 'node:console'
 import { withDefaults } from 'unplugin-vue-macros/macros' assert { type: 'macro' }
 import { NDataTable, useThemeVars } from 'naive-ui'
 import type { SortOrder } from 'naive-ui/es/data-table/src/interface'
@@ -236,30 +235,18 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
 </script>
 
 <template>
-  <CardContainer
-    content="table"
-    :frameless="frameless"
-    :compact="compact"
-  >
+  <CardContainer content="card" :frameless="frameless" :compact="compact">
     <template #header>
       <ListHeader
         v-model:select-all="queryState.selectAll.value"
         v-model:search-query="queryState.filterState.value.searchQuery"
         v-model:panel-filters="queryState.filterState.value.panelFilters"
-        v-model:columns-config="columnsState.columnConfig.value"
-        :sort="queryState.sortState.value"
-        :sort-options="sortOptions"
-        :filters="filters"
-        :dropdown-actions="mappedActions"
-        :nb-selected="queryState.nbSelected.value"
-        :enable-search-query="searchQuery.length > 0"
+        v-model:columns-config="columnsState.columnConfig.value" :sort="queryState.sortState.value"
+        :sort-options="sortOptions" :filters="filters" :dropdown-actions="mappedActions"
+        :nb-selected="queryState.nbSelected.value" :enable-search-query="searchQuery.length > 0"
         :resolve-grid-data="() => resolver.resolveGridData(true)"
-        :reset-table-query="() => queryState.resetTableQuery()"
-        :list-key="tableKey"
-        :compact="compact"
-        :reset-columns-config="columnsState.resetColumnsConfig"
-        :enable-selection="selection"
-        @update:sort="(e) => {
+        :reset-table-query="() => queryState.resetTableQuery()" :list-key="tableKey" :compact="compact"
+        :reset-columns-config="columnsState.resetColumnsConfig" :enable-selection="selection" @update:sort="(e) => {
           queryState.setSort(e)
           setInternalTableSort(e)
         }"
@@ -270,27 +257,14 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
 
     <div ref="tableWrapperRef">
       <NDataTable
-        :id="tableId"
-        ref="tableRef"
-        :checked-row-keys="queryState.selectedKeys.value"
-        :columns="columnsState.columnDefs.value"
-        :loading="queryState.isLoading.value"
-        :data="queryState.data.value"
-        flex-height
-        :style="{ height: maxHeight }"
-        :row-key="getRowKey"
-        :size="compact ? 'small' : 'large'"
-        :theme-overrides="{ borderRadius: '0' }"
-        :on-update:sorter="handleSortChange"
-        virtual-scroll
-        :single-column="false"
-        :single-line="false"
-        :on-scroll="(e) => {
+        :id="tableId" ref="tableRef" :checked-row-keys="queryState.selectedKeys.value"
+        :columns="columnsState.columnDefs.value" :loading="queryState.isLoading.value" :data="queryState.data.value"
+        flex-height :style="{ height: maxHeight }" :row-key="getRowKey" :size="compact ? 'small' : 'large'"
+        :theme-overrides="{ borderRadius: '0' }" :on-update:sorter="handleSortChange" virtual-scroll
+        :single-column="false" :single-line="false" :on-scroll="(e) => {
           updateScrollbarState()
           persistScrollPosition(e)
-        }"
-        :on-unstable-column-resize="updateScrollbarState"
-        :on-update:checked-row-keys="updateCheckedRowKeys"
+        }" :on-unstable-column-resize="updateScrollbarState" :on-update:checked-row-keys="updateCheckedRowKeys"
         :row-props="(row, rowIndex) => ({
           'data-row-index': rowIndex,
           'data-row-id': row.__$ROW_ID__,
@@ -301,17 +275,22 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
 
     <template #footer>
       <ListPagination
-        v-if="pagination"
-        v-model:pagination-state="queryState.paginationState.value"
+        v-if="pagination" v-model:pagination-state="queryState.paginationState.value"
         :compact="compact"
       />
     </template>
   </CardContainer>
 
   <Teleport v-if="tableElementExists && teleportActive" :to="`#${tableId} .n-data-table-base-table-body`">
-    <div class="n-scrollbar-rail n-scrollbar-rail--horizontal" data-scrollbar-rail="true" aria-hidden="true" style="z-index: 3;">
+    <div
+      class="n-scrollbar-rail n-scrollbar-rail--horizontal" data-scrollbar-rail="true" aria-hidden="true"
+      style="z-index: 3;"
+    >
       <Transition name="fade">
-        <div v-if="(scrollbarVisible && xScrollable) || isDragScrolling" ref="horizontalScrollbarHandleRef" class="n-scrollbar-rail__scrollbar" :style="{ width: `${scrollbarWidth}px`, left: `${scrollbarOffset}px` }" />
+        <div
+          v-if="(scrollbarVisible && xScrollable) || isDragScrolling" ref="horizontalScrollbarHandleRef"
+          class="n-scrollbar-rail__scrollbar" :style="{ width: `${scrollbarWidth}px`, left: `${scrollbarOffset}px` }"
+        />
       </Transition>
     </div>
   </Teleport>
@@ -324,18 +303,13 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
         </colgroup>
         <thead :data-n-id="tableInternalId" class="!p-0 n-data-table-thead">
           <tr
-            v-for="(row, index) in summaryRows"
-            :key="index"
+            v-for="(row, index) in summaryRows" :key="index"
             :style="{ borderCollapse: 'collapse', borderSpacing: 0, borderTop: `1px solid ${themeVars.borderColor} !important` }"
             class="!p-0 n-data-table-tr"
           >
             <th
-              v-for="(cell, key) in row"
-              :key="key"
-              :colspan="cell?.colSpan ?? 1"
-              :rowspan="cell?.rowSpan ?? 1"
-              class="n-data-table-th !border-(spacing-0 collapse) !p-3 box-border py-2 font-semibold"
-              :class="{
+              v-for="(cell, key) in row" :key="key" :colspan="cell?.colSpan ?? 1" :rowspan="cell?.rowSpan ?? 1"
+              class="n-data-table-th !border-(spacing-0 collapse) !p-3 box-border py-2 font-semibold" :class="{
                 'n-data-table-th--fixed-left left-0': cell?.fixed === 'left',
                 'n-data-table-th--fixed-right right-0': cell?.fixed === 'right',
               }"
@@ -355,16 +329,20 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
 .n-data-table-th__ellipsis {
   width: 100% !important;
 }
-.fade-enter-active, .fade-leave-active {
+
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s;
 }
 
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 
 /* Define the ending state (leave) */
-.fade-enter-to, .fade-leave-from {
+.fade-enter-to,
+.fade-leave-from {
   opacity: 1;
 }
 
@@ -405,16 +383,18 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .hide-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-    overflow-x: auto;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  overflow-x: auto;
 }
 
-.n-data-table-tr--selected > .n-data-table-td {
+.n-data-table-tr--selected>.n-data-table-td {
   background: v-bind("themeColors.rowSelected") !important;
 }
 </style>

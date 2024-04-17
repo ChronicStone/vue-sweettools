@@ -1,8 +1,8 @@
 import type { VNodeChild } from 'vue'
 import { k } from 'node_modules/vite/dist/node/types.d-aGj9QkWt'
 import { NSelect } from 'naive-ui'
-import type { ComparatorMatchMode, DynamicFilter, MatchModeCore, NonObjectMatchMode } from '../types/shared'
-import type { CascaderField, CheckboxField, ColorPickerField, DateField, FormField, NumberField, PasswordField, RadioField, RatingField, SelectField, SliderField, SwitchField, TagField, TextAreaField, TextField, TimeField, TreeSelectField, _BaseField, _FieldOptions } from '@/form/types/fields'
+import type { ComparatorMatchMode, DynamicFilter, FilterBuilderParams, FilterBuilderRawValue, MatchModeCore, NonObjectMatchMode } from '../types/shared'
+import type { CascaderField, CheckboxField, ColorPickerField, DateField, Dependencies, FormField, NumberField, PasswordField, RadioField, RatingField, SelectField, SliderField, SwitchField, TagField, TextAreaField, TextField, TimeField, TreeSelectField, _BaseField, _FieldOptions } from '@/form/types/fields'
 
 export function textFilter({
   key,
@@ -97,47 +97,25 @@ export function timeRangeFilter({
   }
 }
 
-export type FilterBuilderProperty = {
-  label: string | (() => VNodeChild)
-  key: string
-  matchModes?: NonObjectMatchMode[]
-  field: Omit<_BaseField, 'key' | 'label'> & (
-    | TextField
-    | TextAreaField
-    | PasswordField
-    | SelectField
-    | NumberField
-    | ColorPickerField
-    | SliderField
-    | SwitchField
-    | RadioField
-    | CheckboxField
-    | TimeField
-    | DateField
-    | TreeSelectField
-    | CascaderField
-    | RatingField
-    | TagField
-  )
-}
+const matchModes = [
+  { label: 'Equals', value: 'equals' },
+  { label: 'Contains', value: 'contains' },
+  { label: 'Between', value: 'between' },
+  { label: 'Not Equals', value: 'notEquals' },
+  { label: 'Greater Than', value: 'greaterThan' },
+  { label: 'Greater Than or Equal', value: 'greaterThanOrEqual' },
+  { label: 'Less Than', value: 'lessThan' },
+  { label: 'Less Than or Equal', value: 'lessThanOrEqual' },
+  { label: 'Exists', value: 'exists' },
+  { label: 'Array Length', value: 'arrayLength' },
+] satisfies Array<{ label: string; value: NonObjectMatchMode }>
 
-type Params = {
-  key: string
-  lookupAtRoot?: boolean
-  operator: 'AND' | 'OR'
-  properties: Array<FilterBuilderProperty>
-}
-
-type RawFilterProperty = {
-  propertyName: string
-  matchMode: NonObjectMatchMode
-  value: any
-}
-
-export function propertyBuilderFilter(params: Params): DynamicFilter {
-  const operator = ref<'AND' | 'OR'>(params.operator)
+export function propertyBuilderFilter(params: FilterBuilderParams): DynamicFilter {
+  const operator = ref<'AND' | 'OR'>(params?.defaultOperator ?? 'AND')
+  const key = params?.key ?? generateUUID()
   return {
-    label: 'Property Builder',
+    key,
+    label: params.label,
     labelExtra: () => (
       <NSelect
         size="tiny"
@@ -147,20 +125,22 @@ export function propertyBuilderFilter(params: Params): DynamicFilter {
         onUpdate:value={val => operator.value = val}
       />
     ),
-    key: params.key,
     type: 'array-list',
     matchMode: 'objectMatch',
-    lookupAtRoot: params.lookupAtRoot,
+    lookupAtRoot: !params.key,
     arrayLookup: () => operator.value,
-    params: (rawValue: Array<RawFilterProperty>) => {
+    params: (rawValue: Array<FilterBuilderRawValue>) => {
       return {
         operator: 'AND',
         properties: rawValue.map(({ propertyName, matchMode }) => ({
           key: propertyName,
           matchMode,
         })),
-        transformFilterValue: (rawValue: Array<RawFilterProperty>) => {
-          return rawValue.map(({ value, propertyName }) => ({ [propertyName]: value }))
+        matchPropertyAtIndex: true,
+        transformFilterValue: (rawValue: Array<FilterBuilderRawValue>) => {
+          const transformedValue = rawValue.map(({ propertyName, matchMode, ...values }) => ({ [propertyName]: 'value' in values ? values.value : values[`value-${matchMode}`] }))
+          console.log('transformedValue', transformedValue)
+          return transformedValue
         },
       }
     },
@@ -177,22 +157,9 @@ export function propertyBuilderFilter(params: Params): DynamicFilter {
         key: 'matchMode',
         label: 'Match Mode',
         type: 'select',
-        condition: deps => deps.propertyName,
+        condition: deps => !!deps.propertyName,
         dependencies: [['$parent.propertyName', 'propertyName']],
         options: (deps) => {
-          const matchModes = [
-            { label: 'Equals', value: 'equals' },
-            { label: 'Contains', value: 'contains' },
-            { label: 'Between', value: 'between' },
-            { label: 'Not Equals', value: 'notEquals' },
-            { label: 'Greater Than', value: 'greaterThan' },
-            { label: 'Greater Than or Equal', value: 'greaterThanOrEqual' },
-            { label: 'Less Than', value: 'lessThan' },
-            { label: 'Less Than or Equal', value: 'lessThanOrEqual' },
-            { label: 'Exists', value: 'exists' },
-            { label: 'Array Length', value: 'arrayLength' },
-          ] satisfies Array<{ label: string; value: NonObjectMatchMode }>
-
           const property = params.properties.find(p => p.key === deps.propertyName)
           if (!property)
             return matchModes
@@ -200,13 +167,23 @@ export function propertyBuilderFilter(params: Params): DynamicFilter {
           return matchModes.filter(m => property.matchModes?.includes(m.value) ?? true)
         },
       },
-      ...params.properties.map(p => ({
-        key: 'value',
-        label: 'Value',
-        ...p.field,
-        dependencies: [['$parent.propertyName', 'propertyName', ['$parent.matchMode', 'matchMode']]],
-        condition: (deps: any) => deps.propertyName === p.key && deps?.matchMode,
-      }) as any),
+      ...params.properties.map(p => typeof p.field === 'function'
+        ? matchModes.map(m => ({
+          key: `value-${m.value}`,
+          label: 'Value',
+          ...(p.field as Function)(m.value),
+          dependencies: [['$parent.propertyName', 'propertyName'], ['$parent.matchMode', 'matchMode']],
+          condition: (deps: Dependencies) => {
+            return deps.propertyName === p.key && !!deps?.matchMode && deps.matchMode === m.value
+          },
+        }))
+        : {
+            key: 'value',
+            label: 'Value',
+            ...p.field,
+            dependencies: [['$parent.propertyName', 'propertyName'], ['$parent.matchMode', 'matchMode']],
+            condition: (deps: Dependencies) => deps.propertyName === p.key && !!deps?.matchMode,
+          } as any).flat(),
     ],
   }
 }

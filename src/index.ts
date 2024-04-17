@@ -9,9 +9,9 @@ import DataTable from './data-list/DataTable.vue'
 import FormRenderer from './form/components/Renderer/FormRenderer.vue'
 import FormProvider from './form/components/Provider/FormProvider.vue'
 import DataGrid from './data-grid/DataGrid.vue'
-import { booleanExistFilter, booleanFilter, selectFilter, textFilter, timeRangeFilter } from './data-list/utils/filters'
+import { booleanExistFilter, booleanFilter, propertyBuilderFilter, selectFilter, textFilter, timeRangeFilter } from './data-list/utils/filters'
 import { buildFieldSchema, buildFormSchema, buildMultiFieldSchema, useFormController } from './form/composables/useFormController'
-import { buildListSchema, buildTableSchema } from './data-list/composables/useSchemaBuilder'
+import { buildListSchema, buildTableSchema, defineFilterProperty } from './data-list/composables/useSchemaBuilder'
 import { useFormApi } from './form/composables/useFormApi'
 import { buildGridSchema } from './data-grid/schemaBuilder'
 import { renderVNode } from './_shared/utils/render'
@@ -67,4 +67,6 @@ export {
   buildGridSchema,
   renderVNode,
   useLocalizedValidators,
+  defineFilterProperty,
+  propertyBuilderFilter,
 }

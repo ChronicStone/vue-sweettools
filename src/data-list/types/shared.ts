@@ -2,7 +2,7 @@ import type { MaybePromise } from 'rollup'
 import type { VNodeChild } from 'vue'
 import type { AppTypes } from '@/_shared/types/lib'
 import type { GenericObject, LooseString } from '@/_shared/types/utils'
-import type { FormField } from '@/form/types/fields'
+import type { CascaderField, CheckboxField, ColorPickerField, DateField, FormField, NumberField, PasswordField, RadioField, RatingField, SelectField, SliderField, SwitchField, TagField, TextAreaField, TextField, TimeField, TreeSelectField, _BaseField } from '@/form/types/fields'
 
 export type Operator = 'AND' | 'OR' | (() => 'AND' | 'OR')
 
@@ -34,6 +34,7 @@ export type ObjectMapFilterParams = {
     matchMode: Exclude<FilterMatchMode, 'objectStringMap' | 'objectMap'>
   }>
   transformFilterValue?: (value: any) => any
+  matchPropertyAtIndex?: boolean
 }
 
 export type ObjectStringMapFilterParams = {
@@ -92,6 +93,45 @@ export type MappedFilters = {
   arrayLookup?: Operator
   lookupAtRoot?: boolean
 } & MatchModeCore
+
+export type FilterBuilderPropertyField = Omit<_BaseField, 'key' | 'label' | 'dependencies' | 'condition' | 'conditionEffect'> & (
+  | TextField
+  | TextAreaField
+  | PasswordField
+  | SelectField
+  | NumberField
+  | ColorPickerField
+  | SliderField
+  | SwitchField
+  | RadioField
+  | CheckboxField
+  | TimeField
+  | DateField
+  | TreeSelectField
+  | CascaderField
+  | RatingField
+  | TagField
+)
+
+export type FilterBuilderProperty = {
+  label: string | (() => VNodeChild)
+  key: string
+  matchModes?: NonObjectMatchMode[]
+  field: FilterBuilderPropertyField | ((matchMode: NonObjectMatchMode) => FilterBuilderPropertyField)
+}
+
+export type FilterBuilderParams = {
+  label: string | (() => VNodeChild)
+  key?: string
+  defaultOperator?: 'AND' | 'OR'
+  properties: Array<FilterBuilderProperty>
+}
+
+export type FilterBuilderRawValue = {
+  propertyName: string
+  matchMode: NonObjectMatchMode
+  value: any
+}
 
 export type FetchParams = {
   page: number

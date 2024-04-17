@@ -1,4 +1,3 @@
-import { helpers, minLength } from '@vuelidate/validators'
 import { defineFormSchemaSample } from '../utils'
 
 function generateUUID() {

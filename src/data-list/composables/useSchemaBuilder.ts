@@ -1,4 +1,4 @@
-import type { DataSource } from '../types/shared'
+import type { DataSource, FilterBuilderProperty } from '../types/shared'
 import type { DataListSchema } from '../types/datalist'
 import type { DataTableSchema } from '../types/datatable'
 import type { GenericObject } from '@/_shared/types/utils'
@@ -21,4 +21,8 @@ export function buildListSchema<
     boolean,
     DataSource<GenericObject, boolean>
   >
+}
+
+export function defineFilterProperty(params: FilterBuilderProperty) {
+  return params
 }
