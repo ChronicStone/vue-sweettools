@@ -87,8 +87,8 @@ type ResolveFormType<
           ? ExtractOptionsType<K['options']>[]
           : ExtractOptionsType<K['options']>
         : K['type'] extends 'checkbox'
-          ? P extends { uncheckedValue: unknown, checkedValue: unknown }
-          ? P['checkedValue'] | P['uncheckedValue']
+          ? P extends { uncheckedValue: unknown; checkedValue: unknown }
+            ? P['checkedValue'] | P['uncheckedValue']
             : boolean
           : K['type'] extends 'object' | 'group'
             ? K['fields'] extends infer U extends FormField<any>[]
@@ -107,9 +107,13 @@ type ResolveFormType<
                   ? Array<ExtractVariantType<K['variants'], K['variantKey']>>
                   : K['type'] extends 'daterange' | 'datetimerange' | 'monthrange'
                     ? [string, string]
-                    : K['type'] extends 'number' | 'slider'
+                    : K['type'] extends 'number' | 'range'
                       ? number
-                      : string
+                      : K['type'] extends 'slider'
+                        ? P extends { range: true } ? [number, number] : number
+                        : K['type'] extends 'tag'
+                          ? string[]
+                          : string
 
 export type ExtractVariantType<
   Variants extends ArrayVariantField<any>['variants'],

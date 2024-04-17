@@ -236,9 +236,9 @@ export interface TagFieldParams {
   rounded?: boolean
   max?: number
   inputProps?: InputProps
+  draggable?: boolean
   renderTag?:
-  | ((tag: string, index: number) => VNodeChild)
-  | ((tag: { label: string; value: string }, index: number) => VNodeChild)
+  (tag: string, index: number) => VNodeChild
 }
 
 export interface TagField {
@@ -337,7 +337,7 @@ export interface RatingField {
 export interface SliderFieldParams {
   min?: number
   max?: number
-  step?: number
+  step?: number | 'mark'
   range?: boolean
   reverse?: boolean
   enableTooltip?: boolean
