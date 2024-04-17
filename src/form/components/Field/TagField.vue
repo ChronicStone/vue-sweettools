@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { NDynamicTags, NTag } from 'naive-ui'
 import { useDraggable } from 'vue-draggable-plus'
-import type { FieldComponentEmits, FieldComponentProps } from '@/form/types/fields'
+import type { FieldComponentEmits, FieldComponentProps, TagFieldParams } from '@/form/types/fields'
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
@@ -14,11 +14,26 @@ function removeTag(index: number) {
   fieldValue.value?.splice(index, 1)
 }
 
-const draggable = computed(() => props.context.rawInputProps.value.draggable ?? false)
-const customTagRender = computed(() => props.context.inputProps.value.renderTag)
+const tagRawProps = computed(() => props.context.rawInputProps.value as TagFieldParams)
+
+const draggable = computed(() => tagRawProps.value.draggable ?? false)
+const customTagRender = computed(() => tagRawProps.value.renderTag)
 const renderTag = computed(() => (value: string, index: number) => {
   return (
-    <NTag closable onClose={() => removeTag(index)}>
+    <NTag
+      {
+        ...({
+          closable: typeof tagRawProps.value.deletable === 'function' ? tagRawProps.value.deletable(value, index) : tagRawProps.value.deletable ?? true,
+          onClose: () => removeTag(index),
+          type: typeof tagRawProps.value.type === 'function' ? tagRawProps.value.type(value, index) : tagRawProps.value.type,
+          size: typeof tagRawProps.value.size === 'function' ? tagRawProps.value.size(value, index) : tagRawProps.value.size,
+          bordered: typeof tagRawProps.value.bordered === 'function' ? tagRawProps.value.bordered(value, index) : tagRawProps.value.bordered,
+          round: typeof tagRawProps.value.round === 'function' ? tagRawProps.value.round(value, index) : tagRawProps.value.round,
+          color: typeof tagRawProps.value.color === 'function' ? tagRawProps.value.color(value, index) : tagRawProps.value.color,
+          style: typeof tagRawProps.value.tagStyle === 'function' ? tagRawProps.value.tagStyle(value, index) : tagRawProps.value.tagStyle,
+        })
+      }
+    >
       <div class="flex items-center gap-1">
         { draggable.value && <span class="iconify cursor-grab drag-handle" data-icon="material-symbols:drag-indicator" /> }
         { typeof customTagRender.value === 'function' ? customTagRender.value(value, index) : value }

@@ -7,6 +7,7 @@ import type {
   SelectOption,
   SelectRenderLabel,
   SelectRenderTag,
+  TagProps,
   TreeSelectOption,
   UploadCustomRequestOptions,
   UploadFileInfo,
@@ -226,14 +227,16 @@ export interface TextAreaField {
 }
 
 export interface TagFieldParams {
-  deletable?: boolean
-  type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error'
-  size?: 'small' | 'medium' | 'large'
-  tagStyle?: string | Record<string, Primitive>
+  deletable?: boolean | ((value: string, index: number) => boolean)
+  type?: TagProps['type'] | ((value: string, index: number) => TagProps['type'])
+  size?: TagProps['size'] | ((value: string, index: number) => TagProps['size'])
+  bordered?: boolean | ((value: string, index: number) => boolean)
+  round?: boolean | ((value: string, index: number) => boolean)
+  color?: TagProps['color'] | ((value: string, index: number) => TagProps['color'])
+  tagStyle?: string | Record<string, Primitive> | ((value: string, index: number) => string | Record<string, Primitive>)
   onCreate?:
   | ((label: string) => string)
   | ((label: string) => { label: string; value: string })
-  rounded?: boolean
   max?: number
   inputProps?: InputProps
   draggable?: boolean

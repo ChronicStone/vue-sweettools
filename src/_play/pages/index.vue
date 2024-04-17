@@ -1,14 +1,13 @@
 <script setup lang="tsx">
 import { NButton } from 'naive-ui'
 import { DataTable, booleanFilter, buildTableSchema, timeRangeFilter } from '@/index'
-import type { FilterBuilderProperty } from '@/data-list/utils/filters'
 import { propertyBuilderFilter } from '@/data-list/utils/filters'
 
 type TableRow = Awaited< ReturnType<typeof loadData>>[number]
 
 async function loadData() {
   await new Promise(resolve => setTimeout(resolve, 200))
-  const items = Array.from({ length: 1000 }, (_, i) => ({
+  const items = Array.from({ length: 1 }, (_, i) => ({
     id: i,
     name: `name ${i}`,
     age: Math.floor(Math.random() * 100),
@@ -53,21 +52,31 @@ const schema = buildTableSchema({
     booleanFilter({ key: 'active', label: 'Active' }),
     timeRangeFilter({ key: 'date', label: 'Date' }),
     propertyBuilderFilter({
+      label: 'Scores',
       key: 'scores',
-      operator: 'AND',
       properties: [
-        ...(['math', 'english', 'chinese', 'other'] as const).map(subject => ({
+        ...(['math', 'english', 'chinese', 'other']).map(subject => defineFilterProperty({
           key: subject,
           label: subject,
-          field: {
-            type: 'slider',
-            fieldParams: {
-              min: 0,
-              max: 100,
-              step: 1,
-            },
+          field: (matchMode) => {
+            return {
+              type: 'slider',
+              fieldParams: {
+                range: matchMode === 'between',
+                step: 1,
+                min: 0,
+                max: 100,
+              // formatTooltip: (value: number) => Object.values(marksDto.Enum)[value],
+              // marks: Object.keys(marksDto.Enum).reduce((acc, key, index) => {
+              //   acc[index] = key
+              //   return acc
+              // }, {} as Record<number, string>),
+              },
+              // transform: (value: number[]) => value.map(v => Object.values(marksDto.Enum)[v]),
+              default: matchMode === 'between' ? [0, 1] : 0,
+            }
           },
-        }) satisfies FilterBuilderProperty),
+        })),
       ],
     }),
   ],

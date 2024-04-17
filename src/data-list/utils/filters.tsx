@@ -137,11 +137,10 @@ export function propertyBuilderFilter(params: FilterBuilderParams): DynamicFilte
           matchMode,
         })),
         matchPropertyAtIndex: true,
-        transformFilterValue: (rawValue: Array<FilterBuilderRawValue>) => {
-          const transformedValue = rawValue.map(({ propertyName, matchMode, ...values }) => ({ [propertyName]: 'value' in values ? values.value : values[`value-${matchMode}`] }))
-          console.log('transformedValue', transformedValue)
-          return transformedValue
-        },
+        transformFilterValue: (rawValue: Array<FilterBuilderRawValue>) =>
+          rawValue.map(({ propertyName, matchMode, ...values }) => ({
+            [propertyName]: 'value' in values ? values.value : values[`value-${matchMode}`],
+          })),
       }
     },
     collapsible: false,

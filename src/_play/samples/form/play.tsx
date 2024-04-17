@@ -53,6 +53,9 @@ const { sample, formData } = defineFormSchemaSample({
         type: 'tag',
         fieldParams: {
           draggable: true,
+          type: (val, index) => index % 2 === 0 ? 'success' : 'warning',
+          size: (val, index) => index % 2 === 0 ? 'small' : 'medium',
+          round: (val, index) => index % 2 === 0,
         },
       },
       {
