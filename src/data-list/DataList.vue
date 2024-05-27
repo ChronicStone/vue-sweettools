@@ -27,6 +27,10 @@ const {
   rowIdKey,
   compact,
   frameless,
+  footerClass,
+  footerStyle,
+  headerClass,
+  headerStyle,
 } = withDefaults(definePropsRefs<DataListSchema>(), {
   listKey: () => 'DEFAULT_LIST',
   title: () => '',
@@ -172,6 +176,8 @@ function handleSelection(
         :compact="compact"
         :selected-keys="queryState.selectedKeys.value"
         :enable-selection="selection"
+        :header-class="headerClass"
+        :header-style="headerStyle"
         @update:sort="queryState.setSort"
       >
         <slot />
@@ -258,6 +264,8 @@ function handleSelection(
         v-if="pagination"
         v-model:pagination-state="queryState.paginationState.value"
         :compact="compact"
+        :footer-class="footerClass"
+        :footer-style="footerStyle"
       />
     </template>
   </CardContainer>

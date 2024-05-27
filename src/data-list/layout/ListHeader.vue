@@ -9,6 +9,7 @@ import {
   NPopover,
   NTooltip,
 } from 'naive-ui'
+import type { CSSProperties } from 'vue'
 import type { useDataActions } from '../composables/useDataActions'
 import type { RuntimeColsConfig } from '../composables/useTableColums'
 import type { DataSortOption, DynamicFilter } from '../types/shared'
@@ -23,7 +24,7 @@ const props = defineProps<{
   dropdownActions: ReturnType<typeof useDataActions>['value']
   filters: DynamicFilter[]
   sortOptions: DataSortOption<string>[]
-  sort: { key: string, dir: 'asc' | 'desc' | null } | null
+  sort: { key: string; dir: 'asc' | 'desc' | null } | null
   resolveGridData: () => any
   resetTableQuery: () => any
   showSelectAll?: boolean
@@ -31,12 +32,14 @@ const props = defineProps<{
   resetColumnsConfig?: () => void
   selectedKeys?: (string | number)[]
   enableSelection: boolean
+  headerStyle?: string | CSSProperties
+  headerClass?: string | Array<string | Record<string, boolean>>
 }>()
 
 defineEmits<{
   (e: 'update:searchQuery', value: string): void
   (e: 'update:panelFilters', value: GenericObject): void
-  (e: 'update:sort', value: null | { key: string, dir: 'asc' | 'desc' }): void
+  (e: 'update:sort', value: null | { key: string; dir: 'asc' | 'desc' }): void
 }>()
 
 const { searchQuery, panelFilters, sort, selectAll, columnsConfig }
@@ -45,7 +48,7 @@ const { searchQuery, panelFilters, sort, selectAll, columnsConfig }
     searchQuery: string
     panelFilters: GenericObject
     columnsConfig?: RuntimeColsConfig
-    sort: { key: string, dir: 'asc' | 'desc' } | null
+    sort: { key: string; dir: 'asc' | 'desc' } | null
   }>()
 
 const i18n = useTranslations()
@@ -118,6 +121,8 @@ const showColsConfig = ref<boolean>(false)
   />
   <div
     class="flex flex-col !lg:flex-row !lg:items-center !lg:justify-between w-full gap-4"
+    :class="headerClass"
+    :style="headerStyle"
   >
     <div class="flex flex-col gap-2">
       <div><slot /></div>

@@ -1,4 +1,4 @@
-import type { VNodeChild } from 'vue'
+import type { CSSProperties, VNodeChild } from 'vue'
 import type {
   Action,
   DataApi,
@@ -8,6 +8,7 @@ import type {
   DynamicFilter,
   OptimizedQueryField,
   RowAction,
+  SlotStyle,
   StaticFilter,
 } from './shared'
 import type {
@@ -34,12 +35,12 @@ export interface DataListSchema<
       : never,
   PathKeys = NestedPaths<TData>,
   KeyablePathKeys = NestedPathsForType<TData, string | number>,
-> {
+> extends SlotStyle {
   rowIdKey?: KeyablePathKeys
   remote: Remote
   datasource: Source
-  content: (params: { rowData: TData, tableApi: DataApi }) => VNodeChild
-  expandedContent?: (params: { rowData: TData, tableApi: DataApi }) => VNodeChild
+  content: (params: { rowData: TData; tableApi: DataApi }) => VNodeChild
+  expandedContent?: (params: { rowData: TData; tableApi: DataApi }) => VNodeChild
   expandable?: (params: { rowData: TData }) => boolean
   optimizeQuery?: OptimizedQueryField<PathKeys>[]
   staticFilters?: StaticFilter[]
