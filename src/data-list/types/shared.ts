@@ -1,7 +1,7 @@
 import type { MaybePromise } from 'rollup'
-import type { VNodeChild } from 'vue'
+import type { CSSProperties, VNodeChild } from 'vue'
 import type { AppTypes } from '@/_shared/types/lib'
-import type { GenericObject, LooseString } from '@/_shared/types/utils'
+import type { GenericObject, LooseString, NestedPaths, NestedPathsForType } from '@/_shared/types/utils'
 import type { CascaderField, CheckboxField, ColorPickerField, DateField, FormField, NumberField, PasswordField, RadioField, RatingField, SelectField, SliderField, SwitchField, TagField, TextAreaField, TextField, TimeField, TreeSelectField, _BaseField } from '@/form/types/fields'
 
 export type Operator = 'AND' | 'OR' | (() => 'AND' | 'OR')
@@ -94,7 +94,7 @@ export type MappedFilters = {
   lookupAtRoot?: boolean
 } & MatchModeCore
 
-export type FilterBuilderPropertyField = Omit<_BaseField, 'key' | 'label' | 'dependencies' | 'condition' | 'conditionEffect'> & (
+export type FilterBuilderPropertyField = Omit<_BaseField, 'key' | 'label'> & (
   | TextField
   | TextAreaField
   | PasswordField
@@ -117,6 +117,7 @@ export type FilterBuilderProperty = {
   label: string | (() => VNodeChild)
   key: string
   matchModes?: NonObjectMatchMode[]
+  metadataFields?: Array<FilterBuilderPropertyField & { matchMode?: NonObjectMatchMode }>
   field: FilterBuilderPropertyField | ((matchMode: NonObjectMatchMode) => FilterBuilderPropertyField)
 }
 
@@ -131,6 +132,7 @@ export type FilterBuilderRawValue = {
   propertyName: string
   matchMode: NonObjectMatchMode
   value: any
+  metadata?: Record<string, any>
 }
 
 export type FetchParams = {
@@ -155,11 +157,23 @@ export type DataSource<
     totalDocs: number
     totalPages: number
   }>
-  : () => MaybePromise<T[]>
+  : (params: FetchParams) => MaybePromise<T[]>
 
 export type RemoteDataSource<
   T extends GenericObject = GenericObject,
   > = DataSource<T, true>
+
+export type TableData<Source extends DataSource> = Source extends DataSource<infer T, true>
+  ? T
+  : Source extends DataSource<infer T, false>
+    ? T
+    : never
+
+export type InferTableParams<Source extends DataSource, Data extends TableData<Source> = TableData<Source>> = {
+  data: Data
+  keyPaths: NestedPaths<Data>
+  keyableKeyPaths: NestedPathsForType<Data, string | number>
+}
 
 export type ActionParams<
   T extends GenericObject = GenericObject,
@@ -241,3 +255,10 @@ export type DataQueryState = {
 
 export type FullQueryState = ReturnType<typeof useQueryState>
 export type DataResolverState = ReturnType<typeof useDataResolver>
+
+export type SlotStyle = {
+  headerStyle?: string | CSSProperties
+  headerClass?: string | Array<string | Record<string, boolean>>
+  footerStyle?: string | CSSProperties
+  footerClass?: string | Array<string | Record<string, boolean>>
+}

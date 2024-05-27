@@ -8,15 +8,15 @@ import type {
   DataSortOption,
   DataSource,
   DynamicFilter,
+  InferTableParams,
   OptimizedQueryField,
   RowAction,
+  SlotStyle,
   StaticFilter,
 } from './shared'
 import type {
   GenericObject,
   MaybePromise,
-  NestedPaths,
-  NestedPathsForType,
 } from '@/_shared/types/utils'
 
 export type TDataTableColumn = NDataTableColumn & { summary?: ColumnSummary[] }
@@ -33,8 +33,7 @@ export type DataTableColumnGroup<
   Data extends GenericObject = GenericObject,
   KeyPaths extends string = string,
 > = {
-  // eslint-disable-next-line ts/ban-types
-  key: KeyPaths | (string & {})
+  key: KeyPaths
   label: string | (() => VNodeChild)
   condition?: () => boolean
   children: Array<
@@ -74,39 +73,28 @@ export interface DataTableSchema<
     GenericObject,
     Remote
   >,
-  TData extends GenericObject = Source extends (
-    ...args: any[]
-  ) => MaybePromise<{
-    docs: Array<infer T extends GenericObject>
-  }>
-    ? T
-    : Source extends () => MaybePromise<Array<infer T extends GenericObject>>
-      ? T
-      : never,
-  PathKeys extends string = NestedPaths<TData>,
-  KeyablePathKeys extends string = NestedPathsForType<TData, string | number>,
-> {
-  rowIdKey?: KeyablePathKeys
+  Params extends InferTableParams<Source> = InferTableParams<Source>,
+> extends SlotStyle {
+  rowIdKey?: Params['keyPaths']
   tableKey: string
   remote: Remote
   datasource: Source
-  columns: Array<
-    DataTableColumn<TData, PathKeys> | DataTableColumnGroup<TData, PathKeys>
-  >
-  expandable?: (params: { rowData: TData, tableApi: DataApi }) => boolean
-  expandedContent?: (params: { rowData: TData, tableApi: DataApi }) => VNodeChild
-  optimizeQuery?: OptimizedQueryField<PathKeys>[]
-  actions?: Action<TData, PathKeys>[]
-  rowActions?: RowAction<TData, PathKeys>[]
+  columns: Array<DataTableColumn<Params['data'], Params['keyPaths']> | DataTableColumnGroup<Params['data'], Params['keyPaths']>>
+  searchQuery?: Params['keyPaths'][]
+
+  expandable?: (params: { rowData: Params['data']; tableApi: DataApi<Params['data'], Params['keyPaths']> }) => boolean
+  expandedContent?: (params: { rowData: Params['data']; tableApi: DataApi<Params['data'], Params['keyPaths']> }) => VNodeChild
+  optimizeQuery?: OptimizedQueryField<Params['keyPaths']>[]
+  actions?: Action<Params['data'], Params['keyPaths']>[]
+  rowActions?: RowAction<Params['data'], Params['keyPaths']>[]
   selection?: boolean
   pagination?: boolean
   draggable?: boolean
-  onRowDrag?: (rows: TData[]) => MaybePromise<any>
-  sortOptions?: DataSortOption<PathKeys>[]
-  searchQuery?: PathKeys[]
+  onRowDrag?: (rows: Params['data']) => MaybePromise<any>
+  sortOptions?: DataSortOption<Params['keyPaths']>[]
   staticFilters?: StaticFilter[]
   filters?: DynamicFilter[]
-  defaultSort?: DataDefaultSort<PathKeys>
+  defaultSort?: DataDefaultSort<Params['keyPaths']>
   persistency?: false | 'localStorage' | 'sessionStorage'
   defaultPageSize?: number
   maxHeight?: string

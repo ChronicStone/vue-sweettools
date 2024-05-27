@@ -1,4 +1,4 @@
-import type { DataSource, FilterBuilderProperty } from '../types/shared'
+import type { DataSource, FilterBuilderProperty, InferTableParams } from '../types/shared'
 import type { DataListSchema } from '../types/datalist'
 import type { DataTableSchema } from '../types/datatable'
 import type { GenericObject } from '@/_shared/types/utils'
@@ -6,7 +6,8 @@ import type { GenericObject } from '@/_shared/types/utils'
 export function buildTableSchema<
   Remote extends boolean,
   Source extends DataSource<GenericObject, Remote>,
->(schema: DataTableSchema<Remote, Source>) {
+  Params extends InferTableParams<Source>,
+>(schema: DataTableSchema<Remote, Source, Params>) {
   return schema as unknown as DataTableSchema<
     boolean,
     DataSource<GenericObject, boolean>
