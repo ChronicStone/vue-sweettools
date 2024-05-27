@@ -29,7 +29,7 @@ function loadFileData(e: DragEvent | Event) {
   if (!['xls', 'xlsx'].includes(fileExtension))
     return message.error('Only excel files are supported')
   const reader = new FileReader()
-  reader.onload = (e) => {
+  reader.onload = async (e) => {
     const data = (e.target as any).result
     const workbook = XLSX.read(data, { type: 'array' })
     const firstSheetName = workbook.SheetNames[0]
@@ -38,7 +38,13 @@ function loadFileData(e: DragEvent | Event) {
       string,
       string
     >[]
-    rawData.value = [...results]
+    if (typeof props.onData === 'function') {
+      const processed = await props.onData(results)
+      rawData.value = [...Array.isArray(processed) ? processed : results] as Array<{ [key: string]: string }>
+    }
+    else {
+      rawData.value = results
+    }
   }
   return reader.readAsArrayBuffer(file)
 }
@@ -79,7 +85,7 @@ function exportInvalidRows() {
 }
 
 function downloadReferenceFile() {
-  return generateInportSchemaRefFile(props.fields)
+  return generateInportSchemaRefFile(props.fields, fieldOptions.value)
 }
 
 defineExpose({
