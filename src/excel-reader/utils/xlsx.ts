@@ -1,6 +1,6 @@
 import type { IContent } from 'json-as-xlsx'
 import JsonToXlsx from 'json-as-xlsx'
-import type { ExportColumnsSchema, ImportSchema, ImportSchemaField } from '../types/reader'
+import type { ExportColumnsSchema, ImportSchemaField, PrimitiveValue } from '../types/reader'
 
 export function exportExcel<T extends IContent>(
   data: T[],
@@ -18,7 +18,8 @@ export function exportExcel<T extends IContent>(
   JsonToXlsx(sheets, { fileName })
 }
 
-export function generateInportSchemaRefFile(fields: ImportSchemaField[]) {
+export function generateInportSchemaRefFile(fields: ImportSchemaField[], fieldOptions: Array<{ key: string; enum: PrimitiveValue[] }>,
+) {
   const getColumnsRef = () =>
     fields
       .map(field => ({ key: field.key, value: field }))
@@ -31,17 +32,17 @@ export function generateInportSchemaRefFile(fields: ImportSchemaField[]) {
     }))
 
   const mapMinimalExample = () => {
-    const row: Record<string, string> = {}
+    const row: Record<string, PrimitiveValue> = {}
     getColumnsRef()
       .filter(({ value }) => value?.required)
-      .forEach(({ key, value: { example } }) => (row[key] = example))
+      .forEach(({ key, value: { example } }) => (row[key] = (example ?? fieldOptions.find(f => f.key === key)?.enum?.[0]) ?? ''))
     return row
   }
 
   const mapFullExample = () => {
-    const row: Record<string, string> = {}
+    const row: Record<string, PrimitiveValue> = {}
     getColumnsRef().forEach(
-      ({ key, value: { example } }) => (row[key] = example),
+      ({ key, value: { example } }) => (row[key] = (example ?? fieldOptions.find(f => f.key === key)?.enum?.[0]) ?? ''),
     )
     return row
   }

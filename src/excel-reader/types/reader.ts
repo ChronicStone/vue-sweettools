@@ -16,44 +16,18 @@ export type ImportSchemaField<FieldKey extends Narrowable = string> = {
   enum?: (PrimitiveValue)[] | (() => MaybePromise<PrimitiveValue[]>)
   format?: Array<'trim' | 'lowercase' | 'uppercase' | 'number' | 'date'>
   transform?: (value: PrimitiveValue) => any
-  example: string
   cellRenderer?: (value: string | string[], field: ImportSchemaField<FieldKey>) => VNodeChild
-}
+} & ({
+  enum: (PrimitiveValue)[] | (() => MaybePromise<PrimitiveValue[]>)
+  example?: PrimitiveValue
+} | {
+  example: PrimitiveValue
+})
 
 export type ImportSchema<FieldKey extends Narrowable = string> = {
   fields: ImportSchemaField<FieldKey>[]
+  onData?: (data: Record<string, unknown>[]) => MaybePromise<void | Record<string, unknown>[]>
 }
-
-export type ImportSchema2<
-  M extends boolean = false,
-  FieldKey extends Narrowable = string,
-> = Array<{
-  key: FieldKey
-  label: string
-  targetKey?: string
-  cellRenderer?: (
-    value: string | string[],
-    field: ImportSchema2<true>[number]
-  ) => VNodeChild
-  multiple?: boolean
-  multipleSeparator?: string
-  validation: {
-    required: boolean
-    rule?: RegExp
-    caseInsensitive?: boolean
-    enum2?: string[]
-    enum?: M extends true ? any[] : any[] | (() => any | Promise<any>)
-  }
-  example: string
-  format: {
-    transform?: (value: unknown) => unknown
-    trim?: boolean
-    lowercase?: boolean
-    uppercase?: boolean
-    number?: boolean
-  }
-  ignoreOnReference?: boolean
-}>
 
 export interface ExportColumnsSchema {
   label: string
