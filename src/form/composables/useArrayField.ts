@@ -3,6 +3,7 @@ import { useDialog } from 'naive-ui'
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue'
 import type { ArrayListField, ArrayTabsField, ArrayVariantField, FormField } from '../types/fields'
 import { mapFieldsInitialState } from '../utils/state'
+import { useConfirmDialog } from '../../_shared/composables/useConfirmDialog'
 import type { useFieldContext } from './useFieldContext'
 import { useFormApi } from './useFormApi'
 import { useFormState } from './useFormState'
@@ -67,6 +68,8 @@ export function useArrayField(
       fields = field.value.fields
       value = mapFieldsInitialState(getFieldApi, {}, fields)
     }
+
+    value = { ...value, __$itemId: generateUUID() }
 
     if (!Array.isArray(fieldValue.value))
       fieldValue.value = [value]

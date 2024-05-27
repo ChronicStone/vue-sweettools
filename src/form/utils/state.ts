@@ -26,6 +26,22 @@ export function mapFieldsInitialState(
     if (field.type === 'info')
       continue
 
+    // const fieldDependencies = resolveFieldDependencies(
+    //   field,
+    //   rootState,
+    //   parentKeys,
+    // )
+
+    // const fieldApi = getFieldApi(field.key, parentKeys)
+    // const includeField = !field.condition
+    //   ? true
+    //   : field.condition(fieldDependencies, fieldApi) || field?.conditionEffect === 'hide'
+
+    // if (!includeField)
+    //   continue
+
+    // console.log('field', { field, fieldDependencies })
+
     const fieldValue = getObjectProperty({
       key: [...(field._stepRoot ? [field._stepRoot] : []), ...parentKeys, field.key].join('.'),
       object: rootState,
@@ -232,7 +248,7 @@ function getPreformatedField(
   rawValue: unknown,
   field: FormField,
 ) {
-  return field?.preformat?.(rawValue) ?? value
+  return field?.preformat?.(value) ?? value
 }
 
 function unwrapProxy(data: Record<string, unknown>) {

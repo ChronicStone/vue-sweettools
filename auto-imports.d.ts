@@ -53,6 +53,7 @@ declare global {
   const defaultCellRenderer: typeof import('./src/excel-reader/composables/useImportManager')['defaultCellRenderer']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
+  const defineFilterProperty: typeof import('./src/data-list/composables/useSchemaBuilder')['defineFilterProperty']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
   const exportExcel: typeof import('./src/excel-reader/utils/xlsx')['exportExcel']
@@ -308,6 +309,7 @@ declare global {
   const useProvideFormStyles: typeof import('./src/form/composables/useFormStyles')['useProvideFormStyles']
   const useProvideFormTestId: typeof import('./src/form/composables/useFormTestId')['useProvideFormTestId']
   const useProvideFormValidation: typeof import('./src/form/composables/useFormValidation')['useProvideFormValidation']
+  const useProvideTableViewport: typeof import('./src/data-list/composables/useTableViewport')['useProvideTableViewport']
   const useQueryState: typeof import('./src/data-list/composables/useQueryState')['useQueryState']
   const useRafFn: typeof import('@vueuse/core')['useRafFn']
   const useRefHistory: typeof import('@vueuse/core')['useRefHistory']
@@ -334,6 +336,7 @@ declare global {
   const useTableRowActions: typeof import('./src/data-list/composables/useRowActions')['useTableRowActions']
   const useTableScroll: typeof import('./src/data-list/composables/useTableScroll')['useTableScroll']
   const useTableSummary: typeof import('./src/data-list/composables/useTableSummary')['useTableSummary']
+  const useTableViewport: typeof import('./src/data-list/composables/useTableViewport')['useTableViewport']
   const useTemplateRefsList: typeof import('@vueuse/core')['useTemplateRefsList']
   const useTextDirection: typeof import('@vueuse/core')['useTextDirection']
   const useTextSelection: typeof import('@vueuse/core')['useTextSelection']
@@ -442,6 +445,7 @@ declare module 'vue' {
     readonly defaultCellRenderer: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['defaultCellRenderer']>
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
+    readonly defineFilterProperty: UnwrapRef<typeof import('./src/data-list/composables/useSchemaBuilder')['defineFilterProperty']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly exportExcel: UnwrapRef<typeof import('./src/excel-reader/utils/xlsx')['exportExcel']>
@@ -697,6 +701,7 @@ declare module 'vue' {
     readonly useProvideFormStyles: UnwrapRef<typeof import('./src/form/composables/useFormStyles')['useProvideFormStyles']>
     readonly useProvideFormTestId: UnwrapRef<typeof import('./src/form/composables/useFormTestId')['useProvideFormTestId']>
     readonly useProvideFormValidation: UnwrapRef<typeof import('./src/form/composables/useFormValidation')['useProvideFormValidation']>
+    readonly useProvideTableViewport: UnwrapRef<typeof import('./src/data-list/composables/useTableViewport')['useProvideTableViewport']>
     readonly useQueryState: UnwrapRef<typeof import('./src/data-list/composables/useQueryState')['useQueryState']>
     readonly useRafFn: UnwrapRef<typeof import('@vueuse/core')['useRafFn']>
     readonly useRefHistory: UnwrapRef<typeof import('@vueuse/core')['useRefHistory']>
@@ -723,6 +728,7 @@ declare module 'vue' {
     readonly useTableRowActions: UnwrapRef<typeof import('./src/data-list/composables/useRowActions')['useTableRowActions']>
     readonly useTableScroll: UnwrapRef<typeof import('./src/data-list/composables/useTableScroll')['useTableScroll']>
     readonly useTableSummary: UnwrapRef<typeof import('./src/data-list/composables/useTableSummary')['useTableSummary']>
+    readonly useTableViewport: UnwrapRef<typeof import('./src/data-list/composables/useTableViewport')['useTableViewport']>
     readonly useTemplateRefsList: UnwrapRef<typeof import('@vueuse/core')['useTemplateRefsList']>
     readonly useTextDirection: UnwrapRef<typeof import('@vueuse/core')['useTextDirection']>
     readonly useTextSelection: UnwrapRef<typeof import('@vueuse/core')['useTextSelection']>
@@ -824,6 +830,7 @@ declare module '@vue/runtime-core' {
     readonly defaultCellRenderer: UnwrapRef<typeof import('./src/excel-reader/composables/useImportManager')['defaultCellRenderer']>
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
+    readonly defineFilterProperty: UnwrapRef<typeof import('./src/data-list/composables/useSchemaBuilder')['defineFilterProperty']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly exportExcel: UnwrapRef<typeof import('./src/excel-reader/utils/xlsx')['exportExcel']>
@@ -1079,6 +1086,7 @@ declare module '@vue/runtime-core' {
     readonly useProvideFormStyles: UnwrapRef<typeof import('./src/form/composables/useFormStyles')['useProvideFormStyles']>
     readonly useProvideFormTestId: UnwrapRef<typeof import('./src/form/composables/useFormTestId')['useProvideFormTestId']>
     readonly useProvideFormValidation: UnwrapRef<typeof import('./src/form/composables/useFormValidation')['useProvideFormValidation']>
+    readonly useProvideTableViewport: UnwrapRef<typeof import('./src/data-list/composables/useTableViewport')['useProvideTableViewport']>
     readonly useQueryState: UnwrapRef<typeof import('./src/data-list/composables/useQueryState')['useQueryState']>
     readonly useRafFn: UnwrapRef<typeof import('@vueuse/core')['useRafFn']>
     readonly useRefHistory: UnwrapRef<typeof import('@vueuse/core')['useRefHistory']>
@@ -1105,6 +1113,7 @@ declare module '@vue/runtime-core' {
     readonly useTableRowActions: UnwrapRef<typeof import('./src/data-list/composables/useRowActions')['useTableRowActions']>
     readonly useTableScroll: UnwrapRef<typeof import('./src/data-list/composables/useTableScroll')['useTableScroll']>
     readonly useTableSummary: UnwrapRef<typeof import('./src/data-list/composables/useTableSummary')['useTableSummary']>
+    readonly useTableViewport: UnwrapRef<typeof import('./src/data-list/composables/useTableViewport')['useTableViewport']>
     readonly useTemplateRefsList: UnwrapRef<typeof import('@vueuse/core')['useTemplateRefsList']>
     readonly useTextDirection: UnwrapRef<typeof import('@vueuse/core')['useTextDirection']>
     readonly useTextSelection: UnwrapRef<typeof import('@vueuse/core')['useTextSelection']>
