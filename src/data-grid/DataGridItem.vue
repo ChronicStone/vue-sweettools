@@ -39,7 +39,7 @@ const resolvedValue = computed(() =>
           <component :is="renderVNode(fieldSchema.label, data)" />:
         </div>
 
-        <div class="w-[fit-content]">
+        <div :class="{ 'w-[fit-content]': fieldSchema?.fitWidth ?? true }">
           <template v-if="!fieldSchema.render">
             {{ resolvedValue || "N/A" }}
           </template>

@@ -20,6 +20,7 @@ export interface GridItem<
   ellipsis?: boolean
   fieldColSize?: string | number
   fieldRowSize?: string
+  fitWidth?: boolean
 }
 
 export type VirtualStoreItem = {
