@@ -33,6 +33,10 @@ const {
   frameless,
   draggable,
   onRowDrag,
+  headerClass,
+  headerStyle,
+  footerClass,
+  footerStyle,
 } = withDefaults(definePropsRefs<DataTableSchema>(), {
   tableKey: () => 'DEFAULT_LIST',
   filters: () => [],
@@ -49,6 +53,7 @@ const {
   compact: false,
   frameless: false,
   draggable: false,
+
 })
 
 const tableWrapperRef = ref<HTMLElement>()
@@ -232,6 +237,12 @@ onBeforeMount(() => {
 })
 
 const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
+
+useProvideTableViewport({
+  tableRef,
+  tableWrapperRef,
+  scrollX,
+})
 </script>
 
 <template>
@@ -241,12 +252,21 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
         v-model:select-all="queryState.selectAll.value"
         v-model:search-query="queryState.filterState.value.searchQuery"
         v-model:panel-filters="queryState.filterState.value.panelFilters"
-        v-model:columns-config="columnsState.columnConfig.value" :sort="queryState.sortState.value"
-        :sort-options="sortOptions" :filters="filters" :dropdown-actions="mappedActions"
-        :nb-selected="queryState.nbSelected.value" :enable-search-query="searchQuery.length > 0"
+        v-model:columns-config="columnsState.columnConfig.value"
+        :sort="queryState.sortState.value"
+        :sort-options="sortOptions"
+        :filters="filters" :dropdown-actions="mappedActions"
+        :nb-selected="queryState.nbSelected.value"
+        :enable-search-query="searchQuery.length > 0"
         :resolve-grid-data="() => resolver.resolveGridData(true)"
-        :reset-table-query="() => queryState.resetTableQuery()" :list-key="tableKey" :compact="compact"
-        :reset-columns-config="columnsState.resetColumnsConfig" :enable-selection="selection" @update:sort="(e) => {
+        :reset-table-query="() => queryState.resetTableQuery()"
+        :list-key="tableKey"
+        :compact="compact"
+        :reset-columns-config="columnsState.resetColumnsConfig"
+        :enable-selection="selection"
+        :header-class="headerClass"
+        :header-style="headerStyle"
+        @update:sort="(e) => {
           queryState.setSort(e)
           setInternalTableSort(e)
         }"
@@ -277,6 +297,8 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
       <ListPagination
         v-if="pagination" v-model:pagination-state="queryState.paginationState.value"
         :compact="compact"
+        :footer-class="footerClass"
+        :footer-style="footerStyle"
       />
     </template>
   </CardContainer>
@@ -396,5 +418,10 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
 
 .n-data-table-tr--selected>.n-data-table-td {
   background: v-bind("themeColors.rowSelected") !important;
+}
+
+.n-data-table-tr--expanded>.n-data-table-td {
+  padding: 0 !important;
+  position: relative;
 }
 </style>
