@@ -37,7 +37,7 @@ onUnmounted(() => document.body.classList.remove('overflow-hidden'))
         maxHeight: formStyles.maxHeight.value,
         width: '100%',
         padding: '10px',
-        display: 'relative',
+        display: 'flex',
       }"
       :header-style="{
         paddingTop: '25px',

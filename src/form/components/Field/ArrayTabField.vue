@@ -79,7 +79,7 @@ function buildItemControls(
 
 <template>
   <NCollapseTransition :show="!collapsed">
-    <NCard content-style="padding: 0;">
+    <NCard :content-style="`padding: 0;${fieldValue.length === 0 && 'display: flex;'}`">
       <div v-if="!fieldValue?.length" class="w-full p-4">
         <NButton
           dashed

@@ -17,7 +17,7 @@ const gridSize = useBreakpointStyle(props.field.gridSize ?? '', 'grid-cols')
 
 <template>
   <NCollapseTransition :show="!collapsed">
-    <component :is="context?.rawInputProps?.value?.frameless ? 'div' : NCard">
+    <component :is="context?.rawInputProps?.value?.frameless ? 'div' : NCard" :content-style="{ display: 'grid' }">
       <div
         class="grid gap-4"
         :style="field.gridSize ? gridSize : formStyle?.gridSize.value"
