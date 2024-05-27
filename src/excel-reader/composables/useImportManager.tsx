@@ -277,7 +277,7 @@ export function getCellRenderer(
     return field.cellRenderer
   if (field?.multiple)
     return multiCellRenderer(key, field, i18n, fieldOptions)
-  else return defaultCellRenderer(key, field, i18n, fieldOptions)
+  return defaultCellRenderer(key, field, i18n, fieldOptions)
 }
 
 export function rowValidityRenderer(isValid: boolean) {
