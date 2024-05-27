@@ -1,13 +1,11 @@
 <script setup lang="tsx">
 import { NButton } from 'naive-ui'
+import type { FetchParams } from '@/index'
 import { DataTable, booleanFilter, buildTableSchema, timeRangeFilter } from '@/index'
-import { propertyBuilderFilter } from '@/data-list/utils/filters'
 
-type TableRow = Awaited< ReturnType<typeof loadData>>[number]
-
-async function loadData() {
+async function loadData(params: FetchParams) {
   await new Promise(resolve => setTimeout(resolve, 200))
-  const items = Array.from({ length: 1 }, (_, i) => ({
+  const items = Array.from({ length: 1000 }, (_, i) => ({
     id: i,
     name: `name ${i}`,
     age: Math.floor(Math.random() * 100),
@@ -25,72 +23,39 @@ async function loadData() {
     },
   }))
 
-  return items
+  return {
+    totalDocs: items.length,
+    totalPages: Math.ceil(items.length / 10),
+    docs: items,
+  }
 }
 
 const schema = buildTableSchema({
-  rowIdKey: 'id',
   tableKey: 'table1',
   persistency: 'localStorage',
-  remote: false,
+  remote: true,
   draggable: true,
-  datasource: loadData,
+  datasource: async param => await loadData(param),
   maxHeight: '75vh',
   staticFilters: [
-    // {
-    //   key: 'productLine',
-    //   matchMode: 'objectMatch',
-    //   value: [{ productLine: 'Adult' }],
-    //   params: {
-    //     operator: 'OR',
-    //     properties: [{ key: 'productLine', matchMode: 'equals' }],
-    //   },
-    //   arrayLookup: 'OR',
-    // },
   ],
   filters: [
     booleanFilter({ key: 'active', label: 'Active' }),
     timeRangeFilter({ key: 'date', label: 'Date' }),
-    propertyBuilderFilter({
-      label: 'Scores',
-      key: 'scores',
-      properties: [
-        ...(['math', 'english', 'chinese', 'other']).map(subject => defineFilterProperty({
-          key: subject,
-          label: subject,
-          field: (matchMode) => {
-            return {
-              type: 'slider',
-              fieldParams: {
-                range: matchMode === 'between',
-                step: 1,
-                min: 0,
-                max: 100,
-              // formatTooltip: (value: number) => Object.values(marksDto.Enum)[value],
-              // marks: Object.keys(marksDto.Enum).reduce((acc, key, index) => {
-              //   acc[index] = key
-              //   return acc
-              // }, {} as Record<number, string>),
-              },
-              // transform: (value: number[]) => value.map(v => Object.values(marksDto.Enum)[v]),
-              default: matchMode === 'between' ? [0, 1] : 0,
-            }
-          },
-        })),
-      ],
-    }),
   ],
   searchQuery: ['name'],
+  expandedContent: (row) => {
+    return (
+      <div>
+        Hi
+      </div>
+    )
+  },
   columns: [
     ...((['math', 'english', 'chinese', 'other'] as const).map(subject => ({
       label: subject,
       key: `scores.${subject}` as const,
       // MIN MAX AVG
-      summary: [
-        { value: (rows: TableRow[]) => `Min: ${Math.min(...rows.map(row => row.scores[subject]))}` },
-        { value: (rows: TableRow[]) => `Max: ${Math.max(...rows.map(row => row.scores[subject]))}` },
-        { value: (rows: TableRow[]) => `Avg: ${rows.reduce((acc, cur) => acc + cur.scores[subject], 0) / rows.length}` },
-      ],
     }))),
     { label: 'ID', key: 'id', summary: [{ value: 'Total' }] },
     { label: 'Name', key: 'name', summary: [{ value: '21 233' }] },

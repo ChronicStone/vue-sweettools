@@ -14,18 +14,20 @@ const { isDark } = useDarkMode()
 </script>
 
 <template>
-  <NConfigProvider
-    :theme-overrides="isDark ? DarkThemeOverrides : LightThemeOverrides"
-    :theme="isDark ? darkTheme : null"
-  >
-    <NNotificationProvider>
-      <FormProvider>
-        <NDialogProvider>
-          <AppProvider />
-        </NDialogProvider>
-      </FormProvider>
-    </NNotificationProvider>
-  </NConfigProvider>
+  <div :class="isDark ? 'dark' : ''">
+    <NConfigProvider
+      :theme-overrides="isDark ? DarkThemeOverrides : LightThemeOverrides"
+      :theme="isDark ? darkTheme : null"
+    >
+      <NNotificationProvider>
+        <FormProvider>
+          <NDialogProvider>
+            <AppProvider />
+          </NDialogProvider>
+        </FormProvider>
+      </NNotificationProvider>
+    </NConfigProvider>
+  </div>
 </template>
 
 <style>

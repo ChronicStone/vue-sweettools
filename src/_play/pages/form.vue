@@ -142,7 +142,7 @@ function inspectFormState() {
       class=" h-full"
       :theme-overrides="{ borderRadius: '0px' }"
       :content-style="{ padding: 0 }"
-      style="width: 400px !important"
+      style="width: 300px !important"
     >
       <template #header>
         <div class="flex items-center gap-1 justify-between">
@@ -182,7 +182,7 @@ function inspectFormState() {
       </NScrollbar>
     </NCard>
 
-    <div class="flex flex-col w-full">
+    <div class="flex flex-col w-[calc(100vw-300px)]">
       <div ref="sampleHeaderRef">
         <NCard segmented :theme-overrides="{ borderRadius: '0px' }">
           <template #header>
@@ -246,7 +246,6 @@ function inspectFormState() {
         class="h-full"
         segmented
         :theme-overrides="{ borderRadius: '0px' }"
-        :content-style="{ paddingRight: '4px' }"
       >
         <NScrollbar
           :style="{

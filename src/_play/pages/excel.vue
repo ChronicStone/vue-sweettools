@@ -89,6 +89,16 @@ const schema = buildExcelSchema({
       },
       example: 'firstName:Cyp | lastName:THAO',
     },
+    {
+      key: `affiliation:GROUP`,
+      required: false,
+      label: `Affiliation`,
+      example: 'Item 1, Item 2',
+      caseInsensitive: true,
+      multiple: true,
+      enum: ['Item 1', 'Item 2', 'Item 3'],
+      format: ['trim' as const],
+    },
   ],
 })
 
