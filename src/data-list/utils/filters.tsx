@@ -166,23 +166,43 @@ export function propertyBuilderFilter(params: FilterBuilderParams): DynamicFilte
           return matchModes.filter(m => property.matchModes?.includes(m.value) ?? true)
         },
       },
-      ...params.properties.map(p => typeof p.field === 'function'
-        ? matchModes.map(m => ({
-          key: `value-${m.value}`,
-          label: 'Value',
-          ...(p.field as Function)(m.value),
-          dependencies: [['$parent.propertyName', 'propertyName'], ['$parent.matchMode', 'matchMode']],
-          condition: (deps: Dependencies) => {
-            return deps.propertyName === p.key && !!deps?.matchMode && deps.matchMode === m.value
-          },
-        }))
-        : {
-            key: 'value',
-            label: 'Value',
-            ...p.field,
-            dependencies: [['$parent.propertyName', 'propertyName'], ['$parent.matchMode', 'matchMode']],
-            condition: (deps: Dependencies) => deps.propertyName === p.key && !!deps?.matchMode,
-          } as any).flat(),
+      ...params.properties.map((p) => {
+        return [
+          ...(p.metadataFields?.length
+            ? [
+            {
+              key: 'metadata',
+              type: 'object',
+              fields: (p.metadataFields ?? []).map(field => ({
+                ...field,
+                ...(field?.matchMode && {
+                  dependencies: [...(field?.dependencies ?? []), ['$parent:1.matchMode', '__$matchMode']],
+                  condition: (deps, api) => (field?.condition?.(deps, api) ?? true) && deps.__$matchMode === field.matchMode,
+                }),
+              }) as FormField),
+              fieldParam: { frameless: true },
+            } satisfies FormField,
+              ]
+            : []),
+          ...typeof p.field === 'function'
+            ? matchModes.map(m => ({
+              key: `value-${m.value}`,
+              label: 'Value',
+              ...(p.field as Function)(m.value),
+              dependencies: [['$parent.propertyName', 'propertyName'], ['$parent.matchMode', 'matchMode']],
+              condition: (deps: Dependencies) => {
+                return deps.propertyName === p.key && !!deps?.matchMode && deps.matchMode === m.value
+              },
+            }))
+            : {
+                key: 'value',
+                label: 'Value',
+                ...p.field,
+                dependencies: [['$parent.propertyName', 'propertyName'], ['$parent.matchMode', 'matchMode']],
+                condition: (deps: Dependencies) => deps.propertyName === p.key && !!deps?.matchMode,
+              } as any,
+        ]
+      }).flat(),
     ],
   }
 }

@@ -86,6 +86,26 @@ export type DynamicFilter = FormField & {
   lookupAtRoot?: boolean
 } & MatchModeCore
 
+export type QuickFilterPrimitive = string | number | boolean | null | undefined
+export type QuickFilterObject = { label: string | (() => VNodeChild); value: QuickFilterPrimitive }
+export type QuickFilterOptions = QuickFilterPrimitive[] | QuickFilterObject[] | (() => MaybePromise<QuickFilterPrimitive[] | QuickFilterObject[]>)
+
+export type QuickFilter<KeyPaths extends string = string> = {
+  type: 'toggle-list' | 'select-list'
+  label: string
+  key: KeyPaths
+  options: QuickFilterOptions
+  multiple?: boolean
+  condition?: () => boolean
+  default?: QuickFilterPrimitive[] | QuickFilterPrimitive
+  transform?: (value: any) => any
+} & ({
+  matchMode: Exclude<FilterMatchMode, 'objectStringMap' | 'objectMatch' | ComparatorMatchMode>
+} | {
+  matchMode: ComparatorMatchMode
+  params?: ComparatorParams
+})
+
 export type MappedFilters = {
   value: any
   required?: boolean | undefined
@@ -192,11 +212,23 @@ export type Action<
   TParams extends ActionParams<T, KeyPath> = ActionParams<T, KeyPath>,
 > = {
   label: string
-  icon: string
+  icon?: string
   action?: (actionParams: TParams) => void
   link?: string | AppTypes['routeLocation']
   permissions?: (AppTypes['permissionKey'] | AppTypes['permissionKey'][])[]
   condition?: (data: T[], params: TParams) => boolean
+}
+
+export type ActionGroup<
+  T extends GenericObject = GenericObject,
+  KeyPath = any,
+  TParams extends ActionParams<T, KeyPath> = ActionParams<T, KeyPath>,
+> = {
+  label: string
+  icon?: string
+  children: Array<Action<T, KeyPath, TParams> | ActionGroup<T, KeyPath, TParams>>
+  condition?: (data: T[], params: TParams) => boolean
+  permissions?: (AppTypes['permissionKey'] | AppTypes['permissionKey'][])[]
 }
 
 export type DataApi<T = GenericObject, KeyPath = any> = {
@@ -250,6 +282,7 @@ export type DataQueryState = {
     searchQuery: string
     panelFilters: GenericObject
     staticFilters: GenericObject
+    quickFilters: GenericObject
   }
 }
 

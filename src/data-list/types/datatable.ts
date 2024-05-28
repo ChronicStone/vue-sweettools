@@ -3,6 +3,7 @@ import type { HTMLAttributes, VNodeChild } from 'vue'
 import type { EllipsisProps, DataTableColumn as NDataTableColumn } from 'naive-ui'
 import type {
   Action,
+  ActionGroup,
   DataApi,
   DataDefaultSort,
   DataSortOption,
@@ -10,6 +11,7 @@ import type {
   DynamicFilter,
   InferTableParams,
   OptimizedQueryField,
+  QuickFilter,
   RowAction,
   SlotStyle,
   StaticFilter,
@@ -85,7 +87,7 @@ export interface DataTableSchema<
   expandable?: (params: { rowData: Params['data']; tableApi: DataApi<Params['data'], Params['keyPaths']> }) => boolean
   expandedContent?: (params: { rowData: Params['data']; tableApi: DataApi<Params['data'], Params['keyPaths']> }) => VNodeChild
   optimizeQuery?: OptimizedQueryField<Params['keyPaths']>[]
-  actions?: Action<Params['data'], Params['keyPaths']>[]
+  actions?: Array<Action<Params['data'], Params['keyPaths']> | ActionGroup<Params['data'], Params['keyPaths']>>
   rowActions?: RowAction<Params['data'], Params['keyPaths']>[]
   selection?: boolean
   pagination?: boolean
@@ -94,6 +96,7 @@ export interface DataTableSchema<
   sortOptions?: DataSortOption<Params['keyPaths']>[]
   staticFilters?: StaticFilter[]
   filters?: DynamicFilter[]
+  quickFilters?: QuickFilter<Params['keyPaths']>[]
   defaultSort?: DataDefaultSort<Params['keyPaths']>
   persistency?: false | 'localStorage' | 'sessionStorage'
   defaultPageSize?: number

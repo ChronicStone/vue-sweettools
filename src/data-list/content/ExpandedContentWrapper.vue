@@ -8,7 +8,7 @@ const { scrollX, tableWidth } = useTableViewport()
   <NEl
     tag="div"
     class="p-[var(--n-td-padding)]"
-    :style="{ width: '100%', maxWidth: `${tableWidth}px`, marginLeft: `${scrollX}px` }"
+    :style="{ width: '100%', maxWidth: `${tableWidth}px`, transform: `translateX(${scrollX}px)` }"
   >
     <slot />
   </NEl>

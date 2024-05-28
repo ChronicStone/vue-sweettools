@@ -1,4 +1,4 @@
-import type { DynamicFilter, MappedFilters, StaticFilter } from '../types/shared'
+import type { DynamicFilter, MappedFilters, QuickFilter, StaticFilter } from '../types/shared'
 import type { GenericObject } from '@/_shared/types/utils'
 
 export function getFilterInitialState() {
@@ -29,14 +29,33 @@ export function mapFilterInitialState(
   return state
 }
 
+export function mapQuickFilterInitialState(
+  filters: QuickFilter[],
+  baseState: GenericObject,
+  clearMode = false,
+): GenericObject {
+  const _filters = filters.filter(f => f.condition?.() ?? true)
+  const state: { [key: string]: any } = {}
+  _filters.forEach((filter) => {
+    console.log(filter.key, filter)
+    baseState[filter.key] && !clearMode
+      ? (state[filter.key] = baseState[filter.key])
+      : (state[filter.key] = filter.default ?? (filter.multiple ? [] : undefined))
+  })
+
+  return state
+}
+
 export function mapQueryFetchParams(
-  filterState: GenericObject,
+  filterState: { panelFilters: GenericObject; quickFilters: GenericObject },
   panelFilters: DynamicFilter[],
   staticFilters: StaticFilter[],
+  quickFilters: QuickFilter[],
 ) {
   const mappedFilters = pipeMergeObject(
     mapStaticFilters(staticFilters),
-    mapTableFilters(panelFilters, filterState),
+    mapTableFilters(panelFilters, filterState.panelFilters),
+    mapQuickFilters(quickFilters, filterState.quickFilters),
   )
 
   return Object.keys(mappedFilters).length > 0 ? mappedFilters : null
@@ -86,6 +105,32 @@ export function mapTableFilters(
           postCondition: filter?.postCondition ?? false,
           arrayLookup: filter?.arrayLookup,
           lookupAtRoot: filter?.lookupAtRoot,
+        },
+      ],
+    }
+  }, {} as Record<string, MappedFilters[]>)
+}
+
+export function mapQuickFilters(
+  filters: QuickFilter[],
+  filterState: GenericObject,
+) {
+  return Object.entries(filterState).reduce<Record<string, MappedFilters[]>>((acc, [key, value]) => {
+    const filter = filters.find(filter => filter.key === key)
+    if (
+      !filter
+      || (Array.isArray(value) && !value.length)
+      || (!Array.isArray(value) && (typeof value === 'undefined' || value === null))
+    )
+      return acc
+    return {
+      ...acc,
+      [key]: [
+        {
+          matchMode: filter?.matchMode ?? 'equals',
+          required: false,
+          value: typeof filter.transform === 'function' ? filter.transform(value) : value,
+          postCondition: false,
         },
       ],
     }

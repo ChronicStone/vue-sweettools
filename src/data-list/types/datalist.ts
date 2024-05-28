@@ -1,4 +1,4 @@
-import type { CSSProperties, VNodeChild } from 'vue'
+import type { VNodeChild } from 'vue'
 import type {
   Action,
   DataApi,
@@ -6,17 +6,13 @@ import type {
   DataSortOption,
   DataSource,
   DynamicFilter,
+  InferTableParams,
   OptimizedQueryField,
   RowAction,
   SlotStyle,
   StaticFilter,
 } from './shared'
-import type {
-  GenericObject,
-  MaybePromise,
-  NestedPaths,
-  NestedPathsForType,
-} from '@/_shared/types/utils'
+import type { GenericObject } from '@/_shared/types/utils'
 
 export interface DataListSchema<
   Remote extends boolean = boolean,
@@ -24,34 +20,25 @@ export interface DataListSchema<
     GenericObject,
     Remote
   >,
-  TData extends GenericObject = Source extends (
-    ...args: any[]
-  ) => MaybePromise<{
-    docs: Array<infer T extends GenericObject>
-  }>
-    ? T
-    : Source extends () => MaybePromise<Array<infer T extends GenericObject>>
-      ? T
-      : never,
-  PathKeys = NestedPaths<TData>,
-  KeyablePathKeys = NestedPathsForType<TData, string | number>,
+  Params extends InferTableParams<Source> = InferTableParams<Source>,
+
 > extends SlotStyle {
-  rowIdKey?: KeyablePathKeys
+  rowIdKey?: Params['keyPaths']
   remote: Remote
   datasource: Source
-  content: (params: { rowData: TData; tableApi: DataApi }) => VNodeChild
-  expandedContent?: (params: { rowData: TData; tableApi: DataApi }) => VNodeChild
-  expandable?: (params: { rowData: TData }) => boolean
-  optimizeQuery?: OptimizedQueryField<PathKeys>[]
+  content: (params: { rowData: Params['data']; tableApi: DataApi }) => VNodeChild
+  expandedContent?: (params: { rowData: Params['data']; tableApi: DataApi }) => VNodeChild
+  expandable?: (params: { rowData: Params['data']; tableApi: DataApi }) => boolean
+  optimizeQuery?: OptimizedQueryField<Params['keyPaths']>[]
   staticFilters?: StaticFilter[]
-  actions?: Action<TData, PathKeys>[]
-  rowActions?: RowAction<TData, PathKeys>[]
+  actions?: Action<Params['data'], Params['keyPaths']>[]
+  rowActions?: RowAction<Params['data'], Params['keyPaths']>[]
   pagination?: boolean
   selection?: boolean
-  sortOptions?: DataSortOption<PathKeys>[]
-  searchQuery?: PathKeys[]
+  sortOptions?: DataSortOption<Params['keyPaths']>[]
+  searchQuery?: Params['keyPaths'][]
   filters?: DynamicFilter[]
-  defaultSort?: DataDefaultSort<PathKeys>
+  defaultSort?: DataDefaultSort<Params['keyPaths']>
   persistency?: false | 'localStorage' | 'sessionStorage'
   listKey?: string
   defaultPageSize?: number
@@ -63,7 +50,8 @@ export interface DataListSchema<
 export function buildListSchema<
   Remote extends boolean,
   Source extends DataSource<GenericObject, Remote>,
->(schema: DataListSchema<Remote, Source>) {
+  Params extends InferTableParams<Source>,
+>(schema: DataListSchema<Remote, Source, Params>) {
   return schema as unknown as DataListSchema<
     boolean,
     DataSource<GenericObject, boolean>

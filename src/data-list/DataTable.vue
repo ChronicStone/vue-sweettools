@@ -37,9 +37,11 @@ const {
   headerStyle,
   footerClass,
   footerStyle,
+  quickFilters,
 } = withDefaults(definePropsRefs<DataTableSchema>(), {
   tableKey: () => 'DEFAULT_LIST',
   filters: () => [],
+  quickFilters: () => [],
   searchQuery: () => [],
   staticFilters: () => [],
   sortOptions: () => [],
@@ -68,6 +70,7 @@ const queryState = useQueryState({
   optimizeQuery: [],
   panelFilters: filters,
   staticFilters,
+  quickFilters,
   persistency: persistency.value,
   defaultSort,
   defaultPageSize: defaultPageSize.value,
@@ -274,6 +277,11 @@ useProvideTableViewport({
         <slot />
       </ListHeader>
     </template>
+
+    <QuickFilter
+      v-if="quickFilters.length" v-model:filter-state="queryState.filterState.value.quickFilters"
+      :quick-filters="quickFilters"
+    />
 
     <div ref="tableWrapperRef">
       <NDataTable
