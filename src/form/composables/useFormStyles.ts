@@ -12,6 +12,8 @@ export const DEFAULT_STYLES = {
 const [useProvideFormStyles, _useFormStyles] = createInjectionState(
   (formSchema: FormSchema) => {
     const formStyles = {
+      scale: computed(() => formSchema?.scale ?? 'medium'),
+      flexMode: computed(() => formSchema?.flexMode),
       fullScreen: useBreakpointStyle(
         formSchema?.fullScreen ?? DEFAULT_STYLES.fullScreen,
         'boolean',

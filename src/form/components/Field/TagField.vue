@@ -5,6 +5,7 @@ import type { FieldComponentEmits, FieldComponentProps, TagFieldParams } from '@
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
+const { scale } = useFormStyles()
 const fieldValue = computed({
   get: () => props.modelValue as string[] | undefined,
   set: value => emit('update:modelValue', value),
@@ -15,7 +16,6 @@ function removeTag(index: number) {
 }
 
 const tagRawProps = computed(() => props.context.rawInputProps.value as TagFieldParams)
-
 const draggable = computed(() => tagRawProps.value.draggable ?? false)
 const customTagRender = computed(() => tagRawProps.value.renderTag)
 const renderTag = computed(() => (value: string, index: number) => {
@@ -95,6 +95,7 @@ watch(() => draggable.value, (enable) => {
       renderTag,
     }"
     :disabled="disabled"
+    :size="scale"
     @blur="validator?.$touch"
   />
 </template>

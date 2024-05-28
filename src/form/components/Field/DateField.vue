@@ -5,6 +5,7 @@ import type { DateField, FieldComponentEmits, FieldComponentProps } from '@/form
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
+const { scale } = useFormStyles()
 const field = computed(() => props.field as DateField)
 
 const { displayFormat, valueFormat } = useLocalizedDateFormat()
@@ -66,6 +67,7 @@ function formatDateToTimestamp(value: any) {
     update-value-on-close
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
+    :size="scale"
     @blur="validator?.$touch"
   />
 </template>

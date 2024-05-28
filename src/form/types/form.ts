@@ -38,6 +38,8 @@ interface BaseFormSchema {
   overlayOpacity?: number
   requiredMessage?: string | ((label: string) => string)
   testId?: string
+  flexMode?: 'col' | 'row'
+  scale?: 'small' | 'medium' | 'large'
 }
 
 export interface FormStep<

@@ -4,6 +4,7 @@ import type { FieldComponentEmits, FieldComponentProps } from '@/form/types/fiel
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
+const { scale } = useFormStyles()
 const fieldValue = computed({
   get: () => props.modelValue as number | undefined,
   set: value => emit('update:modelValue', value),
@@ -11,5 +12,5 @@ const fieldValue = computed({
 </script>
 
 <template>
-  <NRate v-model:value="fieldValue" v-bind="context.inputProps.value" />
+  <NRate v-model:value="fieldValue" v-bind="context.inputProps.value" :size="scale" />
 </template>

@@ -5,6 +5,7 @@ import type { FieldComponentEmits, FieldComponentProps } from '@/form/types/fiel
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
+const { scale } = useFormStyles()
 const fieldValue = computed({
   get: () =>
     props.modelValue as
@@ -28,6 +29,7 @@ const fieldValue = computed({
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
     filterable
+    :size="scale"
     @blur="validator?.$touch"
   />
 </template>
