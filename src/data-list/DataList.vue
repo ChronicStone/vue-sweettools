@@ -54,6 +54,7 @@ const queryState = useQueryState({
   searchQuery: searchQuery.value,
   optimizeQuery: [],
   panelFilters: filters,
+  quickFilters: computed(() => []),
   staticFilters,
   persistency: persistency.value,
   defaultSort,

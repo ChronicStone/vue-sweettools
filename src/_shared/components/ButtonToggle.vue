@@ -6,6 +6,7 @@ const props = defineProps<{
   itemWidth?: number
   multiple?: boolean
   size?: 'small' | 'medium' | 'large'
+  isLoading: boolean
 }>()
 const { modelValue } = defineModels<{ modelValue: QuickFilterPrimitive | QuickFilterPrimitive[] }>()
 
@@ -31,6 +32,10 @@ function isValueSelected(value: QuickFilterPrimitive) {
 
 <template>
   <NButtonGroup>
+    <NButton v-if="isLoading" secondary :size="size">
+      <NSpin :size="10" />
+    </NButton>
+
     <NButton
       v-for="(option, index) in options"
       :key="index"

@@ -84,19 +84,26 @@ const schema = buildTableSchema({
     },
   ],
   quickFilters: [
-    // {
-    //   type: 'select-list',
-    //   label: 'User',
-    //   key: 'user.id',
-    //   options: () => Array.from({ length: 10 }).map((_, i) => ({ label: `User ${i}`, value: i })),
-    //   matchMode: 'equals',
-    //   default: 1,
-    // },
+    {
+      type: 'select-list',
+      label: 'User',
+      key: 'user.id',
+      options: async () => {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        return Array.from({ length: 10 }).map((_, i) => ({ label: `User ${i}`, value: i }))
+      },
+      matchMode: 'equals',
+      multiple: true,
+      default: 1,
+    },
     {
       type: 'toggle-list',
       label: 'Other',
       key: 'createdAt',
-      options: [{ label: 'Today', value: 1 }, { label: 'Last 7 days', value: 7 }, { label: 'Last 30 days', value: 30 }, { label: 'Last 60 days', value: 60 }],
+      options: async () => {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        return [{ label: 'Today', value: 1 }, { label: 'Last 7 days', value: 7 }, { label: 'Last 30 days', value: 30 }, { label: 'Last 60 days', value: 60 }]
+      },
       matchMode: 'between',
       params: { dateMode: true },
       multiple: false,
