@@ -48,72 +48,76 @@ export function mapFieldsInitialState(
       scoped: false,
     })
 
-    let fieldOutput: unknown = fieldValue
-
-    if (
-      field.type === 'array-list'
-      || field.type === 'array-tabs'
-      || field.type === 'array-variant'
-    ) {
-      fieldOutput = ((fieldValue ?? []) as Array<Record<string, unknown>>).map(
-        (itemValue, index) => {
-          let fields: Array<FormField>
-          let variantKey = ''
-          if (field.type === 'array-variant') {
-            variantKey = field.variantKey
-            fields
-                = field.variants.find(v => v.key === itemValue[variantKey])
-                ?.fields ?? []
-          }
-          else {
-            fields = field.fields
-          }
-          return {
-            ...('extraProperties' in field && field.extraProperties === true
-              ? appendExtraProperties(
-                fields,
-                itemValue as Record<string, unknown>,
-              )
-              : {}),
-            ...getNestedFieldOutput(
-              getFieldApi,
-              'input',
-              inputState,
-              rootState,
-              field.type === 'array-variant'
-                ? {
-                    ...field,
-                    type: 'array-tabs',
-                    fields,
-                  }
-                : field,
-              parentKeys,
-              index,
-            ),
-            ...(variantKey ? { [variantKey]: itemValue[variantKey] } : {}),
-          }
-        },
-      )
-    }
-    else if (field.type === 'object' || field.type === 'group') {
-      fieldOutput = {
-        ...('extraProperties' in field && field.extraProperties === true
-          ? appendExtraProperties(field.fields, fieldValue)
-          : {}),
-        ...getNestedFieldOutput(
-          getFieldApi,
-          'input',
-          inputState,
-          rootState,
-          field,
-          parentKeys,
-        ),
+    let fieldOutput: unknown = getPreformatedField(fieldValue, fieldValue, field)
+    if (!field.preformat) {
+      if (
+        field.type === 'array-list'
+        || field.type === 'array-tabs'
+        || field.type === 'array-variant'
+      ) {
+        fieldOutput = ((fieldValue ?? []) as Array<Record<string, unknown>>).map(
+          (itemValue, index) => {
+            let fields: Array<FormField>
+            let variantKey = ''
+            if (field.type === 'array-variant') {
+              variantKey = field.variantKey
+              fields
+                  = field.variants.find(v => v.key === itemValue[variantKey])
+                  ?.fields ?? []
+            }
+            else {
+              fields = field.fields
+            }
+            return {
+              ...('extraProperties' in field && field.extraProperties === true
+                ? appendExtraProperties(
+                  fields,
+                  itemValue as Record<string, unknown>,
+                )
+                : {}),
+              ...getNestedFieldOutput(
+                getFieldApi,
+                'input',
+                inputState,
+                rootState,
+                field.type === 'array-variant'
+                  ? {
+                      ...field,
+                      type: 'array-tabs',
+                      fields,
+                    }
+                  : field,
+                parentKeys,
+                index,
+              ),
+              ...(variantKey ? { [variantKey]: itemValue[variantKey] } : {}),
+            }
+          },
+        )
+      }
+      else if (field.type === 'object' || field.type === 'group') {
+        fieldOutput = {
+          ...('extraProperties' in field && field.extraProperties === true
+            ? appendExtraProperties(field.fields, fieldValue)
+            : {}),
+          ...getNestedFieldOutput(
+            getFieldApi,
+            'input',
+            inputState,
+            rootState,
+            field,
+            parentKeys,
+          ),
+        }
       }
     }
 
+    if (field.type === 'object' || field.type === 'group')
+
+      console.log('fieldOutput::post', fieldOutput)
+
     if (!fieldOutput)
       fieldOutput = getFallbackFieldValue(field)
-    const finalFieldValue = getPreformatedField(fieldOutput, fieldValue, field)
 
     if (
       typeof field._stepRoot === 'string'
@@ -122,9 +126,9 @@ export function mapFieldsInitialState(
     ) {
       if (!state[field._stepRoot] || typeof state[field._stepRoot] !== 'object')
         state[field._stepRoot] = {};
-      (state[field._stepRoot] as GenericObject)[field.key] = finalFieldValue
+      (state[field._stepRoot] as GenericObject)[field.key] = fieldOutput
     }
-    else { state[field.key] = finalFieldValue }
+    else { state[field.key] = fieldOutput }
   }
 
   return unwrapProxy(state)
