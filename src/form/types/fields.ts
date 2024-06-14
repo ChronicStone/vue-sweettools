@@ -14,7 +14,7 @@ import type {
   UploadSettledFileInfo,
 } from 'naive-ui'
 import type { SelectBaseOption } from 'naive-ui/es/select/src/interface'
-import type { Component, VNode, VNodeChild } from 'vue'
+import type { CSSProperties, Component, VNode, VNodeChild } from 'vue'
 import type { MaskOptions } from 'maska'
 import type { useFieldContext } from '../composables/useFieldContext'
 import type { MaybePromise, Narrowable, Primitive } from '@/_shared/types/utils'
@@ -532,6 +532,8 @@ export interface GroupField<FieldKey extends Narrowable = string> {
 
 export interface ObjectFieldParams {
   frameless?: boolean
+  style?: CSSProperties
+  class?: string
 }
 
 export interface ObjectField<FieldKey extends Narrowable = string> {
@@ -553,6 +555,7 @@ export interface _ArrayField<FieldKey extends Narrowable = string> {
   collapsible?: boolean
   collapsed?: boolean
   headerTemplate?: (item: Record<string, any>, index: number) => string
+  transformOnCreate?: (item: Record<string, any>) => Record<string, any>
   actions?: {
     [key in 'deleteItem' | 'moveUp' | 'moveDown']?:
       | boolean
@@ -702,6 +705,7 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   onDependencyChange?: (dependencies: Dependencies, api: FieldApi) => void
   ignore?: boolean
   labelExtra?: () => VNodeChild
+  dirtyCheck?: boolean
 }
 
 export type FormField<FieldKey extends Narrowable = string> =

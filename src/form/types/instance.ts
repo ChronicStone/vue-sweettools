@@ -15,9 +15,9 @@ export interface FormApi {
   formInstances: ComputedRef<FormInstance[]>
   destroyAll: () => void
   createForm<
-    TFormSchema extends FormSchema<StepKey, FieldKey>,
-    StepKey extends Narrowable,
-    FieldKey extends Narrowable,
+   const TFormSchema extends FormSchema<StepKey, FieldKey>,
+    const StepKey extends Narrowable,
+    const FieldKey extends Narrowable,
   >(
     schema: TFormSchema,
     inputData?: Record<string, unknown>
@@ -48,6 +48,7 @@ export type FormRefInstance = {
   $validate(): Promise<boolean>
   $v: ComputedRef<Validation<GenericObject, GenericObject>>
   $data: ComputedRef<{ [key: string]: any }>
+  $dirty: ComputedRef<boolean>
   nextStep?: () => Promise<boolean>
   previousStep?: () => void
   currentStep?: ComputedRef<number>

@@ -40,6 +40,7 @@ interface BaseFormSchema {
   testId?: string
   flexMode?: 'col' | 'row'
   scale?: 'small' | 'medium' | 'large'
+  dirtyCheck?: boolean
 }
 
 export interface FormStep<

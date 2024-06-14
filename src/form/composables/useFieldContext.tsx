@@ -12,6 +12,7 @@ import { mapFieldProps } from '../utils/field'
 import { useFormState } from './useFormState'
 import { useFormFields } from './useFormFields'
 import type { GenericObject } from '@/_shared/types/utils'
+import { isDirty } from '@/_shared/utils/state'
 
 export function useFieldContext(
   field: ComputedRef<FormField>,
@@ -19,12 +20,16 @@ export function useFieldContext(
   state: Ref<GenericObject>,
   parentKey: ComputedRef<string[]>,
 ) {
+  const formSchema = useFormSchema()
+  const sourceValue = typeof fieldState.value === 'object' ? JSON.parse(JSON.stringify(fieldState.value)) : fieldState.value
   const i18n = useTranslations()
   const fieldId = generateUUID()
   const fieldFullPath = computed(() => [
     ...(parentKey.value ?? []),
     field.value.key,
   ])
+
+  const dirtyCheck = computed(() => field.value.dirtyCheck ?? formSchema.value?.dirtyCheck ?? false)
 
   const { getFieldApi } = useFormState()
   const fieldApi: FieldApi = getFieldApi(field.value.key, parentKey.value)
@@ -250,11 +255,6 @@ export function useFieldContext(
   const options = computed(() => {
     return [
       ..._options.value,
-      ...(('createOption' in field.value
-      && typeof field.value.createOption !== 'undefined')
-      || ('allowRefreshOptions' in field.value && field.value.allowRefreshOptions)
-        ? [selectActionFactory(field.value as SelectField)]
-        : []),
     ]
   })
 
@@ -329,6 +329,14 @@ export function useFieldContext(
       ?? i18n.t('form.fields.text.defaultPlaceholder'),
   )
 
+  const dirty = ref<boolean>(false)
+  if (dirtyCheck.value)
+    watch(() => fieldState.value, () => (dirty.value = isDirty(sourceValue, fieldState.value)), { deep: true })
+
+  function resetField() {
+    fieldState.value = sourceValue
+  }
+
   return {
     _evalCondition,
     _evalOptions,
@@ -346,6 +354,11 @@ export function useFieldContext(
     disabled,
     parentKey,
     fieldApi,
+    sourceValue,
+    dirty,
+    resetField,
+    createOption,
+    refreshOptions: resolveOptions,
   }
 }
 

@@ -8,9 +8,9 @@ import type {
 import type { Narrowable } from '@/_shared/types/utils'
 
 export function useFormController<
-  TFormSchema extends FormSchema<StepKey, FieldKey>,
-  StepKey extends Narrowable,
-  FieldKey extends Narrowable,
+  const TFormSchema extends FormSchema<StepKey, FieldKey>,
+  const StepKey extends Narrowable,
+  const FieldKey extends Narrowable,
 >(
   formRef: Ref<FormRefInstance | undefined>,
   schema: TFormSchema,
@@ -23,6 +23,7 @@ export function useFormController<
     currentStep: ComputedRef<number>
     canTriggerNext: ComputedRef<boolean>
     canTriggerPrevious: ComputedRef<boolean>
+    isDirty: ComputedRef<boolean>
     reset: (clear?: boolean) => void
   } {
   return {
@@ -33,6 +34,7 @@ export function useFormController<
     formData: computed(() => formRef.value?.$data ?? {}) as ComputedRef<
       FormInferredData<TFormSchema, StepKey, FieldKey>
     >,
+    isDirty: computed(() => formRef.value?.$dirty?.value ?? false),
     nextStep: async () => {
       return (await formRef.value?.nextStep?.()) ?? false
     },
@@ -49,17 +51,17 @@ export function useFormController<
 }
 
 export function buildFormSchema<
-  TFormSchema extends FormSchema<StepKey, FieldKey>,
-  StepKey extends Narrowable,
-  FieldKey extends Narrowable,
+  const TFormSchema extends FormSchema<StepKey, FieldKey>,
+  const StepKey extends Narrowable,
+  const FieldKey extends Narrowable,
 >(schema: TFormSchema) {
   return schema
 }
 
 export function buildFormSchemaDist<
-  TFormSchema extends FormSchema<StepKey, FieldKey>,
-  StepKey extends Narrowable,
-  FieldKey extends Narrowable,
+  const TFormSchema extends FormSchema<StepKey, FieldKey>,
+  const StepKey extends Narrowable,
+  const FieldKey extends Narrowable,
 >(schema: TFormSchema) {
   return schema
 }
