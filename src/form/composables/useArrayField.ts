@@ -70,6 +70,8 @@ export function useArrayField(
     }
 
     value = { ...value, __$itemId: generateUUID() }
+    if (field.value.transformOnCreate)
+      value = field.value.transformOnCreate(value)
 
     if (!Array.isArray(fieldValue.value))
       fieldValue.value = [value]

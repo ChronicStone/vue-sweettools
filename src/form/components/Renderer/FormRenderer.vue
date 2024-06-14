@@ -20,15 +20,18 @@ const i18n = useTranslations()
 const _formSchema = computed<FormSchema>(() => props.schema)
 const _modalMode = computed<boolean>(() => props.modalMode)
 
+useProvideFormSchema(_formSchema)
+
 const formTestId = useProvideFormTestId(_formSchema)
 const libConfig = useGlobalConfig(props.schema)
 
 const { formFields, filteredFormFields, isMultiStep, formSteps, currentStep }
   = useProvideFormFields(_formSchema)
 
-const { formState, outputFormState, reset, getFieldApi } = useProvideFormState(
+const { formState, outputFormState, reset, dirty, getFieldApi } = useProvideFormState(
   formFields,
   props.data,
+  _formSchema,
 )
 
 const layoutConf = useProvideFormStyles(props.schema)
@@ -95,6 +98,7 @@ defineExpose<FormRefInstance>({
   $reset: reset,
   $validate: () => $validator.value.$validate(),
   $v: computed(() => $validator.value),
+  $dirty: computed(() => dirty.value),
   ...(isMultiStep.value && {
     nextStep,
     previousStep,

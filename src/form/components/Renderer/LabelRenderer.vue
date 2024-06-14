@@ -8,6 +8,8 @@ const props = defineProps<{
   required: boolean
   collapsed?: boolean
   renderDescription?: boolean
+  isDirty?: boolean
+  resetField?: () => void
 }>()
 const emit = defineEmits<{ (e: 'update:collapsed', value: boolean): void }>()
 const collapsed = computed({
@@ -16,7 +18,7 @@ const collapsed = computed({
 })
 
 const collapsible = computed<boolean>(
-  () => (props.field as ObjectField)?.collapsible ?? true,
+  () => (props.field as ObjectField)?.collapsible ?? false,
 )
 </script>
 
@@ -85,6 +87,16 @@ const collapsible = computed<boolean>(
         :description="field.description"
         :field-label="field.label ?? ''"
       />
+      <NTooltip v-if="isDirty">
+        {{ $t('form.resetField') }}
+        <template #trigger>
+          <NButton text size="tiny" @click="resetField">
+            <template #icon>
+              <mdi:reload />
+            </template>
+          </NButton>
+        </template>
+      </NTooltip>
     </div>
   </div>
 </template>

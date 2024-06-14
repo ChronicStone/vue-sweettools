@@ -146,6 +146,8 @@ export default {
         :field="field"
         :dependencies="fieldContext.dependencies.value"
         :required="fieldContext.required.value"
+        :is-dirty="fieldContext.dirty.value"
+        :reset-field="fieldContext.resetField"
       />
 
       <FieldComponent
