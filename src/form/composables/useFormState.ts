@@ -12,7 +12,7 @@ const [useProvideFormState, _useFormState] = createInjectionState(
     formData: Record<string, unknown> | undefined,
     formSchema: ComputedRef<FormSchema>,
   ) => {
-    const initialState = JSON.parse(JSON.stringify(mapFieldsInitialState(getFieldApi, formData ?? {}, fields.value)))
+    const initialState = JSON.parse(JSON.stringify(mapFieldsInitialState(getFieldApi, preformatFormState(fields.value, formData ?? {}, []), fields.value)))
     const formState = ref<{ [key: string]: any }>(initialState)
     const outputFormState = computed(() =>
       mapFieldsOutputState(getFieldApi, { ...formState.value }, fields.value),
