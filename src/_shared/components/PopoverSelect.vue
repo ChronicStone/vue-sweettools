@@ -50,6 +50,7 @@ function updateValue(value: QuickFilterPrimitive[]) {
     class="!p-0"
     placement="bottom-start"
     :on-update:show="focusSearch"
+    trigger="click"
   >
     <template #trigger>
       <NButton size="small" dashed>
@@ -73,29 +74,31 @@ function updateValue(value: QuickFilterPrimitive[]) {
 
           <template v-if="multiple && Array.isArray(modelValue) && modelValue.length">
             <NDivider vertical class="!m-0" />
-            <NTag
-              v-for="(item, index) in modelValue.slice(0, 3)"
-              :key="index" size="small"
-              closable
-              :bordered="false"
-              :on-close="() => removeValue(index)"
-            >
-              <component :is="renderVNode(getValueLabel(item))" />
-            </NTag>
+            <div v-auto-animate class="flex  gap-2">
+              <NTag
+                v-for="(item, index) in modelValue.slice(0, 3)"
+                :key="index" size="small"
+                closable
+                :bordered="false"
+                :on-close="() => removeValue(index)"
+              >
+                <component :is="renderVNode(getValueLabel(item))" />
+              </NTag>
 
-            <NPopover v-if="modelValue.length > 3" trigger="hover" placement="bottom-start">
-              <template #trigger>
-                <NTag size="small">
-                  + {{ modelValue.length - 3 }}
-                </NTag>
-              </template>
+              <NPopover v-if="modelValue.length > 3" trigger="hover" placement="bottom-start">
+                <template #trigger>
+                  <NTag size="small">
+                    + {{ modelValue.length - 3 }}
+                  </NTag>
+                </template>
 
-              <div class="flex flex-wrap gap-2 max-w-30">
-                <NTag v-for="(item, index) in modelValue.slice(3)" :key="index" size="small" closable :on-close="() => removeValue(index)">
-                  <component :is="renderVNode(getValueLabel(item))" />
-                </NTag>
-              </div>
-            </NPopover>
+                <div class="flex flex-wrap gap-2 max-w-30">
+                  <NTag v-for="(item, index) in modelValue.slice(3)" :key="index" size="small" closable :on-close="() => removeValue(index)">
+                    <component :is="renderVNode(getValueLabel(item))" />
+                  </NTag>
+                </div>
+              </NPopover>
+            </div>
           </template>
         </div>
       </NButton>

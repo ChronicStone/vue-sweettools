@@ -177,7 +177,7 @@ export type DataSource<
     totalDocs: number
     totalPages: number
   }>
-  : (params: FetchParams) => MaybePromise<T[]>
+  : () => MaybePromise<T[]>
 
 export type RemoteDataSource<
   T extends GenericObject = GenericObject,

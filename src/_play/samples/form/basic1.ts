@@ -8,7 +8,7 @@ const { sample, formData } = defineFormSchemaSample({
     title: 'Basic form - field types',
     fullScreen: true,
     fields: [
-      { key: 'text', label: 'Text', type: 'text', required: true },
+      { key: 'text', label: 'Text', type: 'text', required: true, dirtyCheck: true },
       {
         key: 'treeSelect',
         label: 'Tree select',

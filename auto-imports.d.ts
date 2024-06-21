@@ -16,6 +16,7 @@ declare global {
   const MODAL_OVERLAY_INJECTION_KEY: typeof import('./src/_shared/config/injectionKeys')['MODAL_OVERLAY_INJECTION_KEY']
   const PLUGIN_CONF_INJECTION_KEY: typeof import('./src/_shared/config/injectionKeys')['PLUGIN_CONF_INJECTION_KEY']
   const RUNTIME_COLS_CONFIG_SCHEMA: typeof import('./src/data-list/composables/useTableColums')['RUNTIME_COLS_CONFIG_SCHEMA']
+  const appendExtraProperties: typeof import('./src/form/utils/state')['appendExtraProperties']
   const arrayToObject: typeof import('./src/_shared/utils/array')['arrayToObject']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
@@ -75,7 +76,10 @@ declare global {
   const ignorableWatch: typeof import('@vueuse/core')['ignorableWatch']
   const inject: typeof import('vue')['inject']
   const injectLocal: typeof import('@vueuse/core')['injectLocal']
+  const isArrayField: typeof import('./src/form/utils/state')['isArrayField']
   const isDefined: typeof import('@vueuse/core')['isDefined']
+  const isDirty: typeof import('./src/_shared/utils/state')['isDirty']
+  const isObjectField: typeof import('./src/form/utils/state')['isObjectField']
   const isProxy: typeof import('vue')['isProxy']
   const isReactive: typeof import('vue')['isReactive']
   const isReadonly: typeof import('vue')['isReadonly']
@@ -88,6 +92,8 @@ declare global {
   const mapFieldsOutputState: typeof import('./src/form/utils/state')['mapFieldsOutputState']
   const mapFilterInitialState: typeof import('./src/data-list/utils/query')['mapFilterInitialState']
   const mapQueryFetchParams: typeof import('./src/data-list/utils/query')['mapQueryFetchParams']
+  const mapQuickFilterInitialState: typeof import('./src/data-list/utils/query')['mapQuickFilterInitialState']
+  const mapQuickFilters: typeof import('./src/data-list/utils/query')['mapQuickFilters']
   const mapRelativeKeyPath: typeof import('./src/_shared/utils/object')['mapRelativeKeyPath']
   const mapTableFilters: typeof import('./src/data-list/utils/query')['mapTableFilters']
   const markRaw: typeof import('vue')['markRaw']
@@ -116,6 +122,7 @@ declare global {
   const pipeMergeObject: typeof import('./src/_shared/utils/object')['pipeMergeObject']
   const preRenderStringContent: typeof import('./src/_shared/utils/render')['preRenderStringContent']
   const preformatFieldDependencies: typeof import('./src/form/utils/dependencies')['preformatFieldDependencies']
+  const preformatFormState: typeof import('./src/form/utils/state')['preformatFormState']
   const propertyBuilderFilter: typeof import('./src/data-list/utils/filters')['propertyBuilderFilter']
   const provide: typeof import('vue')['provide']
   const provideLocal: typeof import('@vueuse/core')['provideLocal']
@@ -250,6 +257,7 @@ declare global {
   const useFormController: typeof import('./src/form/composables/useFormController')['useFormController']
   const useFormFields: typeof import('./src/form/composables/useFormFields')['useFormFields']
   const useFormLayout: typeof import('./src/form/composables/useFormLayout')['useFormLayout']
+  const useFormSchema: typeof import('./src/form/composables/useFormSchema')['useFormSchema']
   const useFormState: typeof import('./src/form/composables/useFormState')['useFormState']
   const useFormStyles: typeof import('./src/form/composables/useFormStyles')['useFormStyles']
   const useFormTestId: typeof import('./src/form/composables/useFormTestId')['useFormTestId']
@@ -305,6 +313,7 @@ declare global {
   const usePreferredReducedMotion: typeof import('@vueuse/core')['usePreferredReducedMotion']
   const usePrevious: typeof import('@vueuse/core')['usePrevious']
   const useProvideFormFields: typeof import('./src/form/composables/useFormFields')['useProvideFormFields']
+  const useProvideFormSchema: typeof import('./src/form/composables/useFormSchema')['useProvideFormSchema']
   const useProvideFormState: typeof import('./src/form/composables/useFormState')['useProvideFormState']
   const useProvideFormStyles: typeof import('./src/form/composables/useFormStyles')['useProvideFormStyles']
   const useProvideFormTestId: typeof import('./src/form/composables/useFormTestId')['useProvideFormTestId']
@@ -328,6 +337,7 @@ declare global {
   const useStepper: typeof import('@vueuse/core')['useStepper']
   const useStorage: typeof import('@vueuse/core')['useStorage']
   const useStorageAsync: typeof import('@vueuse/core')['useStorageAsync']
+  const useStorageRef: typeof import('./src/_shared/composables/useStorageRef')['useStorageRef']
   const useStyleTag: typeof import('@vueuse/core')['useStyleTag']
   const useSupported: typeof import('@vueuse/core')['useSupported']
   const useSwipe: typeof import('@vueuse/core')['useSwipe']
@@ -467,7 +477,10 @@ declare module 'vue' {
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly injectLocal: UnwrapRef<typeof import('@vueuse/core')['injectLocal']>
+    readonly isArrayField: UnwrapRef<typeof import('./src/form/utils/state')['isArrayField']>
     readonly isDefined: UnwrapRef<typeof import('@vueuse/core')['isDefined']>
+    readonly isDirty: UnwrapRef<typeof import('./src/_shared/utils/state')['isDirty']>
+    readonly isObjectField: UnwrapRef<typeof import('./src/form/utils/state')['isObjectField']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
     readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
@@ -480,6 +493,8 @@ declare module 'vue' {
     readonly mapFieldsOutputState: UnwrapRef<typeof import('./src/form/utils/state')['mapFieldsOutputState']>
     readonly mapFilterInitialState: UnwrapRef<typeof import('./src/data-list/utils/query')['mapFilterInitialState']>
     readonly mapQueryFetchParams: UnwrapRef<typeof import('./src/data-list/utils/query')['mapQueryFetchParams']>
+    readonly mapQuickFilterInitialState: UnwrapRef<typeof import('./src/data-list/utils/query')['mapQuickFilterInitialState']>
+    readonly mapQuickFilters: UnwrapRef<typeof import('./src/data-list/utils/query')['mapQuickFilters']>
     readonly mapRelativeKeyPath: UnwrapRef<typeof import('./src/_shared/utils/object')['mapRelativeKeyPath']>
     readonly mapTableFilters: UnwrapRef<typeof import('./src/data-list/utils/query')['mapTableFilters']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
@@ -508,6 +523,7 @@ declare module 'vue' {
     readonly pipeMergeObject: UnwrapRef<typeof import('./src/_shared/utils/object')['pipeMergeObject']>
     readonly preRenderStringContent: UnwrapRef<typeof import('./src/_shared/utils/render')['preRenderStringContent']>
     readonly preformatFieldDependencies: UnwrapRef<typeof import('./src/form/utils/dependencies')['preformatFieldDependencies']>
+    readonly preformatFormState: UnwrapRef<typeof import('./src/form/utils/state')['preformatFormState']>
     readonly propertyBuilderFilter: UnwrapRef<typeof import('./src/data-list/utils/filters')['propertyBuilderFilter']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly provideLocal: UnwrapRef<typeof import('@vueuse/core')['provideLocal']>
@@ -642,6 +658,7 @@ declare module 'vue' {
     readonly useFormController: UnwrapRef<typeof import('./src/form/composables/useFormController')['useFormController']>
     readonly useFormFields: UnwrapRef<typeof import('./src/form/composables/useFormFields')['useFormFields']>
     readonly useFormLayout: UnwrapRef<typeof import('./src/form/composables/useFormLayout')['useFormLayout']>
+    readonly useFormSchema: UnwrapRef<typeof import('./src/form/composables/useFormSchema')['useFormSchema']>
     readonly useFormState: UnwrapRef<typeof import('./src/form/composables/useFormState')['useFormState']>
     readonly useFormStyles: UnwrapRef<typeof import('./src/form/composables/useFormStyles')['useFormStyles']>
     readonly useFormTestId: UnwrapRef<typeof import('./src/form/composables/useFormTestId')['useFormTestId']>
@@ -697,6 +714,7 @@ declare module 'vue' {
     readonly usePreferredReducedMotion: UnwrapRef<typeof import('@vueuse/core')['usePreferredReducedMotion']>
     readonly usePrevious: UnwrapRef<typeof import('@vueuse/core')['usePrevious']>
     readonly useProvideFormFields: UnwrapRef<typeof import('./src/form/composables/useFormFields')['useProvideFormFields']>
+    readonly useProvideFormSchema: UnwrapRef<typeof import('./src/form/composables/useFormSchema')['useProvideFormSchema']>
     readonly useProvideFormState: UnwrapRef<typeof import('./src/form/composables/useFormState')['useProvideFormState']>
     readonly useProvideFormStyles: UnwrapRef<typeof import('./src/form/composables/useFormStyles')['useProvideFormStyles']>
     readonly useProvideFormTestId: UnwrapRef<typeof import('./src/form/composables/useFormTestId')['useProvideFormTestId']>
@@ -852,7 +870,10 @@ declare module '@vue/runtime-core' {
     readonly ignorableWatch: UnwrapRef<typeof import('@vueuse/core')['ignorableWatch']>
     readonly inject: UnwrapRef<typeof import('vue')['inject']>
     readonly injectLocal: UnwrapRef<typeof import('@vueuse/core')['injectLocal']>
+    readonly isArrayField: UnwrapRef<typeof import('./src/form/utils/state')['isArrayField']>
     readonly isDefined: UnwrapRef<typeof import('@vueuse/core')['isDefined']>
+    readonly isDirty: UnwrapRef<typeof import('./src/_shared/utils/state')['isDirty']>
+    readonly isObjectField: UnwrapRef<typeof import('./src/form/utils/state')['isObjectField']>
     readonly isProxy: UnwrapRef<typeof import('vue')['isProxy']>
     readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
@@ -865,6 +886,8 @@ declare module '@vue/runtime-core' {
     readonly mapFieldsOutputState: UnwrapRef<typeof import('./src/form/utils/state')['mapFieldsOutputState']>
     readonly mapFilterInitialState: UnwrapRef<typeof import('./src/data-list/utils/query')['mapFilterInitialState']>
     readonly mapQueryFetchParams: UnwrapRef<typeof import('./src/data-list/utils/query')['mapQueryFetchParams']>
+    readonly mapQuickFilterInitialState: UnwrapRef<typeof import('./src/data-list/utils/query')['mapQuickFilterInitialState']>
+    readonly mapQuickFilters: UnwrapRef<typeof import('./src/data-list/utils/query')['mapQuickFilters']>
     readonly mapRelativeKeyPath: UnwrapRef<typeof import('./src/_shared/utils/object')['mapRelativeKeyPath']>
     readonly mapTableFilters: UnwrapRef<typeof import('./src/data-list/utils/query')['mapTableFilters']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
@@ -893,6 +916,7 @@ declare module '@vue/runtime-core' {
     readonly pipeMergeObject: UnwrapRef<typeof import('./src/_shared/utils/object')['pipeMergeObject']>
     readonly preRenderStringContent: UnwrapRef<typeof import('./src/_shared/utils/render')['preRenderStringContent']>
     readonly preformatFieldDependencies: UnwrapRef<typeof import('./src/form/utils/dependencies')['preformatFieldDependencies']>
+    readonly preformatFormState: UnwrapRef<typeof import('./src/form/utils/state')['preformatFormState']>
     readonly propertyBuilderFilter: UnwrapRef<typeof import('./src/data-list/utils/filters')['propertyBuilderFilter']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly provideLocal: UnwrapRef<typeof import('@vueuse/core')['provideLocal']>
@@ -1027,6 +1051,7 @@ declare module '@vue/runtime-core' {
     readonly useFormController: UnwrapRef<typeof import('./src/form/composables/useFormController')['useFormController']>
     readonly useFormFields: UnwrapRef<typeof import('./src/form/composables/useFormFields')['useFormFields']>
     readonly useFormLayout: UnwrapRef<typeof import('./src/form/composables/useFormLayout')['useFormLayout']>
+    readonly useFormSchema: UnwrapRef<typeof import('./src/form/composables/useFormSchema')['useFormSchema']>
     readonly useFormState: UnwrapRef<typeof import('./src/form/composables/useFormState')['useFormState']>
     readonly useFormStyles: UnwrapRef<typeof import('./src/form/composables/useFormStyles')['useFormStyles']>
     readonly useFormTestId: UnwrapRef<typeof import('./src/form/composables/useFormTestId')['useFormTestId']>
@@ -1082,6 +1107,7 @@ declare module '@vue/runtime-core' {
     readonly usePreferredReducedMotion: UnwrapRef<typeof import('@vueuse/core')['usePreferredReducedMotion']>
     readonly usePrevious: UnwrapRef<typeof import('@vueuse/core')['usePrevious']>
     readonly useProvideFormFields: UnwrapRef<typeof import('./src/form/composables/useFormFields')['useProvideFormFields']>
+    readonly useProvideFormSchema: UnwrapRef<typeof import('./src/form/composables/useFormSchema')['useProvideFormSchema']>
     readonly useProvideFormState: UnwrapRef<typeof import('./src/form/composables/useFormState')['useProvideFormState']>
     readonly useProvideFormStyles: UnwrapRef<typeof import('./src/form/composables/useFormStyles')['useProvideFormStyles']>
     readonly useProvideFormTestId: UnwrapRef<typeof import('./src/form/composables/useFormTestId')['useProvideFormTestId']>

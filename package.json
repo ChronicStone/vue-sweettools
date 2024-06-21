@@ -1,7 +1,7 @@
 {
   "name": "@chronicstone/vue-sweettools",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.1.8",
   "private": false,
   "exports": {
     ".": {
@@ -64,11 +64,13 @@
     "@iconify-json/mdi": "1.1.46",
     "@iconify-json/system-uicons": "1.1.8",
     "@shikijs/vitepress-twoslash": "^1.3.0",
+    "@tanstack/vue-query": "^5.41.0",
     "@types/node": "20.9.0",
     "@vitejs/plugin-vue": "5.0.2",
     "@vue-macros/volar": "^0.18.17",
     "@vueuse/router": "^10.9.0",
     "axios": "^1.6.8",
+    "dayjs": "^1.11.11",
     "eslint": "8.53.0",
     "markdown-it-container": "^4.0.0",
     "naive-ui": "2.38.1",

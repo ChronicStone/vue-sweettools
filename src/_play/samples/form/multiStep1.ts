@@ -3,6 +3,12 @@ import { defineFormSchemaSample } from '../utils'
 const { sample, formData } = defineFormSchemaSample({
   title: 'Basic multi-step form',
   description: 'Example of a basic multi-step form',
+  data: {
+    userIdentity: {
+      firstName: 'John',
+      lastName: 'Doe',
+    },
+  },
   schema: {
     gridSize: 8,
     fieldSize: '8 md:4',
@@ -15,7 +21,13 @@ const { sample, formData } = defineFormSchemaSample({
         root: 'userIdentity',
         fields: [
           // firstName, lastName, email, birthDate, address, city, zipCode, country
-          { key: 'firstName', type: 'text', label: 'First name', required: false },
+          {
+            key: 'firstName',
+            type: 'text',
+            label: 'First name',
+            required: false,
+            preformat: v => v?.trim()?.toUpperCase(),
+          },
           { key: 'lastName', type: 'text', label: 'Last name', required: false },
           { key: 'email', type: 'text', label: 'Email', required: false },
           {

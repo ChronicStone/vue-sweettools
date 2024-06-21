@@ -89,7 +89,6 @@ export function useTableColumns(params: {
           title: () => renderColumnLabel('Actions'),
           key: '#internal__actions',
           sorter: false,
-          // @ts-expect-error - Weird inference issue ??
           render: (rowData, rowIndex) => <RowActions actions={rowsActions.value?.[rowIndex]?.actions ?? []} row-data={rowData} api={params.dataApi} />,
           width: maxRowActions.value * 30 + (maxRowActions.value < 3 ? (90 - maxRowActions.value * 30) : 0) + 16,
           resizable: true,

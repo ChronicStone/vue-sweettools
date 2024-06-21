@@ -62,7 +62,7 @@ export function mapQueryFetchParams(
 }
 
 function mapStaticFilters(filters: StaticFilter[]) {
-  return filters.reduce(
+  return (filters || {}).reduce(
     (acc, { key, value, matchMode, required, params, postCondition, arrayLookup, lookupAtRoot }) => ({
       ...acc,
       [key]: [
@@ -86,7 +86,7 @@ export function mapTableFilters(
   filters: DynamicFilter[],
   filterState: GenericObject,
 ) {
-  return Object.entries(filterState).reduce((acc, [key, value]) => {
+  return Object.entries(filterState || {}).reduce((acc, [key, value]) => {
     const filter = filters.find(filter => filter.key === key)
     if (
       !filter
@@ -115,7 +115,7 @@ export function mapQuickFilters(
   filters: QuickFilter[],
   filterState: GenericObject,
 ) {
-  return Object.entries(filterState).reduce<Record<string, MappedFilters[]>>((acc, [key, value]) => {
+  return Object.entries(filterState || {}).reduce<Record<string, MappedFilters[]>>((acc, [key, value]) => {
     const filter = filters.find(filter => filter.key === key)
     if (
       !filter

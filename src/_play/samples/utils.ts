@@ -2,9 +2,9 @@ import type { Narrowable } from '@/_shared/types/utils'
 import type { FormInferredData, FormSchema } from '@/form/types/form'
 
 export function defineFormSchemaSample<
-  TFormSchema extends FormSchema<StepKey, FieldKey>,
-  StepKey extends Narrowable,
-  FieldKey extends Narrowable,
+  const TFormSchema extends FormSchema<StepKey, FieldKey>,
+  const StepKey extends Narrowable,
+  const FieldKey extends Narrowable,
 >(sample: {
   title: string
   description?: string
