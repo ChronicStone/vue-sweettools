@@ -12,7 +12,8 @@ const [useProvideFormState, _useFormState] = createInjectionState(
     formData: Record<string, unknown> | undefined,
     formSchema: ComputedRef<FormSchema>,
   ) => {
-    const initialState = JSON.parse(JSON.stringify(mapFieldsInitialState(getFieldApi, preformatFormState(fields.value, formData ?? {}, []), fields.value)))
+    const preformatState = preformatFormState(fields.value, formData ?? {}, [])
+    const initialState = JSON.parse(JSON.stringify(mapFieldsInitialState(getFieldApi, preformatState, fields.value)))
     const formState = ref<{ [key: string]: any }>(initialState)
     const outputFormState = computed(() =>
       mapFieldsOutputState(getFieldApi, { ...formState.value }, fields.value),
@@ -21,7 +22,7 @@ const [useProvideFormState, _useFormState] = createInjectionState(
     function reset(clear = false) {
       formState.value = mapFieldsInitialState(
         getFieldApi,
-        clear ? {} : formData ?? {},
+        clear ? {} : preformatState ?? {},
         fields.value,
       )
     }

@@ -1,8 +1,10 @@
+/* eslint-disable ts/ban-types */
 import type { AllowedComponentProps, Component, VNodeChild, VNodeProps } from 'vue'
 import type { UploadFileInfo } from 'naive-ui'
 import type {
   ArrayVariantField,
   FormField,
+  _ArrayField,
   _BaseField,
   _FieldOptions,
 } from './fields'
@@ -41,6 +43,7 @@ interface BaseFormSchema {
   flexMode?: 'col' | 'row'
   scale?: 'small' | 'medium' | 'large'
   dirtyCheck?: boolean
+  dataStoreKeys?: string[]
 }
 
 export interface FormStep<
@@ -76,6 +79,17 @@ type ExtractFieldParams<K extends FormField<any>> = K['fieldParams'] extends (
   ? ReturnType<K['fieldParams']>
   : K['fieldParams']
 
+type ExtractArrayVirtualFields<K extends FormField<any>> =
+  K extends _ArrayField<any> ?
+    K['virtualFields'] extends infer U
+      ? U extends { [key: string]: (index: number) => any }
+        ? {
+            -readonly [K in keyof U]: ReturnType<U[K]>
+          }
+        : {}
+      : {}
+    : {}
+
 type ResolveFormType<
   K extends FormField<any>,
   P = ExtractFieldParams<K>,
@@ -99,7 +113,7 @@ type ResolveFormType<
               : never
             : K['type'] extends 'array-list' | 'array-tabs'
               ? K['fields'] extends infer U extends FormField<any>[]
-                ? FormInfoReturnType<U[number]>[]
+                ? Array<FormInfoReturnType<U[number]> & ExtractArrayVirtualFields<K>>
                 : never
               : K['type'] extends 'upload'
                 ? K extends { multiple: true }
@@ -107,7 +121,7 @@ type ResolveFormType<
                   : K extends { output: 'object' } ? UploadFileInfo : string
                 :
                 K extends { type: 'array-variant' }
-                  ? Array<ExtractVariantType<K['variants'], K['variantKey']>>
+                  ? Array<ExtractVariantType<K['variants'], K['variantKey']> & ExtractArrayVirtualFields<K>>
                   : K['type'] extends 'daterange' | 'datetimerange' | 'monthrange'
                     ? [string, string]
                     : K['type'] extends 'number' | 'range'

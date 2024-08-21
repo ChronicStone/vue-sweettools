@@ -2,6 +2,18 @@ import type { FieldApi, FormField, _ArrayField } from '../types/fields'
 import { resolveFieldDependencies } from './dependencies'
 import type { GenericObject } from '@/_shared/types/utils'
 
+function appendExtraProperties(
+  fields: Array<FormField>,
+  fieldState: Record<string, unknown>,
+) {
+  const extraProperties: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(fieldState)) {
+    if (!fields.some(field => field.key === key))
+      extraProperties[key] = value
+  }
+  return extraProperties
+}
+
 export function isArrayField(field: FormField): field is FormField & { type: 'array-list' | 'array-tabs' | 'array-variant' } {
   return field.type === 'array-list' || field.type === 'array-tabs' || field.type === 'array-variant'
 }
@@ -29,17 +41,33 @@ export function preformatFormState(
     let fieldOutput: any = getPreformatedField(fieldValue, fieldValue, field)
 
     if (isArrayField(field)) {
-      fieldOutput = ((fieldOutput ?? []) as Array<GenericObject>).map(
-        (itemValue, index) => preformatFormState(
-          field.fields ?? [],
-          itemValue,
-          [
-            ...parentKeys,
-            field.key,
-            ...(typeof index === 'number' ? [index.toString()] : []),
-          ],
-        ),
-      )
+      if (field.type === 'array-variant') {
+        fieldOutput = ((fieldValue ?? []) as Array<GenericObject>).map((itemValue, index) => {
+          const variantKey = field.variantKey
+          const fields = field.variants.find(v => v.key === itemValue[variantKey])?.fields ?? []
+          return {
+            ...itemValue,
+            ...(preformatFormState(fields, itemValue, [...parentKeys, field.key, ...(typeof index === 'number' ? [index.toString()] : [])])),
+            [variantKey]: itemValue[variantKey],
+          }
+        })
+      }
+      else {
+        fieldOutput = ((fieldOutput ?? []) as Array<GenericObject>).map(
+          (itemValue, index) => ({
+            ...itemValue,
+            ...(preformatFormState(
+              field.fields,
+              itemValue,
+              [
+                ...parentKeys,
+                field.key,
+                ...(typeof index === 'number' ? [index.toString()] : []),
+              ],
+            ) as any),
+          }),
+        )
+      }
     }
 
     if (isObjectField(field)) {
@@ -131,7 +159,16 @@ export function mapFieldsInitialState(
           }
         },
       )
+
+      if (field.virtualFields) {
+        fieldOutput = (fieldOutput as Array<GenericObject>).map((item, index) => {
+          for (const key in field.virtualFields)
+            item[key] = typeof item[key] === 'undefined' ? field.virtualFields[key](index) : item[key]
+          return item
+        })
+      }
     }
+
     else if (field.type === 'object' || field.type === 'group') {
       fieldOutput = {
         ...('extraProperties' in field && field.extraProperties === true
@@ -147,10 +184,6 @@ export function mapFieldsInitialState(
         ),
       }
     }
-
-    if (field.type === 'object' || field.type === 'group')
-
-      console.log('fieldOutput::post', fieldOutput)
 
     if (!fieldOutput)
       fieldOutput = getFallbackFieldValue(field)
@@ -193,12 +226,13 @@ export function mapFieldsOutputState(
     )
 
     const fieldApi = getFieldApi(field.key, parentKeys)
-    const includeField = !field.condition
-      ? true
-      : field.condition(fieldDependencies, fieldApi) || field?.conditionEffect !== 'hide'
+    const ignoreField = !field.condition
+      ? false
+      : (field.condition(fieldDependencies, fieldApi) && field?.conditionEffect !== 'disable')
 
-    if (!includeField)
+    if (ignoreField)
       continue
+
     let fieldOutput = fieldValue
 
     if (
@@ -246,6 +280,13 @@ export function mapFieldsOutputState(
           }
         },
       )
+      if (field.virtualFields) {
+        fieldOutput = (fieldOutput as Array<GenericObject>).map((item, index) => {
+          for (const key in field.virtualFields)
+            item[key] = fieldValue[index][key]
+          return item
+        })
+      }
     }
     else if (field.type === 'object' || field.type === 'group') {
       fieldOutput = {

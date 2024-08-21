@@ -73,6 +73,11 @@ export function useArrayField(
     if (field.value.transformOnCreate)
       value = field.value.transformOnCreate(value)
 
+    if (field.value.virtualFields) {
+      for (const key in field.value.virtualFields ?? {})
+        value[key] = field.value.virtualFields[key](fieldValue.value?.length ?? 0)
+    }
+
     if (!Array.isArray(fieldValue.value))
       fieldValue.value = [value]
     else fieldValue.value.push(value)

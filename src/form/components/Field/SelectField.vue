@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { NSelect } from 'naive-ui'
-import type { Value } from 'naive-ui/es/select/src/interface'
+import type { SelectBaseOption, Value } from 'naive-ui/es/select/src/interface'
 import type { FieldComponentEmits, FieldComponentProps, SelectField } from '@/form/types/fields'
 
 const props = defineProps<FieldComponentProps>()
-
 const emit = defineEmits<FieldComponentEmits>()
-
 const i18n = useTranslations()
 
 const { scale } = useFormStyles()
@@ -27,11 +25,19 @@ const createOptionLabel = computed(() => {
   else
     return field.value.createOption?.label ?? i18n.t('form.fields.select.createOptionButton')
 })
+
+function handleSelect(value: Array<string | number | null> | string | number | null, option: SelectBaseOption | null | SelectBaseOption[]) {
+  if (!field.value.multiple || (field.value.multiple && !props.context.rawInputProps.value.max)) { fieldValue.value = value as any }
+  else if (props.context.rawInputProps.value.max) {
+    if (((fieldValue.value as Array<any>).length + 1) <= +props.context.rawInputProps.value.max || (value as any[]).length < (fieldValue.value as any[]).length)
+      fieldValue.value = value as any
+  }
+}
 </script>
 
 <template>
   <NSelect
-    v-model:value="fieldValue"
+    :value="fieldValue"
     :style="group ? { width: `${size} !important` } : {}"
     :placeholder="context.placeholder.value"
     :options="context.options.value"
@@ -41,6 +47,7 @@ const createOptionLabel = computed(() => {
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
     :size="scale"
+    :on-update:value="handleSelect"
     @blur="validator?.$touch"
   >
     <template v-if="createOptionsEnabled || allowOptionsRefresh" #action>

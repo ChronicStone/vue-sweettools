@@ -3,10 +3,15 @@ import { defineFormSchemaSample } from '../utils'
 const { sample, formData } = defineFormSchemaSample({
   title: 'Basic form - field types',
   description: 'This form shows all the available field types.',
-
+  data: {
+    arrayVariant: [
+      { text: 'test1', number: 1, type: 'type1' },
+    ],
+  },
   schema: {
     title: 'Basic form - field types',
     fullScreen: true,
+    dirtyCheck: true,
     fields: [
       { key: 'text', label: 'Text', type: 'text', required: true, dirtyCheck: true },
       {

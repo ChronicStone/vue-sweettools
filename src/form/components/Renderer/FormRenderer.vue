@@ -16,6 +16,9 @@ const props = defineProps<{
   | null
 }>()
 
+const libConfig = useGlobalConfig(props.schema)
+libConfig.formConfig.value?.onFormRender?.(props.schema, props.data)
+
 const i18n = useTranslations()
 const _formSchema = computed<FormSchema>(() => props.schema)
 const _modalMode = computed<boolean>(() => props.modalMode)
@@ -23,7 +26,6 @@ const _modalMode = computed<boolean>(() => props.modalMode)
 useProvideFormSchema(_formSchema)
 
 const formTestId = useProvideFormTestId(_formSchema)
-const libConfig = useGlobalConfig(props.schema)
 
 const { formFields, filteredFormFields, isMultiStep, formSteps, currentStep }
   = useProvideFormFields(_formSchema)

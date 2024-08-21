@@ -37,7 +37,6 @@ export function mapQuickFilterInitialState(
   const _filters = filters.filter(f => f.condition?.() ?? true)
   const state: { [key: string]: any } = {}
   _filters.forEach((filter) => {
-    console.log(filter.key, filter)
     baseState[filter.key] && !clearMode
       ? (state[filter.key] = baseState[filter.key])
       : (state[filter.key] = filter.default ?? (filter.multiple ? [] : undefined))

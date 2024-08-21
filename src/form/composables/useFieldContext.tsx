@@ -338,14 +338,6 @@ export function useFieldContext(
   }
 
   return {
-    _evalCondition,
-    _evalOptions,
-    _options,
-    fieldId,
-    fieldFullPath,
-    required,
-    condition,
-    conditionEffect,
     options,
     dependencies,
     inputProps,

@@ -273,6 +273,7 @@ export interface SelectFieldParams {
   }) => VNodeChild
   createTags?: boolean
   virtualScroll?: boolean
+  max?: number
 }
 
 export interface SelectField {
@@ -556,6 +557,7 @@ export interface _ArrayField<FieldKey extends Narrowable = string> {
   collapsed?: boolean
   headerTemplate?: (item: Record<string, any>, index: number) => string
   transformOnCreate?: (item: Record<string, any>) => Record<string, any>
+  virtualFields?: { [key: string]: (index: number) => any }
   actions?: {
     [key in 'deleteItem' | 'moveUp' | 'moveDown']?:
       | boolean
@@ -706,6 +708,8 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   ignore?: boolean
   labelExtra?: () => VNodeChild
   dirtyCheck?: boolean
+  wrapperStyle?: string | CSSProperties
+  wrapperClass?: string | Array<string | Record<string, boolean>>
 }
 
 export type FormField<FieldKey extends Narrowable = string> =

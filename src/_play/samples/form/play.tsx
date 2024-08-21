@@ -1,43 +1,37 @@
 import { defineFormSchemaSample } from '../utils'
 
 const { sample, formData } = defineFormSchemaSample({
-  title: 'Playground',
+  title: 'Basic form - field types',
+  description: 'This form shows all the available field types.',
   data: {
-    locales: [{ locale: 'fr', name: 'Français' }, { locale: 'en', name: 'English' }],
+    array: [{ value: 'a', id: 1 }, { value: 'b', id: 2 }, { value: 'c', id: 3 }],
   },
   schema: {
-    gridSize: 8,
-    fieldSize: 8,
+    title: 'Basic form - field types',
     fullScreen: true,
+    dirtyCheck: true,
     fields: [
       {
-        label: 'Locales',
-        type: 'object',
-        key: 'locales',
-        transform: v => [{ locale: 'en', name: v.en }, { locale: 'fr', name: v.fr }],
-        preformat: v => !v
-          ? { en: '', fr: '' }
-          : ({
-              en: v.find(({ locale }) => locale === 'en')?.name,
-              fr: v.find(({ locale }) => locale === 'fr')?.name,
-            }),
+        type: 'array-list',
+        key: 'array',
+        label: 'Array',
+        extraProperties: true,
         fields: [
           {
-            key: 'en',
+            key: 'value',
+            label: 'Value',
             type: 'text',
-            label: 'English',
             required: true,
-          },
-          {
-            key: 'fr',
-            type: 'text',
-            label: 'French',
-            required: true,
+            transform: v => v?.trim()?.toUpperCase() as string,
+            conditionEffect: 'disable',
+            condition: () => false,
           },
         ],
       },
     ],
   },
 })
+
+// type Result = Expect<Equal<typeof sample.formData, { text: string }>>;
 
 export default { sample }
