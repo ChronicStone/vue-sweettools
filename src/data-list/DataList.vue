@@ -4,56 +4,35 @@ import { vAutoAnimate } from "@formkit/auto-animate/vue";
 import type { DataListSchema } from "./types/datalist";
 import Lazy from "@/_shared/components/Lazy.vue";
 
-const {
-  expandedContent,
-  expandable,
-  content,
-  remote,
-  datasource,
-  rowActions,
-  persistency,
-  listKey,
-  filters,
-  staticFilters,
-  searchQuery,
-  defaultSort,
-  pagination,
-  defaultPageSize,
-  sortOptions,
-  maxHeight,
-  actions,
-  selection,
-  rowIdKey,
-  compact,
-  frameless,
-  footerClass,
-  footerStyle,
-  headerClass,
-  headerStyle,
-} = defineProps<DataListSchema<any, any, any>>();
+const props = withDefaults(defineProps<DataListSchema<any, any, any>>(), {
+  selection: true,
+  pagination: true,
+  compact: false,
+  frameless: false,
+});
 
-const listKeyRef = computed(() => listKey ?? "DEFAULT_LIST");
-const filtersRef = computed(() => filters ?? []);
-const staticFiltersRef = computed(() => staticFilters ?? []);
-const searchQueryRef = computed(() => searchQuery ?? []);
-const defaultSortRef = computed(() => defaultSort);
-const remoteRef = computed(() => remote);
-const actionsRef = computed(() => actions ?? []);
-const rowActionsRef = computed(() => rowActions ?? []);
+const listKeyRef = computed(() => props.listKey ?? "DEFAULT_LIST");
+const filtersRef = computed(() => props.filters ?? []);
+const staticFiltersRef = computed(() => props.staticFilters ?? []);
+const searchQueryRef = computed(() => props.searchQuery ?? []);
+const defaultSortRef = computed(() => props.defaultSort);
+const remoteRef = computed(() => props.remote);
+const actionsRef = computed(() => props.actions ?? []);
+const rowActionsRef = computed(() => props.rowActions ?? []);
 
-const sortOptionsWithDefault = computed(() => sortOptions ?? []);
-const maxHeightWithDefault = computed(() => maxHeight ?? "56vh");
-const paginationWithDefault = computed(() => pagination ?? true);
-const selectionWithDefault = computed(() => selection ?? true);
-const compactWithDefault = computed(() => compact ?? false);
-const framelessWithDefault = computed(() => frameless ?? false);
-const footerClassWithDefault = computed(() => footerClass);
-const footerStyleWithDefault = computed(() => footerStyle);
-const headerClassWithDefault = computed(() => headerClass);
-const headerStyleWithDefault = computed(() => headerStyle);
+const sortOptionsWithDefault = computed(() => props.sortOptions ?? []);
+const maxHeightWithDefault = computed(() => props.maxHeight ?? "56vh");
+const paginationWithDefault = computed(() => props.pagination);
+const selectionWithDefault = computed(() => props.selection);
+const compactWithDefault = computed(() => props.compact);
+const framelessWithDefault = computed(() => props.frameless);
+const footerClassWithDefault = computed(() => props.footerClass);
+const footerStyleWithDefault = computed(() => props.footerStyle);
+const headerClassWithDefault = computed(() => props.headerClass);
+const headerStyleWithDefault = computed(() => props.headerStyle);
 
-const defaultPageSizeWithDefault = computed(() => defaultPageSize);
-const rowIdKeyWithDefault = computed(() => rowIdKey);
+const defaultPageSizeWithDefault = computed(() => props.defaultPageSize);
+const rowIdKeyWithDefault = computed(() => props.rowIdKey);
 
 const scrollbarContainerRef = ref<InstanceType<typeof NScrollbar>>();
 
@@ -64,14 +43,14 @@ const queryState = useQueryState({
   panelFilters: filtersRef,
   quickFilters: computed(() => []),
   staticFilters: staticFiltersRef,
-  persistency,
+  persistency: props.persistency,
   defaultSort: defaultSortRef,
   defaultPageSize: defaultPageSizeWithDefault.value,
 });
 
 const resolver = useDataResolver({
   remote: remoteRef,
-  datasource,
+  datasource: props.datasource,
   fetchParams: queryState.fetchParams,
   pagination: queryState.paginationState,
   allSelected: queryState.selectAll,
@@ -87,7 +66,7 @@ const lastSelectedRowId = ref<string | null>(null);
 const mappedActions = useDataActions({
   actions: actionsRef,
   fetchParams: queryState.fetchParams,
-  data: remote ? queryState.data : resolver.localDataStore,
+  data: props.remote ? queryState.data : resolver.localDataStore,
   internalApi: dataApi,
   selectionState: queryState,
 });

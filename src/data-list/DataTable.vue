@@ -8,64 +8,41 @@ import type { DataTableSchema } from "./types/datatable";
 const tableId = `TABLE_${Date.now()}`;
 const themeVars = useThemeVars();
 
-const {
-  maxHeight,
-  tableKey,
-  columns,
-  expandedContent,
-  expandable,
-  remote,
-  datasource,
-  persistency,
-  filters,
-  staticFilters,
-  searchQuery,
-  defaultSort,
-  defaultPageSize,
-  sortOptions,
-  actions,
-  selection,
-  rowIdKey,
-  pagination,
-  compact,
-  rowActions,
-  frameless,
-  draggable,
-  onRowDrag,
-  headerClass,
-  headerStyle,
-  footerClass,
-  footerStyle,
-  quickFilters,
-} = defineProps<DataTableSchema<any, any, any>>();
+const props = withDefaults(defineProps<DataTableSchema<any, any, any>>(), {
+  selection: true,
+  pagination: true,
+  compact: false,
+  frameless: false,
+  draggable: false,
+});
 
-const tableKeyRef = computed(() => tableKey ?? "DEFAULT_LIST");
-const columnsRef = computed(() => columns);
-const filtersRef = computed(() => filters ?? []);
-const staticFiltersRef = computed(() => staticFilters ?? []);
-const quickFiltersRef = computed(() => quickFilters ?? []);
-const searchQueryRef = computed(() => searchQuery ?? []);
-const defaultSortRef = computed(() => defaultSort);
-const remoteRef = computed(() => remote);
-const actionsRef = computed(() => actions ?? []);
-const selectionRef = computed(() => selection ?? true);
-const persistencyRef = computed(() => persistency ?? false);
-const rowActionsRef = computed(() => rowActions ?? []);
-const expandableRef = computed(() => expandable);
-const expandedContentRef = computed(() => expandedContent);
-const draggableRef = computed(() => draggable ?? false);
+const tableKeyRef = computed(() => props.tableKey ?? "DEFAULT_LIST");
+const columnsRef = computed(() => props.columns);
+const filtersRef = computed(() => props.filters ?? []);
+const staticFiltersRef = computed(() => props.staticFilters ?? []);
+const quickFiltersRef = computed(() => props.quickFilters ?? []);
+const searchQueryRef = computed(() => props.searchQuery ?? []);
+const defaultSortRef = computed(() => props.defaultSort);
+const remoteRef = computed(() => props.remote);
+const actionsRef = computed(() => props.actions ?? []);
+const selectionRef = computed(() => props.selection);
+const persistencyRef = computed(() => props.persistency ?? false);
+const rowActionsRef = computed(() => props.rowActions ?? []);
+const expandableRef = computed(() => props.expandable);
+const expandedContentRef = computed(() => props.expandedContent);
+const draggableRef = computed(() => props.draggable);
 
-const sortOptionsWithDefault = computed(() => sortOptions ?? []);
-const maxHeightWithDefault = computed(() => maxHeight ?? "60vh");
-const paginationWithDefault = computed(() => pagination ?? true);
-const compactWithDefault = computed(() => compact ?? false);
-const framelessWithDefault = computed(() => frameless ?? false);
-const headerClassWithDefault = computed(() => headerClass);
-const headerStyleWithDefault = computed(() => headerStyle);
-const footerClassWithDefault = computed(() => footerClass);
-const footerStyleWithDefault = computed(() => footerStyle);
-const defaultPageSizeWithDefault = computed(() => defaultPageSize ?? 50);
-const rowIdKeyWithDefault = computed(() => rowIdKey);
+const sortOptionsWithDefault = computed(() => props.sortOptions ?? []);
+const maxHeightWithDefault = computed(() => props.maxHeight ?? "60vh");
+const paginationWithDefault = computed(() => props.pagination);
+const compactWithDefault = computed(() => props.compact);
+const framelessWithDefault = computed(() => props.frameless);
+const headerClassWithDefault = computed(() => props.headerClass);
+const headerStyleWithDefault = computed(() => props.headerStyle);
+const footerClassWithDefault = computed(() => props.footerClass);
+const footerStyleWithDefault = computed(() => props.footerStyle);
+const defaultPageSizeWithDefault = computed(() => props.defaultPageSize ?? 50);
+const rowIdKeyWithDefault = computed(() => props.rowIdKey);
 
 const tableWrapperRef = ref<HTMLElement>();
 const tableRef = ref<InstanceType<typeof NDataTable>>();
@@ -92,7 +69,7 @@ const queryState = useQueryState({
 
 const resolver = useDataResolver({
   remote: remoteRef,
-  datasource,
+  datasource: props.datasource,
   fetchParams: queryState.fetchParams,
   pagination: queryState.paginationState,
   allSelected: queryState.selectAll,
@@ -107,7 +84,7 @@ const dataApi = useDataApi({ queryState, resolver });
 const mappedActions = useDataActions({
   actions: actionsRef,
   fetchParams: queryState.fetchParams,
-  data: remote ? queryState.data : resolver.localDataStore,
+  data: props.remote ? queryState.data : resolver.localDataStore,
   internalApi: dataApi,
   selectionState: queryState,
 });
@@ -159,7 +136,7 @@ const { summaryTableRef, columnGroupDef, summaryRows } = useTableSummary({
 
 useTableDrag({
   draggable: draggableRef,
-  onRowDrag: computed(() => onRowDrag),
+  onRowDrag: computed(() => props.onRowDrag),
   data: queryState.data,
   tableRef,
   columnsConfig: columnsState.columnConfig,
@@ -258,7 +235,7 @@ onMounted(() => {
 });
 
 onBeforeMount(() => {
-  const flatCols = getFlatColumns(columns);
+  const flatCols = getFlatColumns(props.columns);
   // GET COLUMN KEYS THAT ARE DUPLICATED
   const duplicateKeys = flatCols
     .map((col) => col.key)
