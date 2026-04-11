@@ -46,7 +46,7 @@ const {
   enableSelection,
   selectAll,
   listApi,
-} = definePropsRefs<{
+} = defineProps<{
   data: GenericObject
   content: DataListSchema['content']
   expandedContent?: DataListSchema['expandedContent']
@@ -61,9 +61,9 @@ const {
 const collapsed = ref<boolean>(true)
 const { permissionValidator } = useGlobalConfig()
 const _actions = computed(() =>
-  rowActions.value
+  rowActions
     .map(action => ({
-      ...(action.icon && { icon: renderIcon(typeof action.icon === 'function' ? action.icon({ rowData: data.value }) : action.icon) }),
+      ...(action.icon && { icon: renderIcon(typeof action.icon === 'function' ? action.icon({ rowData: data }) : action.icon) }),
       label: action.link
         ? () => (
           <RouterLink to={action.link as RouteLocationRaw}>
@@ -75,15 +75,15 @@ const _actions = computed(() =>
       props: {
         onClick: () =>
           action?.action?.({
-            rowData: data.value,
-            tableApi: listApi.value,
+            rowData: data,
+            tableApi: listApi,
           }),
       },
       _enable: computed(() =>
         typeof action.condition === 'function'
           ? action.condition({
-            rowData: data.value,
-            tableApi: listApi.value,
+            rowData: data,
+            tableApi: listApi,
           })
           : true,
       ),
@@ -97,13 +97,17 @@ const _actions = computed(() =>
 )
 
 function handleSelection(event: MouseEvent, value: boolean) {
-  if (selectAll.value)
+  if (selectAll)
     return
   emit('update:selected', value, event.shiftKey)
 }
 
+function toggleCollapsed() {
+  collapsed.value = !collapsed.value
+}
+
 const buttonGridSize = computed(() => {
-  return !_actions.value.length && (expandedContent && (expandable.value ? expandable.value({ rowData: data.value }) : true)) ? 2 : 1
+  return !_actions.value.length && (expandedContent && (expandable ? expandable({ rowData: data, tableApi: listApi }) : true)) ? 2 : 1
 })
 </script>
 
@@ -148,11 +152,11 @@ const buttonGridSize = computed(() => {
         >
           <NDivider v-if="!isSmallScreen" vertical class="!m-0" />
           <NButton
-            v-if="expandedContent && (expandable ? expandable({ rowData: data }) : true)"
+            v-if="expandedContent && (expandable ? expandable({ rowData: data, tableApi: listApi }) : true)"
             class="w-full !md:w-auto col-span-1"
             :size="isSmallScreen ? 'medium' : 'small'"
             secondary
-            @click="collapsed = !collapsed"
+            @click="toggleCollapsed"
           >
             <template #icon>
               <mdi:chevron-right
@@ -175,7 +179,7 @@ const buttonGridSize = computed(() => {
         </div>
       </div>
 
-      <NCollapseTransition v-if="expandedContent && (expandable?.({ rowData: data }) ?? true)" :show="!collapsed">
+      <NCollapseTransition v-if="expandedContent && (expandable?.({ rowData: data, tableApi: listApi }) ?? true)" :show="!collapsed">
         <div class="w-full h-auto pt-4 flex flex-col gap-4">
           <NDivider class="!m-0" />
           <Component :is="renderVNode(expandedContent, { rowData: data, tableApi: listApi })" />

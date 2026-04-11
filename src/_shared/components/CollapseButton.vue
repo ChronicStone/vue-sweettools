@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { modelValue: collapsed } = defineModels<{ modelValue: boolean }>()
+const collapsed = defineModel<boolean>({ required: true })
 </script>
 
 <template>

@@ -99,3 +99,6 @@ export type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T exte
   : false
 
 export type MaybePromise<T> = T | Promise<T>
+
+// eslint-disable-next-line ts/ban-types
+export type LooseString<T extends string> = T | (string & {})

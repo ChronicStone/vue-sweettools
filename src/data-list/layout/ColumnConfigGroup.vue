@@ -1,7 +1,6 @@
 <!-- eslint-disable ts/no-use-before-define -->
 
 <script setup lang="ts">
-import { definePropsRefs } from 'unplugin-vue-macros/macros'
 import {
   NButton,
   NCheckbox,
@@ -11,8 +10,8 @@ import type { RuntimeColsConfig } from '../composables/useTableColums.js'
 
 defineOptions({ name: 'ColumnConfigGroup' })
 
-const { depth } = definePropsRefs<{ depth: number, index: number }>()
-const { column } = defineModels<{ column: RuntimeColsConfig[number] }>()
+const { depth } = defineProps<{ depth: number, index: number }>()
+const column = defineModel<RuntimeColsConfig[number]>('column', { required: true })
 
 const collapsed = ref<boolean>(true)
 const collapsible = computed(() => {

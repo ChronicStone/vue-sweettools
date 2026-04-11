@@ -4,6 +4,7 @@ import type { ComputedRef } from 'vue'
 import type { DataApi, DataResolverState, FullQueryState, RowAction } from '../types/shared'
 import type { DataTableColumn, DataTableColumnGroup, DataTableSchema, TDataTableColumn } from '../types/datatable'
 import RowActions from '../content/RowActions.vue'
+import ExpandedContentWrapper from '../content/ExpandedContentWrapper.vue'
 
 const BASE_CONF_CONF_SCHEMA = z.object({
   label: z.union([z.string(), z.function()]).optional(),
@@ -74,7 +75,11 @@ export function useTableColumns(params: {
         {
           type: 'expand',
           expandable: rowData => params.expandable?.value?.({ rowData, tableApi: params.dataApi }) ?? true,
-          renderExpand: rowData => params.expandedContent.value?.({ rowData, tableApi: params.dataApi }) ?? '',
+          renderExpand: rowData => (
+            <ExpandedContentWrapper>
+              {params.expandedContent.value?.({ rowData, tableApi: params.dataApi }) ?? ''}
+            </ExpandedContentWrapper>
+          ),
         } satisfies TDataTableColumn,
         ]
       : []),
@@ -84,8 +89,7 @@ export function useTableColumns(params: {
           title: () => renderColumnLabel('Actions'),
           key: '#internal__actions',
           sorter: false,
-          // @ts-expect-error - Weird inference issue ??
-          render: (rowData, rowIndex) => <RowActions actions={rowsActions.value?.[rowIndex]?.actions ?? []} row-data={rowData} api={params.dataApi} />,
+          render: (rowData, rowIndex) => <RowActions actions={rowsActions.value?.[rowIndex]?.actions ?? []} rowData={rowData} api={params.dataApi} />,
           width: maxRowActions.value * 30 + (maxRowActions.value < 3 ? (90 - maxRowActions.value * 30) : 0) + 16,
           resizable: true,
         },
@@ -225,7 +229,7 @@ function getPersistedColsConfig(
 function mapColumnsRecursively(
   column: DataTableColumn | DataTableColumnGroup,
   colsConfig: ReturnType<typeof mapColumnsConfig>,
-  params: { i18n: ReturnType<typeof useTranslations>, searchQuery: string[] },
+  params: { i18n: ReturnType<typeof useTranslations>; searchQuery: string[] },
 ): TDataTableColumn {
   const config = colsConfig.find(c => c.key === column.key)
   if (!(config?.visible ?? true)) {

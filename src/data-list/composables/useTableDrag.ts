@@ -42,8 +42,7 @@ export function useTableDrag(params: {
       changedRows.splice(newIndex! - start, 0, draggedRow)
       for (let index = start; index < start + range; index++)
         params.data.value[index] = changedRows[index - start]
-
-      params.onRowDrag.value?.(unref([...changedRows]))
+      params.onRowDrag.value?.(unref([...changedRows]) as any)
 
       const storeStartIndex = params.localStore.value.findIndex(row => row.__$ROW_ID__ === targetRows[0].__$ROW_ID__)
       for (let index = 0; index < changedRows.length; index++)

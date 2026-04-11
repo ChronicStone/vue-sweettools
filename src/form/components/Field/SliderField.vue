@@ -4,6 +4,7 @@ import type { FieldComponentEmits, FieldComponentProps } from '@/form/types/fiel
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
+
 const fieldValue = computed({
   get: () => props.modelValue as number | number[] | undefined,
   set: value => emit('update:modelValue', value),
@@ -12,7 +13,6 @@ const fieldValue = computed({
 
 <template>
   <div
-    v-if="['slider'].includes(field.type)"
     class="flex flex-col gap-1 justify-center items-center h-full"
   >
     <NSlider

@@ -14,6 +14,7 @@ const fieldValue = computed({
 const formStyle = useFormStyles()
 const gridSize = useBreakpointStyle(props.field.gridSize ?? '', 'grid-cols')
 
+const { scale } = useFormStyles()
 const formTestId = useFormTestId()
 const fieldKey = computed(() =>
   [...props.parentKey, props.field.key].join('.'),
@@ -35,6 +36,7 @@ const testIdConfig = [
     v-bind="context.inputProps.value"
     v-testid="testIdConfig"
     :disabled="disabled"
+    :size="scale"
   >
     <div
       class="grid gap-4"
@@ -47,6 +49,7 @@ const testIdConfig = [
         :value="((option as any).value as string)"
         :label="((option as any).label as string)"
         :disabled="disabled"
+        :size="scale"
         @blur="validator?.$touch"
       />
     </div>

@@ -3,16 +3,18 @@ import { get } from '@vueuse/core'
 import type { CascaderOption, SelectOption, TreeSelectOption } from 'naive-ui'
 import type { FieldApi, FormField } from '../types/fields'
 import { mapFieldsInitialState, mapFieldsOutputState } from '../utils/state'
+import type { FormSchema } from '../types/form'
 import type { useFieldContext } from './useFieldContext'
 
 const [useProvideFormState, _useFormState] = createInjectionState(
   (
     fields: ComputedRef<Array<FormField & { _stepRoot?: string }>>,
     formData: Record<string, unknown> | undefined,
+    formSchema: ComputedRef<FormSchema>,
   ) => {
-    const formState = ref<{ [key: string]: any }>(
-      mapFieldsInitialState(getFieldApi, formData ?? {}, fields.value),
-    )
+    const preformatState = preformatFormState(fields.value, formData ?? {}, [])
+    const initialState = JSON.parse(JSON.stringify(mapFieldsInitialState(getFieldApi, preformatState, fields.value)))
+    const formState = ref<{ [key: string]: any }>(initialState)
     const outputFormState = computed(() =>
       mapFieldsOutputState(getFieldApi, { ...formState.value }, fields.value),
     )
@@ -20,14 +22,18 @@ const [useProvideFormState, _useFormState] = createInjectionState(
     function reset(clear = false) {
       formState.value = mapFieldsInitialState(
         getFieldApi,
-        clear ? {} : formData ?? {},
+        clear ? {} : preformatState ?? {},
         fields.value,
       )
     }
 
-    const contextMap = ref<Map<string, ReturnType<typeof useFieldContext>>>(
+    const contextMap = shallowRef<Map<string, ReturnType<typeof useFieldContext>>>(
       new Map(),
     )
+
+    const dirty = ref<boolean>(false)
+    if (formSchema.value.dirtyCheck)
+      watch(() => formState.value, () => dirty.value = isDirty(initialState, formState.value), { deep: true })
 
     function getFieldApi(key: string, parentKey: string[]): FieldApi {
       const fieldFullPath = [...parentKey, key]
@@ -70,7 +76,7 @@ const [useProvideFormState, _useFormState] = createInjectionState(
         | CascaderOption
         | string
         | number = SelectOption | TreeSelectOption | CascaderOption,
-        O = T extends string | number ? { label: string, value: T } : T,
+        O = T extends string | number ? { label: string; value: T } : T,
       >(
           key?: string,
         ) => {
@@ -90,7 +96,7 @@ const [useProvideFormState, _useFormState] = createInjectionState(
       return { getValue, setValue, getOptions }
     }
 
-    return { formState, outputFormState, contextMap, getFieldApi, reset }
+    return { formState, outputFormState, contextMap, dirty, getFieldApi, reset }
   },
 )
 

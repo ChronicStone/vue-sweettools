@@ -31,13 +31,13 @@ onUnmounted(() => document.body.classList.remove('overflow-hidden'))
 <template>
   <Transition name="scale" appear>
     <NCard
-      class="transition-all opacity-100 rounded-lg !w-screen !h-screen !rounded-none"
+      class="transition-all opacity-100 rounded-lg !w-screen !h-screen !rounded-none fixed top-0 left-0"
       :content-style="{
         height: 'fit-content',
         maxHeight: formStyles.maxHeight.value,
         width: '100%',
         padding: '10px',
-        display: 'relative',
+        display: 'flex',
       }"
       :header-style="{
         paddingTop: '25px',

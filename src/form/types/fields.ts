@@ -7,13 +7,14 @@ import type {
   SelectOption,
   SelectRenderLabel,
   SelectRenderTag,
+  TagProps,
   TreeSelectOption,
   UploadCustomRequestOptions,
   UploadFileInfo,
   UploadSettledFileInfo,
 } from 'naive-ui'
 import type { SelectBaseOption } from 'naive-ui/es/select/src/interface'
-import type { Component, VNode, VNodeChild } from 'vue'
+import type { CSSProperties, Component, VNode, VNodeChild } from 'vue'
 import type { MaskOptions } from 'maska'
 import type { useFieldContext } from '../composables/useFieldContext'
 import type { MaybePromise, Narrowable, Primitive } from '@/_shared/types/utils'
@@ -226,19 +227,21 @@ export interface TextAreaField {
 }
 
 export interface TagFieldParams {
-  deletable?: boolean
-  type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error'
-  size?: 'small' | 'medium' | 'large'
-  tagStyle?: string | Record<string, Primitive>
+  deletable?: boolean | ((value: string, index: number) => boolean)
+  type?: TagProps['type'] | ((value: string, index: number) => TagProps['type'])
+  size?: TagProps['size'] | ((value: string, index: number) => TagProps['size'])
+  bordered?: boolean | ((value: string, index: number) => boolean)
+  round?: boolean | ((value: string, index: number) => boolean)
+  color?: TagProps['color'] | ((value: string, index: number) => TagProps['color'])
+  tagStyle?: string | Record<string, Primitive> | ((value: string, index: number) => string | Record<string, Primitive>)
   onCreate?:
   | ((label: string) => string)
   | ((label: string) => { label: string; value: string })
-  rounded?: boolean
   max?: number
   inputProps?: InputProps
+  draggable?: boolean
   renderTag?:
-  | ((tag: string, index: number) => VNodeChild)
-  | ((tag: { label: string; value: string }, index: number) => VNodeChild)
+  (tag: string, index: number) => VNodeChild
 }
 
 export interface TagField {
@@ -270,6 +273,7 @@ export interface SelectFieldParams {
   }) => VNodeChild
   createTags?: boolean
   virtualScroll?: boolean
+  max?: number
 }
 
 export interface SelectField {
@@ -337,7 +341,7 @@ export interface RatingField {
 export interface SliderFieldParams {
   min?: number
   max?: number
-  step?: number
+  step?: number | 'mark'
   range?: boolean
   reverse?: boolean
   enableTooltip?: boolean
@@ -529,6 +533,8 @@ export interface GroupField<FieldKey extends Narrowable = string> {
 
 export interface ObjectFieldParams {
   frameless?: boolean
+  style?: CSSProperties
+  class?: string
 }
 
 export interface ObjectField<FieldKey extends Narrowable = string> {
@@ -550,6 +556,8 @@ export interface _ArrayField<FieldKey extends Narrowable = string> {
   collapsible?: boolean
   collapsed?: boolean
   headerTemplate?: (item: Record<string, any>, index: number) => string
+  transformOnCreate?: (item: Record<string, any>) => Record<string, any>
+  virtualFields?: { [key: string]: (index: number) => any }
   actions?: {
     [key in 'deleteItem' | 'moveUp' | 'moveDown']?:
       | boolean
@@ -698,6 +706,10 @@ export type _BaseField<FieldKey extends Narrowable = string> = {
   watch?: (value: any, params: FieldApi) => void
   onDependencyChange?: (dependencies: Dependencies, api: FieldApi) => void
   ignore?: boolean
+  labelExtra?: () => VNodeChild
+  dirtyCheck?: boolean
+  wrapperStyle?: string | CSSProperties
+  wrapperClass?: string | Array<string | Record<string, boolean>>
 }
 
 export type FormField<FieldKey extends Narrowable = string> =
@@ -732,12 +744,12 @@ export type FormField<FieldKey extends Narrowable = string> =
 
 export type FieldContext = ReturnType<typeof useFieldContext>
 
-export type FieldComponentProps = {
+export interface FieldComponentProps {
   modelValue: unknown
   field: FormField
   context: FieldContext
   parentDisabled: boolean
-  validator: Validation
+  validator?: Validation
   collapsed: boolean
   indent?: number
   parentKey: string[]
@@ -747,6 +759,6 @@ export type FieldComponentProps = {
   group?: boolean
 }
 
-export type FieldComponentEmits = {
+export interface FieldComponentEmits {
   (e: 'update:modelValue', value: unknown): void
 }

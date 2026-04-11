@@ -4,6 +4,7 @@ import type { CustomField, FieldComponentEmits, FieldComponentProps } from '@/fo
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
+const { scale } = useFormStyles()
 const _field = computed(() => props.field as CustomField)
 
 const fieldValue = computed({
@@ -26,6 +27,7 @@ const fieldValue = computed({
         validator,
         placeholder: context.placeholder.value,
         disabled: context.disabled.value,
+        scale,
       }"
     />
   </NCollapseTransition>

@@ -1,18 +1,23 @@
-import type { DropdownOption, TabsInst } from 'naive-ui'
+import type { DropdownOption } from 'naive-ui'
 import { useDialog } from 'naive-ui'
 import type { ComputedRef, Ref, WritableComputedRef } from 'vue'
 import type { ArrayListField, ArrayTabsField, ArrayVariantField, FormField } from '../types/fields'
 import { mapFieldsInitialState } from '../utils/state'
+import { useConfirmDialog } from '../../_shared/composables/useConfirmDialog'
 import type { useFieldContext } from './useFieldContext'
 import { useFormApi } from './useFormApi'
 import { useFormState } from './useFormState'
+
+type TabsSyncRef = {
+  syncBarPosition: () => void
+}
 
 export function useArrayField(
   field: ComputedRef<ArrayListField | ArrayTabsField | ArrayVariantField>,
   fieldValue: WritableComputedRef<Array<Record<string, any>>>,
   context: ReturnType<typeof useFieldContext>,
   activeTab?: Ref<number>,
-  tabsRef?: Ref<TabsInst | undefined>,
+  tabsRef?: Ref<TabsSyncRef | undefined>,
 ) {
   const dialogApi = useDialog()
   const formApi = useFormApi()
@@ -66,6 +71,15 @@ export function useArrayField(
     else {
       fields = field.value.fields
       value = mapFieldsInitialState(getFieldApi, {}, fields)
+    }
+
+    value = { ...value, __$itemId: generateUUID() }
+    if (field.value.transformOnCreate)
+      value = field.value.transformOnCreate(value)
+
+    if (field.value.virtualFields) {
+      for (const key in field.value.virtualFields ?? {})
+        value[key] = field.value.virtualFields[key](fieldValue.value?.length ?? 0)
     }
 
     if (!Array.isArray(fieldValue.value))

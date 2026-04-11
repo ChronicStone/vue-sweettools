@@ -130,8 +130,9 @@ export default {
           'flex-row items-center': (field?.labelPosition ?? 'top') === 'left',
         },
         props.class,
+        ...(Array.isArray(field.wrapperClass) ? field.wrapperClass : [field.wrapperClass ?? '']),
       ]"
-      :style="field.size ? fieldSize : formStyle?.fieldSize.value"
+      :style="[field.size ? fieldSize : formStyle?.fieldSize.value, field?.wrapperStyle ?? '']"
     >
       <LabelRenderer
         v-if="
@@ -146,6 +147,8 @@ export default {
         :field="field"
         :dependencies="fieldContext.dependencies.value"
         :required="fieldContext.required.value"
+        :is-dirty="fieldContext.dirty.value"
+        :reset-field="fieldContext.resetField"
       />
 
       <FieldComponent

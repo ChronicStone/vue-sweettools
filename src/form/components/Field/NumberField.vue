@@ -4,6 +4,7 @@ import type { FieldComponentEmits, FieldComponentProps } from '@/form/types/fiel
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
+const { scale } = useFormStyles()
 const fieldValue = computed({
   get: () => props.modelValue as number | undefined | null,
   set: value => emit('update:modelValue', value),
@@ -18,6 +19,7 @@ const fieldValue = computed({
     :placeholder="context.placeholder.value"
     :disabled="disabled"
     :status="validator?.$errors?.length ? 'error' : 'success'"
+    :size="scale"
     @blur="validator?.$touch"
   >
     <template v-if="context.rawInputProps.value.prefix" #prefix>

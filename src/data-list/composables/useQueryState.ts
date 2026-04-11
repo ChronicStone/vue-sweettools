@@ -6,6 +6,7 @@ import type {
   DynamicFilter,
   FetchParams,
   OptimizedQueryField,
+  QuickFilter,
   StaticFilter,
 } from '../types/shared'
 import type { GenericObject } from '@/_shared/types/utils'
@@ -16,9 +17,10 @@ type QueryStateParams = {
   optimizeQuery: OptimizedQueryField[]
   panelFilters: ComputedRef<DynamicFilter[]>
   staticFilters: ComputedRef<StaticFilter[]>
+  quickFilters: ComputedRef<QuickFilter[]>
   persistency: undefined | false | 'localStorage' | 'sessionStorage'
   defaultSort: ComputedRef<
-    undefined | string | { key: string, dir: 'asc' | 'desc' }
+    undefined | string | { key: string; dir: 'asc' | 'desc' }
   >
   defaultPageSize?: number
 }
@@ -29,6 +31,7 @@ export function useQueryState({
   optimizeQuery,
   panelFilters,
   staticFilters,
+  quickFilters,
   persistency,
   defaultSort,
   defaultPageSize,
@@ -79,10 +82,11 @@ export function useQueryState({
       searchQuery: '',
       panelFilters: {},
       staticFilters: {},
+      quickFilters: {},
     })
     : useStorage<DataQueryState['filters']>(
         `${key}__#filtersState`,
-        { searchQuery: '', panelFilters: {}, staticFilters: {} },
+        { searchQuery: '', panelFilters: {}, staticFilters: {}, quickFilters: {} },
         persistency === 'localStorage' ? localStorage : sessionStorage,
     )
 
@@ -107,9 +111,10 @@ export function useQueryState({
           : null,
         ...(optimizeQuery?.length && { select: optimizeQuery }),
         query: mapQueryFetchParams(
-          filterState.value.panelFilters,
+          filterState.value,
           panelFilters.value,
           staticFilters.value,
+          quickFilters.value,
         ),
       } as FetchParams),
   )
@@ -135,6 +140,12 @@ export function useQueryState({
       clearMode,
     )
 
+    filterState.value.quickFilters = mapQuickFilterInitialState(
+      quickFilters.value,
+      filterState.value.quickFilters,
+      clearMode,
+    )
+
     filterState.value.staticFilters = mapFilterInitialState(
       staticFilters.value as unknown as DynamicFilter[],
       filterState.value.staticFilters,
@@ -149,7 +160,7 @@ export function useQueryState({
     initializeFilterState(true)
   }
 
-  function setSort(sort: { key: string, dir: 'asc' | 'desc' } | null) {
+  function setSort(sort: { key: string; dir: 'asc' | 'desc' } | null) {
     sortState.value.colId = sort?.key ?? ''
     sortState.value.key = sort?.key ?? ''
     sortState.value.dir = sort?.dir ?? 'asc'

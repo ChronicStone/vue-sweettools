@@ -90,6 +90,7 @@ export function useGlobalConfig(formSchema?: FormSchema) {
         ?? config?.form?.uiConfig?.overlayOpacity
         ?? DEFAULT_FORM_CONFIG.uiConfig.overlayOpacity,
     },
+    onFormRender: config?.form?.onFormRender,
   }))
 
   function getProp<

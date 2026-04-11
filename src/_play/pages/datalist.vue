@@ -1,0 +1,107 @@
+<script setup lang="tsx">
+import {
+  NButton,
+  NCheckbox,
+  NEl,
+} from 'naive-ui'
+import { useDarkMode } from '../composables/useDarkMode'
+import { DataList, booleanFilter, buildListSchema } from '@/index'
+
+const firstNames = [
+  'Cyprien',
+  'Cyril',
+  'Aurélien',
+  'Baptiste',
+  'Benoît',
+  'Boris',
+  'Brice',
+  'Bruno',
+  'Cédric',
+  'Christophe',
+  'Clément',
+]
+
+const lastNames = [
+  'THAO',
+  'LEMARCHAND',
+  'LEMAIRE',
+  'LEGRAND',
+  'OLIVIER',
+  'ROUSSEL',
+  'ANDRE',
+  'PREVOST',
+]
+
+const { isDark } = useDarkMode()
+const schema = buildListSchema({
+  remote: false,
+  rowIdKey: 'id',
+  persistency: false,
+  filters: [booleanFilter({ key: 'valid', label: 'Is valid' })],
+  searchQuery: ['firstName', 'lastName'],
+  sortOptions: [
+    { key: 'firstName', label: 'First name' },
+    { key: 'lastName', label: 'Last name' },
+    { key: 'valid', label: 'Valid' },
+  ],
+  rowActions: [{ label: 'Create', icon: 'mdi:plus', action: () => ({}) }],
+  actions: [{ label: 'Create', icon: 'mdi:plus', action: () => ({}) }],
+  content: () => (
+    <div class="flex items-center gap-4 w-full justify-between">
+      <div>
+        Hello
+      </div>
+      <NButton>Haha</NButton>
+    </div>
+  ),
+  // title: ({ rowData }) => `${rowData.firstName} ${rowData.lastName}`,
+  // subtitle: ({ rowData }) => (
+  //   <NTag round bordered={false} type={rowData.valid ? 'success' : 'error'}>
+  //     {rowData.valid ? 'ACTIVE' : 'INACTIVE'}
+  //   </NTag>
+  // ),
+  // image: ({ rowData }) => (
+  //   <NAvatar round={false} size={80} src={rowData.avatar} />
+  // ),
+  // expandedContent: ({ rowData }) => (
+  //   <pre>{JSON.stringify(rowData, null, 4)}</pre>
+  // ),
+  // description: ({ rowData }) => (
+  //   <div class="flex items-center gap-2">
+  //     <NTag type="warning">ADMIN</NTag>
+  //     <NTag type="info">MANAGER</NTag>
+  //   </div>
+  // ),
+  datasource: async () => {
+    const sleep = (ms: number) =>
+      new Promise(resolve => setTimeout(resolve, ms))
+    await sleep(1000)
+    return Array.from({ length: 1000 }, (_, i) => ({
+      firstName: firstNames[Math.floor(Math.random() * firstNames.length)],
+      lastName: lastNames[Math.floor(Math.random() * lastNames.length)],
+      valid: i % 2 === 0,
+      id: i,
+      // RANDOM AVATAR
+      avatar: 'https://i.pravatar.cc/80',
+    }))
+  },
+})
+</script>
+
+<template>
+  <NEl tag="div" class="flex flex-col bg-[var(--body-color)]">
+    <div class="flex items-center gap-2">
+      <NCheckbox v-model:checked="isDark">
+        Dark ?
+      </NCheckbox>
+      <RouterLink to="/">
+        DATATABLE
+      </RouterLink>
+    </div>
+    <div class="p-2 md:p-10">
+      <DataList v-bind="schema" persistency="localStorage">
+        Users
+      </DataList>
+    </div>
+  </NEl>
+</template>

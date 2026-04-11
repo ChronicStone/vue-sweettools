@@ -4,7 +4,7 @@ import type ExcelReader from '../components/ExcelReader.vue'
 import type { ExpandRecursively, Narrowable } from '@/_shared/types/utils'
 
 export function useExcelReader<
-  TImportSchema extends ImportSchema<false, FieldKeys>,
+  TImportSchema extends ImportSchema<FieldKeys>,
   FieldKeys extends Narrowable,
 >(
   readerRef: Ref<InstanceType<typeof ExcelReader> | undefined>,
@@ -14,7 +14,7 @@ export function useExcelReader<
     validRows: computed(
       () =>
         readerRef.value?.validRows as unknown as Array<
-          ExpandRecursively<ImportInfoReturnType<TImportSchema[number]>>
+          ExpandRecursively<ImportInfoReturnType<TImportSchema['fields'][number]>>
         >,
     ),
     invalidRows: computed(() => readerRef.value?.invalidRows ?? []),

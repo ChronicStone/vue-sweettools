@@ -3,18 +3,18 @@ import type { ComparatorParams, DataSource, FetchParams, FilterMatchMode, Object
 import type { GenericObject } from '@/_shared/types/utils'
 
 type T_MATCH_MODE_PROCESSOR = {
-  equals: ({ value, filter }: { value: any, filter: any }) => boolean
-  notEquals: ({ value, filter }: { value: any, filter: any }) => boolean
-  exists: ({ value, filter }: { value: any, filter: any }) => boolean
-  contains: ({ value, filter }: { value: any, filter: any }) => boolean
-  greaterThan: ({ value, filter }: { value: any, filter: any, params?: ComparatorParams }) => boolean
-  greaterThanOrEqual: ({ value, filter }: { value: any, filter: any, params?: ComparatorParams }) => boolean
-  lessThan: ({ value, filter }: { value: any, filter: any, params?: ComparatorParams }) => boolean
-  lessThanOrEqual: ({ value, filter }: { value: any, filter: any, params?: ComparatorParams }) => boolean
-  between: ({ value, filter }: { value: any, filter: any, params?: ComparatorParams }) => boolean
-  objectStringMap: (p: { value: any, filter: any }) => boolean
-  arrayLength: ({ value, filter }: { value: any, filter: any }) => boolean
-  objectMatch: ({ value, filter, params }: { value: any, filter: any, params: ObjectMapFilterParams }) => boolean
+  equals: ({ value, filter }: { value: any; filter: any }) => boolean
+  notEquals: ({ value, filter }: { value: any; filter: any }) => boolean
+  exists: ({ value, filter }: { value: any; filter: any }) => boolean
+  contains: ({ value, filter }: { value: any; filter: any }) => boolean
+  greaterThan: ({ value, filter }: { value: any; filter: any; params?: ComparatorParams }) => boolean
+  greaterThanOrEqual: ({ value, filter }: { value: any; filter: any; params?: ComparatorParams }) => boolean
+  lessThan: ({ value, filter }: { value: any; filter: any; params?: ComparatorParams }) => boolean
+  lessThanOrEqual: ({ value, filter }: { value: any; filter: any; params?: ComparatorParams }) => boolean
+  between: ({ value, filter }: { value: any; filter: any; params?: ComparatorParams }) => boolean
+  objectStringMap: (p: { value: any; filter: any }) => boolean
+  arrayLength: ({ value, filter }: { value: any; filter: any }) => boolean
+  objectMatch: ({ value, filter, params }: { value: any; filter: any; params: ObjectMapFilterParams; index?: number }) => boolean
 }
 
 const VAL_CHECK = {
@@ -45,14 +45,21 @@ const MATCH_MODE_PROCESSOR: T_MATCH_MODE_PROCESSOR = {
   exists: ({ value, filter }) => filter ? typeof value !== 'undefined' : typeof value === 'undefined',
   contains: ({ value, filter }) => value?.includes(filter),
   greaterThan: ({ value, filter, params }) => params?.dateMode ? new Date(value) > new Date(filter) : value > filter,
-  greaterThanOrEqual: ({ value, filter, params }) => params?.dateMode ? new Date(value) >= new Date(filter) : value >= filter,
+  greaterThanOrEqual: ({ value, filter, params }) => {
+    return params?.dateMode ? new Date(value) >= new Date(filter) : value >= filter
+  },
   lessThan: ({ value, filter, params }) => params?.dateMode ? new Date(value) < new Date(filter) : value < filter,
-  lessThanOrEqual: ({ value, filter, params }) => params?.dateMode ? new Date(value) <= new Date(filter) : value <= filter,
-  between: ({ value, filter, params }) => params?.dateMode ? new Date(value) >= new Date(filter[0]) && new Date(value) <= new Date(filter[1]) : value >= filter[0] && value <= filter[1],
+  lessThanOrEqual: ({ value, filter, params }) => {
+    return params?.dateMode ? new Date(value) <= new Date(filter) : value <= filter
+  },
+  between: ({ value, filter, params }) => {
+    return params?.dateMode ? new Date(value) >= new Date(filter[0]) && new Date(value) <= new Date(filter[1]) : value >= filter[0] && value <= filter[1]
+  },
   objectStringMap: p => !!p,
   arrayLength: ({ value, filter }) => Array.isArray(value) && value.length === filter,
-  objectMatch: ({ value, filter, params }) => {
-    return params.properties[params.operator === 'AND' ? 'every' : 'some' as const](property => MATCH_MODE_PROCESSOR[property.matchMode]({
+  objectMatch: ({ value, filter, params, index }) => {
+    const properties = typeof index !== 'undefined' && params.matchPropertyAtIndex ? [params.properties[index]] : params.properties
+    return properties[params.operator === 'AND' ? 'every' : 'some' as const](property => MATCH_MODE_PROCESSOR[property.matchMode]({
       value: getObjectProperty({ key: property.key, object: value, scoped: false }),
       filter: getObjectProperty({ key: property.key, object: filter, scoped: false }),
       params: {} as any,
@@ -84,30 +91,35 @@ function processFilterWithLookup<
   }
 
   else if (params.arrayLookup === 'AND') {
-    return Array.isArray(params.filter) && params.filter.every(filter =>
-      Array.isArray(params.value)
-        ? params.value.some(value =>
+    return Array.isArray(params.filter) && params.filter.every((filter, index) => {
+      if (Array.isArray(params.value)) {
+        return params.value.some(value =>
           MATCH_MODE_PROCESSOR[params.type]({
             params: params.params as any,
             value,
             filter,
+            index,
           }),
         )
-        : MATCH_MODE_PROCESSOR[params.type]({ params: params.params as any, value: params.value, filter }),
-    )
+      }
+      else {
+        return MATCH_MODE_PROCESSOR[params.type]({ params: params.params as any, value: params.value, filter, index })
+      }
+    })
   }
 
   else if (params.arrayLookup === 'OR') {
-    return Array.isArray(params.filter) && params.filter.some(filter =>
+    return Array.isArray(params.filter) && params.filter.some((filter, index) =>
       Array.isArray(params.value)
         ? params.value.some(value =>
           MATCH_MODE_PROCESSOR[params.type]({
             params: params.params as any,
             value,
             filter,
+            index,
           }),
         )
-        : MATCH_MODE_PROCESSOR[params.type]({ params: params.params as any, value: params.value, filter }),
+        : MATCH_MODE_PROCESSOR[params.type]({ params: params.params as any, value: params.value, filter, index }),
     )
   }
 
@@ -118,7 +130,7 @@ function validateBetweenPayload(payload: any) {
   return Array.isArray(payload) && payload.length === 2 && payload.every((i: any) => !Array.isArray(i))
 }
 
-function processSearchQuery(params: { key: string, object: Record<string, any>, value: string }): boolean {
+function processSearchQuery(params: { key: string; object: Record<string, any>; value: string }): boolean {
   const { key, object, value } = params
   const keys = key.split('.')
 
@@ -199,11 +211,12 @@ export async function remoteDataMapper(
         output = output.filter((item) => {
           const value = getObjectProperty({ key, object: item, scoped: false })
           for (const filter of filters) {
+            const arrayLookup = typeof filter.arrayLookup === 'function' ? filter.arrayLookup() : filter.arrayLookup ?? 'OR'
             if (filter.matchMode === 'equals') {
               return processFilterWithLookup({
                 type: 'equals',
                 params: null,
-                arrayLookup: filter.arrayLookup ?? 'OR',
+                arrayLookup,
                 value,
                 filter: filter.value,
               })
@@ -213,7 +226,7 @@ export async function remoteDataMapper(
               return processFilterWithLookup({
                 type: 'contains',
                 params: null,
-                arrayLookup: filter.arrayLookup ?? 'OR',
+                arrayLookup,
                 value,
                 filter: filter.value,
               })
@@ -222,7 +235,7 @@ export async function remoteDataMapper(
               return processFilterWithLookup({
                 type: 'between',
                 params: filter?.params ?? null,
-                arrayLookup: filter.arrayLookup ?? 'OR',
+                arrayLookup,
                 value,
                 filter: filter.value,
               })
@@ -232,7 +245,7 @@ export async function remoteDataMapper(
               return processFilterWithLookup({
                 type: 'greaterThan',
                 params: filter?.params ?? null,
-                arrayLookup: filter.arrayLookup ?? 'OR',
+                arrayLookup,
                 value,
                 filter: filter.value,
               })
@@ -242,7 +255,7 @@ export async function remoteDataMapper(
               return processFilterWithLookup({
                 type: 'greaterThanOrEqual',
                 params: filter?.params ?? null,
-                arrayLookup: filter.arrayLookup ?? 'OR',
+                arrayLookup,
                 value,
                 filter: filter.value,
               })
@@ -252,7 +265,7 @@ export async function remoteDataMapper(
               return processFilterWithLookup({
                 type: 'lessThan',
                 params: filter?.params ?? null,
-                arrayLookup: filter.arrayLookup ?? 'OR',
+                arrayLookup,
                 value,
                 filter: filter.value,
               })
@@ -262,7 +275,7 @@ export async function remoteDataMapper(
               return processFilterWithLookup({
                 type: 'lessThanOrEqual',
                 params: filter?.params ?? null,
-                arrayLookup: filter.arrayLookup ?? 'OR',
+                arrayLookup,
                 value,
                 filter: filter.value,
               })
@@ -272,7 +285,7 @@ export async function remoteDataMapper(
               return processFilterWithLookup({
                 type: 'exists',
                 params: null,
-                arrayLookup: filter.arrayLookup ?? 'OR',
+                arrayLookup,
                 value,
                 filter: filter.value,
               })
@@ -282,7 +295,7 @@ export async function remoteDataMapper(
               return processFilterWithLookup({
                 type: 'objectStringMap',
                 params: filter.params,
-                arrayLookup: filter.arrayLookup ?? 'OR',
+                arrayLookup,
                 value,
                 filter: filter.value,
               })
@@ -292,19 +305,21 @@ export async function remoteDataMapper(
               return processFilterWithLookup({
                 type: 'arrayLength',
                 params: null,
-                arrayLookup: filter.arrayLookup ?? 'OR',
+                arrayLookup,
                 value,
                 filter: filter.value,
               })
             }
 
             if (filter.matchMode === 'objectMatch') {
+              const params = typeof filter.params === 'function' ? filter.params(filter.value) : filter.params
+              const filterValue = params?.transformFilterValue?.(filter.value) ?? filter.value
               return processFilterWithLookup({
                 type: 'objectMatch',
-                params: filter.params,
-                arrayLookup: filter.arrayLookup ?? 'OR',
-                value,
-                filter: filter.value,
+                params,
+                arrayLookup,
+                value: filter.lookupAtRoot ? item : value,
+                filter: filterValue,
               })
             }
           }

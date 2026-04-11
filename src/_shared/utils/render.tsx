@@ -75,4 +75,6 @@ export function normalizeFieldLabel(
         .join(' ')
         .toLocaleLowerCase()
   }
+
+  return field.key
 }

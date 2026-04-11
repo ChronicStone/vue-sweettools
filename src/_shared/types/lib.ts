@@ -3,6 +3,8 @@ import type {
   LocaleDateFormatTemplate,
   SweettoolsLocaleTemplate,
 } from './i18n'
+import type { GenericObject } from './utils'
+import type { FormSchema } from '@/form/types/form'
 
 export type SweettoolsPluginConfig = {
   form?: {
@@ -21,6 +23,7 @@ export type SweettoolsPluginConfig = {
       allowOutsideClick?: boolean
       overlayOpacity?: number
     }
+    onFormRender?: (schema: FormSchema, data?: GenericObject) => void
   }
   permissionValidator?: (keys: Array<string | string[]>) => boolean
   i18n?: {

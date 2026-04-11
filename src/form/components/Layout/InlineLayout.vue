@@ -3,6 +3,12 @@ import type { FormSchema } from '../../types/form'
 
 defineProps<{ schema: FormSchema }>()
 defineEmits<{ (e: 'close'): void }>()
+defineSlots<{
+  stepper?: () => any
+  fields?: () => any
+  header?: () => any
+  footer?: () => any
+}>()
 const formStyles = useFormStyles()
 const { currentStep } = useFormFields()
 
@@ -43,7 +49,7 @@ watch(
       >
         <form
           ref="formRef"
-          class="h-full grid gap-4 overflow-visible text-left transition-all ease-in-out duration-150"
+          class="h-full gap-4 overflow-visible text-left transition-all ease-in-out duration-150"
           :style="`${formStyles?.gridSize.value}`"
           :class="{
             'max-h-10/12': $slots.header && $slots.footer,
@@ -51,6 +57,9 @@ watch(
               ($slots.header && !$slots.footer)
               || ($slots.footer && !$slots.header),
             'max-h-full': $slots.header && $slots.footer,
+            'flex flex-col': formStyles?.flexMode.value === 'col',
+            'flex flex-row': formStyles?.flexMode.value === 'row',
+            'grid': !formStyles?.flexMode.value,
           }"
         >
           <slot name="fields" />

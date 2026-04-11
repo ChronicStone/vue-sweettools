@@ -96,6 +96,7 @@ export type SweettoolsLocaleTemplate = {
 
 export type LocaleDateFormatTemplate = {
   date: string
+  time: string
   datetime: string
   daterange: string
   datetimerange: string

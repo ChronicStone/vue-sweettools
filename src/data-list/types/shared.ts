@@ -1,8 +1,10 @@
 import type { MaybePromise } from 'rollup'
-import type { VNodeChild } from 'vue'
+import type { CSSProperties, VNodeChild } from 'vue'
 import type { AppTypes } from '@/_shared/types/lib'
-import type { GenericObject } from '@/_shared/types/utils'
-import type { FormField } from '@/form/types/fields'
+import type { GenericObject, LooseString, NestedPaths, NestedPathsForType } from '@/_shared/types/utils'
+import type { CascaderField, CheckboxField, ColorPickerField, DateField, FormField, NumberField, PasswordField, RadioField, RatingField, SelectField, SliderField, SwitchField, TagField, TextAreaField, TextField, TimeField, TreeSelectField, _BaseField } from '@/form/types/fields'
+
+export type Operator = 'AND' | 'OR' | (() => 'AND' | 'OR')
 
 export type FilterMatchMode =
   | 'contains'
@@ -18,6 +20,7 @@ export type FilterMatchMode =
   | 'arrayLength'
   | 'objectMatch'
 
+export type NonObjectMatchMode = Exclude<FilterMatchMode, 'objectStringMap' | 'objectMatch'>
 export type ComparatorMatchMode = Extract<FilterMatchMode, 'between' | 'greaterThan' | 'greaterThanOrEqual' | 'lessThan' | 'lessThanOrEqual'>
 
 export type ComparatorParams = {
@@ -30,6 +33,8 @@ export type ObjectMapFilterParams = {
     key: string
     matchMode: Exclude<FilterMatchMode, 'objectStringMap' | 'objectMap'>
   }>
+  transformFilterValue?: (value: any) => any
+  matchPropertyAtIndex?: boolean
 }
 
 export type ObjectStringMapFilterParams = {
@@ -55,16 +60,17 @@ export type MatchModeCore = ({
   params: ObjectStringMapFilterParams
 } | {
   matchMode: 'objectMatch'
-  params: ObjectMapFilterParams
+  params: ObjectMapFilterParams | ((value: any) => ObjectMapFilterParams)
 })
 
-export type StaticFilter = {
-  key: string
+export type StaticFilter<KeyPaths extends string = string> = {
+  key: LooseString<KeyPaths>
   value: any
   required?: boolean
   postCondition?: boolean
-  arrayLookup?: 'AND' | 'OR'
+  arrayLookup?: Operator
   params?: Record<string, any>
+  lookupAtRoot?: boolean
 } & MatchModeCore
 
 export interface OptimizedQueryField<KeyPath = string> {
@@ -74,17 +80,80 @@ export interface OptimizedQueryField<KeyPath = string> {
 
 export type DynamicFilter = FormField & {
   matchMode?: FilterMatchMode
-  arrayLookup?: 'AND' | 'OR'
+  arrayLookup?: Operator
   postCondition?: boolean
   params?: Record<string, any>
+  lookupAtRoot?: boolean
 } & MatchModeCore
+
+export type QuickFilterPrimitive = string | number | boolean | null | undefined
+export type QuickFilterObject = { label: string | (() => VNodeChild); value: QuickFilterPrimitive }
+export type QuickFilterOptions = QuickFilterPrimitive[] | QuickFilterObject[] | (() => MaybePromise<QuickFilterPrimitive[] | QuickFilterObject[]>)
+
+export type QuickFilter<KeyPaths extends string = string> = {
+  type: 'toggle-list' | 'select-list'
+  label: string
+  key: KeyPaths
+  options: QuickFilterOptions
+  multiple?: boolean
+  condition?: () => boolean
+  default?: QuickFilterPrimitive[] | QuickFilterPrimitive
+  transform?: (value: any) => any
+} & ({
+  matchMode: Exclude<FilterMatchMode, 'objectStringMap' | 'objectMatch' | ComparatorMatchMode>
+} | {
+  matchMode: ComparatorMatchMode
+  params?: ComparatorParams
+})
 
 export type MappedFilters = {
   value: any
   required?: boolean | undefined
   postCondition?: boolean
-  arrayLookup?: 'AND' | 'OR'
+  arrayLookup?: Operator
+  lookupAtRoot?: boolean
 } & MatchModeCore
+
+export type FilterBuilderPropertyField = Omit<_BaseField, 'key' | 'label'> & (
+  | TextField
+  | TextAreaField
+  | PasswordField
+  | SelectField
+  | NumberField
+  | ColorPickerField
+  | SliderField
+  | SwitchField
+  | RadioField
+  | CheckboxField
+  | TimeField
+  | DateField
+  | TreeSelectField
+  | CascaderField
+  | RatingField
+  | TagField
+)
+
+export type FilterBuilderProperty = {
+  label: string | (() => VNodeChild)
+  key: string
+  matchModes?: NonObjectMatchMode[]
+  metadataFields?: Array<FilterBuilderPropertyField & { matchMode?: NonObjectMatchMode }>
+  field: FilterBuilderPropertyField | ((matchMode: NonObjectMatchMode) => FilterBuilderPropertyField)
+}
+
+export type FilterBuilderParams = {
+  label: string | (() => VNodeChild)
+  key?: string
+  defaultOperator?: 'AND' | 'OR'
+  properties: Array<FilterBuilderProperty>
+}
+
+export type FilterBuilderRawValue = {
+  propertyName: string
+  matchMode: NonObjectMatchMode
+  value: any
+  metadata?: Record<string, any>
+}
 
 export type FetchParams = {
   page: number
@@ -114,6 +183,18 @@ export type RemoteDataSource<
   T extends GenericObject = GenericObject,
   > = DataSource<T, true>
 
+export type TableData<Source extends DataSource> = Source extends DataSource<infer T, true>
+  ? T
+  : Source extends DataSource<infer T, false>
+    ? T
+    : never
+
+export type InferTableParams<Source extends DataSource, Data extends TableData<Source> = TableData<Source>> = {
+  data: Data
+  keyPaths: NestedPaths<Data>
+  keyableKeyPaths: NestedPathsForType<Data, string | number>
+}
+
 export type ActionParams<
   T extends GenericObject = GenericObject,
   KeyPath = any,
@@ -131,11 +212,23 @@ export type Action<
   TParams extends ActionParams<T, KeyPath> = ActionParams<T, KeyPath>,
 > = {
   label: string
-  icon: string
+  icon?: string
   action?: (actionParams: TParams) => void
   link?: string | AppTypes['routeLocation']
   permissions?: (AppTypes['permissionKey'] | AppTypes['permissionKey'][])[]
   condition?: (data: T[], params: TParams) => boolean
+}
+
+export type ActionGroup<
+  T extends GenericObject = GenericObject,
+  KeyPath = any,
+  TParams extends ActionParams<T, KeyPath> = ActionParams<T, KeyPath>,
+> = {
+  label: string
+  icon?: string
+  children: Array<Action<T, KeyPath, TParams> | ActionGroup<T, KeyPath, TParams>>
+  condition?: (data: T[], params: TParams) => boolean
+  permissions?: (AppTypes['permissionKey'] | AppTypes['permissionKey'][])[]
 }
 
 export type DataApi<T = GenericObject, KeyPath = any> = {
@@ -155,13 +248,13 @@ export type DataApi<T = GenericObject, KeyPath = any> = {
 export type RowAction<T = GenericObject, KeyPath = any> = {
   icon: string | ((params: { rowData: T }) => string)
   label: string | ((params: { rowData: T }) => string)
-  action?: (params: { rowData: T, tableApi: DataApi<T, KeyPath> }) => void
+  action?: (params: { rowData: T; tableApi: DataApi<T, KeyPath> }) => void
   link?:
     | string
     | AppTypes['routeLocation']
     | ((params: { rowData: T }) => AppTypes['routeLocation'])
   permissions?: (AppTypes['permissionKey'] | AppTypes['permissionKey'][])[]
-  condition?: (params: { rowData: T, tableApi: DataApi<T> }) => boolean
+  condition?: (params: { rowData: T; tableApi: DataApi<T> }) => boolean
 }
 
 export type DataSortOption<KeyPaths = any> = {
@@ -171,7 +264,7 @@ export type DataSortOption<KeyPaths = any> = {
 
 export type DataDefaultSort<KeyPaths = any> =
   | KeyPaths
-  | { key: KeyPaths, dir: 'asc' | 'desc' }
+  | { key: KeyPaths; dir: 'asc' | 'desc' }
 
 export type DataQueryState = {
   sort: {
@@ -189,8 +282,16 @@ export type DataQueryState = {
     searchQuery: string
     panelFilters: GenericObject
     staticFilters: GenericObject
+    quickFilters: GenericObject
   }
 }
 
 export type FullQueryState = ReturnType<typeof useQueryState>
 export type DataResolverState = ReturnType<typeof useDataResolver>
+
+export type SlotStyle = {
+  headerStyle?: string | CSSProperties
+  headerClass?: string | Array<string | Record<string, boolean>>
+  footerStyle?: string | CSSProperties
+  footerClass?: string | Array<string | Record<string, boolean>>
+}

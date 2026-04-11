@@ -54,11 +54,11 @@ function handleFileUpload(options: UploadCustomRequestOptions) {
   return _field.value.uploadHandler(options, props.context.dependencies.value, props.context.fieldApi)
 }
 
-function beforeUpload(data: { file: UploadFileInfo, fileList: UploadFileInfo[] }) {
+function beforeUpload(data: { file: UploadFileInfo; fileList: UploadFileInfo[] }) {
   return _field.value.beforeUpload?.(data, props.context.dependencies.value, props.context.fieldApi)
 }
 
-function onFileDelete(data: { file: UploadFileInfo, fileList: UploadFileInfo[] }) {
+function onFileDelete(data: { file: UploadFileInfo; fileList: UploadFileInfo[] }) {
   return _field.value.onFileDelete?.(data, props.context.dependencies.value, props.context.fieldApi)
 }
 
@@ -74,11 +74,11 @@ function renderFileIcon(file: UploadSettledFileInfo) {
   return <span class="iconify" data-icon={getFileTypeIcon(file.name)} />
 }
 
-function onUploadFinish(data: { file: UploadFileInfo, event?: ProgressEvent }) {
+function onUploadFinish(data: { file: UploadFileInfo; event?: ProgressEvent }) {
   _field.value.onUploadFinish?.(data, props.context.dependencies.value, props.context.fieldApi)
 }
 
-function onUploadError(data: { file: UploadFileInfo, event?: ProgressEvent }) {
+function onUploadError(data: { file: UploadFileInfo; event?: ProgressEvent }) {
   _field.value.onUploadError?.(data, props.context.dependencies.value, props.context.fieldApi)
 }
 </script>

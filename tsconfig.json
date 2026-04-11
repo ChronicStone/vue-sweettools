@@ -1,29 +1,34 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "esnext",
+    "ignoreDeprecations": "6.0",
     "jsx": "preserve",
     "jsxImportSource": "vue",
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "lib": ["esnext", "dom"],
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "rootDir": ".",
+    "module": "esnext",
+    "moduleResolution": "Bundler",
     "paths": {
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
-    "types": ["unplugin-vue-macros/macros-global", "vite/client", "./auto-imports.d.ts", "./components.d.ts", "node"],
-    "allowImportingTsExtensions": true,
+    "types": ["vite/client", "./auto-imports.d.ts", "./components.d.ts", "node"],
+    "allowJs": false,
     "strict": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
     "noEmit": true,
-    "isolatedModules": true,
-    "skipLibCheck": true
+    "outDir": "dist",
+    "removeComments": false,
+    "sourceMap": false,
+    "esModuleInterop": true,
+    "isolatedModules": false
   },
   "references": [
     {
@@ -34,6 +39,12 @@
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "src/auto-imports.d.ts",
+    "src/components.d.ts"
+  ],
+  "exclude": [
+    "src/_play/**",
+    "src/main.ts"
   ]
 }

@@ -13,7 +13,7 @@ import * as XLSX from 'xlsx'
 import type { IContent } from 'json-as-xlsx'
 import type { ImportSchema } from '../types/reader'
 
-const props = defineProps<{ schema: ImportSchema }>()
+const props = defineProps<ImportSchema>()
 const message = useMessage()
 const themeVars = useThemeVars()
 
@@ -29,7 +29,7 @@ function loadFileData(e: DragEvent | Event) {
   if (!['xls', 'xlsx'].includes(fileExtension))
     return message.error('Only excel files are supported')
   const reader = new FileReader()
-  reader.onload = (e) => {
+  reader.onload = async (e) => {
     const data = (e.target as any).result
     const workbook = XLSX.read(data, { type: 'array' })
     const firstSheetName = workbook.SheetNames[0]
@@ -38,9 +38,15 @@ function loadFileData(e: DragEvent | Event) {
       string,
       string
     >[]
-    rawData.value = [...results]
+    if (typeof props.onData === 'function') {
+      const processed = await props.onData(results)
+      rawData.value = [...Array.isArray(processed) ? processed : results] as Array<{ [key: string]: string }>
+    }
+    else {
+      rawData.value = results
+    }
   }
-  reader.readAsArrayBuffer(file)
+  return reader.readAsArrayBuffer(file)
 }
 
 watch(
@@ -49,23 +55,11 @@ watch(
 )
 
 const _evalSchema = ref<boolean>(false)
-const _schema = computedAsync<ImportSchema<true>>(
-  () => {
-    return Promise.all(
-      props.schema.map(async field => ({
-        ...field,
-        validation: {
-          ...field.validation,
-          ...(typeof field.validation.enum !== 'undefined' && {
-            enum:
-              typeof field.validation.enum === 'function'
-                ? await field.validation.enum()
-                : field.validation.enum,
-          }),
-        } as ImportSchema<true>[number]['validation'],
-      })),
-    )
-  },
+const fieldOptions = computedAsync(
+  () => Promise.all(props.fields.map(async field => ({
+    key: field.key,
+    enum: field.enum ? typeof field.enum === 'function' ? await field.enum() : field.enum : [],
+  }))),
   [],
   _evalSchema,
 )
@@ -78,17 +72,20 @@ const {
   invalidRows,
   pagination,
   tableColumns,
-} = useImportManager(_schema)
+} = useImportManager({
+  fieldOptions,
+  fields: computed(() => props.fields),
+})
 
 function exportInvalidRows() {
   return exportExcel(
     invalidRows.value as IContent[],
-    props.schema.map(({ key }) => ({ label: key, value: key })),
+    props.fields.map(({ key }) => ({ label: key, value: key })),
   )
 }
 
 function downloadReferenceFile() {
-  return generateInportSchemaRefFile(props.schema)
+  return generateInportSchemaRefFile(props.fields, fieldOptions.value)
 }
 
 defineExpose({
@@ -179,7 +176,7 @@ defineExpose({
             :columns="tableColumns"
             :data="filteredRows"
             :pagination="pagination"
-            :scroll-x="200 * Object.keys(_schema).length"
+            :scroll-x="200 * fields.length"
             table-layout="auto"
             :max-height="320"
           />

@@ -5,6 +5,7 @@ import type { FieldComponentEmits, FieldComponentProps } from '@/form/types/fiel
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
+const { scale } = useFormStyles()
 const fieldValue = computed({
   get: () => props.modelValue as string | number | boolean | null | undefined,
   set: value => emit('update:modelValue', value),
@@ -24,6 +25,7 @@ const options = computed(() => {
     v-model:value="fieldValue"
     :name="field.key"
     :disabled="disabled"
+    :size="scale"
     @blur="validator?.$touch"
   >
     <div class="gap-4 flex flex-wrap justify-start">

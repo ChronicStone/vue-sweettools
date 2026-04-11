@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { NButton } from 'naive-ui'
 import type { MaybeRef } from 'vue'
+import { vTestid } from '@chronicstone/vue-testid'
 import type { FormSchema } from '@/form/types/form'
 import type { FieldInstance, FormRefInstance } from '@/form/types/instance'
 import { StepStatus } from '@/form/types/instance'
@@ -15,19 +16,24 @@ const props = defineProps<{
   | null
 }>()
 
+const libConfig = useGlobalConfig(props.schema)
+libConfig.formConfig.value?.onFormRender?.(props.schema, props.data)
+
 const i18n = useTranslations()
 const _formSchema = computed<FormSchema>(() => props.schema)
 const _modalMode = computed<boolean>(() => props.modalMode)
 
+useProvideFormSchema(_formSchema)
+
 const formTestId = useProvideFormTestId(_formSchema)
-const libConfig = useGlobalConfig(props.schema)
 
 const { formFields, filteredFormFields, isMultiStep, formSteps, currentStep }
   = useProvideFormFields(_formSchema)
 
-const { formState, outputFormState, reset, getFieldApi } = useProvideFormState(
+const { formState, outputFormState, reset, dirty, getFieldApi } = useProvideFormState(
   formFields,
   props.data,
+  _formSchema,
 )
 
 const layoutConf = useProvideFormStyles(props.schema)
@@ -70,6 +76,7 @@ function previousStep() {
     return false
   formSteps.value[currentStep.value - 1]._status = StepStatus.IN_PROGRESS
   currentStep.value = currentStep.value - 1
+  return true
 }
 
 function closeForm() {
@@ -93,6 +100,7 @@ defineExpose<FormRefInstance>({
   $reset: reset,
   $validate: () => $validator.value.$validate(),
   $v: computed(() => $validator.value),
+  $dirty: computed(() => dirty.value),
   ...(isMultiStep.value && {
     nextStep,
     previousStep,

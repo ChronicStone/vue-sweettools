@@ -2,12 +2,13 @@
 <script setup lang="ts">
 import { vTestid } from '@chronicstone/vue-testid'
 import type { MaskOptions } from 'maska'
-import { vMaska } from 'maska'
+import { vMaska } from 'maska/vue'
 import { NInput } from 'naive-ui'
 import type { FieldComponentEmits, FieldComponentProps, TextField } from '@/form/types/fields'
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
+const { scale } = useFormStyles()
 const _field = computed(() => props.field as TextField)
 
 const fieldValue = computed({
@@ -57,6 +58,7 @@ const testIdConfig = [
         || parentDisabled
     "
     :status="validator?.$errors?.length ? 'error' : 'success'"
+    :size="scale"
     @blur="validator?.$touch"
   >
     <template v-if="context.rawInputProps.value.prefix" #prefix>

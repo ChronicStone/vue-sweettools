@@ -243,12 +243,7 @@ export function mapFieldProps({
       }
     case 'tag':
       return {
-        round: fieldProps?.rounded ?? false,
-        deletable: fieldProps?.deletable ?? true,
-        type: fieldProps?.type ?? 'default',
-        size: fieldProps?.size ?? 'medium',
-        ...(fieldProps.tagStyle && { 'tag-style': fieldProps.tagStyle }),
-        ...(fieldProps.max && { 'tag-style': fieldProps.max }),
+        ...(fieldProps.max && { max: fieldProps.max }),
         ...(fieldProps.onCreate && { 'on-create': fieldProps.onCreate }),
         ...(fieldProps.inputProps && { 'input-props': fieldProps.inputProps }),
         ...(fieldProps.renderTag && { 'input-props': fieldProps.renderTag }),
