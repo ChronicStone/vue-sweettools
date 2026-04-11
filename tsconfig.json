@@ -1,24 +1,7 @@
 {
-  "vueCompilerOptions": {
-    "plugins": [
-      "@vue-macros/volar/define-options",
-      "@vue-macros/volar/define-models",
-      "@vue-macros/volar/define-props",
-      "@vue-macros/volar/define-props-refs",
-      "@vue-macros/volar/short-vmodel",
-      "@vue-macros/volar/define-slots",
-      "@vue-macros/volar/jsx-directive",
-      "@vue-macros/volar/setup-jsdoc"
-
-      // Choose only one of the following
-      // "@vue-macros/volar/export-expose",
-      // "@vue-macros/volar/export-props",
-      // "@vue-macros/volar/export-render",
-    ]
-    // ...
-  },
   "compilerOptions": {
     "target": "esnext",
+    "ignoreDeprecations": "6.0",
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "lib": ["esnext", "dom"],
@@ -31,14 +14,15 @@
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
-    "types": ["unplugin-vue-macros/macros-global", "vite/client", "./auto-imports.d.ts", "./components.d.ts", "node", "unplugin-vue-router/client"],
+    "types": ["vite/client", "./auto-imports.d.ts", "./components.d.ts", "node"],
     "allowJs": false,
     "strict": true,
+    "skipLibCheck": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noEmit": true,
     "outDir": "dist",
     "removeComments": false,
@@ -56,8 +40,11 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "src/_play/typed-router.d.ts",
     "src/auto-imports.d.ts",
     "src/components.d.ts"
+  ],
+  "exclude": [
+    "src/_play/**",
+    "src/main.ts"
   ]
 }

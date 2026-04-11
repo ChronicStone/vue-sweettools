@@ -39,17 +39,14 @@ const props = defineProps<{
 defineEmits<{
   (e: 'update:searchQuery', value: string): void
   (e: 'update:panelFilters', value: GenericObject): void
-  (e: 'update:sort', value: null | { key: string; dir: 'asc' | 'desc' }): void
+  (e: 'update:sort', value: null | { key: string; dir: 'asc' | 'desc' | null }): void
 }>()
 
-const { searchQuery, panelFilters, sort, selectAll, columnsConfig }
-  = defineModels<{
-    selectAll: boolean
-    searchQuery: string
-    panelFilters: GenericObject
-    columnsConfig?: RuntimeColsConfig
-    sort: { key: string; dir: 'asc' | 'desc' } | null
-  }>()
+const selectAll = defineModel<boolean>('selectAll', { required: true })
+const searchQuery = defineModel<string>('searchQuery', { required: true })
+const panelFilters = defineModel<GenericObject>('panelFilters', { required: true })
+const columnsConfig = defineModel<RuntimeColsConfig>('columnsConfig')
+const sort = defineModel<{ key: string; dir: 'asc' | 'desc' | null } | null>('sort', { required: true })
 
 const i18n = useTranslations()
 const controlsWrapperRef = ref<HTMLElement>()

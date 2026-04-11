@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type {
   DropdownOption,
-  TabsInst,
 } from 'naive-ui'
 import {
   NButton,
@@ -29,7 +28,7 @@ const formStyle = useFormStyles()
 const gridSize = useBreakpointStyle(props.field.gridSize ?? '', 'grid-cols')
 
 const activeTab = ref<number>(0)
-const tabsInstanceRef = ref<TabsInst>()
+const tabsInstanceRef = shallowRef<{ syncBarPosition: () => void }>()
 const {
   addItem,
   removeItem,
@@ -75,6 +74,10 @@ function buildItemControls(
     },
   ]
 }
+
+function setTabsInstanceRef(instance: unknown) {
+  tabsInstanceRef.value = instance as { syncBarPosition: () => void } | undefined
+}
 </script>
 
 <template>
@@ -96,7 +99,7 @@ function buildItemControls(
       </div>
       <NTabs
         v-if="fieldValue?.length"
-        ref="tabsInstanceRef"
+        :ref="setTabsInstanceRef"
         type="line"
         size="large"
         :tabs-padding="20"

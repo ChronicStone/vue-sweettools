@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { withDefaults } from 'unplugin-vue-macros/macros' assert { type: 'macro' }
 import { NCard, NEmpty, NScrollbar, NSkeleton } from 'naive-ui'
 import { vAutoAnimate } from '@formkit/auto-animate/vue'
 import type { DataListSchema } from './types/datalist'
@@ -31,58 +30,71 @@ const {
   footerStyle,
   headerClass,
   headerStyle,
-} = withDefaults(definePropsRefs<DataListSchema>(), {
-  listKey: () => 'DEFAULT_LIST',
-  title: () => '',
-  filters: () => [],
-  searchQuery: () => [],
-  staticFilters: () => [],
-  sortOptions: () => [],
-  pagination: true,
-  maxHeight: '56vh',
-  actions: () => [],
-  selection: true,
-  compact: false,
-  rowActions: () => [],
-  frameless: false,
-})
+} = defineProps<DataListSchema>()
+
+const listKeyRef = computed(() => listKey ?? 'DEFAULT_LIST')
+const filtersRef = computed(() => filters ?? [])
+const staticFiltersRef = computed(() => staticFilters ?? [])
+const searchQueryRef = computed(() => searchQuery ?? [])
+const defaultSortRef = computed(() => defaultSort)
+const remoteRef = computed(() => remote)
+const actionsRef = computed(() => actions ?? [])
+const rowActionsRef = computed(() => rowActions ?? [])
+
+const sortOptionsWithDefault = computed(() => sortOptions ?? [])
+const maxHeightWithDefault = computed(() => maxHeight ?? '56vh')
+const paginationWithDefault = computed(() => pagination ?? true)
+const selectionWithDefault = computed(() => selection ?? true)
+const compactWithDefault = computed(() => compact ?? false)
+const framelessWithDefault = computed(() => frameless ?? false)
+const footerClassWithDefault = computed(() => footerClass)
+const footerStyleWithDefault = computed(() => footerStyle)
+const headerClassWithDefault = computed(() => headerClass)
+const headerStyleWithDefault = computed(() => headerStyle)
+
+const defaultPageSizeWithDefault = computed(() => defaultPageSize)
+const rowIdKeyWithDefault = computed(() => rowIdKey)
 
 const scrollbarContainerRef = ref<InstanceType<typeof NScrollbar>>()
 
 const queryState = useQueryState({
-  key: `${listKey.value ?? 'DEFAULT_LIST'}_LIST_STATE`,
-  searchQuery: searchQuery.value,
+  key: `${listKeyRef.value}_LIST_STATE`,
+  searchQuery: searchQueryRef.value,
   optimizeQuery: [],
-  panelFilters: filters,
+  panelFilters: filtersRef,
   quickFilters: computed(() => []),
-  staticFilters,
-  persistency: persistency.value,
-  defaultSort,
-  defaultPageSize: defaultPageSize.value,
+  staticFilters: staticFiltersRef,
+  persistency,
+  defaultSort: defaultSortRef,
+  defaultPageSize: defaultPageSizeWithDefault.value,
 })
 
 const resolver = useDataResolver({
-  remote,
-  datasource: datasource.value,
+  remote: remoteRef,
+  datasource,
   fetchParams: queryState.fetchParams,
   pagination: queryState.paginationState,
   allSelected: queryState.selectAll,
   data: queryState.data,
   fullData: queryState.fullData,
   isLoading: queryState.isLoading,
-  enablePagination: pagination.value,
-  rowKey: rowIdKey.value,
+  enablePagination: paginationWithDefault.value,
+  rowKey: rowIdKeyWithDefault.value,
 })
 
 const dataApi = useDataApi({ queryState, resolver })
 const lastSelectedRowId = ref<string | null>(null)
 const mappedActions = useDataActions({
-  actions,
+  actions: actionsRef,
   fetchParams: queryState.fetchParams,
-  data: remote.value ? queryState.data : resolver.localDataStore,
+  data: remote ? queryState.data : resolver.localDataStore,
   internalApi: dataApi,
   selectionState: queryState,
 })
+
+function handleSortUpdate(sort: { key: string; dir: 'asc' | 'desc' | null } | null) {
+  queryState.setSort(sort?.dir ? { key: sort.key, dir: sort.dir } : null)
+}
 
 watch(
   () => queryState.paginationState.value.pageIndex,
@@ -155,8 +167,8 @@ function handleSelection(
 <template>
   <CardContainer
     content="list"
-    :frameless="frameless"
-    :compact="compact"
+    :frameless="framelessWithDefault"
+    :compact="compactWithDefault"
   >
     <template #header>
       <ListHeader
@@ -165,21 +177,20 @@ function handleSelection(
         v-model:panel-filters="queryState.filterState.value.panelFilters"
         show-select-all
         :sort="queryState.sortState.value"
-        :sort-options="sortOptions"
-        :filters="filters"
+        :sort-options="sortOptionsWithDefault"
+        :filters="filtersRef"
         :dropdown-actions="mappedActions"
         :nb-selected="queryState.nbSelected.value"
-        :enable-search-query="searchQuery.length > 0"
+        :enable-search-query="searchQueryRef.length > 0"
         :resolve-grid-data="() => resolver.resolveGridData(true)"
         :reset-table-query="() => queryState.resetTableQuery()"
-        :list-key="listKey"
-        :tooltip-show-delay="100"
-        :compact="compact"
+        :list-key="listKeyRef"
+        :compact="compactWithDefault"
         :selected-keys="queryState.selectedKeys.value"
-        :enable-selection="selection"
-        :header-class="headerClass"
-        :header-style="headerStyle"
-        @update:sort="queryState.setSort"
+        :enable-selection="selectionWithDefault"
+        :header-class="headerClassWithDefault"
+        :header-style="headerStyleWithDefault"
+        @update:sort="handleSortUpdate"
       >
         <slot />
       </ListHeader>
@@ -212,7 +223,7 @@ function handleSelection(
 
     <NScrollbar
       ref="scrollbarContainerRef"
-      :style="{ ...(maxHeight === false ? {} : { maxHeight }) }"
+      :style="{ ...(maxHeightWithDefault === false ? {} : { maxHeight: maxHeightWithDefault }) }"
     >
       <div
         v-auto-animate
@@ -232,13 +243,13 @@ function handleSelection(
           :identifier="(item.firstName as string)"
         >
           <ListItem
-            :compact="compact"
+            :compact="compactWithDefault"
             :data="item"
             :content="content"
             :expanded-content="expandedContent"
             :expandable="expandable"
-            :enable-selection="selection"
-            :row-actions="rowActions"
+            :enable-selection="selectionWithDefault"
+            :row-actions="rowActionsRef"
             :select-all="queryState.selectAll.value"
             :selected="
               queryState.selectedKeys.value.some((i) => i === item.__$ROW_ID__)
@@ -262,11 +273,11 @@ function handleSelection(
 
     <template #footer>
       <ListPagination
-        v-if="pagination"
+        v-if="paginationWithDefault"
         v-model:pagination-state="queryState.paginationState.value"
-        :compact="compact"
-        :footer-class="footerClass"
-        :footer-style="footerStyle"
+        :compact="compactWithDefault"
+        :footer-class="footerClassWithDefault"
+        :footer-style="footerStyleWithDefault"
       />
     </template>
   </CardContainer>

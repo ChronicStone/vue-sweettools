@@ -8,7 +8,7 @@ const props = defineProps<{
   size?: 'small' | 'medium' | 'large'
   isLoading: boolean
 }>()
-const { modelValue } = defineModels<{ modelValue: QuickFilterPrimitive | QuickFilterPrimitive[] }>()
+const modelValue = defineModel<QuickFilterPrimitive | QuickFilterPrimitive[]>()
 
 function handleSelect(value: QuickFilterPrimitive) {
   if (props.multiple) {

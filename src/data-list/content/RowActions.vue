@@ -3,7 +3,7 @@ import { NButton, NTooltip } from 'naive-ui'
 import type { DataApi } from '../types/shared'
 import type { GenericObject } from '@/_shared/types/utils'
 
-const { actions, api, rowData } = definePropsRefs<{
+const { actions, api, rowData } = defineProps<{
   actions: ReturnType<typeof useTableRowActions>['rowsActions']['value'][number]['actions']
   api: DataApi
   rowData: GenericObject

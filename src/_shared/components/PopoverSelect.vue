@@ -11,7 +11,7 @@ const props = defineProps<{
   size?: 'small' | 'medium' | 'large'
   isLoading?: boolean
 }>()
-const { modelValue } = defineModels<{ modelValue: QuickFilterPrimitive | QuickFilterPrimitive[] }>()
+const modelValue = defineModel<QuickFilterPrimitive | QuickFilterPrimitive[]>()
 
 const searchQuery = ref<string>('')
 const searchQueryRef = ref<InstanceType<typeof NInput>>()
@@ -117,8 +117,6 @@ function updateValue(value: QuickFilterPrimitive[]) {
             <template #prefix>
               <span class="iconify" data-icon="mdi:magnify" />
             </template>
-
-            <template #placeholder />
           </NInput>
         </div>
       </template>

@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { createRequire } from 'node:module'
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
@@ -10,32 +11,46 @@ import PurgeIcons from 'vite-plugin-purge-icons'
 import AutoImports from 'unplugin-auto-import/vite'
 import Dts from 'vite-plugin-dts'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
-import VueMacros from 'unplugin-vue-macros/vite'
 import Checker from 'vite-plugin-checker'
-import { externalizeDeps } from 'vite-plugin-externalize-deps'
-import VueRouter from 'unplugin-vue-router/vite'
+
+const require = createRequire(import.meta.url)
+const pkg = require('./package.json') as {
+  dependencies?: Record<string, string>
+  peerDependencies?: Record<string, string>
+}
+
+const externalPackages = [
+  ...Object.keys(pkg.dependencies ?? {}),
+  ...Object.keys(pkg.peerDependencies ?? {}),
+]
+
+const external = (id: string) =>
+  externalPackages.some(packageName => id === packageName || id.startsWith(`${packageName}/`))
+
+const globals: Record<string, string> = {
+  '@chronicstone/vue-testid': 'VueTestid',
+  '@formkit/auto-animate/vue': 'FormKitAutoAnimateVue',
+  '@vuelidate/core': 'VuelidateCore',
+  '@vuelidate/validators': 'VuelidateValidators',
+  '@vueuse/core': 'VueUse',
+  'date-fns': 'dateFns',
+  'deepmerge-ts': 'deepmergeTs',
+  'json-as-xlsx': 'jsonAsXlsx',
+  'maska/vue': 'MaskaVue',
+  'naive-ui': 'naive',
+  'tinycolor2': 'tinycolor',
+  'vue': 'Vue',
+  'vue-draggable-plus': 'VueDraggablePlus',
+  'vue-i18n': 'VueI18n',
+  'xlsx': 'XLSX',
+  'zod': 'zod',
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    // eslint-disable-next-line node/prefer-global/process
-    ...(process.env.NODE_ENV === 'development'
-      ? [VueRouter({
-          dts: './src/_play/typed-router.d.ts',
-          routesFolder: [
-            { src: './src/_play/pages' },
-          ],
-        })]
-      : []),
-    VueMacros({
-      plugins: {
-        vue: Vue(),
-        vueJsx: VueJsx(),
-
-      },
-      defineProp: true,
-      definePropsRefs: true,
-    }),
+    Vue(),
+    VueJsx(),
     UnoCSS(),
     AutoImports({
       imports: [
@@ -43,6 +58,7 @@ export default defineConfig({
         'vue-i18n',
         '@vueuse/core',
       ],
+      ignore: ['useBreakpoints', 'useConfirmDialog'],
       vueTemplate: true,
       dirs: [
         'src/_shared/composables',
@@ -58,6 +74,7 @@ export default defineConfig({
     }),
     Components({
       dts: true,
+      dtsTsx: false,
       dirs: [
         'src/_shared/components',
         'src/form/components',
@@ -69,9 +86,11 @@ export default defineConfig({
     }),
     PurgeIcons(),
     Icons({ autoInstall: true }),
-    Dts(),
+    Dts({
+      skipDiagnostics: true,
+      logDiagnostics: false,
+    }),
     Checker({}),
-    externalizeDeps(),
   ],
   resolve: {
     alias: {
@@ -83,9 +102,17 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'VueSweetTools',
       fileName: format => `vue-sweettools.${format}.js`,
+      cssFileName: 'style',
+    },
+    rollupOptions: {
+      external,
+      output: {
+        exports: 'named',
+        globals,
+      },
     },
   },
   optimizeDeps: {
-    exclude: ['fsevents', '@vue-macros/*', 'unplugin-vue-define-options/macros'],
+    exclude: ['fsevents'],
   },
 })

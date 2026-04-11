@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { vTestid } from '@chronicstone/vue-testid'
 import type { MaskOptions } from 'maska'
-import { vMaska } from 'maska'
+import { vMaska } from 'maska/vue'
 import { NInput } from 'naive-ui'
 import type { FieldComponentEmits, FieldComponentProps, TextField } from '@/form/types/fields'
 

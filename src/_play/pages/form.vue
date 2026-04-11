@@ -9,13 +9,13 @@ import {
   useNotification,
 } from 'naive-ui'
 import { useElementSize } from '@vueuse/core'
-import { useRoute, useRouter } from 'vue-router/auto'
+import { useRoute, useRouter } from 'vue-router'
 import { formSamples } from '../samples/form'
 import { prettyPrintSchema } from '../samples/utils'
 import { useDarkMode } from '../composables/useDarkMode'
 import { type FormRefInstance, FormRenderer, useFormApi } from '@/index'
 
-const route = useRoute('/form')
+const route = useRoute()
 const router = useRouter()
 const formApi = useFormApi()
 const notif = useNotification()

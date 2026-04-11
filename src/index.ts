@@ -24,7 +24,7 @@ import { PLUGIN_CONF_INJECTION_KEY } from './_shared/config/injectionKeys'
 export default {
   install: (app: App, config?: SweettoolsPluginConfig) => {
     const i18nInstance = (app as any).__VUE_I18N_SYMBOL__
-    app.provide(PLUGIN_CONF_INJECTION_KEY, config)
+    app.provide(PLUGIN_CONF_INJECTION_KEY, config ?? {})
     if (!i18nInstance) {
       const i18n = createI18n({ legacy: false, locale: 'en' })
       app.use(i18n)

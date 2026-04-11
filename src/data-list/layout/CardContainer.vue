@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NCard } from 'naive-ui'
 
-const { frameless, compact, content } = definePropsRefs<{
+const { frameless, compact, content } = defineProps<{
   frameless: boolean
   compact: boolean
   content: 'card' | 'list'

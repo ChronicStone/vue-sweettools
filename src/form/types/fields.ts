@@ -744,7 +744,7 @@ export type FormField<FieldKey extends Narrowable = string> =
 
 export type FieldContext = ReturnType<typeof useFieldContext>
 
-export type FieldComponentProps = {
+export interface FieldComponentProps {
   modelValue: unknown
   field: FormField
   context: FieldContext
@@ -759,6 +759,6 @@ export type FieldComponentProps = {
   group?: boolean
 }
 
-export type FieldComponentEmits = {
+export interface FieldComponentEmits {
   (e: 'update:modelValue', value: unknown): void
 }
