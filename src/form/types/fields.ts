@@ -1,4 +1,4 @@
-import type { Validation, ValidationArgs } from '@vuelidate/core'
+import type { Validation, ValidationArgs } from "@vuelidate/core";
 import type {
   CascaderOption,
   ImageGroupProps,
@@ -12,50 +12,54 @@ import type {
   UploadCustomRequestOptions,
   UploadFileInfo,
   UploadSettledFileInfo,
-} from 'naive-ui'
-import type { SelectBaseOption } from 'naive-ui/es/select/src/interface'
-import type { CSSProperties, Component, VNode, VNodeChild } from 'vue'
-import type { MaskOptions } from 'maska'
-import type { useFieldContext } from '../composables/useFieldContext'
-import type { MaybePromise, Narrowable, Primitive } from '@/_shared/types/utils'
+} from "naive-ui";
+import type { SelectBaseOption } from "naive-ui/es/select/src/interface";
+import type { CSSProperties, Component, VNode, VNodeChild } from "vue";
+import type { MaskOptions } from "maska";
+import type { useFieldContext } from "../composables/useFieldContext";
+import type {
+  MaybePromise,
+  Narrowable,
+  Primitive,
+} from "@/_shared/types/utils";
 
 export enum FieldTypes {
-  TEXT = 'text',
-  NUMBER = 'number',
-  SELECT = 'select',
-  SWITCH = 'switch',
-  CHECKBOX = 'checkbox',
-  CHECKBOX_GROUP = 'checkbox-group',
-  RADIO = 'radio',
-  SLIDER = 'slider',
-  TEXTAREA = 'textarea',
-  PASSWORD = 'password',
-  DATE = 'date',
-  DATE_TIME = 'datetime',
-  DATE_RANGE = 'daterange',
-  MONTH_RANGE = 'monthrange',
-  DATE_TIME_RANGE = 'datetimerange',
-  MONTH = 'month',
-  YEAR = 'year',
-  TIME = 'time',
-  CUSTOM_COMPONENT = 'custom-component',
-  OBJECT = 'object',
-  ARRAY_LIST = 'array-list',
-  ARRAY_TABS = 'array-tabs',
-  INFO = 'info',
-  TREE_SELECT = 'tree-select',
-  RATING = 'rating',
-  TAG = 'tag',
-  CASCADER = 'cascader',
-  GROUP = 'group',
-  ARRAY_VARIANT = 'array-variant',
-  COLOR_PICKER = 'color-picker',
-  UPLOAD = 'upload',
+  TEXT = "text",
+  NUMBER = "number",
+  SELECT = "select",
+  SWITCH = "switch",
+  CHECKBOX = "checkbox",
+  CHECKBOX_GROUP = "checkbox-group",
+  RADIO = "radio",
+  SLIDER = "slider",
+  TEXTAREA = "textarea",
+  PASSWORD = "password",
+  DATE = "date",
+  DATE_TIME = "datetime",
+  DATE_RANGE = "daterange",
+  MONTH_RANGE = "monthrange",
+  DATE_TIME_RANGE = "datetimerange",
+  MONTH = "month",
+  YEAR = "year",
+  TIME = "time",
+  CUSTOM_COMPONENT = "custom-component",
+  OBJECT = "object",
+  ARRAY_LIST = "array-list",
+  ARRAY_TABS = "array-tabs",
+  INFO = "info",
+  TREE_SELECT = "tree-select",
+  RATING = "rating",
+  TAG = "tag",
+  CASCADER = "cascader",
+  GROUP = "group",
+  ARRAY_VARIANT = "array-variant",
+  COLOR_PICKER = "color-picker",
+  UPLOAD = "upload",
 }
 
-export type TFieldTypes = `${FieldTypes}`
+export type TFieldTypes = `${FieldTypes}`;
 
-export type Dependencies = Record<string, any>
+export type Dependencies = Record<string, any>;
 
 export type _CoreFieldOptions =
   | (number | string)[]
@@ -65,287 +69,295 @@ export type _CoreFieldOptions =
   | readonly (string | number)[]
   | readonly SelectOption[]
   | readonly TreeSelectOption[]
-  | readonly CascaderOption[]
+  | readonly CascaderOption[];
 
 export type _FieldOptions =
   | _CoreFieldOptions
   | ((
-    dependencies: Dependencies,
-    fieldApi: ReadonlyFieldApi
-  ) => _CoreFieldOptions)
+      dependencies: Dependencies,
+      fieldApi: ReadonlyFieldApi,
+    ) => _CoreFieldOptions)
   | ((
-    dependencies: Dependencies,
-    fieldApi: ReadonlyFieldApi
-  ) => Promise<_CoreFieldOptions>)
+      dependencies: Dependencies,
+      fieldApi: ReadonlyFieldApi,
+    ) => Promise<_CoreFieldOptions>);
 
 export type FieldOptionCreator =
   | ((
-    deps: Dependencies,
-    fieldApi: ReadonlyFieldApi
-  ) =>
-  | _CoreFieldOptions[number]
-  | null
-  | void
-  | Promise<_CoreFieldOptions[number] | null | void>)
-  | {
-    label: string
-    icon?: string
-    selectOnCreation?: boolean
-    revalidateFieldOptions?: Array<string>
-    handler: (
       deps: Dependencies,
-      fieldApi: ReadonlyFieldApi
+      fieldApi: ReadonlyFieldApi,
     ) =>
-    | _CoreFieldOptions[number]
-    | null
-    | void
-    | Promise<_CoreFieldOptions[number] | null | void>
-  }
+      | _CoreFieldOptions[number]
+      | null
+      | void
+      | Promise<_CoreFieldOptions[number] | null | void>)
+  | {
+      label: string;
+      icon?: string;
+      selectOnCreation?: boolean;
+      revalidateFieldOptions?: Array<string>;
+      handler: (
+        deps: Dependencies,
+        fieldApi: ReadonlyFieldApi,
+      ) =>
+        | _CoreFieldOptions[number]
+        | null
+        | void
+        | Promise<_CoreFieldOptions[number] | null | void>;
+    };
 
 export interface TextFieldProps {
-  minLength?: number
-  maxLength?: number
-  showCharacterCount?: boolean
-  prefix?: string | (() => VNodeChild)
-  suffix?: string | (() => VNodeChild)
-  mask?: string | MaskOptions
+  minLength?: number;
+  maxLength?: number;
+  showCharacterCount?: boolean;
+  prefix?: string | (() => VNodeChild);
+  suffix?: string | (() => VNodeChild);
+  mask?: string | MaskOptions;
 }
 
 export interface TextField {
-  type: 'text'
-  clearable?: boolean
+  type: "text";
+  clearable?: boolean;
   fieldParams?:
     | TextFieldProps
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TextFieldProps)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TextFieldProps);
 }
 
 export interface TreeSelectFieldProps {
-  cascade?: boolean
-  checkStrategy?: 'all' | 'parent' | 'child'
-  childrenField?: string
-  valueField?: string
-  labelField?: string
-  disabledField?: string
-  maxSelectedCount?: number | 'responsive'
-  clearFilterAfterSelect?: boolean
-  allowCheckingNotLoaded?: boolean
-  filterable?: boolean
+  cascade?: boolean;
+  checkStrategy?: "all" | "parent" | "child";
+  childrenField?: string;
+  valueField?: string;
+  labelField?: string;
+  disabledField?: string;
+  maxSelectedCount?: number | "responsive";
+  clearFilterAfterSelect?: boolean;
+  allowCheckingNotLoaded?: boolean;
+  filterable?: boolean;
   placement?:
-    | 'top'
-    | 'top-start'
-    | 'top-end'
-    | 'bottom'
-    | 'bottom-start'
-    | 'bottom-end'
-  remote?: boolean
-  separator?: string
-  showPath?: boolean
-  virtualScroll?: boolean
+    | "top"
+    | "top-start"
+    | "top-end"
+    | "bottom"
+    | "bottom-start"
+    | "bottom-end";
+  remote?: boolean;
+  separator?: string;
+  showPath?: boolean;
+  virtualScroll?: boolean;
   renderLabel?: (option: {
-    option: TreeSelectOption
-    checked: boolean
-    selected: boolean
-  }) => VNodeChild
+    option: TreeSelectOption;
+    checked: boolean;
+    selected: boolean;
+  }) => VNodeChild;
   filter?: (
     pattern: string,
     option: TreeSelectOption,
-    path: TreeSelectOption[]
-  ) => boolean
-  filterMenuProps?: Record<string, any>
+    path: TreeSelectOption[],
+  ) => boolean;
+  filterMenuProps?: Record<string, any>;
 }
 
 export interface TreeSelectField {
-  type: 'tree-select'
-  clearable?: boolean
-  multiple?: boolean
-  options: _FieldOptions
+  type: "tree-select";
+  clearable?: boolean;
+  multiple?: boolean;
+  options: _FieldOptions;
   fieldParams?:
     | TreeSelectFieldProps
     | ((
-      deps: Dependencies,
-      fieldApi: ReadonlyFieldApi
-    ) => TreeSelectFieldProps)
+        deps: Dependencies,
+        fieldApi: ReadonlyFieldApi,
+      ) => TreeSelectFieldProps);
 }
 
 export interface CascaderFieldParams {
-  cascade?: boolean
-  checkable?: boolean
-  checkStrategy?: 'all' | 'parent' | 'child'
-  childrenField?: string
-  valueField?: string
-  labelField?: string
-  disabledField?: string
-  maxSelectedCount?: number | 'responsive'
-  clearFilterAfterSelect?: boolean
-  allowCheckingNotLoaded?: boolean
-  filterable?: boolean
+  cascade?: boolean;
+  checkable?: boolean;
+  checkStrategy?: "all" | "parent" | "child";
+  childrenField?: string;
+  valueField?: string;
+  labelField?: string;
+  disabledField?: string;
+  maxSelectedCount?: number | "responsive";
+  clearFilterAfterSelect?: boolean;
+  allowCheckingNotLoaded?: boolean;
+  filterable?: boolean;
   placement?:
-    | 'top'
-    | 'top-start'
-    | 'top-end'
-    | 'bottom'
-    | 'bottom-start'
-    | 'bottom-end'
-  remote?: boolean
-  separator?: string
-  showPath?: boolean
-  virtualScroll?: boolean
-  renderLabel?: SelectRenderLabel
-  renderPrefix?: (option: CascaderOption, checked: boolean) => VNodeChild
-  renderSuffix?: (option: CascaderOption, checked: boolean) => VNodeChild
-  renderSwitcherIcon?: (option: CascaderOption, checked: boolean) => VNodeChild
-  renderTag?: SelectRenderTag
+    | "top"
+    | "top-start"
+    | "top-end"
+    | "bottom"
+    | "bottom-start"
+    | "bottom-end";
+  remote?: boolean;
+  separator?: string;
+  showPath?: boolean;
+  virtualScroll?: boolean;
+  renderLabel?: SelectRenderLabel;
+  renderPrefix?: (option: CascaderOption, checked: boolean) => VNodeChild;
+  renderSuffix?: (option: CascaderOption, checked: boolean) => VNodeChild;
+  renderSwitcherIcon?: (option: CascaderOption, checked: boolean) => VNodeChild;
+  renderTag?: SelectRenderTag;
   filter?: (
     pattern: string,
     option: CascaderOption,
-    path: CascaderOption[]
-  ) => boolean
-  filterMenuProps?: Record<string, unknown>
+    path: CascaderOption[],
+  ) => boolean;
+  filterMenuProps?: Record<string, unknown>;
 }
 
 export interface CascaderField {
-  type: 'cascader'
-  clearable?: boolean
-  options: _FieldOptions
-  multiple?: boolean
+  type: "cascader";
+  clearable?: boolean;
+  options: _FieldOptions;
+  multiple?: boolean;
   fieldParams?:
     | CascaderFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => CascaderFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => CascaderFieldParams);
 }
 
 export interface TextAreaFieldParams extends TextFieldProps {
-  autosize?: boolean | { minRows?: number; maxRows?: number }
-  showCount?: boolean
+  autosize?: boolean | { minRows?: number; maxRows?: number };
+  showCount?: boolean;
 }
 
 export interface TextAreaField {
-  type: 'textarea'
-  clearable?: boolean
+  type: "textarea";
+  clearable?: boolean;
   fieldParams?:
     | TextAreaFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TextAreaFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TextAreaFieldParams);
 }
 
 export interface TagFieldParams {
-  deletable?: boolean | ((value: string, index: number) => boolean)
-  type?: TagProps['type'] | ((value: string, index: number) => TagProps['type'])
-  size?: TagProps['size'] | ((value: string, index: number) => TagProps['size'])
-  bordered?: boolean | ((value: string, index: number) => boolean)
-  round?: boolean | ((value: string, index: number) => boolean)
-  color?: TagProps['color'] | ((value: string, index: number) => TagProps['color'])
-  tagStyle?: string | Record<string, Primitive> | ((value: string, index: number) => string | Record<string, Primitive>)
+  deletable?: boolean | ((value: string, index: number) => boolean);
+  type?:
+    | TagProps["type"]
+    | ((value: string, index: number) => TagProps["type"]);
+  size?:
+    | TagProps["size"]
+    | ((value: string, index: number) => TagProps["size"]);
+  bordered?: boolean | ((value: string, index: number) => boolean);
+  round?: boolean | ((value: string, index: number) => boolean);
+  color?:
+    | TagProps["color"]
+    | ((value: string, index: number) => TagProps["color"]);
+  tagStyle?:
+    | string
+    | Record<string, Primitive>
+    | ((value: string, index: number) => string | Record<string, Primitive>);
   onCreate?:
-  | ((label: string) => string)
-  | ((label: string) => { label: string; value: string })
-  max?: number
-  inputProps?: InputProps
-  draggable?: boolean
-  renderTag?:
-  (tag: string, index: number) => VNodeChild
+    | ((label: string) => string)
+    | ((label: string) => { label: string; value: string });
+  max?: number;
+  inputProps?: InputProps;
+  draggable?: boolean;
+  renderTag?: (tag: string, index: number) => VNodeChild;
 }
 
 export interface TagField {
-  type: 'tag'
+  type: "tag";
   fieldParams?:
     | TagFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TagFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TagFieldParams);
 }
 
-export interface PasswordField extends Omit<TextField, 'type' | 'pair'> {
-  type: 'password'
-  clearable?: boolean
+export interface PasswordField extends Omit<TextField, "type" | "pair"> {
+  type: "password";
+  clearable?: boolean;
 }
 
 export interface SelectFieldParams {
-  filterable?: boolean
+  filterable?: boolean;
   renderLabel?: (
     option: SelectOption | SelectGroupOption,
-    selected: boolean
-  ) => VNodeChild
+    selected: boolean,
+  ) => VNodeChild;
   renderOption?: (info: {
-    node: VNode
-    option: SelectOption | SelectGroupOption
-    selected: boolean
-  }) => VNodeChild
+    node: VNode;
+    option: SelectOption | SelectGroupOption;
+    selected: boolean;
+  }) => VNodeChild;
   renderTag?: (props: {
-    option: SelectBaseOption
-    handleClose: () => void
-  }) => VNodeChild
-  createTags?: boolean
-  virtualScroll?: boolean
-  max?: number
+    option: SelectBaseOption;
+    handleClose: () => void;
+  }) => VNodeChild;
+  createTags?: boolean;
+  virtualScroll?: boolean;
+  max?: number;
 }
 
 export interface SelectField {
-  type: 'select'
-  clearable?: boolean
-  options: _FieldOptions
-  multiple?: boolean
+  type: "select";
+  clearable?: boolean;
+  options: _FieldOptions;
+  multiple?: boolean;
   fieldParams?:
     | SelectFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SelectFieldParams)
-  createOption?: FieldOptionCreator
-  allowOptionsRefresh?: boolean
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SelectFieldParams);
+  createOption?: FieldOptionCreator;
+  allowOptionsRefresh?: boolean;
 }
 
 export interface NumberFieldParams {
-  min?: number
-  max?: number
-  step?: number
-  prefix?: string | (() => VNodeChild)
-  suffix?: string | (() => VNodeChild)
+  min?: number;
+  max?: number;
+  step?: number;
+  prefix?: string | (() => VNodeChild);
+  suffix?: string | (() => VNodeChild);
 }
 
 export interface NumberField {
-  type: 'number'
-  clearable?: boolean
+  type: "number";
+  clearable?: boolean;
   fieldParams?:
     | NumberFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => NumberFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => NumberFieldParams);
 }
 
 export interface ColorPickerFieldParams {
-  showPreview?: boolean
-  showAlpha?: boolean
-  renderLabel?: (color: string | null) => VNodeChild
-  modes?: Array<'rgb' | 'hex' | 'hsl' | 'hsv'>
-  swatches?: string[]
-  actions?: Array<'clear' | 'confirm'>
+  showPreview?: boolean;
+  showAlpha?: boolean;
+  renderLabel?: (color: string | null) => VNodeChild;
+  modes?: Array<"rgb" | "hex" | "hsl" | "hsv">;
+  swatches?: string[];
+  actions?: Array<"clear" | "confirm">;
 }
 
 export interface ColorPickerField {
-  type: 'color-picker'
+  type: "color-picker";
   fieldParams?:
     | ColorPickerFieldParams
     | ((
-      deps: Dependencies,
-      fieldApi: ReadonlyFieldApi
-    ) => ColorPickerFieldParams)
+        deps: Dependencies,
+        fieldApi: ReadonlyFieldApi,
+      ) => ColorPickerFieldParams);
 }
 
 export interface RatingFieldParams {
-  renderIcon?: () => VNodeChild
-  color?: string
-  iconCount?: number
-  size: 'small' | 'medium' | 'large' | number
-  allowHalf?: boolean
+  renderIcon?: () => VNodeChild;
+  color?: string;
+  iconCount?: number;
+  size: "small" | "medium" | "large" | number;
+  allowHalf?: boolean;
 }
 
 export interface RatingField {
-  type: 'rating'
+  type: "rating";
   fieldParams?:
     | RatingFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => RatingFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => RatingFieldParams);
 }
 
 export interface SliderFieldParams {
-  min?: number
-  max?: number
-  step?: number | 'mark'
-  range?: boolean
-  reverse?: boolean
-  enableTooltip?: boolean
-  formatTooltip?: (value: number) => string | number
+  min?: number;
+  max?: number;
+  step?: number | "mark";
+  range?: boolean;
+  reverse?: boolean;
+  enableTooltip?: boolean;
+  formatTooltip?: (value: number) => string | number;
   // alwaysShowTooltip?: boolean;
   // tooltipPlacement?:
   //     | "top-start"
@@ -360,405 +372,448 @@ export interface SliderFieldParams {
   //     | "left-start"
   //     | "left"
   //     | "left-end";
-  marks?: { [markValue: number]: string }
+  marks?: { [markValue: number]: string };
 }
 
 export interface SliderField {
-  type: 'slider'
+  type: "slider";
   fieldParams?:
     | SliderFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SliderFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SliderFieldParams);
 }
 
 export interface SwitchFieldParams {
-  checkedStyle?: string
-  uncheckedStyle?: string
-  checkedValue?: string | boolean | number
-  uncheckedValue?: string | boolean | number
+  checkedStyle?: string;
+  uncheckedStyle?: string;
+  checkedValue?: string | boolean | number;
+  uncheckedValue?: string | boolean | number;
 }
 
 export interface SwitchField {
-  type: 'switch'
+  type: "switch";
   fieldParams?:
     | SwitchFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SwitchFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => SwitchFieldParams);
 }
 
 export interface RadioField {
-  type: 'radio'
-  options: _FieldOptions
+  type: "radio";
+  options: _FieldOptions;
+  fieldParams?:
+    | Record<string, unknown>
+    | ((
+        deps: Dependencies,
+        fieldApi: ReadonlyFieldApi,
+      ) => Record<string, unknown>);
 }
 
 export interface CheckboxFieldParams {
-  checkedValue?: string | boolean | number
-  uncheckedValue?: string | boolean | number
+  checkedValue?: string | boolean | number;
+  uncheckedValue?: string | boolean | number;
 }
 
 export interface CheckboxField {
-  type: 'checkbox'
+  type: "checkbox";
   fieldParams?:
     | CheckboxFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => CheckboxFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => CheckboxFieldParams);
 }
 
 export interface CheckboxGroupFieldParams {
-  minChecked?: number
-  maxChecked?: number
+  minChecked?: number;
+  maxChecked?: number;
 }
 
 export interface CheckboxGroupField {
-  type: 'checkbox-group'
-  options: _FieldOptions
+  type: "checkbox-group";
+  options: _FieldOptions;
   fieldParams?:
     | CheckboxGroupFieldParams
-    | ((deps: CheckboxGroupFieldParams) => CheckboxGroupFieldParams)
+    | ((deps: CheckboxGroupFieldParams) => CheckboxGroupFieldParams);
 }
 
 export interface TimeFieldParams {
-  bottomActions?: Array<'now' | 'confirm'> | null
-  displayedHours?: number | number[]
-  displayedMinutes?: number | number[]
-  displayedSeconds?: number | number[]
-  disableHour?: (hour: number) => boolean
-  disableMinute?: (minute: number, hour: number | null) => boolean
+  bottomActions?: Array<"now" | "confirm"> | null;
+  displayedHours?: number | number[];
+  displayedMinutes?: number | number[];
+  displayedSeconds?: number | number[];
+  disableHour?: (hour: number) => boolean;
+  disableMinute?: (minute: number, hour: number | null) => boolean;
   disableSecond?: (
     second: number,
     minute: number | null,
-    hour: number | null
-  ) => boolean
-  format?: string
-  hourStep?: number
-  minuteStep?: number
-  secondStep?: number
+    hour: number | null,
+  ) => boolean;
+  format?: string;
+  hourStep?: number;
+  minuteStep?: number;
+  secondStep?: number;
 }
 
 export interface TimeField {
-  type: 'time'
-  clearable?: boolean
+  type: "time";
+  clearable?: boolean;
   fieldParams?:
     | TimeFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TimeFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => TimeFieldParams);
 }
 
 export interface DateFieldParams {
-  dateDisabled?: (current: number) => boolean
-  timeDisabled?: (current: number) => boolean
-  separator?: string
-  format?: string
-  valueFormat?: string
+  dateDisabled?: (current: number) => boolean;
+  timeDisabled?: (current: number) => boolean;
+  separator?: string;
+  format?: string;
+  valueFormat?: string;
 }
 
 export type DateField = {
-  type: 'date' | 'datetime' | 'daterange' | 'monthrange' | 'datetimerange' | 'month' | 'year'
-  clearable?: boolean
+  type:
+    | "date"
+    | "datetime"
+    | "daterange"
+    | "monthrange"
+    | "datetimerange"
+    | "month"
+    | "year";
+  clearable?: boolean;
   fieldParams?:
     | DateFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => DateFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => DateFieldParams);
 } & (
   | {
-    type: 'date' | 'datetime' | 'month' | 'year'
-    transform?: (value: string | null) => string
-  }
+      type: "date" | "datetime" | "month" | "year";
+      transform?: (value: string | null) => string;
+    }
   | {
-    type: 'daterange' | 'datetimerange' | 'monthrange'
-    transform?: (value: [string, string] | null) => string[]
-  }
-)
+      type: "daterange" | "datetimerange" | "monthrange";
+      transform?: (value: [string, string] | null) => string[];
+    }
+);
 
 export type UploadFieldParams = {
-  abstract?: boolean
-  accept?: string
-  action?: string
-  inputProps?: Record<string, unknown>
-  defaultFileList?: UploadFileInfo[]
-  uploadOnSelection?: boolean
-  allowDirectory?: boolean
-  fileListStyle?: string | Record<string, string>
-  imageGroupProps?: ImageGroupProps
-  isErrorState?: (xhr: XMLHttpRequest) => boolean
-  max?: number
-  renderFileIcon?: (file: UploadSettledFileInfo) => VNodeChild
-  shouldUseThumbnailUrl?: (file: UploadSettledFileInfo) => boolean
-  showCancelButton?: boolean
-  showDownloadButton?: boolean
-  showRemoveButton?: boolean
-  showPreviewButton?: boolean
-  showRetryButton?: boolean
-  showFileList?: boolean
+  abstract?: boolean;
+  accept?: string;
+  action?: string;
+  inputProps?: Record<string, unknown>;
+  defaultFileList?: UploadFileInfo[];
+  uploadOnSelection?: boolean;
+  allowDirectory?: boolean;
+  fileListStyle?: string | Record<string, string>;
+  imageGroupProps?: ImageGroupProps;
+  isErrorState?: (xhr: XMLHttpRequest) => boolean;
+  max?: number;
+  renderFileIcon?: (file: UploadSettledFileInfo) => VNodeChild;
+  shouldUseThumbnailUrl?: (file: UploadSettledFileInfo) => boolean;
+  showCancelButton?: boolean;
+  showDownloadButton?: boolean;
+  showRemoveButton?: boolean;
+  showPreviewButton?: boolean;
+  showRetryButton?: boolean;
+  showFileList?: boolean;
 } & (
   | {
-    enableDragDrop?: false
-    listType?: 'text' | 'image' | 'image-card'
-  }
+      enableDragDrop?: false;
+      listType?: "text" | "image" | "image-card";
+    }
   | {
-    enableDragDrop?: true
-    listType?: 'text' | 'image'
-  }
-)
+      enableDragDrop?: true;
+      listType?: "text" | "image";
+    }
+);
 
 export interface UploadField {
-  type: 'upload'
-  multiple?: boolean
-  output: 'object' | 'url'
-  uploadHandler: (options: UploadCustomRequestOptions, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
-  beforeUpload?: (data: { file: UploadFileInfo; fileList: UploadFileInfo[] }, dependencies: Dependencies, api: FieldApi) => MaybePromise<boolean>
-  onFileDownload?: (file: UploadFileInfo, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
-  onFileDelete?: (data: { file: UploadFileInfo; fileList: UploadFileInfo[] }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
-  onFilePreview?: (file: UploadFileInfo, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
-  onUploadFinish?: (data: { file: UploadFileInfo; event?: ProgressEvent }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
-  onUploadError?: (data: { file: UploadFileInfo; event?: ProgressEvent }, dependencies: Dependencies, api: FieldApi) => MaybePromise<void>
+  type: "upload";
+  multiple?: boolean;
+  output: "object" | "url";
+  uploadHandler: (
+    options: UploadCustomRequestOptions,
+    dependencies: Dependencies,
+    api: FieldApi,
+  ) => MaybePromise<void>;
+  beforeUpload?: (
+    data: { file: UploadFileInfo; fileList: UploadFileInfo[] },
+    dependencies: Dependencies,
+    api: FieldApi,
+  ) => MaybePromise<boolean>;
+  onFileDownload?: (
+    file: UploadFileInfo,
+    dependencies: Dependencies,
+    api: FieldApi,
+  ) => MaybePromise<void>;
+  onFileDelete?: (
+    data: { file: UploadFileInfo; fileList: UploadFileInfo[] },
+    dependencies: Dependencies,
+    api: FieldApi,
+  ) => MaybePromise<void>;
+  onFilePreview?: (
+    file: UploadFileInfo,
+    dependencies: Dependencies,
+    api: FieldApi,
+  ) => MaybePromise<void>;
+  onUploadFinish?: (
+    data: { file: UploadFileInfo; event?: ProgressEvent },
+    dependencies: Dependencies,
+    api: FieldApi,
+  ) => MaybePromise<void>;
+  onUploadError?: (
+    data: { file: UploadFileInfo; event?: ProgressEvent },
+    dependencies: Dependencies,
+    api: FieldApi,
+  ) => MaybePromise<void>;
   fieldParams?:
     | UploadFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => UploadFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => UploadFieldParams);
 }
 
 export interface GroupField<FieldKey extends Narrowable = string> {
-  type: 'group'
-  gridSize?: number | string
+  type: "group";
+  gridSize?: number | string;
   fields: Array<
-    Omit<_BaseField<FieldKey>, 'label'> &
-    (
-      | TextField
-      | PasswordField
-      | SelectField
-      | NumberField
-      | TimeField
-      | DateField
-      | TreeSelectField
-      | CascaderField
-      | ColorPickerField
-    )
-  >
+    Omit<_BaseField<FieldKey>, "label"> &
+      (
+        | TextField
+        | PasswordField
+        | SelectField
+        | NumberField
+        | TimeField
+        | DateField
+        | TreeSelectField
+        | CascaderField
+        | ColorPickerField
+      )
+  >;
 }
 
 export interface ObjectFieldParams {
-  frameless?: boolean
-  style?: CSSProperties
-  class?: string
+  frameless?: boolean;
+  style?: CSSProperties;
+  class?: string;
 }
 
 export interface ObjectField<FieldKey extends Narrowable = string> {
-  type: 'object'
-  extraProperties?: boolean
-  gridSize?: number | string
-  fields: FormField<FieldKey>[]
-  collapsible?: boolean
-  collapsed?: boolean
-  fieldParam?:
+  type: "object";
+  extraProperties?: boolean;
+  gridSize?: number | string;
+  fields: FormField<FieldKey>[];
+  collapsible?: boolean;
+  collapsed?: boolean;
+  fieldParams?:
     | ObjectFieldParams
-    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => ObjectFieldParams)
+    | ((deps: Dependencies, fieldApi: ReadonlyFieldApi) => ObjectFieldParams);
 }
 
 export interface _ArrayField<FieldKey extends Narrowable = string> {
-  extraProperties?: boolean
-  gridSize?: number | string
-  fields: FormField<FieldKey>[]
-  collapsible?: boolean
-  collapsed?: boolean
-  headerTemplate?: (item: Record<string, any>, index: number) => string
-  transformOnCreate?: (item: Record<string, any>) => Record<string, any>
-  virtualFields?: { [key: string]: (index: number) => any }
+  extraProperties?: boolean;
+  gridSize?: number | string;
+  fields: FormField<FieldKey>[];
+  collapsible?: boolean;
+  collapsed?: boolean;
+  headerTemplate?: (item: Record<string, any>, index: number) => string;
+  transformOnCreate?: (item: Record<string, any>) => Record<string, any>;
+  virtualFields?: { [key: string]: (index: number) => any };
   actions?: {
-    [key in 'deleteItem' | 'moveUp' | 'moveDown']?:
+    [key in "deleteItem" | "moveUp" | "moveDown"]?:
       | boolean
       | ((
-        value: Record<string, unknown>,
-        dependencies: Record<string, unknown>,
-        index: number
-      ) => boolean);
+          value: Record<string, unknown>,
+          dependencies: Record<string, unknown>,
+          index: number,
+        ) => boolean);
   } & {
     addItem?:
       | boolean
       | ((
-        values: Array<Record<string, unknown>>,
-        dependencies: Record<string, unknown>
-      ) => boolean)
+          values: Array<Record<string, unknown>>,
+          dependencies: Record<string, unknown>,
+        ) => boolean);
     custom?: Array<{
-      label: string
-      icon: string
+      label: string;
+      icon: string;
       condition?: (
         value: Record<string, unknown>,
-        dependencies: Record<string, unknown>
-      ) => boolean
-      action: (rowApi: ArrayCustomActionApi) => void
-    }>
-  }
+        dependencies: Record<string, unknown>,
+      ) => boolean;
+      action: (rowApi: ArrayCustomActionApi) => void;
+    }>;
+  };
 }
 
 export interface ArrayCustomActionApi {
-  index: number
-  value: Record<string, unknown>
-  dependencies: Record<string, unknown>
-  getValue(key: string): unknown
-  setValue(key: string, value: unknown): void
-  getOptions: FieldApi['getOptions']
+  index: number;
+  value: Record<string, unknown>;
+  dependencies: Record<string, unknown>;
+  getValue(key: string): unknown;
+  setValue(key: string, value: unknown): void;
+  getOptions: FieldApi["getOptions"];
 }
 
 export type ArrayVariantField<FieldKey extends Narrowable = string> = Omit<
   _ArrayField<FieldKey>,
-  'fields'
+  "fields"
 > & {
-  type: 'array-variant'
-  variantKey: string
+  type: "array-variant";
+  variantKey: string;
   variants: Array<{
-    label: string | (() => VNodeChild)
-    key: string | number
-    fields: FormField<FieldKey>[]
-  }>
+    label: string | (() => VNodeChild);
+    key: string | number;
+    fields: FormField<FieldKey>[];
+  }>;
 } & (
-  | {
-    displayMode: 'tabs'
-  }
-  | {
-    displayMode: 'list'
-    listGridSize?: number | string
-    listItemSize?: number | string
-    compact?: boolean
-  }
-)
+    | {
+        displayMode: "tabs";
+      }
+    | {
+        displayMode: "list";
+        listGridSize?: number | string;
+        listItemSize?: number | string;
+        compact?: boolean;
+      }
+  );
 
-export interface ArrayListField<FieldKey extends Narrowable = string>
-  extends _ArrayField<FieldKey> {
-  type: 'array-list'
-  listGridSize?: number | string
-  listItemSize?: number | string
-  compact?: boolean
+export interface ArrayListField<
+  FieldKey extends Narrowable = string,
+> extends _ArrayField<FieldKey> {
+  type: "array-list";
+  listGridSize?: number | string;
+  listItemSize?: number | string;
+  compact?: boolean;
 }
 
-export interface ArrayTabsField<FieldKey extends Narrowable = string>
-  extends _ArrayField<FieldKey> {
-  type: 'array-tabs'
+export interface ArrayTabsField<
+  FieldKey extends Narrowable = string,
+> extends _ArrayField<FieldKey> {
+  type: "array-tabs";
 }
 
 export interface InfoField {
-  type: 'info'
-  content: (dependencies: Dependencies, api: FieldApi) => VNodeChild | string
+  type: "info";
+  content: (dependencies: Dependencies, api: FieldApi) => VNodeChild | string;
 }
 
 export interface CustomField {
-  type: 'custom-component'
-  component: Component
+  type: "custom-component";
+  component: Component;
   fieldParams?:
     | Record<string, unknown>
     | ((
-      deps: Dependencies,
-      fieldApi: ReadonlyFieldApi
-    ) => Record<string, unknown>)
-  collapsible?: boolean
-  collapsed?: boolean
+        deps: Dependencies,
+        fieldApi: ReadonlyFieldApi,
+      ) => Record<string, unknown>);
+  collapsible?: boolean;
+  collapsed?: boolean;
 }
 
 export type FieldDescription = {
-  title: string | (() => VNodeChild)
-  content: string | (() => VNodeChild)
-}
+  title: string | (() => VNodeChild);
+  content: string | (() => VNodeChild);
+};
 
 export type FieldApi = {
-  getValue<T = unknown>(key: string): T
-  setValue(key: string, value: unknown): void
-  setValue(value: unknown): void
+  getValue<T = unknown>(key: string): T;
+  setValue(key: string, value: unknown): void;
+  setValue(value: unknown): void;
   getOptions<
     T extends
-    | SelectOption
-    | TreeSelectOption
-    | CascaderOption
-    | string
-    | number = SelectOption | TreeSelectOption | CascaderOption,
+      | SelectOption
+      | TreeSelectOption
+      | CascaderOption
+      | string
+      | number = SelectOption | TreeSelectOption | CascaderOption,
     O = T extends string | number ? { label: string; value: T } : T,
   >(
-    key?: string
-  ): O[]
-}
+    key?: string,
+  ): O[];
+};
 
 export type ReadonlyFieldApi = {
-  getValue: FieldApi['getValue']
-  getOptions: FieldApi['getOptions']
-}
+  getValue: FieldApi["getValue"];
+  getOptions: FieldApi["getOptions"];
+};
 
 export type _BaseField<FieldKey extends Narrowable = string> = {
-  label?: string | ((dependencies: Dependencies) => VNodeChild | string)
-  key: FieldKey
-  placeholder?: string | (() => string)
-  dependencies?: (string | [string, string])[]
+  label?: string | ((dependencies: Dependencies) => VNodeChild | string);
+  key: FieldKey;
+  placeholder?: string | (() => string);
+  dependencies?: (string | [string, string])[];
   required?:
     | boolean
-    | ((dependencies: Dependencies, api: ReadonlyFieldApi) => boolean)
-  size?: number | string
-  gridSize?: number | string
-  default?: unknown
-  fields?: FormField<FieldKey>[]
-  conditionEffect?: 'disable' | 'hide'
-  labelPosition?: 'left' | 'top'
-  description?: string | (() => VNodeChild) | FieldDescription
+    | ((dependencies: Dependencies, api: ReadonlyFieldApi) => boolean);
+  size?: number | string;
+  gridSize?: number | string;
+  default?: unknown;
+  fields?: FormField<FieldKey>[];
+  conditionEffect?: "disable" | "hide";
+  labelPosition?: "left" | "top";
+  description?: string | (() => VNodeChild) | FieldDescription;
   fieldParams?:
-    | Record<string, unknown>
-    | ((deps: Dependencies, api: ReadonlyFieldApi) => Record<string, unknown>)
+    | unknown
+    | ((deps: Dependencies, api: ReadonlyFieldApi) => unknown);
   condition?: (
     dependencies: Dependencies,
-    api: ReadonlyFieldApi
-  ) => Promise<boolean> | boolean
-  preformat?: (value: any) => unknown
-  transform?: (value: any) => unknown
+    api: ReadonlyFieldApi,
+  ) => Promise<boolean> | boolean;
+  preformat?: (value: any) => unknown;
+  transform?: (value: any) => unknown;
   validators?:
-  | ((dependencies: Dependencies, api: ReadonlyFieldApi) => ValidationArgs)
-  | ValidationArgs
-  watchOptions?: { deep?: boolean; immediate?: boolean }
-  watch?: (value: any, params: FieldApi) => void
-  onDependencyChange?: (dependencies: Dependencies, api: FieldApi) => void
-  ignore?: boolean
-  labelExtra?: () => VNodeChild
-  dirtyCheck?: boolean
-  wrapperStyle?: string | CSSProperties
-  wrapperClass?: string | Array<string | Record<string, boolean>>
-}
+    | ((dependencies: Dependencies, api: ReadonlyFieldApi) => ValidationArgs)
+    | ValidationArgs;
+  watchOptions?: { deep?: boolean; immediate?: boolean };
+  watch?: (value: any, params: FieldApi) => void;
+  onDependencyChange?: (dependencies: Dependencies, api: FieldApi) => void;
+  ignore?: boolean;
+  labelExtra?: () => VNodeChild;
+  dirtyCheck?: boolean;
+  wrapperStyle?: string | CSSProperties;
+  wrapperClass?: string | Array<string | Record<string, boolean>>;
+};
 
 export type FormField<FieldKey extends Narrowable = string> =
   _BaseField<FieldKey> &
-  (
-    | TextField
-    | TextAreaField
-    | PasswordField
-    | SelectField
-    | NumberField
-    | ColorPickerField
-    | SliderField
-    | SwitchField
-    | RadioField
-    | CheckboxField
-    | CheckboxGroupField
-    | TimeField
-    | DateField
-    | ObjectField<FieldKey>
-    | ArrayListField<FieldKey>
-    | ArrayTabsField<FieldKey>
-    | InfoField
-    | CustomField
-    | TreeSelectField
-    | CascaderField
-    | RatingField
-    | TagField
-    | UploadField
-    | GroupField<FieldKey>
-    | ArrayVariantField<FieldKey>
-  )
+    (
+      | TextField
+      | TextAreaField
+      | PasswordField
+      | SelectField
+      | NumberField
+      | ColorPickerField
+      | SliderField
+      | SwitchField
+      | RadioField
+      | CheckboxField
+      | CheckboxGroupField
+      | TimeField
+      | DateField
+      | ObjectField<FieldKey>
+      | ArrayListField<FieldKey>
+      | ArrayTabsField<FieldKey>
+      | InfoField
+      | CustomField
+      | TreeSelectField
+      | CascaderField
+      | RatingField
+      | TagField
+      | UploadField
+      | GroupField<FieldKey>
+      | ArrayVariantField<FieldKey>
+    );
 
-export type FieldContext = ReturnType<typeof useFieldContext>
+export type FieldContext = ReturnType<typeof useFieldContext>;
 
 export interface FieldComponentProps {
-  modelValue: unknown
-  field: FormField
-  context: FieldContext
-  parentDisabled: boolean
-  validator?: Validation
-  collapsed: boolean
-  indent?: number
-  parentKey: string[]
-  disabled: boolean
-  size?: string
-  groupLength?: number
-  group?: boolean
+  modelValue: unknown;
+  field: FormField;
+  context: FieldContext;
+  parentDisabled: boolean;
+  validator?: Validation;
+  collapsed: boolean;
+  indent?: number;
+  parentKey: string[];
+  disabled: boolean;
+  size?: string;
+  groupLength?: number;
+  group?: boolean;
 }
 
 export interface FieldComponentEmits {
-  (e: 'update:modelValue', value: unknown): void
+  (e: "update:modelValue", value: unknown): void;
 }

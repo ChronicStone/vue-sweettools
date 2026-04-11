@@ -1,8 +1,5 @@
-import type { DataGridSchema } from './types'
-import type { GenericObject } from '@/_shared/types/utils'
+import type { DataGridSchema } from "./types";
 
-export function buildGridSchema<T extends GenericObject>(
-  schema: DataGridSchema<T>,
-) {
-  return schema as unknown as DataGridSchema<GenericObject>
+export function buildGridSchema<T extends DataGridSchema<any>>(schema: T): T {
+  return schema;
 }

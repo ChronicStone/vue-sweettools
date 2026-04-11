@@ -1,29 +1,35 @@
-import type { DataSource, FilterBuilderProperty, InferTableParams } from '../types/shared'
-import type { DataListSchema } from '../types/datalist'
-import type { DataTableSchema } from '../types/datatable'
-import type { GenericObject } from '@/_shared/types/utils'
+import type {
+  DataSource,
+  FilterBuilderProperty,
+  InferTableParams,
+} from "../types/shared";
+import type { DataListSchema } from "../types/datalist";
+import type { DataTableSchema } from "../types/datatable";
 
 export function buildTableSchema<
-  Remote extends boolean,
-  Source extends DataSource<GenericObject, Remote>,
-  Params extends InferTableParams<Source>,
->(schema: DataTableSchema<Remote, Source, Params>) {
-  return schema as unknown as DataTableSchema<
-    boolean,
-    DataSource<GenericObject, boolean>
-  >
+  Source extends DataSource<any, false>,
+  const Schema extends DataTableSchema<false, Source, InferTableParams<Source>>,
+>(schema: Schema): Schema;
+export function buildTableSchema<
+  Source extends DataSource<any, true>,
+  const Schema extends DataTableSchema<true, Source, InferTableParams<Source>>,
+>(schema: Schema): Schema;
+export function buildTableSchema(schema: DataTableSchema<any, any, any>) {
+  return schema;
 }
 
 export function buildListSchema<
-  Remote extends boolean,
-  Source extends DataSource<GenericObject, Remote>,
->(schema: DataListSchema<Remote, Source>) {
-  return schema as unknown as DataListSchema<
-    boolean,
-    DataSource<GenericObject, boolean>
-  >
+  Source extends DataSource<any, false>,
+  const Schema extends DataListSchema<false, Source, InferTableParams<Source>>,
+>(schema: Schema): Schema;
+export function buildListSchema<
+  Source extends DataSource<any, true>,
+  const Schema extends DataListSchema<true, Source, InferTableParams<Source>>,
+>(schema: Schema): Schema;
+export function buildListSchema(schema: DataListSchema<any, any, any>) {
+  return schema;
 }
 
 export function defineFilterProperty(params: FilterBuilderProperty) {
-  return params
+  return params;
 }
