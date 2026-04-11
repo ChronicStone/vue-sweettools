@@ -54,13 +54,3 @@ export interface DataListSchema<
   compact?: boolean;
   frameless?: boolean;
 }
-
-export function buildListSchema<
-  Remote extends boolean,
-  Source extends DataSource<GenericObject, Remote>,
-  Params extends InferTableParams<Source>,
->(
-  schema: DataListSchema<Remote, Source, Params>,
-): DataListSchema<Remote, Source, Params> {
-  return schema;
-}
