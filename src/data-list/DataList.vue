@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { NCard, NEmpty, NScrollbar, NSkeleton } from 'naive-ui'
-import { vAutoAnimate } from '@formkit/auto-animate/vue'
-import type { DataListSchema } from './types/datalist'
-import Lazy from '@/_shared/components/Lazy.vue'
+import { NCard, NEmpty, NScrollbar, NSkeleton } from "naive-ui";
+import { vAutoAnimate } from "@formkit/auto-animate/vue";
+import type { DataListSchema } from "./types/datalist";
+import Lazy from "@/_shared/components/Lazy.vue";
 
 const {
   expandedContent,
@@ -30,32 +30,32 @@ const {
   footerStyle,
   headerClass,
   headerStyle,
-} = defineProps<DataListSchema>()
+} = defineProps<DataListSchema<any, any, any>>();
 
-const listKeyRef = computed(() => listKey ?? 'DEFAULT_LIST')
-const filtersRef = computed(() => filters ?? [])
-const staticFiltersRef = computed(() => staticFilters ?? [])
-const searchQueryRef = computed(() => searchQuery ?? [])
-const defaultSortRef = computed(() => defaultSort)
-const remoteRef = computed(() => remote)
-const actionsRef = computed(() => actions ?? [])
-const rowActionsRef = computed(() => rowActions ?? [])
+const listKeyRef = computed(() => listKey ?? "DEFAULT_LIST");
+const filtersRef = computed(() => filters ?? []);
+const staticFiltersRef = computed(() => staticFilters ?? []);
+const searchQueryRef = computed(() => searchQuery ?? []);
+const defaultSortRef = computed(() => defaultSort);
+const remoteRef = computed(() => remote);
+const actionsRef = computed(() => actions ?? []);
+const rowActionsRef = computed(() => rowActions ?? []);
 
-const sortOptionsWithDefault = computed(() => sortOptions ?? [])
-const maxHeightWithDefault = computed(() => maxHeight ?? '56vh')
-const paginationWithDefault = computed(() => pagination ?? true)
-const selectionWithDefault = computed(() => selection ?? true)
-const compactWithDefault = computed(() => compact ?? false)
-const framelessWithDefault = computed(() => frameless ?? false)
-const footerClassWithDefault = computed(() => footerClass)
-const footerStyleWithDefault = computed(() => footerStyle)
-const headerClassWithDefault = computed(() => headerClass)
-const headerStyleWithDefault = computed(() => headerStyle)
+const sortOptionsWithDefault = computed(() => sortOptions ?? []);
+const maxHeightWithDefault = computed(() => maxHeight ?? "56vh");
+const paginationWithDefault = computed(() => pagination ?? true);
+const selectionWithDefault = computed(() => selection ?? true);
+const compactWithDefault = computed(() => compact ?? false);
+const framelessWithDefault = computed(() => frameless ?? false);
+const footerClassWithDefault = computed(() => footerClass);
+const footerStyleWithDefault = computed(() => footerStyle);
+const headerClassWithDefault = computed(() => headerClass);
+const headerStyleWithDefault = computed(() => headerStyle);
 
-const defaultPageSizeWithDefault = computed(() => defaultPageSize)
-const rowIdKeyWithDefault = computed(() => rowIdKey)
+const defaultPageSizeWithDefault = computed(() => defaultPageSize);
+const rowIdKeyWithDefault = computed(() => rowIdKey);
 
-const scrollbarContainerRef = ref<InstanceType<typeof NScrollbar>>()
+const scrollbarContainerRef = ref<InstanceType<typeof NScrollbar>>();
 
 const queryState = useQueryState({
   key: `${listKeyRef.value}_LIST_STATE`,
@@ -67,7 +67,7 @@ const queryState = useQueryState({
   persistency,
   defaultSort: defaultSortRef,
   defaultPageSize: defaultPageSizeWithDefault.value,
-})
+});
 
 const resolver = useDataResolver({
   remote: remoteRef,
@@ -80,37 +80,39 @@ const resolver = useDataResolver({
   isLoading: queryState.isLoading,
   enablePagination: paginationWithDefault.value,
   rowKey: rowIdKeyWithDefault.value,
-})
+});
 
-const dataApi = useDataApi({ queryState, resolver })
-const lastSelectedRowId = ref<string | null>(null)
+const dataApi = useDataApi({ queryState, resolver });
+const lastSelectedRowId = ref<string | null>(null);
 const mappedActions = useDataActions({
   actions: actionsRef,
   fetchParams: queryState.fetchParams,
   data: remote ? queryState.data : resolver.localDataStore,
   internalApi: dataApi,
   selectionState: queryState,
-})
+});
 
-function handleSortUpdate(sort: { key: string; dir: 'asc' | 'desc' | null } | null) {
-  queryState.setSort(sort?.dir ? { key: sort.key, dir: sort.dir } : null)
+function handleSortUpdate(
+  sort: { key: string; dir: "asc" | "desc" | null } | null,
+) {
+  queryState.setSort(sort?.dir ? { key: sort.key, dir: sort.dir } : null);
 }
 
 watch(
   () => queryState.paginationState.value.pageIndex,
   () => scrollbarContainerRef.value?.scrollTo(0, 0),
-)
+);
 
 watch(
   () => queryState.selectAll.value,
   (v) => {
     queryState.selectedKeys.value = !v
       ? []
-      : [...resolver.localDataStore.value.map(d => d.__$ROW_ID__)]
+      : [...resolver.localDataStore.value.map((d) => d.__$ROW_ID__)];
 
-    lastSelectedRowId.value = null
+    lastSelectedRowId.value = null;
   },
-)
+);
 
 // watch(
 //   () => queryState.selectedKeys.value,
@@ -129,38 +131,35 @@ function handleSelection(
     if (value) {
       queryState.selectedKeys.value = [
         ...new Set([...queryState.selectedKeys.value, rowKey]),
-      ]
-    }
-    else {
+      ];
+    } else {
       queryState.selectedKeys.value = queryState.selectedKeys.value.filter(
-        k => k !== rowKey,
-      )
+        (k) => k !== rowKey,
+      );
     }
-  }
-  else {
+  } else {
     const indexRange = [
       queryState.data.value.findIndex(
-        d => d.__$ROW_ID__ === lastSelectedRowId.value,
+        (d) => d.__$ROW_ID__ === lastSelectedRowId.value,
       ) ?? rowIndex,
       rowIndex,
-    ]
+    ];
 
-    const keysToSelect: string[] = []
+    const keysToSelect: string[] = [];
     for (let i = indexRange[0]; i <= indexRange[1]; i++)
-      keysToSelect.push(queryState.data.value[i].__$ROW_ID__)
+      keysToSelect.push(queryState.data.value[i].__$ROW_ID__);
 
     if (value) {
       queryState.selectedKeys.value = [
         ...new Set([...queryState.selectedKeys.value, ...keysToSelect]),
-      ]
-    }
-    else {
+      ];
+    } else {
       queryState.selectedKeys.value = queryState.selectedKeys.value.filter(
-        k => !keysToSelect.includes(k.toString()),
-      )
+        (k) => !keysToSelect.includes(k.toString()),
+      );
     }
   }
-  lastSelectedRowId.value = rowKey
+  lastSelectedRowId.value = rowKey;
 }
 </script>
 
@@ -223,7 +222,11 @@ function handleSelection(
 
     <NScrollbar
       ref="scrollbarContainerRef"
-      :style="{ ...(maxHeightWithDefault === false ? {} : { maxHeight: maxHeightWithDefault }) }"
+      :style="{
+        ...(maxHeightWithDefault === false
+          ? {}
+          : { maxHeight: maxHeightWithDefault }),
+      }"
     >
       <div
         v-auto-animate
@@ -240,7 +243,7 @@ function handleSelection(
           ]"
           :min-height="80"
           render-on-idle
-          :identifier="(item.firstName as string)"
+          :identifier="item.firstName as string"
         >
           <ListItem
             :compact="compactWithDefault"

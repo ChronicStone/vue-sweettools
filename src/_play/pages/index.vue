@@ -1,17 +1,30 @@
 <script setup lang="tsx">
-import { NButton } from 'naive-ui'
 import type { FetchParams } from '@/index'
-import { DataTable, booleanFilter, buildTableSchema, timeRangeFilter } from '@/index'
+import { NButton } from 'naive-ui'
+import {
+  booleanFilter,
+  buildTableSchema,
+  DataTable,
+  timeRangeFilter,
+} from '@/index'
 
 function getRandomDate() {
   const now = new Date()
-  const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate())
-  return new Date(Math.random() * (oneYearAgo.getTime() - now.getTime()) + now.getTime()).toISOString()
+  const oneYearAgo = new Date(
+    now.getFullYear() - 1,
+    now.getMonth(),
+    now.getDate(),
+  )
+  return new Date(
+    Math.random() * (oneYearAgo.getTime() - now.getTime()) + now.getTime(),
+  ).toISOString()
 }
 
 // Date range between today & 1 year ago
 function getDateRange(daysAgo: number) {
-  return [new Date(new Date().getTime() - daysAgo * 24 * 60 * 60 * 1000), new Date()].map(d => d.toISOString())
+  return [new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000), new Date()].map(
+    d => d.toISOString(),
+  )
 }
 
 async function loadData(params: FetchParams) {
@@ -24,7 +37,13 @@ async function loadData(params: FetchParams) {
     address: `address ${i}`,
     active: Math.random() > 0.5,
     user: { id: i, name: `name ${i}` },
-    productLine: i === 0 ? [{ productLine: 'Adult', id: i }, { productLine: 'Children', id: i }] : [{ id: i }],
+    productLine:
+      i === 0
+        ? [
+            { productLine: 'Adult', id: i },
+            { productLine: 'Children', id: i },
+          ]
+        : [{ id: i }],
     date: new Date().toISOString(),
     balance: Math.floor(Math.random() * 1000),
     scores: {
@@ -44,33 +63,50 @@ const schema = buildTableSchema({
   persistency: 'localStorage',
   remote: false,
   draggable: true,
-  datasource: async param => await loadData(param),
+  datasource: async () =>
+    await loadData({
+      page: 1,
+      limit: 50,
+      sortKey: null,
+      sortOrder: null,
+      searchQuery: null,
+      query: null,
+    }),
   maxHeight: '75vh',
-  staticFilters: [
-  ],
+  staticFilters: [],
   filters: [
     booleanFilter({ key: 'active', label: 'Active' }),
     timeRangeFilter({ key: 'date', label: 'Date' }),
   ],
   searchQuery: ['name'],
   expandedContent: (row) => {
-    return (
-      <div>
-        Hi
-      </div>
-    )
+    return <div>Hi</div>
   },
   columns: [
-    ...((['math', 'english', 'chinese', 'other'] as const).map(subject => ({
+    ...(['math', 'english', 'chinese', 'other'] as const).map(subject => ({
       label: subject,
       key: `scores.${subject}` as const,
       // MIN MAX AVG
-    }))),
+    })),
     { label: 'ID', key: 'id', summary: [{ value: 'Total' }] },
     { label: 'Name', key: 'name', summary: [{ value: '21 233' }] },
-    { label: 'Balance', key: 'balance', summary: [{ value: rows => rows.reduce((acc, cur) => acc + cur.balance, 0) }] },
-    { label: 'Active', key: 'active', render: rowData => rowData.active ? 'Yes' : 'No' },
-    { label: 'Age', key: 'age', summary: [{ value: () => <NButton>Hi</NButton> }] },
+    {
+      label: 'Balance',
+      key: 'balance',
+      summary: [
+        { value: rows => rows.reduce((acc, cur) => acc + cur.balance, 0) },
+      ],
+    },
+    {
+      label: 'Active',
+      key: 'active',
+      render: rowData => (rowData.active ? 'Yes' : 'No'),
+    },
+    {
+      label: 'Age',
+      key: 'age',
+      summary: [{ value: () => <NButton>Hi</NButton> }],
+    },
     { label: 'Address', key: 'address' },
   ],
   rowActions: [
@@ -90,7 +126,10 @@ const schema = buildTableSchema({
       key: 'user.id',
       options: async () => {
         await new Promise(resolve => setTimeout(resolve, 1000))
-        return Array.from({ length: 10 }).map((_, i) => ({ label: `User ${i}`, value: i }))
+        return Array.from({ length: 10 }).map((_, i) => ({
+          label: `User ${i}`,
+          value: i,
+        }))
       },
       matchMode: 'equals',
       multiple: true,
@@ -102,7 +141,12 @@ const schema = buildTableSchema({
       key: 'createdAt',
       options: async () => {
         await new Promise(resolve => setTimeout(resolve, 1000))
-        return [{ label: 'Today', value: 1 }, { label: 'Last 7 days', value: 7 }, { label: 'Last 30 days', value: 30 }, { label: 'Last 60 days', value: 60 }]
+        return [
+          { label: 'Today', value: 1 },
+          { label: 'Last 7 days', value: 7 },
+          { label: 'Last 30 days', value: 30 },
+          { label: 'Last 60 days', value: 60 },
+        ]
       },
       matchMode: 'between',
       params: { dateMode: true },
@@ -142,7 +186,7 @@ const schema = buildTableSchema({
 </script>
 
 <template>
-  <div style="padding: 2em;">
+  <div style="padding: 2em">
     <div class="flex items-center gap-2">
       <RouterLink to="/datalist">
         DATALIST

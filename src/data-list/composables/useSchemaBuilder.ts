@@ -4,9 +4,10 @@ import type {
   DataApi,
   DataDefaultSort,
   DataSortOption,
+  DataSource,
   DynamicFilter,
-  FetchParams,
   FilterBuilderProperty,
+  InferTableParams,
   OptimizedQueryField,
   QuickFilter,
   RowAction,
@@ -14,37 +15,13 @@ import type {
   StaticFilter,
 } from "../types/shared";
 import type { DataTableColumn, DataTableColumnGroup } from "../types/datatable";
-import type {
-  MaybePromise,
-  NestedPaths,
-  NestedPathsForType,
-} from "@/_shared/types/utils";
+import type { GenericObject, MaybePromise } from "@/_shared/types/utils";
 import type { VNodeChild } from "vue";
 
-type LocalSource<TData> = () => MaybePromise<TData[]>;
-type RemoteSource<TData> = (params: FetchParams) => MaybePromise<{
-  docs: TData[];
-  totalDocs: number;
-  totalPages: number;
-}>;
-
-type SourceData<Source> =
-  Source extends RemoteSource<infer TData>
-    ? TData
-    : Source extends LocalSource<infer TData>
-      ? TData
-      : never;
-
-type SourceParams<Source> = {
-  data: SourceData<Source>;
-  keyPaths: NestedPaths<SourceData<Source>>;
-  keyableKeyPaths: NestedPathsForType<SourceData<Source>, string | number>;
-};
-
-export type TableSchemaInput<
+type TableSchemaInput<
   Remote extends boolean,
-  Source extends Remote extends true ? RemoteSource<any> : LocalSource<any>,
-  Params extends SourceParams<Source> = SourceParams<Source>,
+  Source extends DataSource<GenericObject, Remote>,
+  Params extends InferTableParams<Source> = InferTableParams<Source>,
 > = SlotStyle & {
   rowIdKey?: Params["keyPaths"];
   tableKey: string;
@@ -85,10 +62,10 @@ export type TableSchemaInput<
   frameless?: boolean;
 };
 
-export type ListSchemaInput<
+type ListSchemaInput<
   Remote extends boolean,
-  Source extends Remote extends true ? RemoteSource<any> : LocalSource<any>,
-  Params extends SourceParams<Source> = SourceParams<Source>,
+  Source extends DataSource<GenericObject, Remote>,
+  Params extends InferTableParams<Source> = InferTableParams<Source>,
 > = SlotStyle & {
   rowIdKey?: Params["keyPaths"];
   remote: Remote;
@@ -124,14 +101,14 @@ export type ListSchemaInput<
 };
 
 export function buildTableSchema<
-  const Source extends LocalSource<any>,
-  const Params extends SourceParams<Source>,
+  const Source extends DataSource<GenericObject, false>,
+  const Params extends InferTableParams<Source>,
 >(
   schema: TableSchemaInput<false, Source, Params>,
 ): TableSchemaInput<false, Source, Params>;
 export function buildTableSchema<
-  const Source extends RemoteSource<any>,
-  const Params extends SourceParams<Source>,
+  const Source extends DataSource<GenericObject, true>,
+  const Params extends InferTableParams<Source>,
 >(
   schema: TableSchemaInput<true, Source, Params>,
 ): TableSchemaInput<true, Source, Params>;
@@ -140,14 +117,14 @@ export function buildTableSchema(schema: TableSchemaInput<boolean, any, any>) {
 }
 
 export function buildListSchema<
-  const Source extends LocalSource<any>,
-  const Params extends SourceParams<Source>,
+  const Source extends DataSource<GenericObject, false>,
+  const Params extends InferTableParams<Source>,
 >(
   schema: ListSchemaInput<false, Source, Params>,
 ): ListSchemaInput<false, Source, Params>;
 export function buildListSchema<
-  const Source extends RemoteSource<any>,
-  const Params extends SourceParams<Source>,
+  const Source extends DataSource<GenericObject, true>,
+  const Params extends InferTableParams<Source>,
 >(
   schema: ListSchemaInput<true, Source, Params>,
 ): ListSchemaInput<true, Source, Params>;
@@ -158,3 +135,5 @@ export function buildListSchema(schema: ListSchemaInput<boolean, any, any>) {
 export function defineFilterProperty(params: FilterBuilderProperty) {
   return params;
 }
+
+export type { TableSchemaInput, ListSchemaInput };

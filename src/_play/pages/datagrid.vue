@@ -1,6 +1,6 @@
 <script setup lang="tsx">
 import { NEllipsis } from 'naive-ui'
-import { DataGrid, buildGridSchema } from '@/index'
+import { buildGridSchema, DataGrid } from '@/index'
 
 type Product = {
   name: string

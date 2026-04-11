@@ -1,51 +1,51 @@
 <script setup lang="ts">
-import { NEmpty } from 'naive-ui'
-import { computed } from 'vue'
-import DataGridItem from './DataGridItem.vue'
-import type { DataGridProps } from './types'
+import { NEmpty } from "naive-ui";
+import { computed } from "vue";
+import DataGridItem from "./DataGridItem.vue";
+import type { DataGridProps } from "./types";
 
-const props = defineProps<DataGridProps>()
+const props = defineProps<DataGridProps<any>>();
 
-const isLoading = computed<boolean>(() => !props.data)
+const isLoading = computed<boolean>(() => !props.data);
 
-const _gridRowSize = useBreakpointStyle(props?.gridRowSize ?? '1', 'grid-rows')
+const _gridRowSize = useBreakpointStyle(props?.gridRowSize ?? "1", "grid-rows");
 const _gridColSize = useBreakpointStyle(
-  props?.gridColSize ?? '1 md:3 lg:4 xl:5',
-  'grid-cols',
-)
+  props?.gridColSize ?? "1 md:3 lg:4 xl:5",
+  "grid-cols",
+);
 
 const virtualStore = asyncComputed<Record<string, unknown>>(() => {
-  if (!Object.keys(props.virtualStore ?? {}).length)
-    return {}
+  if (!Object.keys(props.virtualStore ?? {}).length) return {};
   return Object.entries(props.virtualStore ?? {}).reduce(
     async (acc, [key, item]) => {
       return {
         ...acc,
         [key]:
-          typeof item.value === 'function' ? await item.value() : item.value,
-      }
+          typeof item.value === "function" ? await item.value() : item.value,
+      };
     },
     {},
-  )
-}, {})
+  );
+}, {});
 
 const mappedSchema = computed(
   () =>
     props.fields?.filter(Boolean).filter((item) => {
-      if (!item.condition) { return item }
-      else {
+      if (!item.condition) {
+        return item;
+      } else {
         return item.condition({
           value: getObjectProperty({
             key: item.key,
             scoped: false,
-            object: (props?.data ?? {}),
+            object: props?.data ?? {},
           }),
           data: props?.data ?? {},
           store: virtualStore.value,
-        })
+        });
       }
     }) ?? [],
-)
+);
 </script>
 
 <template>

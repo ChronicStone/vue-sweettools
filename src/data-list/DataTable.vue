@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { NDataTable, useThemeVars } from 'naive-ui'
-import type { SortOrder } from 'naive-ui/es/data-table/src/interface'
-import type { HTMLAttributes } from 'vue'
-import color from 'tinycolor2'
-import type { DataTableSchema } from './types/datatable'
+import { NDataTable, useThemeVars } from "naive-ui";
+import type { SortOrder } from "naive-ui/es/data-table/src/interface";
+import type { HTMLAttributes } from "vue";
+import color from "tinycolor2";
+import type { DataTableSchema } from "./types/datatable";
 
-const tableId = `TABLE_${Date.now()}`
-const themeVars = useThemeVars()
+const tableId = `TABLE_${Date.now()}`;
+const themeVars = useThemeVars();
 
 const {
   maxHeight,
@@ -37,41 +37,46 @@ const {
   footerClass,
   footerStyle,
   quickFilters,
-} = defineProps<DataTableSchema>()
+} = defineProps<DataTableSchema<any, any, any>>();
 
-const tableKeyRef = computed(() => tableKey ?? 'DEFAULT_LIST')
-const columnsRef = computed(() => columns)
-const filtersRef = computed(() => filters ?? [])
-const staticFiltersRef = computed(() => staticFilters ?? [])
-const quickFiltersRef = computed(() => quickFilters ?? [])
-const searchQueryRef = computed(() => searchQuery ?? [])
-const defaultSortRef = computed(() => defaultSort)
-const remoteRef = computed(() => remote)
-const actionsRef = computed(() => actions ?? [])
-const selectionRef = computed(() => selection ?? true)
-const persistencyRef = computed(() => persistency ?? false)
-const rowActionsRef = computed(() => rowActions ?? [])
-const expandableRef = computed(() => expandable)
-const expandedContentRef = computed(() => expandedContent)
-const draggableRef = computed(() => draggable ?? false)
+const tableKeyRef = computed(() => tableKey ?? "DEFAULT_LIST");
+const columnsRef = computed(() => columns);
+const filtersRef = computed(() => filters ?? []);
+const staticFiltersRef = computed(() => staticFilters ?? []);
+const quickFiltersRef = computed(() => quickFilters ?? []);
+const searchQueryRef = computed(() => searchQuery ?? []);
+const defaultSortRef = computed(() => defaultSort);
+const remoteRef = computed(() => remote);
+const actionsRef = computed(() => actions ?? []);
+const selectionRef = computed(() => selection ?? true);
+const persistencyRef = computed(() => persistency ?? false);
+const rowActionsRef = computed(() => rowActions ?? []);
+const expandableRef = computed(() => expandable);
+const expandedContentRef = computed(() => expandedContent);
+const draggableRef = computed(() => draggable ?? false);
 
-const sortOptionsWithDefault = computed(() => sortOptions ?? [])
-const maxHeightWithDefault = computed(() => maxHeight ?? '60vh')
-const paginationWithDefault = computed(() => pagination ?? true)
-const compactWithDefault = computed(() => compact ?? false)
-const framelessWithDefault = computed(() => frameless ?? false)
-const headerClassWithDefault = computed(() => headerClass)
-const headerStyleWithDefault = computed(() => headerStyle)
-const footerClassWithDefault = computed(() => footerClass)
-const footerStyleWithDefault = computed(() => footerStyle)
-const defaultPageSizeWithDefault = computed(() => defaultPageSize ?? 50)
-const rowIdKeyWithDefault = computed(() => rowIdKey)
+const sortOptionsWithDefault = computed(() => sortOptions ?? []);
+const maxHeightWithDefault = computed(() => maxHeight ?? "60vh");
+const paginationWithDefault = computed(() => pagination ?? true);
+const compactWithDefault = computed(() => compact ?? false);
+const framelessWithDefault = computed(() => frameless ?? false);
+const headerClassWithDefault = computed(() => headerClass);
+const headerStyleWithDefault = computed(() => headerStyle);
+const footerClassWithDefault = computed(() => footerClass);
+const footerStyleWithDefault = computed(() => footerStyle);
+const defaultPageSizeWithDefault = computed(() => defaultPageSize ?? 50);
+const rowIdKeyWithDefault = computed(() => rowIdKey);
 
-const tableWrapperRef = ref<HTMLElement>()
-const tableRef = ref<InstanceType<typeof NDataTable>>()
-const horizontalScrollbarHandleRef = ref<HTMLElement>()
+const tableWrapperRef = ref<HTMLElement>();
+const tableRef = ref<InstanceType<typeof NDataTable>>();
+const horizontalScrollbarHandleRef = ref<HTMLElement>();
 
-const tableInternalId = computed(() => (tableRef.value?.$el as HTMLElement)?.querySelector('thead')?.getAttribute('data-n-id') ?? '')
+const tableInternalId = computed(
+  () =>
+    (tableRef.value?.$el as HTMLElement)
+      ?.querySelector("thead")
+      ?.getAttribute("data-n-id") ?? "",
+);
 
 const queryState = useQueryState({
   key: `${tableKeyRef.value}_LIST_STATE`,
@@ -83,7 +88,7 @@ const queryState = useQueryState({
   persistency: persistencyRef.value,
   defaultSort: defaultSortRef,
   defaultPageSize: defaultPageSizeWithDefault.value,
-})
+});
 
 const resolver = useDataResolver({
   remote: remoteRef,
@@ -96,16 +101,16 @@ const resolver = useDataResolver({
   isLoading: queryState.isLoading,
   enablePagination: paginationWithDefault.value,
   rowKey: rowIdKeyWithDefault.value,
-})
+});
 
-const dataApi = useDataApi({ queryState, resolver })
+const dataApi = useDataApi({ queryState, resolver });
 const mappedActions = useDataActions({
   actions: actionsRef,
   fetchParams: queryState.fetchParams,
   data: remote ? queryState.data : resolver.localDataStore,
   internalApi: dataApi,
   selectionState: queryState,
-})
+});
 
 const columnsState = useTableColumns({
   columns: columnsRef,
@@ -123,7 +128,7 @@ const columnsState = useTableColumns({
   data: queryState.data,
   sortState: queryState.sortState,
   draggable: draggableRef,
-})
+});
 
 const {
   tableElementExists,
@@ -143,14 +148,14 @@ const {
   horizontalScrollbarHandleRef,
   topViewportOffset: queryState.topViewportOffset,
   paginationState: queryState.paginationState,
-})
+});
 
 const { summaryTableRef, columnGroupDef, summaryRows } = useTableSummary({
   tableId,
   queryState,
   columns: columnsState.columnDefs,
   scrollX,
-})
+});
 
 useTableDrag({
   draggable: draggableRef,
@@ -163,25 +168,26 @@ useTableDrag({
   localStore: resolver.localDataStore,
   selection: selectionRef,
   hasRowActions: columnsState.hasActiveRowActions,
-})
+});
 
 const themeColors = computed(() => ({
   rowSelected: color(themeVars.value.borderColor).darken(10).toString(),
   rowFocus: {
-    backgroundColor: color(themeVars.value.primaryColor).setAlpha(0.1).toString(),
+    backgroundColor: color(themeVars.value.primaryColor)
+      .setAlpha(0.1)
+      .toString(),
     borderColor: color(themeVars.value.primaryColor).setAlpha(0.5).toString(),
   },
-}))
+}));
 
 function parseColumnKey(key: string) {
-  const output = key.split('__$COL_ID__').reverse()[0]
-  if (!output)
-    throw new Error(`Invalid column key: ${key}`)
-  return output
+  const output = key.split("__$COL_ID__").reverse()[0];
+  if (!output) throw new Error(`Invalid column key: ${key}`);
+  return output;
 }
 
-function getRowKey(row: (typeof queryState)['data']['value'][number]) {
-  return row.__$ROW_ID__
+function getRowKey(row: (typeof queryState)["data"]["value"][number]) {
+  return row.__$ROW_ID__;
 }
 
 function handleSortChange(
@@ -192,79 +198,95 @@ function handleSortChange(
       ? null
       : {
           key: parseColumnKey(value.columnKey),
-          dir: value.order === 'ascend' ? 'asc' : 'desc',
+          dir: value.order === "ascend" ? "asc" : "desc",
         },
-  )
+  );
 }
 
-function setInternalTableSort(sort: {
-  key: string
-  dir: 'asc' | 'desc'
-} | null) {
-  if (!sort)
-    tableRef.value?.clearSorter()
-  else tableRef.value?.sort(sort.key, sort.dir === 'asc' ? 'ascend' : 'descend')
+function setInternalTableSort(
+  sort: {
+    key: string;
+    dir: "asc" | "desc";
+  } | null,
+) {
+  if (!sort) tableRef.value?.clearSorter();
+  else
+    tableRef.value?.sort(sort.key, sort.dir === "asc" ? "ascend" : "descend");
 }
 
-function handleSortUpdate(sort: { key: string; dir: 'asc' | 'desc' | null } | null) {
-  const normalizedSort = sort?.dir ? { key: sort.key, dir: sort.dir } : null
-  queryState.setSort(normalizedSort)
-  setInternalTableSort(normalizedSort)
+function handleSortUpdate(
+  sort: { key: string; dir: "asc" | "desc" | null } | null,
+) {
+  const normalizedSort = sort?.dir ? { key: sort.key, dir: sort.dir } : null;
+  queryState.setSort(normalizedSort);
+  setInternalTableSort(normalizedSort);
 }
 
 function updateCheckedRowKeys(
   keys: Array<string | number>,
   _: object[],
-  meta: { row: object | undefined; action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll' },
+  meta: {
+    row: object | undefined;
+    action: "check" | "uncheck" | "checkAll" | "uncheckAll";
+  },
 ) {
-  if (meta.action === 'checkAll' || meta.action === 'uncheckAll') {
-    queryState.selectAll.value = meta.action === 'checkAll'
-    queryState.selectedKeys.value = meta.action === 'checkAll' ? queryState.fullData.value.map(item => item.__$ROW_ID__) : []
+  if (meta.action === "checkAll" || meta.action === "uncheckAll") {
+    queryState.selectAll.value = meta.action === "checkAll";
+    queryState.selectedKeys.value =
+      meta.action === "checkAll"
+        ? queryState.fullData.value.map((item) => item.__$ROW_ID__)
+        : [];
+  } else {
+    queryState.selectedKeys.value = keys;
   }
+  if (meta.action === "uncheck") queryState.selectAll.value = false;
 
-  else { queryState.selectedKeys.value = keys }
-  if (meta.action === 'uncheck')
-    queryState.selectAll.value = false
-
-  if (meta.action === 'check' && queryState.selectedKeys.value.length === queryState.fullData.value.length)
-    queryState.selectAll.value = true
+  if (
+    meta.action === "check" &&
+    queryState.selectedKeys.value.length === queryState.fullData.value.length
+  )
+    queryState.selectAll.value = true;
 }
 
 onMounted(() => {
   if (queryState.sortState.value.key) {
     setInternalTableSort({
       key: queryState.sortState.value.key,
-      dir: queryState.sortState.value.dir ?? 'asc',
-    })
+      dir: queryState.sortState.value.dir ?? "asc",
+    });
   }
-})
+});
 
 onBeforeMount(() => {
-  const flatCols = getFlatColumns(columns)
+  const flatCols = getFlatColumns(columns);
   // GET COLUMN KEYS THAT ARE DUPLICATED
   const duplicateKeys = flatCols
-    .map(col => col.key)
-    .filter((key, index, self) => self.indexOf(key) !== index)
+    .map((col) => col.key)
+    .filter((key, index, self) => self.indexOf(key) !== index);
   if (duplicateKeys.length > 0) {
     console.warn(
       `Duplicate column keys found: ${duplicateKeys.join(
-        ', ',
+        ", ",
       )}. Please make sure that all column keys are unique.`,
-    )
+    );
   }
-})
+});
 
-const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
+const isSelected = (key: string) => queryState.selectedKeys.value.includes(key);
 
 useProvideTableViewport({
   tableRef,
   tableWrapperRef,
   scrollX,
-})
+});
 </script>
 
 <template>
-  <CardContainer content="card" :frameless="framelessWithDefault" :compact="compactWithDefault">
+  <CardContainer
+    content="card"
+    :frameless="framelessWithDefault"
+    :compact="compactWithDefault"
+  >
     <template #header>
       <ListHeader
         v-model:select-all="queryState.selectAll.value"
@@ -273,7 +295,8 @@ useProvideTableViewport({
         v-model:columns-config="columnsState.columnConfig.value"
         :sort="queryState.sortState.value"
         :sort-options="sortOptionsWithDefault"
-        :filters="filtersRef" :dropdown-actions="mappedActions"
+        :filters="filtersRef"
+        :dropdown-actions="mappedActions"
         :nb-selected="queryState.nbSelected.value"
         :enable-search-query="searchQueryRef.length > 0"
         :resolve-grid-data="() => resolver.resolveGridData(true)"
@@ -291,31 +314,53 @@ useProvideTableViewport({
     </template>
 
     <QuickFilter
-      v-if="quickFiltersRef.length" v-model:filter-state="queryState.filterState.value.quickFilters"
+      v-if="quickFiltersRef.length"
+      v-model:filter-state="queryState.filterState.value.quickFilters"
       :quick-filters="quickFiltersRef"
     />
 
     <div ref="tableWrapperRef">
       <NDataTable
-        :id="tableId" ref="tableRef" :checked-row-keys="queryState.selectedKeys.value"
-        :columns="columnsState.columnDefs.value" :loading="queryState.isLoading.value" :data="queryState.data.value"
-        flex-height :style="{ height: maxHeightWithDefault }" :row-key="getRowKey" :size="compactWithDefault ? 'small' : 'large'"
-        :theme-overrides="{ borderRadius: '0' }" :on-update:sorter="handleSortChange" virtual-scroll
-        :single-column="false" :single-line="false" :on-scroll="(e) => {
-          updateScrollbarState()
-          persistScrollPosition(e)
-        }" :on-unstable-column-resize="updateScrollbarState" :on-update:checked-row-keys="updateCheckedRowKeys"
-        :row-props="(row, rowIndex) => ({
-          'data-row-index': rowIndex,
-          'data-row-id': row.__$ROW_ID__,
-          'class': isSelected(row.__$ROW_ID__) ? 'n-data-table-tr--selected' : '',
-        } as HTMLAttributes)"
+        :id="tableId"
+        ref="tableRef"
+        :checked-row-keys="queryState.selectedKeys.value"
+        :columns="columnsState.columnDefs.value"
+        :loading="queryState.isLoading.value"
+        :data="queryState.data.value"
+        flex-height
+        :style="{ height: maxHeightWithDefault }"
+        :row-key="getRowKey"
+        :size="compactWithDefault ? 'small' : 'large'"
+        :theme-overrides="{ borderRadius: '0' }"
+        :on-update:sorter="handleSortChange"
+        virtual-scroll
+        :single-column="false"
+        :single-line="false"
+        :on-scroll="
+          (e) => {
+            updateScrollbarState();
+            persistScrollPosition(e);
+          }
+        "
+        :on-unstable-column-resize="updateScrollbarState"
+        :on-update:checked-row-keys="updateCheckedRowKeys"
+        :row-props="
+          (row, rowIndex) =>
+            ({
+              'data-row-index': rowIndex,
+              'data-row-id': row.__$ROW_ID__,
+              class: isSelected(row.__$ROW_ID__)
+                ? 'n-data-table-tr--selected'
+                : '',
+            }) as HTMLAttributes
+        "
       />
     </div>
 
     <template #footer>
       <ListPagination
-        v-if="paginationWithDefault" v-model:pagination-state="queryState.paginationState.value"
+        v-if="paginationWithDefault"
+        v-model:pagination-state="queryState.paginationState.value"
         :compact="compactWithDefault"
         :footer-class="footerClassWithDefault"
         :footer-style="footerStyleWithDefault"
@@ -323,39 +368,74 @@ useProvideTableViewport({
     </template>
   </CardContainer>
 
-  <Teleport v-if="tableElementExists && teleportActive" :to="`#${tableId} .n-data-table-base-table-body`">
+  <Teleport
+    v-if="tableElementExists && teleportActive"
+    :to="`#${tableId} .n-data-table-base-table-body`"
+  >
     <div
-      class="n-scrollbar-rail n-scrollbar-rail--horizontal" data-scrollbar-rail="true" aria-hidden="true"
-      style="z-index: 3;"
+      class="n-scrollbar-rail n-scrollbar-rail--horizontal"
+      data-scrollbar-rail="true"
+      aria-hidden="true"
+      style="z-index: 3"
     >
       <Transition name="fade">
         <div
-          v-if="(scrollbarVisible && xScrollable) || isDragScrolling" ref="horizontalScrollbarHandleRef"
-          class="n-scrollbar-rail__scrollbar" :style="{ width: `${scrollbarWidth}px`, left: `${scrollbarOffset}px` }"
+          v-if="(scrollbarVisible && xScrollable) || isDragScrolling"
+          ref="horizontalScrollbarHandleRef"
+          class="n-scrollbar-rail__scrollbar"
+          :style="{
+            width: `${scrollbarWidth}px`,
+            left: `${scrollbarOffset}px`,
+          }"
         />
       </Transition>
     </div>
   </Teleport>
 
-  <Teleport v-if="tableElementExists && teleportActive && summaryRows.length" :to="`#${tableId} .n-data-table-wrapper`">
+  <Teleport
+    v-if="tableElementExists && teleportActive && summaryRows.length"
+    :to="`#${tableId} .n-data-table-wrapper`"
+  >
     <div ref="summaryTableRef" class="!overflow-hidden hide-scrollbar">
-      <table :style="{ tableLayout: 'fixed' }" class="border-collapse n-data-table-table">
+      <table
+        :style="{ tableLayout: 'fixed' }"
+        class="border-collapse n-data-table-table"
+      >
         <colgroup>
-          <col v-for="(group, index) in columnGroupDef" :key="index" :style="group.style">
+          <col
+            v-for="(group, index) in columnGroupDef"
+            :key="index"
+            :style="group.style"
+          />
         </colgroup>
         <thead :data-n-id="tableInternalId" class="!p-0 n-data-table-thead">
           <tr
-            v-for="(row, index) in summaryRows" :key="index"
-            :style="{ borderCollapse: 'collapse', borderSpacing: 0, borderTop: `1px solid ${themeVars.borderColor} !important` }"
+            v-for="(row, index) in summaryRows"
+            :key="index"
+            :style="{
+              borderCollapse: 'collapse',
+              borderSpacing: 0,
+              borderTop: `1px solid ${themeVars.borderColor} !important`,
+            }"
             class="!p-0 n-data-table-tr"
           >
             <th
-              v-for="(cell, key) in row" :key="key" :colspan="cell?.colSpan ?? 1" :rowspan="cell?.rowSpan ?? 1"
-              class="n-data-table-th !border-(spacing-0 collapse) !p-3 box-border py-2 font-semibold" :class="{
+              v-for="(cell, key) in row"
+              :key="key"
+              :colspan="cell?.colSpan ?? 1"
+              :rowspan="cell?.rowSpan ?? 1"
+              class="n-data-table-th !border-(spacing-0 collapse) !p-3 box-border py-2 font-semibold"
+              :class="{
                 'n-data-table-th--fixed-left left-0': cell?.fixed === 'left',
                 'n-data-table-th--fixed-right right-0': cell?.fixed === 'right',
               }"
-              :style="cell.fixed === 'left' ? { left: `${cell.fixedMeta.start}px` } : cell.fixed === 'right' ? { right: `${cell.fixedMeta.start}px` } : {}"
+              :style="
+                cell.fixed === 'left'
+                  ? { left: `${cell.fixedMeta.start}px` }
+                  : cell.fixed === 'right'
+                    ? { right: `${cell.fixedMeta.start}px` }
+                    : {}
+              "
               :data-col-key="cell.key"
             >
               <component :is="cell.value" />
@@ -402,7 +482,7 @@ useProvideTableViewport({
   position: absolute;
   top: 0;
   bottom: -1px;
-  transition: box-shadow .2s var(--n-bezier);
+  transition: box-shadow 0.2s var(--n-bezier);
   right: -36px;
 }
 
@@ -420,7 +500,7 @@ useProvideTableViewport({
   position: absolute;
   top: 0;
   bottom: -1px;
-  transition: box-shadow .2s var(--n-bezier);
+  transition: box-shadow 0.2s var(--n-bezier);
   right: -36px;
 }
 
@@ -436,11 +516,11 @@ useProvideTableViewport({
   overflow-x: auto;
 }
 
-.n-data-table-tr--selected>.n-data-table-td {
+.n-data-table-tr--selected > .n-data-table-td {
   background: v-bind("themeColors.rowSelected") !important;
 }
 
-.n-data-table-tr--expanded>.n-data-table-td {
+.n-data-table-tr--expanded > .n-data-table-td {
   padding: 0 !important;
   position: relative;
 }

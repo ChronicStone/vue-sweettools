@@ -111,6 +111,35 @@ const gridSchema = buildGridSchema<AccountRow>({
   ],
 });
 
+type InvoiceProfile = {
+  id: string;
+  account: string;
+  invoiceNumber: string;
+  invoiceDate: string;
+  period: Array<{ year: number; month: number }>;
+  contract: {
+    contractNumber: string;
+  };
+};
+
+const invoiceGridSchema = buildGridSchema<InvoiceProfile>({
+  fields: [
+    {
+      key: "account",
+      render: ({ value }) => value,
+    },
+    {
+      key: "period",
+      render: ({ data }) => data.period[0]?.year,
+    },
+    {
+      key: "contract.contractNumber",
+      label: () => "Contract",
+    },
+  ],
+});
+
 tableSchema;
 listSchema;
 gridSchema;
+invoiceGridSchema;
