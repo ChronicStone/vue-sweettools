@@ -19,6 +19,8 @@ function computeStyleModifier(value: string, type: string) {
     return value === 'true'
   if (type === 'value')
     return value
+
+  return value
 }
 
 type TransformKey =

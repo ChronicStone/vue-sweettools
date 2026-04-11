@@ -1,8 +1,7 @@
 import type { VNodeChild } from 'vue'
-import { k } from 'node_modules/vite/dist/node/types.d-aGj9QkWt'
 import { NSelect } from 'naive-ui'
-import type { ComparatorMatchMode, DynamicFilter, FilterBuilderParams, FilterBuilderRawValue, MatchModeCore, NonObjectMatchMode } from '../types/shared'
-import type { CascaderField, CheckboxField, ColorPickerField, DateField, Dependencies, FormField, NumberField, PasswordField, RadioField, RatingField, SelectField, SliderField, SwitchField, TagField, TextAreaField, TextField, TimeField, TreeSelectField, _BaseField, _FieldOptions } from '@/form/types/fields'
+import type { DynamicFilter, FilterBuilderParams, FilterBuilderRawValue, NonObjectMatchMode } from '../types/shared'
+import type { Dependencies, FormField, _FieldOptions } from '@/form/types/fields'
 
 export function textFilter({
   key,

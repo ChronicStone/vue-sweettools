@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { QuickFilter } from '../types/shared'
 
-const { quickFilters } = definePropsRefs<{ quickFilters: Array<QuickFilter> }>()
-const { filterState } = defineModels<{ filterState: Record<string, any> }>()
+const { quickFilters } = defineProps<{ quickFilters: Array<QuickFilter> }>()
+const filterState = defineModel<Record<string, any>>('filterState', { required: true })
 
-const computedFilters = computed(() => quickFilters.value.filter(f => f.condition?.() ?? true))
+const computedFilters = computed(() => quickFilters.filter(f => f.condition?.() ?? true))
 </script>
 
 <template>

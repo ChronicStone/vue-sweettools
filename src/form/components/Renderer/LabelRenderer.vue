@@ -87,10 +87,10 @@ const collapsible = computed<boolean>(
         :description="field.description"
         :field-label="field.label ?? ''"
       />
-      <NTooltip v-if="isDirty">
+      <NTooltip v-if="props.isDirty">
         {{ $t('form.resetField') }}
         <template #trigger>
-          <NButton text size="tiny" @click="resetField">
+          <NButton text size="tiny" @click="props.resetField">
             <template #icon>
               <mdi:reload />
             </template>

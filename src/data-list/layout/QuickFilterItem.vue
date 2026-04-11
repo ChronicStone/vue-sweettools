@@ -2,7 +2,7 @@
 import type { QuickFilter, QuickFilterObject, QuickFilterOptions, QuickFilterPrimitive } from '@/data-list/types/shared'
 
 const emit = defineEmits<{ (e: 'update:value', value: QuickFilterPrimitive[] | QuickFilterPrimitive): void }>()
-const { label, value, options } = definePropsRefs<{
+const { label, value, options, multiple } = defineProps<{
   type: QuickFilter['type']
   value: QuickFilterPrimitive[] | QuickFilterPrimitive | undefined
   label: string
@@ -13,13 +13,13 @@ const { label, value, options } = definePropsRefs<{
 const searchQuery = ref<string>('')
 
 const fieldValue = computed({
-  get: () => value.value,
+  get: () => value,
   set: value => emit('update:value', value),
 })
 
 const { state: resolvedOptions, isLoading } = useAsyncState(
   async () => {
-    const _options = typeof options.value === 'function' ? await options.value() : options.value
+    const _options = typeof options === 'function' ? await options() : options
     return _options.map((o) => {
       if (typeof o === 'object' && o)
         return o

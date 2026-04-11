@@ -27,7 +27,7 @@ const [useProvideFormState, _useFormState] = createInjectionState(
       )
     }
 
-    const contextMap = ref<Map<string, ReturnType<typeof useFieldContext>>>(
+    const contextMap = shallowRef<Map<string, ReturnType<typeof useFieldContext>>>(
       new Map(),
     )
 

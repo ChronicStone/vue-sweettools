@@ -1,7 +1,6 @@
 /* eslint-disable ts/no-use-before-define */
 import {
   type CascaderOption,
-  NButton,
   type SelectOption,
   type TreeSelectOption,
 } from 'naive-ui'
@@ -14,12 +13,38 @@ import { useFormFields } from './useFormFields'
 import type { GenericObject } from '@/_shared/types/utils'
 import { isDirty } from '@/_shared/utils/state'
 
+type FieldOption = CascaderOption | SelectOption | TreeSelectOption
+
+export interface FieldContext {
+  _evalCondition: Ref<boolean>
+  _evalOptions: Ref<boolean>
+  _options: Ref<FieldOption[]>
+  fieldId: string
+  fieldFullPath: ComputedRef<string[]>
+  required: ComputedRef<boolean>
+  condition: Ref<boolean>
+  conditionEffect: ComputedRef<'hide' | 'disable'>
+  disabled: ComputedRef<boolean>
+  options: ComputedRef<FieldOption[]>
+  dependencies: ComputedRef<GenericObject>
+  inputProps: ComputedRef<GenericObject>
+  rawInputProps: ComputedRef<GenericObject>
+  placeholder: ComputedRef<string>
+  parentKey: ComputedRef<string[]>
+  fieldApi: FieldApi
+  sourceValue: unknown
+  dirty: Ref<boolean>
+  resetField: () => void
+  createOption: () => Promise<void>
+  refreshOptions: () => Promise<void>
+}
+
 export function useFieldContext(
   field: ComputedRef<FormField>,
   fieldState: WritableComputedRef<unknown>,
   state: Ref<GenericObject>,
   parentKey: ComputedRef<string[]>,
-) {
+): FieldContext {
   const formSchema = useFormSchema()
   const sourceValue = typeof fieldState.value === 'object' ? JSON.parse(JSON.stringify(fieldState.value)) : fieldState.value
   const i18n = useTranslations()
@@ -157,12 +182,12 @@ export function useFieldContext(
     for (const path of mappedPaths) invalidateFieldOptions(path.join('.'))
   }
 
-  async function resolveOptions() {
+  async function resolveOptions(): Promise<void> {
     if (!('options' in field.value))
-      return []
+      return
     _evalOptions.value = true
     const _field = field.value as SelectField
-    if (!_field.options) { return [] }
+    if (!_field.options) { return }
     else if (Array.isArray(_field.options)) { _options.value = mapOptions(_field.options) }
     else {
       _options.value = mapOptions(
@@ -189,68 +214,14 @@ export function useFieldContext(
   }
 
   const _evalOptions = ref<boolean>(false)
-  const _options = ref<(CascaderOption | SelectOption | TreeSelectOption)[]>(
+  const _options = ref<FieldOption[]>(
     [],
-  )
+  ) as Ref<FieldOption[]>
   watch(
     () => JSON.stringify(dependencies.value),
     async () => resolveOptions(),
     { immediate: true },
   )
-
-  function selectActionFactory(_field: SelectField) {
-    const createOptionsEnabled = typeof _field.createOption !== 'undefined'
-    const allowOptionsRefresh = _field?.allowOptionsRefresh ?? false
-    const createOptionLabel
-      = typeof _field.createOption === 'function'
-        ? undefined
-        : _field.createOption?.label ?? undefined
-    return {
-      render: () => (
-        <div
-          class={`p-1 grid gap-2 ${
-            createOptionsEnabled && allowOptionsRefresh
-              ? 'grid-cols-2'
-              : 'grid-cols-1'
-          }`}
-        >
-          {typeof _field.createOption !== 'undefined' && (
-            <NButton
-              class="!w-full"
-              quaternary={true}
-              onClick={() => createOption()}
-            >
-              {{
-                icon: () => <span class="iconify" data-icon="mdi:plus" />,
-                default: () => (
-                  <span class="uppercase">
-                    {createOptionLabel
-                    ?? i18n.t('form.fields.select.createOptionButton')}
-                  </span>
-                ),
-              }}
-            </NButton>
-          )}
-          {_field?.allowOptionsRefresh && (
-            <NButton
-              class="!w-full"
-              quaternary={true}
-              onClick={() => resolveOptions()}
-            >
-              {{
-                icon: () => <span class="iconify" data-icon="mdi:refresh" />,
-                default: () => (
-                  <span class="uppercase">
-                    {i18n.t('form.fields.select.refreshOptionsButton')}
-                  </span>
-                ),
-              }}
-            </NButton>
-          )}
-        </div>
-      ),
-    }
-  }
 
   const options = computed(() => {
     return [
@@ -338,6 +309,14 @@ export function useFieldContext(
   }
 
   return {
+    _evalCondition,
+    _evalOptions,
+    _options,
+    fieldId,
+    fieldFullPath,
+    required,
+    condition,
+    conditionEffect,
     options,
     dependencies,
     inputProps,
@@ -354,9 +333,7 @@ export function useFieldContext(
   }
 }
 
-function mapOptions(
-  options: unknown[],
-): (SelectOption | TreeSelectOption | CascaderOption)[] {
+function mapOptions(options: unknown[]): FieldOption[] {
   if (!Array.isArray(options))
     return []
   return options.map(option =>
@@ -366,5 +343,5 @@ function mapOptions(
           value: option,
         }
       : option,
-  ) as (SelectOption | TreeSelectOption | CascaderOption)[]
+  ) as FieldOption[]
 }

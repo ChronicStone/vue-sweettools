@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { definePropsRefs } from 'unplugin-vue-macros/macros'
 import { useDraggable } from 'vue-draggable-plus'
 import type { RuntimeColsConfig } from '../composables/useTableColums'
 import ColumnConfigGroup from './ColumnConfigGroup.vue'
 
 defineOptions({ name: 'ColumnConfig' })
 
-const { depth } = definePropsRefs<{ depth: number }>()
-const { columns } = defineModels<{
-  columns: RuntimeColsConfig
-}>()
+const { depth = 0 } = defineProps<{ depth?: number }>()
+const columns = defineModel<RuntimeColsConfig>('columns', { required: true })
 
 function moveCard(dragIndex: number, hoverIndex: number) {
   const item = columns.value[dragIndex]

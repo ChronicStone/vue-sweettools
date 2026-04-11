@@ -16,7 +16,7 @@ const _gridColSize = useBreakpointStyle(
 
 const virtualStore = asyncComputed<Record<string, unknown>>(() => {
   if (!Object.keys(props.virtualStore ?? {}).length)
-    return false
+    return {}
   return Object.entries(props.virtualStore ?? {}).reduce(
     async (acc, [key, item]) => {
       return {

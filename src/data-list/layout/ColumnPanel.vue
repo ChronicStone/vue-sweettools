@@ -10,10 +10,8 @@ import type { RuntimeColsConfig } from '../composables/useTableColums'
 defineProps<{ resetColumnsConfig: () => void }>()
 const i18n = useTranslations()
 const { width } = useWindowSize()
-const { columnsConfig, show } = defineModels<{
-  columnsConfig: RuntimeColsConfig
-  show: boolean
-}>()
+const columnsConfig = defineModel<RuntimeColsConfig>('columnsConfig', { required: true })
+const show = defineModel<boolean>('show', { required: true })
 </script>
 
 <template>

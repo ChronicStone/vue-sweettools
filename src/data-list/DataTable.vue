@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { withDefaults } from 'unplugin-vue-macros/macros' assert { type: 'macro' }
 import { NDataTable, useThemeVars } from 'naive-ui'
 import type { SortOrder } from 'naive-ui/es/data-table/src/interface'
 import type { HTMLAttributes } from 'vue'
@@ -38,25 +37,35 @@ const {
   footerClass,
   footerStyle,
   quickFilters,
-} = withDefaults(definePropsRefs<DataTableSchema>(), {
-  tableKey: () => 'DEFAULT_LIST',
-  filters: () => [],
-  quickFilters: () => [],
-  searchQuery: () => [],
-  staticFilters: () => [],
-  sortOptions: () => [],
-  maxHeight: '60vh',
-  actions: () => [],
-  pagination: true,
-  selection: true,
-  persistency: false,
-  rowActions: () => [],
-  defaultPageSize: 50,
-  compact: false,
-  frameless: false,
-  draggable: false,
+} = defineProps<DataTableSchema>()
 
-})
+const tableKeyRef = computed(() => tableKey ?? 'DEFAULT_LIST')
+const columnsRef = computed(() => columns)
+const filtersRef = computed(() => filters ?? [])
+const staticFiltersRef = computed(() => staticFilters ?? [])
+const quickFiltersRef = computed(() => quickFilters ?? [])
+const searchQueryRef = computed(() => searchQuery ?? [])
+const defaultSortRef = computed(() => defaultSort)
+const remoteRef = computed(() => remote)
+const actionsRef = computed(() => actions ?? [])
+const selectionRef = computed(() => selection ?? true)
+const persistencyRef = computed(() => persistency ?? false)
+const rowActionsRef = computed(() => rowActions ?? [])
+const expandableRef = computed(() => expandable)
+const expandedContentRef = computed(() => expandedContent)
+const draggableRef = computed(() => draggable ?? false)
+
+const sortOptionsWithDefault = computed(() => sortOptions ?? [])
+const maxHeightWithDefault = computed(() => maxHeight ?? '60vh')
+const paginationWithDefault = computed(() => pagination ?? true)
+const compactWithDefault = computed(() => compact ?? false)
+const framelessWithDefault = computed(() => frameless ?? false)
+const headerClassWithDefault = computed(() => headerClass)
+const headerStyleWithDefault = computed(() => headerStyle)
+const footerClassWithDefault = computed(() => footerClass)
+const footerStyleWithDefault = computed(() => footerStyle)
+const defaultPageSizeWithDefault = computed(() => defaultPageSize ?? 50)
+const rowIdKeyWithDefault = computed(() => rowIdKey)
 
 const tableWrapperRef = ref<HTMLElement>()
 const tableRef = ref<InstanceType<typeof NDataTable>>()
@@ -65,55 +74,55 @@ const horizontalScrollbarHandleRef = ref<HTMLElement>()
 const tableInternalId = computed(() => (tableRef.value?.$el as HTMLElement)?.querySelector('thead')?.getAttribute('data-n-id') ?? '')
 
 const queryState = useQueryState({
-  key: `${tableKey.value ?? 'DEFAULT_LIST'}_LIST_STATE`,
-  searchQuery: searchQuery.value,
+  key: `${tableKeyRef.value}_LIST_STATE`,
+  searchQuery: searchQueryRef.value,
   optimizeQuery: [],
-  panelFilters: filters,
-  staticFilters,
-  quickFilters,
-  persistency: persistency.value,
-  defaultSort,
-  defaultPageSize: defaultPageSize.value,
+  panelFilters: filtersRef,
+  staticFilters: staticFiltersRef,
+  quickFilters: quickFiltersRef,
+  persistency: persistencyRef.value,
+  defaultSort: defaultSortRef,
+  defaultPageSize: defaultPageSizeWithDefault.value,
 })
 
 const resolver = useDataResolver({
-  remote,
-  datasource: datasource.value,
+  remote: remoteRef,
+  datasource,
   fetchParams: queryState.fetchParams,
   pagination: queryState.paginationState,
   allSelected: queryState.selectAll,
   data: queryState.data,
   fullData: queryState.fullData,
   isLoading: queryState.isLoading,
-  enablePagination: pagination.value,
-  rowKey: rowIdKey.value,
+  enablePagination: paginationWithDefault.value,
+  rowKey: rowIdKeyWithDefault.value,
 })
 
 const dataApi = useDataApi({ queryState, resolver })
 const mappedActions = useDataActions({
-  actions,
+  actions: actionsRef,
   fetchParams: queryState.fetchParams,
-  data: remote.value ? queryState.data : resolver.localDataStore,
+  data: remote ? queryState.data : resolver.localDataStore,
   internalApi: dataApi,
   selectionState: queryState,
 })
 
 const columnsState = useTableColumns({
-  columns,
+  columns: columnsRef,
   queryState,
   resolver,
-  remote,
+  remote: remoteRef,
   dataApi,
-  selection,
-  persistency,
-  tableKey,
-  searchQuery,
-  rowActions,
-  expandable,
-  expandedContent,
+  selection: selectionRef,
+  persistency: persistencyRef,
+  tableKey: tableKeyRef,
+  searchQuery: searchQueryRef,
+  rowActions: rowActionsRef,
+  expandable: expandableRef,
+  expandedContent: expandedContentRef,
   data: queryState.data,
   sortState: queryState.sortState,
-  draggable,
+  draggable: draggableRef,
 })
 
 const {
@@ -144,15 +153,15 @@ const { summaryTableRef, columnGroupDef, summaryRows } = useTableSummary({
 })
 
 useTableDrag({
-  draggable,
-  onRowDrag,
+  draggable: draggableRef,
+  onRowDrag: computed(() => onRowDrag),
   data: queryState.data,
   tableRef,
   columnsConfig: columnsState.columnConfig,
   columnsDef: columnsState.columnDefs,
   sortState: queryState.sortState,
   localStore: resolver.localDataStore,
-  selection,
+  selection: selectionRef,
   hasRowActions: columnsState.hasActiveRowActions,
 })
 
@@ -197,6 +206,12 @@ function setInternalTableSort(sort: {
   else tableRef.value?.sort(sort.key, sort.dir === 'asc' ? 'ascend' : 'descend')
 }
 
+function handleSortUpdate(sort: { key: string; dir: 'asc' | 'desc' | null } | null) {
+  const normalizedSort = sort?.dir ? { key: sort.key, dir: sort.dir } : null
+  queryState.setSort(normalizedSort)
+  setInternalTableSort(normalizedSort)
+}
+
 function updateCheckedRowKeys(
   keys: Array<string | number>,
   _: object[],
@@ -225,7 +240,7 @@ onMounted(() => {
 })
 
 onBeforeMount(() => {
-  const flatCols = getFlatColumns(columns.value)
+  const flatCols = getFlatColumns(columns)
   // GET COLUMN KEYS THAT ARE DUPLICATED
   const duplicateKeys = flatCols
     .map(col => col.key)
@@ -249,7 +264,7 @@ useProvideTableViewport({
 </script>
 
 <template>
-  <CardContainer content="card" :frameless="frameless" :compact="compact">
+  <CardContainer content="card" :frameless="framelessWithDefault" :compact="compactWithDefault">
     <template #header>
       <ListHeader
         v-model:select-all="queryState.selectAll.value"
@@ -257,37 +272,34 @@ useProvideTableViewport({
         v-model:panel-filters="queryState.filterState.value.panelFilters"
         v-model:columns-config="columnsState.columnConfig.value"
         :sort="queryState.sortState.value"
-        :sort-options="sortOptions"
-        :filters="filters" :dropdown-actions="mappedActions"
+        :sort-options="sortOptionsWithDefault"
+        :filters="filtersRef" :dropdown-actions="mappedActions"
         :nb-selected="queryState.nbSelected.value"
-        :enable-search-query="searchQuery.length > 0"
+        :enable-search-query="searchQueryRef.length > 0"
         :resolve-grid-data="() => resolver.resolveGridData(true)"
         :reset-table-query="() => queryState.resetTableQuery()"
-        :list-key="tableKey"
-        :compact="compact"
+        :list-key="tableKeyRef"
+        :compact="compactWithDefault"
         :reset-columns-config="columnsState.resetColumnsConfig"
-        :enable-selection="selection"
-        :header-class="headerClass"
-        :header-style="headerStyle"
-        @update:sort="(e) => {
-          queryState.setSort(e)
-          setInternalTableSort(e)
-        }"
+        :enable-selection="selectionRef"
+        :header-class="headerClassWithDefault"
+        :header-style="headerStyleWithDefault"
+        @update:sort="handleSortUpdate"
       >
         <slot />
       </ListHeader>
     </template>
 
     <QuickFilter
-      v-if="quickFilters.length" v-model:filter-state="queryState.filterState.value.quickFilters"
-      :quick-filters="quickFilters"
+      v-if="quickFiltersRef.length" v-model:filter-state="queryState.filterState.value.quickFilters"
+      :quick-filters="quickFiltersRef"
     />
 
     <div ref="tableWrapperRef">
       <NDataTable
         :id="tableId" ref="tableRef" :checked-row-keys="queryState.selectedKeys.value"
         :columns="columnsState.columnDefs.value" :loading="queryState.isLoading.value" :data="queryState.data.value"
-        flex-height :style="{ height: maxHeight }" :row-key="getRowKey" :size="compact ? 'small' : 'large'"
+        flex-height :style="{ height: maxHeightWithDefault }" :row-key="getRowKey" :size="compactWithDefault ? 'small' : 'large'"
         :theme-overrides="{ borderRadius: '0' }" :on-update:sorter="handleSortChange" virtual-scroll
         :single-column="false" :single-line="false" :on-scroll="(e) => {
           updateScrollbarState()
@@ -303,10 +315,10 @@ useProvideTableViewport({
 
     <template #footer>
       <ListPagination
-        v-if="pagination" v-model:pagination-state="queryState.paginationState.value"
-        :compact="compact"
-        :footer-class="footerClass"
-        :footer-style="footerStyle"
+        v-if="paginationWithDefault" v-model:pagination-state="queryState.paginationState.value"
+        :compact="compactWithDefault"
+        :footer-class="footerClassWithDefault"
+        :footer-style="footerStyleWithDefault"
       />
     </template>
   </CardContainer>

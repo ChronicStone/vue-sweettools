@@ -3,6 +3,12 @@ import type { FormSchema } from '../../types/form'
 
 defineProps<{ schema: FormSchema }>()
 defineEmits<{ (e: 'close'): void }>()
+defineSlots<{
+  stepper?: () => any
+  fields?: () => any
+  header?: () => any
+  footer?: () => any
+}>()
 const formStyles = useFormStyles()
 const { currentStep } = useFormFields()
 

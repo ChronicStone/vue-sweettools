@@ -71,7 +71,6 @@ function onFilePreview(file: UploadFileInfo) {
 }
 
 function renderFileIcon(file: UploadSettledFileInfo) {
-  // @ts-expect-error Weird JSX typed props
   return <span class="iconify" data-icon={getFileTypeIcon(file.name)} />
 }
 

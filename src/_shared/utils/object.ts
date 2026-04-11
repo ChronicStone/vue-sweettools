@@ -98,5 +98,5 @@ export function getObjectPropertyFullPath(
 }
 
 export function pipeMergeObject<T>(...args: T[]) {
-  return args.reduce((acc, curr) => deepmerge(acc as any, curr as any), {})
+  return args.reduce<any>((acc, curr) => deepmerge(acc, curr as any), {}) as T
 }
