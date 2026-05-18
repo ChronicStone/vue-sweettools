@@ -18,13 +18,6 @@ export function useTableDrag(params: {
 }) {
   const tableEl = computed(() => params.tableRef?.value?.$el as HTMLElement)
   const tableBodyRef = ref<HTMLElement | undefined>(undefined)
-  const tableHeaderRef = ref<HTMLElement | undefined>(undefined)
-
-  const nbInternalCols = computed(() => [
-    params.hasRowActions.value,
-    params.selection.value,
-    params.draggable.value,
-  ].filter(item => item).length)
 
   const { start: startDragRow, pause: pauseRowDrag, resume: resumeRowDrag } = useDraggable(tableBodyRef, ref([]), {
     immediate: false,
@@ -50,47 +43,10 @@ export function useTableDrag(params: {
     },
   })
 
-  const visibleColumns = computed({
-    get: () => [
-      ...Array(nbInternalCols.value).fill({}).map((_, index) => ({
-        key: `#internal__offset-column-${index}`,
-        order: index,
-        visible: false,
-      })),
-      ...params.columnsConfig.value.filter(col => col.visible).sort((a, b) => a.order - b.order),
-    ],
-    set: (reorderedColumns) => {
-      const totalOffset = nbInternalCols.value + params.columnsConfig.value.filter(col => col.visible && col.fixed === 'left').length
-      const updatedColumns = reorderedColumns
-        .filter(col => !col?.key.startsWith('#internal__offset-column-'))
-      const orderMap = new Map(updatedColumns.map((col, index) => [col?.key, index + totalOffset]))
-      params.columnsConfig.value.filter(col => !col.fixed).forEach((col) => {
-        if (orderMap.has(col?.key))
-          col.order = orderMap.get(col?.key) as number
-      })
-
-      params.columnsConfig.value = [...params.columnsConfig.value].sort((a, b) => a.order - b.order)
-    },
-  })
-
-  const { start: startColDrag } = useDraggable(tableHeaderRef, visibleColumns, {
-    immediate: false,
-    animation: 150,
-    filter: (_, el) => {
-      const key = el.dataset.colKey ?? ''
-      if (['#internal__dragHandle', '#internal__actions', '__n_selection__'].includes(key) || el.getAttribute('style')?.trim().includes('px'))
-        return true
-
-      return false
-    },
-  })
-
   onMounted(async () => {
-    while (!tableBodyRef.value || !tableHeaderRef.value) {
+    while (!tableBodyRef.value) {
       if (!tableBodyRef.value)
         tableBodyRef.value = tableEl.value?.querySelector('tbody') || undefined
-      if (!tableHeaderRef.value)
-        tableHeaderRef.value = tableEl.value?.querySelector('thead > tr') as HTMLElement || undefined
       await new Promise(resolve => setTimeout(resolve, 100))
     }
   })
@@ -100,11 +56,6 @@ export function useTableDrag(params: {
       startDragRow()
     if (params.sortState.value.key)
       pauseRowDrag()
-  })
-
-  watchOnce(() => tableHeaderRef.value, (el) => {
-    if (el)
-      startColDrag()
   })
 
   watch(() => params.sortState.value.key, hasSort => hasSort ? pauseRowDrag() : resumeRowDrag(), { immediate: true })
