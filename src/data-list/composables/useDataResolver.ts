@@ -32,9 +32,11 @@ export function useDataResolver({
 }: DataResolverParams) {
   const initialized = ref<boolean>(false)
   const localDataStore = ref<(GenericObject & { __$ROW_ID__: string })[]>([])
+  let latestRequestId = 0
 
   const resolveGridData = obsoletableFn(
     async (isObsolete, fullReload: boolean) => {
+      const requestId = ++latestRequestId
       try {
         isLoading.value = true
         const { docs, totalPages, totalDocs, ...rest } = remote.value
@@ -77,7 +79,6 @@ export function useDataResolver({
         pagination.value.rowTotalCount = totalDocs
 
         fullData.value = remote.value ? docs : (rest as { unpaginatedDocs: GenericObject[] }).unpaginatedDocs
-        isLoading.value = false
 
         if (totalPages < pagination.value.pageIndex)
           pagination.value.pageIndex = totalPages < 1 ? 1 : totalPages
@@ -88,7 +89,10 @@ export function useDataResolver({
       }
       catch (err) {
         console.error(err)
-        isLoading.value = false
+      }
+      finally {
+        if (requestId === latestRequestId)
+          isLoading.value = false
       }
     },
   )

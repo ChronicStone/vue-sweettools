@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SortOrder } from 'naive-ui/es/data-table/src/interface'
+import type { ColumnKey, SortOrder } from 'naive-ui/es/data-table/src/interface'
 import type { HTMLAttributes } from 'vue'
 import type { DataTableSchema, TDataTableColumn } from './types/datatable'
 import { NDataTable, useThemeVars } from 'naive-ui'
@@ -46,6 +46,7 @@ const rowIdKeyWithDefault = computed(() => props.rowIdKey)
 const tableWrapperRef = ref<HTMLElement>()
 const tableRef = ref<InstanceType<typeof NDataTable>>()
 const horizontalScrollbarHandleRef = ref<HTMLElement>()
+const resizedColumnWidths = ref<Record<string, number>>({})
 
 const tableInternalId = computed(
   () =>
@@ -156,6 +157,12 @@ const themeColors = computed(() => ({
   },
 }))
 
+const tableThemeOverrides = {
+  borderRadius: '0',
+  resizableContainerSize: '16px',
+  resizableSize: '3px',
+}
+
 function parseColumnKey(key: string) {
   const output = key.split('__$COL_ID__').reverse()[0]
   if (!output)
@@ -257,7 +264,7 @@ const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
 
 const tableScrollX = computed(() =>
   getLeafColumns(columnsState.columnDefs.value).reduce(
-    (total, column) => total + getColumnWidth(column),
+    (total, column) => total + getResolvedColumnWidth(column),
     0,
   ),
 )
@@ -276,6 +283,16 @@ function getLeafColumns(columns: TDataTableColumn[]): TDataTableColumn[] {
   })
 }
 
+function getColumnKey(column: TDataTableColumn) {
+  if ('type' in column)
+    return `#internal__${column.type}`
+  return String(column.key)
+}
+
+function getResolvedColumnWidth(column: TDataTableColumn) {
+  return resizedColumnWidths.value[getColumnKey(column)] ?? getColumnWidth(column)
+}
+
 function getColumnWidth(column: TDataTableColumn) {
   if ('type' in column) {
     if (column.type === 'selection' || column.type === 'expand')
@@ -292,7 +309,11 @@ function getColumnWidth(column: TDataTableColumn) {
   return Number.isFinite(parsedWidth) ? parsedWidth : 200
 }
 
-function handleColumnResize() {
+function handleColumnResize(_: number, limitedWidth: number, column: TDataTableColumn & { key?: ColumnKey }) {
+  resizedColumnWidths.value = {
+    ...resizedColumnWidths.value,
+    [String(column.key ?? getColumnKey(column))]: limitedWidth,
+  }
   nextTick(updateScrollbarState)
 }
 </script>
@@ -348,7 +369,7 @@ function handleColumnResize() {
         :style="{ height: maxHeightWithDefault }"
         :row-key="getRowKey"
         :size="compactWithDefault ? 'small' : 'large'"
-        :theme-overrides="{ borderRadius: '0' }"
+        :theme-overrides="tableThemeOverrides"
         :on-update:sorter="handleSortChange"
         virtual-scroll
         :single-column="false"
@@ -467,6 +488,10 @@ function handleColumnResize() {
 <style>
 .n-data-table-th__ellipsis {
   width: 100% !important;
+}
+
+.n-data-table-resize-button {
+  z-index: 4;
 }
 
 .fade-enter-active,
