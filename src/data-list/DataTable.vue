@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { NDataTable, useThemeVars } from "naive-ui";
-import type { SortOrder } from "naive-ui/es/data-table/src/interface";
-import type { HTMLAttributes } from "vue";
-import color from "tinycolor2";
-import type { DataTableSchema } from "./types/datatable";
-
-const tableId = `TABLE_${Date.now()}`;
-const themeVars = useThemeVars();
+import type { SortOrder } from 'naive-ui/es/data-table/src/interface'
+import type { HTMLAttributes } from 'vue'
+import type { DataTableSchema, TDataTableColumn } from './types/datatable'
+import { NDataTable, useThemeVars } from 'naive-ui'
+import color from 'tinycolor2'
 
 const props = withDefaults(defineProps<DataTableSchema<any, any, any>>(), {
   selection: true,
@@ -14,46 +11,48 @@ const props = withDefaults(defineProps<DataTableSchema<any, any, any>>(), {
   compact: false,
   frameless: false,
   draggable: false,
-});
+})
+const tableId = `TABLE_${Date.now()}`
+const themeVars = useThemeVars()
 
-const tableKeyRef = computed(() => props.tableKey ?? "DEFAULT_LIST");
-const columnsRef = computed(() => props.columns);
-const filtersRef = computed(() => props.filters ?? []);
-const staticFiltersRef = computed(() => props.staticFilters ?? []);
-const quickFiltersRef = computed(() => props.quickFilters ?? []);
-const searchQueryRef = computed(() => props.searchQuery ?? []);
-const defaultSortRef = computed(() => props.defaultSort);
-const remoteRef = computed(() => props.remote);
-const actionsRef = computed(() => props.actions ?? []);
-const selectionRef = computed(() => props.selection);
-const persistencyRef = computed(() => props.persistency ?? false);
-const rowActionsRef = computed(() => props.rowActions ?? []);
-const expandableRef = computed(() => props.expandable);
-const expandedContentRef = computed(() => props.expandedContent);
-const draggableRef = computed(() => props.draggable);
+const tableKeyRef = computed(() => props.tableKey ?? 'DEFAULT_LIST')
+const columnsRef = computed(() => props.columns)
+const filtersRef = computed(() => props.filters ?? [])
+const staticFiltersRef = computed(() => props.staticFilters ?? [])
+const quickFiltersRef = computed(() => props.quickFilters ?? [])
+const searchQueryRef = computed(() => props.searchQuery ?? [])
+const defaultSortRef = computed(() => props.defaultSort)
+const remoteRef = computed(() => props.remote)
+const actionsRef = computed(() => props.actions ?? [])
+const selectionRef = computed(() => props.selection)
+const persistencyRef = computed(() => props.persistency ?? false)
+const rowActionsRef = computed(() => props.rowActions ?? [])
+const expandableRef = computed(() => props.expandable)
+const expandedContentRef = computed(() => props.expandedContent)
+const draggableRef = computed(() => props.draggable)
 
-const sortOptionsWithDefault = computed(() => props.sortOptions ?? []);
-const maxHeightWithDefault = computed(() => props.maxHeight ?? "60vh");
-const paginationWithDefault = computed(() => props.pagination);
-const compactWithDefault = computed(() => props.compact);
-const framelessWithDefault = computed(() => props.frameless);
-const headerClassWithDefault = computed(() => props.headerClass);
-const headerStyleWithDefault = computed(() => props.headerStyle);
-const footerClassWithDefault = computed(() => props.footerClass);
-const footerStyleWithDefault = computed(() => props.footerStyle);
-const defaultPageSizeWithDefault = computed(() => props.defaultPageSize ?? 50);
-const rowIdKeyWithDefault = computed(() => props.rowIdKey);
+const sortOptionsWithDefault = computed(() => props.sortOptions ?? [])
+const maxHeightWithDefault = computed(() => props.maxHeight ?? '60vh')
+const paginationWithDefault = computed(() => props.pagination)
+const compactWithDefault = computed(() => props.compact)
+const framelessWithDefault = computed(() => props.frameless)
+const headerClassWithDefault = computed(() => props.headerClass)
+const headerStyleWithDefault = computed(() => props.headerStyle)
+const footerClassWithDefault = computed(() => props.footerClass)
+const footerStyleWithDefault = computed(() => props.footerStyle)
+const defaultPageSizeWithDefault = computed(() => props.defaultPageSize ?? 50)
+const rowIdKeyWithDefault = computed(() => props.rowIdKey)
 
-const tableWrapperRef = ref<HTMLElement>();
-const tableRef = ref<InstanceType<typeof NDataTable>>();
-const horizontalScrollbarHandleRef = ref<HTMLElement>();
+const tableWrapperRef = ref<HTMLElement>()
+const tableRef = ref<InstanceType<typeof NDataTable>>()
+const horizontalScrollbarHandleRef = ref<HTMLElement>()
 
 const tableInternalId = computed(
   () =>
     (tableRef.value?.$el as HTMLElement)
-      ?.querySelector("thead")
-      ?.getAttribute("data-n-id") ?? "",
-);
+      ?.querySelector('thead')
+      ?.getAttribute('data-n-id') ?? '',
+)
 
 const queryState = useQueryState({
   key: `${tableKeyRef.value}_LIST_STATE`,
@@ -65,7 +64,7 @@ const queryState = useQueryState({
   persistency: persistencyRef.value,
   defaultSort: defaultSortRef,
   defaultPageSize: defaultPageSizeWithDefault.value,
-});
+})
 
 const resolver = useDataResolver({
   remote: remoteRef,
@@ -78,16 +77,16 @@ const resolver = useDataResolver({
   isLoading: queryState.isLoading,
   enablePagination: paginationWithDefault.value,
   rowKey: rowIdKeyWithDefault.value,
-});
+})
 
-const dataApi = useDataApi({ queryState, resolver });
+const dataApi = useDataApi({ queryState, resolver })
 const mappedActions = useDataActions({
   actions: actionsRef,
   fetchParams: queryState.fetchParams,
   data: props.remote ? queryState.data : resolver.localDataStore,
   internalApi: dataApi,
   selectionState: queryState,
-});
+})
 
 const columnsState = useTableColumns({
   columns: columnsRef,
@@ -105,7 +104,7 @@ const columnsState = useTableColumns({
   data: queryState.data,
   sortState: queryState.sortState,
   draggable: draggableRef,
-});
+})
 
 const {
   tableElementExists,
@@ -125,14 +124,14 @@ const {
   horizontalScrollbarHandleRef,
   topViewportOffset: queryState.topViewportOffset,
   paginationState: queryState.paginationState,
-});
+})
 
 const { summaryTableRef, columnGroupDef, summaryRows } = useTableSummary({
   tableId,
   queryState,
   columns: columnsState.columnDefs,
   scrollX,
-});
+})
 
 useTableDrag({
   draggable: draggableRef,
@@ -145,7 +144,7 @@ useTableDrag({
   localStore: resolver.localDataStore,
   selection: selectionRef,
   hasRowActions: columnsState.hasActiveRowActions,
-});
+})
 
 const themeColors = computed(() => ({
   rowSelected: color(themeVars.value.borderColor).darken(10).toString(),
@@ -155,107 +154,147 @@ const themeColors = computed(() => ({
       .toString(),
     borderColor: color(themeVars.value.primaryColor).setAlpha(0.5).toString(),
   },
-}));
+}))
 
 function parseColumnKey(key: string) {
-  const output = key.split("__$COL_ID__").reverse()[0];
-  if (!output) throw new Error(`Invalid column key: ${key}`);
-  return output;
+  const output = key.split('__$COL_ID__').reverse()[0]
+  if (!output)
+    throw new Error(`Invalid column key: ${key}`)
+  return output
 }
 
-function getRowKey(row: (typeof queryState)["data"]["value"][number]) {
-  return row.__$ROW_ID__;
+function getRowKey(row: (typeof queryState)['data']['value'][number]) {
+  return row.__$ROW_ID__
 }
 
 function handleSortChange(
-  value: { columnKey: string; order: SortOrder } | null,
+  value: { columnKey: string, order: SortOrder } | null,
 ) {
   queryState.setSort(
     !value || !value?.order
       ? null
       : {
           key: parseColumnKey(value.columnKey),
-          dir: value.order === "ascend" ? "asc" : "desc",
+          dir: value.order === 'ascend' ? 'asc' : 'desc',
         },
-  );
+  )
 }
 
 function setInternalTableSort(
   sort: {
-    key: string;
-    dir: "asc" | "desc";
+    key: string
+    dir: 'asc' | 'desc'
   } | null,
 ) {
-  if (!sort) tableRef.value?.clearSorter();
+  if (!sort)
+    tableRef.value?.clearSorter()
   else
-    tableRef.value?.sort(sort.key, sort.dir === "asc" ? "ascend" : "descend");
+    tableRef.value?.sort(sort.key, sort.dir === 'asc' ? 'ascend' : 'descend')
 }
 
 function handleSortUpdate(
-  sort: { key: string; dir: "asc" | "desc" | null } | null,
+  sort: { key: string, dir: 'asc' | 'desc' | null } | null,
 ) {
-  const normalizedSort = sort?.dir ? { key: sort.key, dir: sort.dir } : null;
-  queryState.setSort(normalizedSort);
-  setInternalTableSort(normalizedSort);
+  const normalizedSort = sort?.dir ? { key: sort.key, dir: sort.dir } : null
+  queryState.setSort(normalizedSort)
+  setInternalTableSort(normalizedSort)
 }
 
 function updateCheckedRowKeys(
   keys: Array<string | number>,
   _: object[],
   meta: {
-    row: object | undefined;
-    action: "check" | "uncheck" | "checkAll" | "uncheckAll";
+    row: object | undefined
+    action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll'
   },
 ) {
-  if (meta.action === "checkAll" || meta.action === "uncheckAll") {
-    queryState.selectAll.value = meta.action === "checkAll";
-    queryState.selectedKeys.value =
-      meta.action === "checkAll"
-        ? queryState.fullData.value.map((item) => item.__$ROW_ID__)
-        : [];
-  } else {
-    queryState.selectedKeys.value = keys;
+  if (meta.action === 'checkAll' || meta.action === 'uncheckAll') {
+    queryState.selectAll.value = meta.action === 'checkAll'
+    queryState.selectedKeys.value
+      = meta.action === 'checkAll'
+        ? queryState.fullData.value.map(item => item.__$ROW_ID__)
+        : []
   }
-  if (meta.action === "uncheck") queryState.selectAll.value = false;
+  else {
+    queryState.selectedKeys.value = keys
+  }
+  if (meta.action === 'uncheck')
+    queryState.selectAll.value = false
 
   if (
-    meta.action === "check" &&
-    queryState.selectedKeys.value.length === queryState.fullData.value.length
-  )
-    queryState.selectAll.value = true;
+    meta.action === 'check'
+    && queryState.selectedKeys.value.length === queryState.fullData.value.length
+  ) {
+    queryState.selectAll.value = true
+  }
 }
 
 onMounted(() => {
   if (queryState.sortState.value.key) {
     setInternalTableSort({
       key: queryState.sortState.value.key,
-      dir: queryState.sortState.value.dir ?? "asc",
-    });
+      dir: queryState.sortState.value.dir ?? 'asc',
+    })
   }
-});
+})
 
 onBeforeMount(() => {
-  const flatCols = getFlatColumns(props.columns);
+  const flatCols = getFlatColumns(props.columns)
   // GET COLUMN KEYS THAT ARE DUPLICATED
   const duplicateKeys = flatCols
-    .map((col) => col.key)
-    .filter((key, index, self) => self.indexOf(key) !== index);
+    .map(col => col.key)
+    .filter((key, index, self) => self.indexOf(key) !== index)
   if (duplicateKeys.length > 0) {
     console.warn(
       `Duplicate column keys found: ${duplicateKeys.join(
-        ", ",
+        ', ',
       )}. Please make sure that all column keys are unique.`,
-    );
+    )
   }
-});
+})
 
-const isSelected = (key: string) => queryState.selectedKeys.value.includes(key);
+const isSelected = (key: string) => queryState.selectedKeys.value.includes(key)
+
+const tableScrollX = computed(() =>
+  getLeafColumns(columnsState.columnDefs.value).reduce(
+    (total, column) => total + getColumnWidth(column),
+    0,
+  ),
+)
 
 useProvideTableViewport({
   tableRef,
   tableWrapperRef,
   scrollX,
-});
+})
+
+function getLeafColumns(columns: TDataTableColumn[]): TDataTableColumn[] {
+  return columns.flatMap((column) => {
+    if ('children' in column)
+      return getLeafColumns(column.children)
+    return [column]
+  })
+}
+
+function getColumnWidth(column: TDataTableColumn) {
+  if ('type' in column) {
+    if (column.type === 'selection' || column.type === 'expand')
+      return 40
+  }
+
+  if (!('width' in column))
+    return 200
+
+  if (typeof column.width === 'number')
+    return column.width
+
+  const parsedWidth = Number.parseFloat(column.width ?? '')
+  return Number.isFinite(parsedWidth) ? parsedWidth : 200
+}
+
+function handleColumnResize() {
+  nextTick(updateScrollbarState)
+}
 </script>
 
 <template>
@@ -305,6 +344,7 @@ useProvideTableViewport({
         :loading="queryState.isLoading.value"
         :data="queryState.data.value"
         flex-height
+        :scroll-x="tableScrollX"
         :style="{ height: maxHeightWithDefault }"
         :row-key="getRowKey"
         :size="compactWithDefault ? 'small' : 'large'"
@@ -319,14 +359,14 @@ useProvideTableViewport({
             persistScrollPosition(e);
           }
         "
-        :on-unstable-column-resize="updateScrollbarState"
+        :on-unstable-column-resize="handleColumnResize"
         :on-update:checked-row-keys="updateCheckedRowKeys"
         :row-props="
           (row, rowIndex) =>
             ({
               'data-row-index': rowIndex,
               'data-row-id': row.__$ROW_ID__,
-              class: isSelected(row.__$ROW_ID__)
+              'class': isSelected(row.__$ROW_ID__)
                 ? 'n-data-table-tr--selected'
                 : '',
             }) as HTMLAttributes
@@ -383,7 +423,7 @@ useProvideTableViewport({
             v-for="(group, index) in columnGroupDef"
             :key="index"
             :style="group.style"
-          />
+          >
         </colgroup>
         <thead :data-n-id="tableInternalId" class="!p-0 n-data-table-thead">
           <tr

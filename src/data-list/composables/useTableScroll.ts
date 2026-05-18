@@ -29,13 +29,14 @@ export function useTableScroll(params: {
   function updateScrollbarState() {
     if (isDragScrolling.value)
       return
-    const referenceContainer = document.querySelector(`#${params.tableId} .v-vl-visible-items`)
     const target = getTableContentEl()
-    if (!target || !referenceContainer)
+    if (!target)
       return
-    const handleSize = (target.clientWidth / referenceContainer.scrollWidth) * target.clientWidth
+
+    const scrollableWidth = target.scrollWidth
+    const handleSize = (target.clientWidth / scrollableWidth) * target.clientWidth
     scrollbarWidth.value = handleSize
-    scrollbarOffset.value = (target.scrollLeft / referenceContainer.scrollWidth) * target.clientWidth
+    scrollbarOffset.value = (target.scrollLeft / scrollableWidth) * target.clientWidth
     xScrollable.value = target.scrollWidth > target.clientWidth
     scrollX.value = target.scrollLeft
   }
@@ -64,12 +65,12 @@ export function useTableScroll(params: {
 
   watch(scrollbarOffset, (v) => {
     const containerWidth = getTableContentEl()?.clientWidth ?? 0
-    const referenceContainer = document.querySelector(`#${params.tableId} .v-vl-visible-items`)
-    if (!referenceContainer)
+    const scrollableWidth = getTableContentEl()?.scrollWidth
+    if (!scrollableWidth)
       return
 
-    params.tableRef.value?.scrollTo({ left: (v / containerWidth) * referenceContainer.scrollWidth })
-    scrollX.value = (v / containerWidth) * referenceContainer.scrollWidth
+    params.tableRef.value?.scrollTo({ left: (v / containerWidth) * scrollableWidth })
+    scrollX.value = (v / containerWidth) * scrollableWidth
   })
 
   watch(xMouse, (xMouse) => {
