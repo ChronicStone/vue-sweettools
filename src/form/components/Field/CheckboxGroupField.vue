@@ -2,6 +2,7 @@
 import type { TestIdSelector } from '@chronicstone/vue-testid'
 import { vTestid } from '@chronicstone/vue-testid'
 import { NCheckbox, NCheckboxGroup } from 'naive-ui'
+import type { VNodeChild } from 'vue'
 import type { FieldComponentEmits, FieldComponentProps } from '@/form/types/fields'
 
 const props = defineProps<FieldComponentProps>()
@@ -27,6 +28,13 @@ const testIdConfig = [
     multiple: true,
   },
 ] satisfies TestIdSelector
+
+const options = computed(() => {
+  return (props.context.options.value ?? []) as unknown as Array<{
+    label: string | (() => VNodeChild)
+    value: string | number | undefined
+  }>
+})
 </script>
 
 <template>
@@ -43,15 +51,16 @@ const testIdConfig = [
       :style="field.gridSize ? gridSize : formStyle?.gridSize.value"
     >
       <NCheckbox
-        v-for="(option, index) in context.options.value ?? field.options"
+        v-for="(option, index) in options"
         :key="index"
         class="col-span-1"
-        :value="((option as any).value as string)"
-        :label="((option as any).label as string)"
+        :value="option.value"
         :disabled="disabled"
         :size="scale"
         @blur="validator?.$touch"
-      />
+      >
+        <component :is="renderVNode(option.label ?? '')" />
+      </NCheckbox>
     </div>
   </NCheckboxGroup>
 </template>
