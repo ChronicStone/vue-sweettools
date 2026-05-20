@@ -226,9 +226,10 @@ export function mapFieldsOutputState(
     )
 
     const fieldApi = getFieldApi(field.key, parentKeys)
-    const ignoreField = !field.condition
-      ? false
-      : (field.condition(fieldDependencies, fieldApi) && field?.conditionEffect !== 'disable')
+    const condition = field.condition
+      ? field.condition(fieldDependencies, fieldApi)
+      : true
+    const ignoreField = !condition && (field?.conditionEffect ?? 'hide') === 'hide'
 
     if (ignoreField)
       continue
