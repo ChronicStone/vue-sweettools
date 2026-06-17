@@ -1,25 +1,28 @@
 <!-- eslint-disable unused-imports/no-unused-vars -->
 <script setup lang="ts">
-import { vTestid } from '@chronicstone/vue-testid'
-import type { MaskOptions } from 'maska'
-import { vMaska } from 'maska/vue'
-import { NInput } from 'naive-ui'
+import type { MaskInputOptions, MaskOptions } from 'maska'
+import type { InputInst } from 'naive-ui'
 import type { FieldComponentEmits, FieldComponentProps, TextField } from '@/form/types/fields'
+import { vTestid } from '@chronicstone/vue-testid'
+import { MaskInput } from 'maska'
+import { NInput } from 'naive-ui'
 
 const props = defineProps<FieldComponentProps>()
 const emit = defineEmits<FieldComponentEmits>()
 const { scale } = useFormStyles()
 const _field = computed(() => props.field as TextField)
+const inputRef = ref<InputInst | null>(null)
+let maskInput: MaskInput | undefined
 
 const fieldValue = computed({
   get: () => props.modelValue as string | [string, string] | null | undefined,
   set: value => emit('update:modelValue', value),
 })
 
-const maskConfig = computed(() => {
+const maskConfig = computed<MaskInputOptions | undefined>(() => {
   const maskConf = props.context.inputProps.value?.mask
   if (!maskConf)
-    return {}
+    return undefined
   else if (typeof maskConf === 'string')
     return { mask: maskConf }
   return maskConf as MaskOptions
@@ -40,12 +43,33 @@ const testIdConfig = [
     value: `${formTestId.value}#field::${fieldKey.value}::input`,
   },
 ]
+
+function syncMask() {
+  const nativeInput
+    = inputRef.value?.inputElRef
+      ?? inputRef.value?.textareaElRef
+      ?? null
+
+  if (!nativeInput || !maskConfig.value?.mask) {
+    maskInput?.destroy()
+    maskInput = undefined
+    return
+  }
+
+  if (maskInput)
+    maskInput.update(maskConfig.value)
+  else maskInput = new MaskInput(nativeInput as HTMLInputElement, maskConfig.value)
+}
+
+watch(maskConfig, () => nextTick(syncMask), { deep: true, immediate: true })
+onMounted(() => nextTick(syncMask))
+onBeforeUnmount(() => maskInput?.destroy())
 </script>
 
 <template>
   <NInput
+    ref="inputRef"
     v-model:value="fieldValue"
-    v-maska:[maskConfig]
     v-testid="testIdConfig"
     :style="group ? { width: `${size} !important` } : {}"
     :class="{ fieldError: validator?.$errors?.length }"

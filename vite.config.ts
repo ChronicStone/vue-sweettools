@@ -1,17 +1,17 @@
-import path from 'node:path'
 import { createRequire } from 'node:module'
-import { defineConfig } from 'vite'
+import path from 'node:path'
 import Vue from '@vitejs/plugin-vue'
-import UnoCSS from 'unocss/vite'
-import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import Components from 'unplugin-vue-components/vite'
 import VueJsx from '@vitejs/plugin-vue-jsx'
-import PurgeIcons from 'vite-plugin-purge-icons'
+import UnoCSS from 'unocss/vite'
 import AutoImports from 'unplugin-auto-import/vite'
-import Dts from 'vite-plugin-dts'
+import IconsResolver from 'unplugin-icons/resolver'
+import Icons from 'unplugin-icons/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
+import { defineConfig } from 'vite'
 import Checker from 'vite-plugin-checker'
+import Dts from 'vite-plugin-dts'
+import PurgeIcons from 'vite-plugin-purge-icons'
 
 const require = createRequire(import.meta.url)
 const pkg = require('./package.json') as {
@@ -24,8 +24,9 @@ const externalPackages = [
   ...Object.keys(pkg.peerDependencies ?? {}),
 ]
 
-const external = (id: string) =>
-  externalPackages.some(packageName => id === packageName || id.startsWith(`${packageName}/`))
+function external(id: string) {
+  return externalPackages.some(packageName => id === packageName || id.startsWith(`${packageName}/`))
+}
 
 const globals: Record<string, string> = {
   '@chronicstone/vue-testid': 'VueTestid',
@@ -36,6 +37,7 @@ const globals: Record<string, string> = {
   'date-fns': 'dateFns',
   'deepmerge-ts': 'deepmergeTs',
   'json-as-xlsx': 'jsonAsXlsx',
+  'maska': 'Maska',
   'maska/vue': 'MaskaVue',
   'naive-ui': 'naive',
   'tinycolor2': 'tinycolor',
